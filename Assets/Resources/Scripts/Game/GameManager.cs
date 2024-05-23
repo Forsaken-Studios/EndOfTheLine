@@ -1,0 +1,82 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public class GameManager : MonoBehaviour
+{
+
+    public static GameManager Instance;
+
+    [Header("End game")]
+    [SerializeField] private GameObject blackFade;
+
+    [Header("Extraction Properties")] 
+    [Tooltip("Variable para prototipo, y poder cambiar el color cuando este disponible")]
+    [SerializeField] private GameObject extractionZoneImage; 
+    private GameState _gameState;
+    public GameState GameState
+    {
+        get { return _gameState; }
+        set { _gameState = value; }
+    }
+    
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogWarning("[GameManager.cs] : There is already a GameManager Instance");
+            Destroy(this);
+        }
+        Instance = this;
+    }
+    
+    void Start()
+    {
+        GameState = GameState.OnGame;
+        blackFade.SetActive(false);
+    }
+    
+    private IEnumerator EndGameCorroutine()
+    {
+        while (true)
+        {
+            blackFade.SetActive(true);
+            blackFade.GetComponent<Animator>().SetTrigger("ending");
+
+            yield return new WaitForSeconds(3f);
+            SceneManager.LoadSceneAsync("Scenes/Menu/MainMenu");
+            StopAllCoroutines();
+            yield return null; 
+        }
+    }
+
+    void Update()
+    {
+        
+    }
+
+    public void ActivateExtractionZone()
+    {
+        extractionZoneImage.GetComponent<SpriteRenderer>().color = Color.green;
+        ExtractionManager.Instance.SetIfExtractionArrived(true);
+    }
+
+    public void DesactivateExtractionZone()
+    {
+        extractionZoneImage.GetComponent<SpriteRenderer>().color = Color.gray;
+        ExtractionManager.Instance.SetIfExtractionArrived(true);
+    }
+    
+    public void EndGame()
+    {
+        StartCoroutine(EndGameCorroutine());
+    }
+
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
+}

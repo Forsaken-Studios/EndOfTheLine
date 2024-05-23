@@ -1,0 +1,57 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerManager : MonoBehaviour
+{
+
+    private bool isPlayerInGasZone = false;
+    private bool isPlayerInExtractionPoint = false;
+
+    private PlayerStamina playerStamina;
+
+
+    private void Awake()
+    {
+        this.playerStamina = GetComponent<PlayerStamina>();
+    }
+
+    public void PlayerEnteredGasZone()
+    {
+        isPlayerInGasZone = true; 
+        this.playerStamina.ActivateStaminaDecreasing(); 
+    }
+    
+    public void PlayerExitedGasZone()
+    {
+        isPlayerInGasZone = false;
+        this.playerStamina.DesactivateStaminaDecreasing(); 
+    }
+    
+    
+    
+    
+    #region Getters Setters
+
+    public void SetIfPlayerIsInGasZone(bool aux)
+    {
+        this.isPlayerInGasZone = aux; 
+    }
+
+    public bool GetIfPlayerIsInGasZone()
+    {
+        return isPlayerInGasZone;
+    }
+    
+    public void SetIfPlayerInExtractionPoint(bool aux)
+    {
+        this.isPlayerInExtractionPoint = aux; 
+    }
+
+    public bool GetIfPlayerInExtractionPoint()
+    {
+        return isPlayerInExtractionPoint;
+    }
+    #endregion
+}
