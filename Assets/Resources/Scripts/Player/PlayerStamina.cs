@@ -56,7 +56,6 @@ public class PlayerStamina : MonoBehaviour
                 {
                     this.staminaBar.fillAmount = 1;
                 }
-            
             }
         }
     }
