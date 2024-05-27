@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FieldOfView : MonoBehaviour
@@ -11,12 +12,17 @@ public class FieldOfView : MonoBehaviour
     [SerializeField] private Vector3 origin = Vector3.zero;
     [SerializeField] private GameObject _enemyGameObject;
     private float startingAngle; 
-    private Mesh mesh; 
-    
+    private Mesh mesh;
+    [Header("Detection bar properties")] 
+    [SerializeField] private BarDetectionProgress detectionBar;
+    [Header("Obstacle Layer Mask")]
     [SerializeField] private LayerMask obstacleLayerMask;
+
+    [SerializeField] private List<RaycastHit2D> raycastHitsList;
     void Start()
     {
         mesh = new Mesh();
+        raycastHitsList = new List<RaycastHit2D>();
         GetComponent<MeshFilter>().mesh = mesh;
         SetOrigin(_enemyGameObject.transform.localPosition);
     }
@@ -25,9 +31,33 @@ public class FieldOfView : MonoBehaviour
     void LateUpdate()
     {
         UpdateFieldOfViewMesh();
+
+       if (!CheckIfPlayerIsBeignDetected())
+        {
+            if(detectionBar.gameObject.activeSelf)
+                detectionBar.SetIfPlayerIsBeingDetected(false);
+        }
     }
+
+    private bool CheckIfPlayerIsBeignDetected()
+    {
+        foreach (var raycast in raycastHitsList)
+        {
+            if (raycast.collider != null)
+            {
+                if (raycast.collider.gameObject.CompareTag("Player"))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     private void UpdateFieldOfViewMesh()
     {
+        raycastHitsList.Clear();
         angle = 0f; 
         float angleIncrease = fov / rayCount;
         
@@ -36,15 +66,14 @@ public class FieldOfView : MonoBehaviour
         int[] triangles = new int[rayCount * 3];
         
         vertices[0] = origin;
-        
         int vertexIndex = 1;
         int triangleIndex = 0;
         for (int i = 0; i <= rayCount; i++)
         {
-            Vector3 vertex;
+            Vector3 vertex = Vector3.back;
             RaycastHit2D raycastHit2D = Physics2D.Raycast(origin, GetVectorFromAngle(angle),
                 viewDistance, obstacleLayerMask);
-     
+            raycastHitsList.Add(raycastHit2D);
             if (raycastHit2D.collider == null)
             {
                 //Not hit
@@ -56,13 +85,21 @@ public class FieldOfView : MonoBehaviour
                 if (raycastHit2D.collider.gameObject.CompareTag("Player"))
                 {
                     vertex = origin + GetVectorFromAngle(angle) * viewDistance;
-                    Debug.Log("PLAYER DETECTED");
+                    if (!_enemyGameObject.GetComponent<Enemy>().PlayerIsDetected)
+                    {
+                        float distance = Vector2.Distance(this.gameObject.transform.position, 
+                            raycastHit2D.collider.gameObject.transform.position);
+                        //Pilla la distancia desde el centro, no de donde debe. 
+                        //Debug.Log(distance);
+                        //detectionBar.GetComponent<BarDetectionProgress>().SetSpeedBasedInDistance(distance);
+                        detectionBar.gameObject.SetActive(true);
+                        Debug.Log("PLAYER SAW?"); 
+                    }
                 }
                 else
                 {
                     vertex = raycastHit2D.point;
                 }
-                  
             }
             vertices[vertexIndex] = vertex;
             if (i > 0)
@@ -75,12 +112,11 @@ public class FieldOfView : MonoBehaviour
             vertexIndex++;
             angle -= angleIncrease;
         }
-
-        
         mesh.vertices = vertices;
         mesh.uv = uv;
         mesh.triangles = triangles;
     }
+    
 
 
     private static Vector3 GetVectorFromAngle(float angle)
