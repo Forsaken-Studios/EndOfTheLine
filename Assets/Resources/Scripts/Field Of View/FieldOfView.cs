@@ -2,28 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class FieldOfView : MonoBehaviour
 {
+    [Header("Properties")]
     [SerializeField] float fov;
     [SerializeField] int rayCount;
     [SerializeField] float angle;
     [SerializeField] float viewDistance;
+    [SerializeField] private float currentAngle;
     [SerializeField] private Vector3 origin = Vector3.zero;
-    [SerializeField] private GameObject _enemyGameObject;
-    [SerializeField] private float startingAngle; 
-    private Mesh mesh;
+    [Header("Enemy Script")]
+    [SerializeField] private Enemy enemyScript;
     [Header("Detection bar properties")] 
     [SerializeField] private BarDetectionProgress detectionBar;
+    [FormerlySerializedAs("obstacleLayerMask")]
     [Header("Obstacle Layer Mask")]
-    [SerializeField] private LayerMask obstacleLayerMask;
-
-    [SerializeField] private List<RaycastHit2D> raycastHitsList;
+    [SerializeField] private LayerMask obstaclePlayerLayerMask;
+    private List<RaycastHit2D> raycastHitsList;
+    private Mesh mesh;
     void Start()
     {
         mesh = new Mesh();
         raycastHitsList = new List<RaycastHit2D>();
         GetComponent<MeshFilter>().mesh = mesh;
+        
        //SetOrigin(_enemyGameObject.transform.localPosition);
     }
 
@@ -31,15 +35,40 @@ public class FieldOfView : MonoBehaviour
     void LateUpdate()
     {
         UpdateFieldOfViewMesh();
-
-       if (!CheckIfPlayerIsBeignDetected())
-        {
-            if(detectionBar.gameObject.activeSelf)
-                detectionBar.SetIfPlayerIsBeingDetected(false);
-        }
+       // FindTargetPlayer();
+       
+       if (!CheckIfPlayerIsBeingDetected())
+       {
+           if (detectionBar.GetIfPlayerIsDetected())
+           {
+               //Start countdown to forget player
+               enemyScript.ActivateCountdownToForgetPlayer();
+           }
+           else
+           {
+               if (detectionBar.gameObject.activeSelf)
+               {
+                   Debug.Log("CHECK");
+                   detectionBar.SetIfPlayerIsBeingDetected(false);
+               }
+                  
+           }
+       }
+       else
+       {
+           if (enemyScript.GetIfEnemyIsForgetting())
+           {
+               enemyScript.StopEnemyActionOfForgettingPlayer();
+           }
+           
+           if (!detectionBar.GetIfPlayerIsDetected())
+           {
+               detectionBar.gameObject.SetActive(true);
+           }
+       }
     }
 
-    private bool CheckIfPlayerIsBeignDetected()
+    private bool CheckIfPlayerIsBeingDetected()
     {
         foreach (var raycast in raycastHitsList)
         {
@@ -58,7 +87,7 @@ public class FieldOfView : MonoBehaviour
     private void UpdateFieldOfViewMesh()
     {
         raycastHitsList.Clear();
-        angle = startingAngle; 
+        angle = currentAngle; 
         float angleIncrease = fov / rayCount;
         
         Vector3[] vertices = new Vector3[rayCount + 1 + 1];
@@ -72,7 +101,7 @@ public class FieldOfView : MonoBehaviour
         {
             Vector3 vertex = Vector3.back;
             RaycastHit2D raycastHit2D = Physics2D.Raycast(origin, GetVectorFromAngle(angle),
-                viewDistance, obstacleLayerMask);
+                viewDistance, obstaclePlayerLayerMask);
             raycastHitsList.Add(raycastHit2D);
             if (raycastHit2D.collider == null)
             {
@@ -81,25 +110,21 @@ public class FieldOfView : MonoBehaviour
             }
             else
             {
-                //hit
-                if (raycastHit2D.collider.gameObject.CompareTag("Player"))
+                
+               /*if (raycastHit2D.collider.gameObject.CompareTag("Player"))
                 {
-                    vertex = origin + GetVectorFromAngle(angle) * viewDistance;
-                    if (!_enemyGameObject.GetComponent<Enemy>().PlayerIsDetected)
+                    if(raycastHit2D.collider.gameObject.layer == obstacleLayerMask)
+                        vertex = origin + GetVectorFromAngle(angle) * viewDistance;
+                    
+                    if (!enemyGameObject.GetComponent<Enemy>().PlayerIsDetected)
                     {
-                        float distance = Vector2.Distance(this.gameObject.transform.position, 
-                            raycastHit2D.collider.gameObject.transform.position);
-                        //Pilla la distancia desde el centro, no de donde debe. 
-                        //Debug.Log(distance);
-                        //detectionBar.GetComponent<BarDetectionProgress>().SetSpeedBasedInDistance(distance);
                         detectionBar.gameObject.SetActive(true);
                         Debug.Log("PLAYER SAW?"); 
                     }
-                }
-                else
-                {
-                    vertex = raycastHit2D.point;
-                }
+                }*/
+                //hit obstacle
+                vertex = raycastHit2D.point;
+                
             }
             vertices[vertexIndex] = vertex;
             if (i > 0)
@@ -116,8 +141,36 @@ public class FieldOfView : MonoBehaviour
         mesh.uv = uv;
         mesh.triangles = triangles;
     }
-    
 
+    //Deprecated
+    /*private void FindTargetPlayer()
+    {
+        if (Vector3.Distance(enemyGameObject.transform.position, playerGameObject.transform.position) < viewDistance)
+        {
+            //Player inside vision
+            Vector2 dirToPlayer = (playerGameObject.transform.position - enemyGameObject.transform.position).normalized;
+            Debug.Log("DIR TO PLAYER: " + dirToPlayer);
+          
+            Vector3 angleVector3 = GetVectorFromAngle(currentAngle);
+            Vector2 angle = new Vector2(angleVector3.x, angleVector3.y);
+            Debug.Log("CCTV: " + angle);
+            Debug.Log("ANGLE: "  + Vector2.Angle(angle, dirToPlayer));
+            if (Vector2.Angle(angle, dirToPlayer) < fov)
+            {
+                //DETECTION
+               RaycastHit2D raycastHit2D = Physics2D.Raycast(enemyGameObject.transform.position,
+                   dirToPlayer);
+                Debug.DrawRay(enemyGameObject.transform.position, dirToPlayer);
+               if (raycastHit2D.collider != null)
+               {
+                   if (raycastHit2D.collider.gameObject.CompareTag("Player"))
+                   {
+                       
+                   }
+               }
+            }
+        }
+    }*/
 
     private static Vector3 GetVectorFromAngle(float angle)
     {
@@ -143,16 +196,16 @@ public class FieldOfView : MonoBehaviour
 
     public void SetAimDirection(Vector3 aimDirection)
     {
-        startingAngle = GetAngleFromVectorFloat(aimDirection) - fov / 2f; 
+        currentAngle = GetAngleFromVectorFloat(aimDirection) - fov / 2f; 
     }
 
     public void SetAngle(float angle)
     {
-        startingAngle = angle;
+        currentAngle = angle;
     }
 
     public float GetAngle()
     {
-        return startingAngle;
+        return currentAngle;
     }
 }

@@ -14,7 +14,7 @@ public class BarDetectionProgress : MonoBehaviour
     private Image _image;
     private float speedBasedInDistance = 1f;
     private bool isDetecting = false;
-    private bool playerDetected = false;
+    [SerializeField] private bool playerDetected = false;
     [SerializeField] private float detectionIncreaseFactor;
     [SerializeField] private float detectionDecreaseFactor;
     
@@ -51,11 +51,12 @@ public class BarDetectionProgress : MonoBehaviour
             }
             else
             {
+                Debug.Log("DETECTED");
                 _image.fillAmount = 1;
                 playerDetected = true;
-                onPlayerDetected?.Invoke(this, EventArgs.Empty);
                 iconImage.sprite = detectedSprite;
                 _image.enabled = false;
+                isDetecting = false;
             }
         }
         else
@@ -75,6 +76,16 @@ public class BarDetectionProgress : MonoBehaviour
             }
         } 
     }
+
+    public void ForgetPlayer()
+    {
+        isDetecting = false;
+        _image.fillAmount = 0;
+        playerDetected = false;
+        iconImage.sprite = questionSprite;
+        _image.enabled = true;
+    }
+    
     private void OnEnable()
     {
        // this._animator.speed = speedBasedInDistance;
@@ -101,5 +112,10 @@ public class BarDetectionProgress : MonoBehaviour
     {
         float pctDistance = distance / 2.20f;
         speedBasedInDistance = Mathf.Lerp(pctDistance, 10, 100);
+    }
+
+    public bool GetIfPlayerIsDetected()
+    {
+        return playerDetected;
     }
 }
