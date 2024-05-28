@@ -11,7 +11,7 @@ public class FieldOfView : MonoBehaviour
     [SerializeField] float viewDistance;
     [SerializeField] private Vector3 origin = Vector3.zero;
     [SerializeField] private GameObject _enemyGameObject;
-    private float startingAngle; 
+    [SerializeField] private float startingAngle; 
     private Mesh mesh;
     [Header("Detection bar properties")] 
     [SerializeField] private BarDetectionProgress detectionBar;
@@ -24,7 +24,7 @@ public class FieldOfView : MonoBehaviour
         mesh = new Mesh();
         raycastHitsList = new List<RaycastHit2D>();
         GetComponent<MeshFilter>().mesh = mesh;
-        SetOrigin(_enemyGameObject.transform.localPosition);
+       //SetOrigin(_enemyGameObject.transform.localPosition);
     }
 
     // Update is called once per frame
@@ -58,7 +58,7 @@ public class FieldOfView : MonoBehaviour
     private void UpdateFieldOfViewMesh()
     {
         raycastHitsList.Clear();
-        angle = 0f; 
+        angle = startingAngle; 
         float angleIncrease = fov / rayCount;
         
         Vector3[] vertices = new Vector3[rayCount + 1 + 1];
@@ -136,7 +136,7 @@ public class FieldOfView : MonoBehaviour
         return n;
     }
 
-    private void SetOrigin(Vector3 origin)
+    public void SetOrigin(Vector3 origin)
     {
         this.origin = origin;
     }
@@ -144,5 +144,15 @@ public class FieldOfView : MonoBehaviour
     public void SetAimDirection(Vector3 aimDirection)
     {
         startingAngle = GetAngleFromVectorFloat(aimDirection) - fov / 2f; 
+    }
+
+    public void SetAngle(float angle)
+    {
+        startingAngle = angle;
+    }
+
+    public float GetAngle()
+    {
+        return startingAngle;
     }
 }
