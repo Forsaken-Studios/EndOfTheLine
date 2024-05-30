@@ -3,104 +3,110 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExtractionManager : MonoBehaviour
+namespace Extraction
 {
-    public static ExtractionManager Instance;
-    [Tooltip("GameObject with the text to make the animation")]
-    [SerializeField] private GameObject extractionGameObject;
-    [SerializeField] private GameObject extractionArriveGameObject;
-    private Animator extractionAnimator;
-    private bool playerInExtractionPoint = false;
-
-    private bool extractionArrived = false;
-    
-    private void Awake()
+    public class ExtractionManager : MonoBehaviour
     {
-        if (Instance != null)
+        public static ExtractionManager Instance;
+
+        [Tooltip("GameObject with the text to make the animation")] [SerializeField]
+        private GameObject extractionGameObject;
+
+        [SerializeField] private GameObject extractionArriveGameObject;
+        private Animator extractionAnimator;
+        private bool playerInExtractionPoint = false;
+
+        private bool extractionArrived = false;
+
+        private void Awake()
         {
-            Debug.Log("[ExtractionManager] :: There is already a extractionManager");
-            Destroy(this);
-        }
-        Instance = this;
-    }
-    
-    void Start()
-    {
-        extractionAnimator = extractionGameObject.GetComponent<Animator>();
-    }
-
-    private void Update()
-    {
-        //TODO: Depende de si queremos movernos con el inventario abierto o no, deberíamos de poner onGame o != de pause
-        if (Input.GetKeyDown(KeyCode.Z) && GameManager.Instance.GameState == GameState.OnGame)
-        {
-            //START COUNTDOWN FOR TRAIN TO ARRIVE
-            StartExtractionArriveCountdown();
-        }
-    }
-
-    public void StartExtractionArriveCountdown()
-    {
-        extractionArriveGameObject.SetActive(true);
-    }
-    
-
-    public void StartExtraction()
-    {
-        if (extractionArrived)
-        {
-            SetPlayerInExtractionPoint(true);
-            extractionGameObject.SetActive(true);
-        }
-    }
-
-    public void StopExtraction()
-    {
-        try
-        {    
-            if (extractionArrived)
+            if (Instance != null)
             {
-                extractionGameObject.SetActive(false);
-                playerInExtractionPoint = false;
+                Debug.Log("[ExtractionManager] :: There is already a extractionManager");
+                Destroy(this);
+            }
+
+            Instance = this;
+        }
+
+        void Start()
+        {
+            extractionAnimator = extractionGameObject.GetComponent<Animator>();
+        }
+
+        private void Update()
+        {
+            //TODO: Depende de si queremos movernos con el inventario abierto o no, deberíamos de poner onGame o != de pause
+            if (Input.GetKeyDown(KeyCode.Z) && GameManager.Instance.GameState == GameState.OnGame)
+            {
+                //START COUNTDOWN FOR TRAIN TO ARRIVE
+                StartExtractionArriveCountdown();
             }
         }
-        catch (Exception e)
+
+        public void StartExtractionArriveCountdown()
         {
-            
+            extractionArriveGameObject.SetActive(true);
         }
-    }
 
 
-    public void StopExtractionIfExtractionLeft()
-    {
-        if (playerInExtractionPoint)
+        public void StartExtraction()
         {
-            this.StopExtraction();
+            if (extractionArrived)
+            {
+                SetPlayerInExtractionPoint(true);
+                extractionGameObject.SetActive(true);
+            }
         }
-    }
 
-    public bool GetIfPlayerIsInExtractionPoint()
-    {
-        return playerInExtractionPoint;
-    }
+        public void StopExtraction()
+        {
+            try
+            {
+                if (extractionArrived)
+                {
+                    extractionGameObject.SetActive(false);
+                    playerInExtractionPoint = false;
+                }
+            }
+            catch (Exception e)
+            {
 
-    public void SetPlayerInExtractionPoint(bool aux)
-    {
-        this.playerInExtractionPoint = aux;
-    }
+            }
+        }
 
-    public bool GetIfExtractionArrived()
-    {
-        return extractionArrived;
-    }
 
-    public void SetIfExtractionArrived(bool aux)
-    {
-        this.extractionArrived = aux;
-    }
+        public void StopExtractionIfExtractionLeft()
+        {
+            if (playerInExtractionPoint)
+            {
+                this.StopExtraction();
+            }
+        }
 
-    public void ActivateExtractionTimeLeft()
-    {
-        
+        public bool GetIfPlayerIsInExtractionPoint()
+        {
+            return playerInExtractionPoint;
+        }
+
+        public void SetPlayerInExtractionPoint(bool aux)
+        {
+            this.playerInExtractionPoint = aux;
+        }
+
+        public bool GetIfExtractionArrived()
+        {
+            return extractionArrived;
+        }
+
+        public void SetIfExtractionArrived(bool aux)
+        {
+            this.extractionArrived = aux;
+        }
+
+        public void ActivateExtractionTimeLeft()
+        {
+
+        }
     }
 }

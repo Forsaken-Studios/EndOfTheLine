@@ -1,14 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FieldOfView;
 using UnityEngine;
-
+using FieldOfView;
 public class Enemy : MonoBehaviour
 {
-   
-    
     [SerializeField] private float rotationSpeed = 5f;
-    [SerializeField] private FieldOfView enemyFOV;
+    [SerializeField] private FieldOfView.FieldOfView enemyFOV;
     [SerializeField] private BarDetectionProgress detectionBar;
     [SerializeField] private float timeBeforeForgettingPlayer = 3f;
     [SerializeField] private bool enemyIsForgetting = false;
@@ -26,12 +25,11 @@ public class Enemy : MonoBehaviour
         enemyFOV.SetOrigin(this.gameObject.transform.position);
     }
 
-    private void OnPlayerDetected(object sender, EventArgs e)
-    {
-        PlayerDetected = true;
-        
-    }
-
+    /// <summary>
+    /// When enemy stop seeing the player, we activate the timer for him to forget the player
+    /// We are checking in other methods if player is being detected again. 
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator StartCountdownToForgetPlayer()
     {
         while (true)
@@ -39,7 +37,6 @@ public class Enemy : MonoBehaviour
             enemyIsForgetting = true;
             yield return new WaitForSeconds(timeBeforeForgettingPlayer);
             //Forget player
-            Debug.Log("FORGET PLAYER");
             enemyIsForgetting = false;
             detectionBar.ForgetPlayer();
             StopAllCoroutines();
@@ -48,14 +45,17 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// I don't know why StopCoroutine by name is not working
+    /// </summary>
     public void StopEnemyActionOfForgettingPlayer()
     {
         this.enemyIsForgetting = false;
         StopAllCoroutines();
         //StopCoroutine(nameof(StartCountdownToForgetPlayer));
     }
-
-
+    
+    
     public void ActivateCountdownToForgetPlayer()
     {
         StartCoroutine(StartCountdownToForgetPlayer());
@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
         return enemyIsForgetting;
     }
     
-    public FieldOfView GetFOV()
+    public FieldOfView.FieldOfView GetFOV()
     {
         return enemyFOV;
     }

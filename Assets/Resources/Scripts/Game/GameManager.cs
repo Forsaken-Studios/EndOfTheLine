@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Extraction;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -52,12 +53,7 @@ public class GameManager : MonoBehaviour
             yield return null; 
         }
     }
-
-    void Update()
-    {
-        
-    }
-
+    
     public void ActivateExtractionZone()
     {
         extractionZoneImage.GetComponent<SpriteRenderer>().color = Color.green;
