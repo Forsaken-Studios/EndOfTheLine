@@ -1,57 +1,78 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class PlayerInventory : MonoBehaviour
+namespace Inventory
 {
-    public static PlayerInventory Instance;
 
-    [Tooltip("Variable to link with the script that help us to write on top of the character what item did he take")]
-    [SerializeField] private TakeItemText takeItemScript;
-    private Dictionary<Item, int> inventoryItemDictionary;
-    private int MAX_INVENTORY_SLOTS = 10;
-    private int MAX_STACK_PER_SLOT = 4; 
-    
-    
-    private void Awake()
+    public class PlayerInventory : MonoBehaviour
     {
-        if (Instance != null)
+        public static PlayerInventory Instance;
+
+        [SerializeField] private GameObject floatingTextPrefab;
+
+        [Tooltip(
+            "Variable to link with the script that help us to write on top of the character what item did he take")]
+        [SerializeField]
+        private TakeItemText takeItemScript;
+
+        private Dictionary<Item, int> inventoryItemDictionary;
+        private int MAX_INVENTORY_SLOTS = 10;
+        private int MAX_STACK_PER_SLOT = 4;
+
+
+        private void Awake()
         {
-            Debug.LogWarning("[PlayerInventory.cs] : There is already a PlayerInventory Instance");
-            Destroy(this);
-        }
-        Instance = this;
-    }
+            if (Instance != null)
+            {
+                Debug.LogWarning("[PlayerInventory.cs] : There is already a PlayerInventory Instance");
+                Destroy(this);
+            }
 
-    void Start()
-    {
-        inventoryItemDictionary = new Dictionary<Item, int>();
-    }
-
-   
-    void Update()
-    {
-        
-    }
-
-    public void AddItem(Item item, int amount)
-    {
-        if (inventoryItemDictionary.ContainsKey(item))
-        {
-            inventoryItemDictionary[item] += amount;
-        }
-        else
-        {
-            inventoryItemDictionary.Add(item, amount);
+            Instance = this;
         }
 
-        takeItemScript.NewItemAddedToInventory(item, amount);
-        InventoryManager.Instance.AddInventoryToItemSlot(item, amount);
-        
-    }
+        void Start()
+        {
+            inventoryItemDictionary = new Dictionary<Item, int>();
+        }
 
-    public Dictionary<Item, int> GetInventoryItems()
-    {
-        return inventoryItemDictionary;
+
+        void Update()
+        {
+
+        }
+
+        public void AddItem(Item item, int amount)
+        {
+            if (inventoryItemDictionary.ContainsKey(item))
+            {
+                inventoryItemDictionary[item] += amount;
+            }
+            else
+            {
+                inventoryItemDictionary.Add(item, amount);
+            }
+
+            ShowItemTaken(item.itemName, amount);
+            InventoryManager.Instance.AddInventoryToItemSlot(item, amount);
+        }
+
+        private void ShowItemTaken(string name, int amount)
+        {
+            if (floatingTextPrefab)
+            {
+                GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity,
+                    this.transform);
+
+                prefab.GetComponentInChildren<TextMeshProUGUI>().text = "x" + amount + " " + name;
+            }
+        }
+
+        public Dictionary<Item, int> GetInventoryItems()
+        {
+            return inventoryItemDictionary;
+        }
     }
 }

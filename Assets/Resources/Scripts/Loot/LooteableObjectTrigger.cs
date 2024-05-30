@@ -3,28 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LooteableObjectTrigger : MonoBehaviour
+namespace Loot
 {
-    private LooteableObject looteableObject;
-    
-    private void Start()
-    {
-        looteableObject = this.gameObject.GetComponent<LooteableObject>();
-    }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public class LooteableObjectTrigger : MonoBehaviour
     {
-        if (other.CompareTag("Player"))
+        private LooteableObject looteableObject;
+
+        private void Start()
         {
-            looteableObject.ActivateKeyHotkeyImage();
+            looteableObject = this.gameObject.GetComponent<LooteableObject>();
         }
-    }
 
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
+        private void OnTriggerEnter2D(Collider2D other)
         {
-            looteableObject.DesactivateKeyHotkeyImage();
+            if (other.CompareTag("Player"))
+            {
+                looteableObject.ActivateKeyHotkeyImage();
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                looteableObject.DesactivateKeyHotkeyImage();
+            }
         }
     }
 }

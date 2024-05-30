@@ -5,9 +5,12 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// DEPRECATED - NOT USING
+/// </summary>
 public class TakeItemText : MonoBehaviour
 {
-
+    [SerializeField] private GameObject floatingTextPrefab;
     [SerializeField] private TextMeshProUGUI newItemText;
     private bool alreadyShowingText = false;
     private Dictionary<Item, int> itemsInQueue; //TESTING 
@@ -40,6 +43,7 @@ public class TakeItemText : MonoBehaviour
         {
             newItemText.text = "x" + amount + " "+ item.itemName.ToString();
             yield return new WaitForSeconds(1f);
+            newItemText.text = "";
             this.newItemText.gameObject.SetActive(false);
             alreadyShowingText = false;
             StopAllCoroutines();

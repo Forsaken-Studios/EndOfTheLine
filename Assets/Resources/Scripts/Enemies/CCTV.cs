@@ -6,7 +6,7 @@ using UnityEngine;
 public class CCTV : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed = 5f;
-    private FieldOfView cctvFOV; 
+    private FieldOfView.FieldOfView cctvFOV; 
     
     [SerializeField] private float MAX_ANGLE = 180;
     [SerializeField] private float MIN_ANGLE = 120;
@@ -17,6 +17,10 @@ public class CCTV : MonoBehaviour
         cctvFOV = GetComponent<Enemy>().GetFOV();
     }
 
+    /// <summary>
+    /// Movement from camera system
+    /// We need to set MAX_ANGLE and MIN_ANGLE
+    /// </summary>
     private void Update()
     {
         if (increasing)
@@ -35,10 +39,6 @@ public class CCTV : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Vector3(1,0,1) es 0 
-    /// </summary>
-    /// <returns></returns>
     
     
     
