@@ -17,10 +17,13 @@ namespace Loot
 
         [SerializeField] private GameObject hotkeyImage;
         private Dictionary<Item, int> itemsInLootableObject;
+        private LooteableObjectUI looteableObjectUI;
         [SerializeField] private bool onlyOneItemInBag;
         private bool _isLooteable = false;
         private bool isLooting = false;
 
+        
+        
         public bool IsLooteable
         {
             get { return _isLooteable; }
@@ -30,16 +33,18 @@ namespace Loot
         private void Start()
         {
             itemsInLootableObject = new Dictionary<Item, int>();
+            looteableObjectUI = GetComponent<LooteableObjectUI>();
             PrepareLoot();
         }
 
         private void PrepareLoot()
         {
+            //TODO: AQUI SE ELIGE QUE TIPO DE LOOT PODRIAMOS PONER (AHORA ES TODOS LOS ITEMS)
             Object[] allItems = UnityEngine.Resources.LoadAll("Items");
             List<Object> allItemsList = allItems.ToList();
             int itemsToLoot = 1;
             if (!onlyOneItemInBag)
-                itemsToLoot = Random.Range(2, allItemsList.Count);
+                itemsToLoot = Random.Range(2, 3);
             for (int i = 0; i < itemsToLoot; i++)
             {
                 int randomItemIndex = Random.Range(0, allItemsList.Count);
@@ -58,14 +63,19 @@ namespace Loot
                 if (Input.GetKeyDown(KeyCode.F))
                 {
                     //Loot
+
                     foreach (var item in itemsInLootableObject)
                     {
-                        PlayerInventory.Instance.AddItem(item.Key as Item, item.Value);
+                        looteableObjectUI.ActivateLooteablePanel();
+                        //PlayerInventory.Instance.TryAddItem(item.Key as Item, item.Value);
                     }
+                    
+                    //InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
+                    //TODO: Ahora mismo, esto no funciona, pero si looteamos por raton, esto no haría falta, hay que hacerlo de la otra forma.
+                        //Destroy(this.gameObject);
+                        //_isLooteable = false;
+                    
 
-                    InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
-                    Destroy(this.gameObject);
-                    _isLooteable = false;
                 }
             }
         }

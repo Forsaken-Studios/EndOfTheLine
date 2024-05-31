@@ -62,7 +62,12 @@ namespace Inventory
             }
         }
 
-        public void AddInventoryToItemSlot(Item item, int amount)
+        public void CheckIfThereIsSlotAvailable()
+        {
+            
+        }
+
+        public bool TryAddInventoryToItemSlot(Item item, int amount)
         {
             int availableIndex = 0;
             foreach (var itemSlot in itemSlotList)
@@ -72,10 +77,9 @@ namespace Inventory
                     int totalAmount = itemSlot.amount + amount;
                     if (totalAmount <= MAX_AMOUNT_PER_SLOT)
                     {
-                        //TODO: Hacer que si cabe al menos uno de los elementos, meterlo en ese slot
                         //ADD ELEMENT TO THIS SLOT
                         itemSlot.AddMoreItemsToSameSlot(amount);
-                        return;
+                        return true;
                     }
                     else
                     {
@@ -87,20 +91,33 @@ namespace Inventory
                             itemSlot.AddMoreItemsToSameSlot(amountToFill);
                             if (amountRemaining > 0)
                             {
+                                
                                 availableIndex = GetFirstIndexSlotAvailable();
-                                itemSlotList[availableIndex]
-                                    .SetItemSlotProperties(item.itemIcon, amountRemaining, item.itemID);
+                                if (availableIndex != -1)
+                                {
+                                    itemSlotList[availableIndex]
+                                        .SetItemSlotProperties(item.itemIcon, amountRemaining, item.itemID); 
+                                }
                             }
-
-                            return;
+                            return true;
                         }
                     }
                 }
             }
-
             //WE CREATE A NEW SLOT, IF AVAILABLE (NEED TO CHECK)
             availableIndex = GetFirstIndexSlotAvailable();
-            itemSlotList[availableIndex].SetItemSlotProperties(item.itemIcon, amount, item.itemID);
+
+            if (availableIndex != -1)
+            {
+                Debug.Log(availableIndex);
+                itemSlotList[availableIndex].SetItemSlotProperties(item.itemIcon, amount, item.itemID);
+                return true; 
+            }
+            else
+            {
+                return false;
+            }
+        
         }
 
         private int GetFirstIndexSlotAvailable()

@@ -44,19 +44,25 @@ namespace Inventory
 
         }
 
-        public void AddItem(Item item, int amount)
+        public bool TryAddItem(Item item, int amount)
         {
-            if (inventoryItemDictionary.ContainsKey(item))
+            if (InventoryManager.Instance.TryAddInventoryToItemSlot(item, amount))
             {
-                inventoryItemDictionary[item] += amount;
+                if (inventoryItemDictionary.ContainsKey(item))
+                {
+                    inventoryItemDictionary[item] += amount;
+                }
+                else
+                {
+                    inventoryItemDictionary.Add(item, amount);
+                }
+                ShowItemTaken(item.itemName, amount);
+                return true; 
             }
             else
             {
-                inventoryItemDictionary.Add(item, amount);
+                return false;
             }
-
-            ShowItemTaken(item.itemName, amount);
-            InventoryManager.Instance.AddInventoryToItemSlot(item, amount);
         }
 
         private void ShowItemTaken(string name, int amount)
