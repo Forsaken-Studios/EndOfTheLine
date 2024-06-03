@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Utils.CustomLogs;
 
 namespace FieldOfView
 {
@@ -56,7 +57,7 @@ namespace FieldOfView
                 {
                     if (detectionBar.gameObject.activeSelf)
                     {
-                        Debug.Log("CHECK");
+                        LogManager.Log("CHECK", FeatureType.FieldOfView);
                         detectionBar.SetIfPlayerIsBeingDetected(false);
                     }
 
