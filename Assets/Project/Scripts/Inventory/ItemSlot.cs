@@ -45,7 +45,8 @@ namespace Inventory
         /// <param name="itemID"></param>
         public void SetItemSlotProperties(Sprite itemImage, int itemSlotAmount, int itemID)
         {
-            this.itemSlotImage.sprite = itemImage;
+            if(itemImage != null)
+                this.itemSlotImage.sprite = itemImage;
             this.itemID = itemID;
             this.itemSlotAmountText.text = "x" + itemSlotAmount.ToString();
             this.amount = itemSlotAmount;

@@ -44,7 +44,8 @@ namespace Loot
             List<Object> allItemsList = allItems.ToList();
             int itemsToLoot = 1;
             if (!onlyOneItemInBag)
-                itemsToLoot = Random.Range(2, 3);
+                itemsToLoot = Random.Range(2, looteableObjectUI.GetMaxSlotsInCrate());
+                //itemsToLoot = Random.Range(2, 3); NO PANEL
             for (int i = 0; i < itemsToLoot; i++)
             {
                 int randomItemIndex = Random.Range(0, allItemsList.Count);
@@ -52,6 +53,8 @@ namespace Loot
                 Item itemSO = allItemsList[randomItemIndex] as Item;
                 //Debug.Log("ITEM IN LOOTABLE OBJECT: " + itemSO.name + " -> x" + randomQuantity);
                 itemsInLootableObject.Add(itemSO, randomQuantity);
+                //WE MODIFIE THE UI
+                looteableObjectUI.AddItemToCrate(itemSO, randomQuantity);
                 allItemsList.RemoveAt(randomItemIndex);
             }
         }
@@ -63,10 +66,17 @@ namespace Loot
                 if (Input.GetKeyDown(KeyCode.F))
                 {
                     //Loot
-
-                    foreach (var item in itemsInLootableObject)
+                    if (looteableObjectUI.GetIfCrateIsOpened())
+                    {
+                        looteableObjectUI.DesactivateLooteablePanel(); 
+                    }
+                    else
                     {
                         looteableObjectUI.ActivateLooteablePanel();
+                    }
+                   
+                   /* foreach (var item in itemsInLootableObject)
+                    {
                         //PlayerInventory.Instance.TryAddItem(item.Key as Item, item.Value);
                     }
                     
@@ -75,7 +85,7 @@ namespace Loot
                         //Destroy(this.gameObject);
                         //_isLooteable = false;
                     
-
+                    */
                 }
             }
         }
