@@ -12,12 +12,13 @@ namespace Inventory
 
         public static InventoryManager Instance;
 
+        [Header("Inventory Panels")]
         [SerializeField] private GameObject inventoryHUD;
         [SerializeField] private GameObject inventoryHUDPanel;
         [SerializeField] private TextMeshProUGUI inventoryText;
         [SerializeField] private List<ItemSlot> itemSlotList;
-
         [SerializeField] private int nextIndexSlotAvailable = 0;
+        
         private int MAX_AMOUNT_PER_SLOT = 4;
 
         private void Awake()
@@ -47,12 +48,35 @@ namespace Inventory
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                inventoryHUD.SetActive(!inventoryHUD.activeSelf);
-                inventoryHUDPanel.SetActive(!inventoryHUDPanel.activeSelf);
-
+                ReverseInventoryStatus();
+                if(LootUIManager.Instance.GetIfCrateIsOpened())
+                    LootUIManager.Instance.DesactivateLootUIPanel();
             }
         }
 
+        /// <summary>
+        /// If inventory is opened, we close it, if it is the other way, we open it
+        /// </summary>
+        public void ReverseInventoryStatus()
+        {
+            inventoryHUD.SetActive(!inventoryHUD.activeSelf);
+            inventoryHUDPanel.SetActive(!inventoryHUDPanel.activeSelf);
+        }
+
+        public void ActivateInventory()
+        {
+            GameManager.Instance.GameState = GameState.OnInventory;
+            inventoryHUD.SetActive(true);
+            inventoryHUDPanel.SetActive(true);
+        }
+
+        public void DesactivateInventory()
+        {
+            GameManager.Instance.GameState = GameState.OnGame;
+            inventoryHUD.SetActive(false);
+            inventoryHUDPanel.SetActive(false);
+        }
+        
         public void ChangeText(Dictionary<Item, int> inventoryItems)
         {
             inventoryText.text = "";
@@ -96,7 +120,7 @@ namespace Inventory
                                 if (availableIndex != -1)
                                 {
                                     itemSlotList[availableIndex]
-                                        .SetItemSlotProperties(item.itemIcon, amountRemaining, item.itemID); 
+                                        .SetItemSlotProperties(item, amountRemaining); 
                                 }
                             }
                             return true;
@@ -110,7 +134,7 @@ namespace Inventory
             if (availableIndex != -1)
             {
                 Debug.Log(availableIndex);
-                itemSlotList[availableIndex].SetItemSlotProperties(item.itemIcon, amount, item.itemID);
+                itemSlotList[availableIndex].SetItemSlotProperties(item, amount);
                 return true; 
             }
             else
@@ -129,7 +153,6 @@ namespace Inventory
                     return i;
                 }
             }
-
             return -1;
         }
     }

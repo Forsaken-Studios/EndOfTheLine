@@ -54,7 +54,7 @@ namespace Loot
                 //Debug.Log("ITEM IN LOOTABLE OBJECT: " + itemSO.name + " -> x" + randomQuantity);
                 itemsInLootableObject.Add(itemSO, randomQuantity);
                 //WE MODIFIE THE UI
-                looteableObjectUI.AddItemToCrate(itemSO, randomQuantity);
+                //looteableObjectUI.AddItemToCrate(itemSO, randomQuantity);
                 allItemsList.RemoveAt(randomItemIndex);
             }
         }
@@ -66,14 +66,21 @@ namespace Loot
                 if (Input.GetKeyDown(KeyCode.F))
                 {
                     //Loot
-                    if (looteableObjectUI.GetIfCrateIsOpened())
+                    if (LootUIManager.Instance.GetIfCrateIsOpened())
                     {
-                        looteableObjectUI.DesactivateLooteablePanel(); 
+                        LootUIManager.Instance.DesactivateLootUIPanel();
+                        InventoryManager.Instance.DesactivateInventory();
+                        //looteableObjectUI.DesactivateLooteablePanel(); 
                     }
                     else
                     {
-                        looteableObjectUI.ActivateLooteablePanel();
+                        //We load objects to this panel
+                        LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
+                        InventoryManager.Instance.ActivateInventory();
+                        //looteableObjectUI.ActivateLooteablePanel();
                     }
+          
+                    
                    
                    /* foreach (var item in itemsInLootableObject)
                     {

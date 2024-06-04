@@ -42,7 +42,7 @@ namespace Player
                 }
             
                 HandleMovementInputs();
-                HandleDashInputs();
+               
             }
             else
             {
@@ -64,9 +64,12 @@ namespace Player
         {
             speedX = Input.GetAxisRaw("Horizontal");
             speedY = Input.GetAxisRaw("Vertical");
-            
-            if(speedX != 0 || speedY != 0)
+
+            if (speedX != 0 || speedY != 0)
+            {
+                HandleDashInputs();
                 _animator.SetBool("running", true);
+            }
             else
                 _animator.SetBool("running", false);
             
