@@ -1,1 +1,0 @@
-public enum GameState { Undefined, OnMenu, OnGame, OnPause, OnInventory }
