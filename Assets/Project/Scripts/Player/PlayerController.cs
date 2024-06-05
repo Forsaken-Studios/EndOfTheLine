@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils.CustomLogs;
 
 namespace Player
 {
@@ -33,6 +34,8 @@ namespace Player
 
         private void Update()
         {
+            
+            LogManager.Log("GAME STATUS: " + GameManager.Instance.GameState.ToString(), FeatureType.General);
             if (GameManager.Instance.GameState == GameState.OnGame && playerCanMove)
             {
                 if (isDashing)
@@ -40,12 +43,14 @@ namespace Player
                     PlayerStamina.Instance.SetCanRecoveryEnergy(false);
                     return;
                 }
-            
                 HandleMovementInputs();
-                HandleDashInputs();
             }
             else
             {
+                if (GameManager.Instance.GameState == GameState.OnInventory)
+                {
+                    _animator.SetBool("running", false);
+                }
                 speedX = 0;
                 speedY = 0; 
             }
@@ -64,9 +69,12 @@ namespace Player
         {
             speedX = Input.GetAxisRaw("Horizontal");
             speedY = Input.GetAxisRaw("Vertical");
-            
-            if(speedX != 0 || speedY != 0)
+
+            if (speedX != 0 || speedY != 0)
+            {
+                HandleDashInputs();
                 _animator.SetBool("running", true);
+            }
             else
                 _animator.SetBool("running", false);
             

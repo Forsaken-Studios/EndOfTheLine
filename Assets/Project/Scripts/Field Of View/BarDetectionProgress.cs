@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils.CustomLogs;
 
 namespace FieldOfView
 {
@@ -55,7 +56,7 @@ namespace FieldOfView
                 }
                 else
                 {
-                    Debug.Log("DETECTED");
+                    LogManager.Log("DETECTED", FeatureType.FieldOfView);
                     _image.fillAmount = 1;
                     playerDetected = true;
                     iconImage.sprite = detectedSprite;

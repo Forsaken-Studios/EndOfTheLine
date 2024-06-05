@@ -12,11 +12,13 @@ namespace Inventory
 
     public class ItemSlot : MonoBehaviour, IDropHandler
     {
-        [SerializeField] private Sprite emptySprite;
+        
+        [SerializeField] private bool comeFromLootCrate = false;
+        private Sprite emptySprite;
         [SerializeField] private Image itemSlotImage;
         private TextMeshProUGUI itemSlotAmountText;
         private int ItemID;
-
+        private Item itemInSlot;
         public int itemID
         {
             get { return ItemID; }
@@ -35,6 +37,8 @@ namespace Inventory
         {
             this.itemSlotAmountText = this.GetComponentInChildren<TextMeshProUGUI>(includeInactive: true);
             this.itemSlotAmountText.text = "";
+             emptySprite = (Sprite) UnityEngine.Resources.Load<Sprite>("Sprites/EmptySprite");
+            Debug.Log(emptySprite);
         }
 
         /// <summary>
@@ -43,14 +47,28 @@ namespace Inventory
         /// <param name="itemImage"></param>
         /// <param name="itemSlotAmount"></param>
         /// <param name="itemID"></param>
-        public void SetItemSlotProperties(Sprite itemImage, int itemSlotAmount, int itemID)
+        public void SetItemSlotProperties(Item item, int itemSlotAmount)
         {
-            this.itemSlotImage.sprite = itemImage;
-            this.itemID = itemID;
+            this.itemInSlot = item;
+            this.itemSlotImage.sprite = item.itemIcon;
+            this.itemID = item.itemID;
             this.itemSlotAmountText.text = "x" + itemSlotAmount.ToString();
             this.amount = itemSlotAmount;
         }
 
+        /// <summary>
+        /// Clear Item Slot properties
+        /// </summary>
+        public void ClearItemSlot()
+        {
+            Debug.Log(emptySprite);
+            this.itemInSlot = null;
+            this.itemSlotImage.sprite = emptySprite;
+            this.itemID = 0;
+            this.itemSlotAmountText.text = "";
+            this.amount = 0; 
+        }
+        
         /// <summary>
         /// Add items to a used slot.
         /// </summary>
@@ -61,16 +79,6 @@ namespace Inventory
             this.itemSlotAmountText.text = "x" + this.amount;
         }
 
-        /// <summary>
-        /// Clear Item Slot properties
-        /// </summary>
-        public void ClearItemSlot()
-        {
-            this.itemSlotImage.sprite = emptySprite;
-            this.itemSlotAmountText.text = "";
-            this.itemID = -1;
-            this.amount = 0;
-        }
 
         /// <summary>
         /// Method to change itemSlotImage reference.
@@ -93,6 +101,7 @@ namespace Inventory
 
             GameObject dropped = eventData.pointerDrag;
             DraggableItem draggableItem = dropped.GetComponent<DraggableItem>();
+            //Check to do, to add more amount to an item
             if (this.itemID == 0)
             {
                 ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();
@@ -100,18 +109,38 @@ namespace Inventory
                 itemSlotBeforeDrop.ChangeImage(itemSlotImage.gameObject);
                 int auxAmount = itemSlotBeforeDrop.amount;
                 int auxID = itemSlotBeforeDrop.itemID;
+                Item auxItem = itemSlotBeforeDrop.GetItemInSlot();
+                itemSlotBeforeDrop.itemInSlot = null;
                 itemSlotBeforeDrop.amount = 0;
                 itemSlotBeforeDrop.itemID = 0;
                 itemSlotBeforeDrop.itemSlotAmountText.text = "";
                 //Ahora ponemos la que hemos movido aqui
-                itemSlotAmountText.text = "x" + auxAmount.ToString();
+                if (auxAmount == 0)
+                {
+                    itemSlotAmountText.text = "";
+                }
+                else
+                {
+                    itemSlotAmountText.text = "x" + auxAmount;
+                }
+               
                 itemSlotImage.gameObject.transform.position = draggableItem.parentBeforeDrag.position;
                 amount = auxAmount;
+                itemInSlot = auxItem;
                 itemID = auxID;
                 this.ChangeImage(draggableItem.GetComponent<Image>().gameObject);
                 draggableItem.parentAfterDrag = transform;
             }
+        }
 
+        public Item GetItemInSlot()
+        {
+            return itemInSlot;
+        }
+
+        public bool GetIfIsComingFromLootCrate()
+        {
+            return comeFromLootCrate;
         }
     }
 }
