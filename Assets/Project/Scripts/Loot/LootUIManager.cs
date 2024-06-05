@@ -42,7 +42,14 @@ public class LootUIManager : MonoBehaviour
     {
         if (lootUIPanel.activeSelf)
         {
-            if (Vector2.Distance(PlayerInventory.Instance.transform.position, currentCrateLooting.transform.position) >
+            //Check if we want to take all items pressing E Button
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                LootAllItemsInCrate();
+            }
+            
+            //Check if we need to disable it if we are to far away
+            if(Vector2.Distance(PlayerInventory.Instance.transform.position, currentCrateLooting.transform.position) >
                 distanceNeededToClosePanel)
             {
                 LogManager.Log( Vector2.Distance(PlayerInventory.Instance.transform.position, 
@@ -53,6 +60,13 @@ public class LootUIManager : MonoBehaviour
         }
     }
 
+    public void LootAllItemsInCrate()
+    {
+        currentCrateLooting.LootAllItems();
+        DesactivateLootUIPanel();
+        currentCrateLooting = null;
+    }
+    
     public void LoadItemsInSlots(Dictionary<Item, int> itemsInLootableObject)
     {
         foreach (var item in itemsInLootableObject)
@@ -99,12 +113,16 @@ public class LootUIManager : MonoBehaviour
         return getIfCrateIsOpened;
     }
 
+    public LooteableObject GetCurrentLootableObject()
+    {
+        return currentCrateLooting;
+    }
+
     public void SetCurrentCrateLooting(LooteableObject aux)
     {
         this.currentCrateLooting = aux;
     }
-
-
+    
     public void SetPropertiesAndLoadPanel(LooteableObject looteableObject, Dictionary<Item, int> itemsInLootableObject)
     {
         LootUIManager.Instance.UnloadItemsInSlots();

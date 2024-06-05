@@ -57,12 +57,28 @@ namespace Inventory
                     inventoryItemDictionary.Add(item, amount);
                 }
                 ShowItemTaken(item.itemName, amount);
+                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
                 return true; 
             }
             else
             {
                 return false;
             }
+        }
+
+        public bool TryAddingItemDragging(Item item, int amount)
+        {
+            if (inventoryItemDictionary.ContainsKey(item))
+            {
+                inventoryItemDictionary[item] += amount;
+            }
+            else
+            {
+                inventoryItemDictionary.Add(item, amount);
+            }
+            ShowItemTaken(item.itemName, amount);
+            InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+            return true; 
         }
 
         private void ShowItemTaken(string name, int amount)

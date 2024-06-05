@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Utils.CustomLogs;
 
 namespace Inventory
 {
@@ -61,11 +62,13 @@ namespace Inventory
         {
             inventoryHUD.SetActive(!inventoryHUD.activeSelf);
             inventoryHUDPanel.SetActive(!inventoryHUDPanel.activeSelf);
+            GameManager.Instance.GameState = inventoryHUD.activeSelf ? GameState.OnInventory: GameState.OnGame;
         }
 
         public void ActivateInventory()
         {
             GameManager.Instance.GameState = GameState.OnInventory;
+            LogManager.Log("GAME STATE CHANGED TO INVENTORY: " + GameManager.Instance.GameState, FeatureType.General);
             inventoryHUD.SetActive(true);
             inventoryHUDPanel.SetActive(true);
         }
@@ -141,7 +144,6 @@ namespace Inventory
             {
                 return false;
             }
-        
         }
 
         private int GetFirstIndexSlotAvailable()

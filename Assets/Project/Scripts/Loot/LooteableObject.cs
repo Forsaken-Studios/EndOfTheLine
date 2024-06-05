@@ -58,7 +58,6 @@ namespace Loot
                 allItemsList.RemoveAt(randomItemIndex);
             }
         }
-
         private void Update()
         {
             if (_isLooteable)
@@ -79,22 +78,29 @@ namespace Loot
                         InventoryManager.Instance.ActivateInventory();
                         //looteableObjectUI.ActivateLooteablePanel();
                     }
-          
-                    
-                   
-                   /* foreach (var item in itemsInLootableObject)
-                    {
-                        //PlayerInventory.Instance.TryAddItem(item.Key as Item, item.Value);
-                    }
-                    
-                    //InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
-                    //TODO: Ahora mismo, esto no funciona, pero si looteamos por raton, esto no haría falta, hay que hacerlo de la otra forma.
-                        //Destroy(this.gameObject);
-                        //_isLooteable = false;
-                    
-                    */
+                    //LootAllItems();
                 }
             }
+        }
+
+        public void LootAllItems()
+        {
+            foreach (var item in itemsInLootableObject)
+            {
+                PlayerInventory.Instance.TryAddItem(item.Key as Item, item.Value);
+            } 
+            
+            itemsInLootableObject.Clear();
+            InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
+            //Check if we need to destroy the bag, but actually we wont need to do it, because we will have crates in map 
+            // we don't want to destroy them
+            //Destroy(this.gameObject);
+            //_isLooteable = false;
+        }
+        
+        public void DeleteItemFromList(Item item)
+        {
+            itemsInLootableObject.Remove(item);
         }
 
         public void ActivateKeyHotkeyImage()
