@@ -94,9 +94,10 @@ namespace Inventory
             
         }
 
-        public bool TryAddInventoryToItemSlot(Item item, int amount)
+        public bool TryAddInventoryToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
         {
             int availableIndex = 0;
+            remainingItemsWithoutSpace = 0;
             foreach (var itemSlot in itemSlotList)
             {
                 if (itemSlot.itemID == item.itemID)
@@ -118,12 +119,15 @@ namespace Inventory
                             itemSlot.AddMoreItemsToSameSlot(amountToFill);
                             if (amountRemaining > 0)
                             {
-                                
                                 availableIndex = GetFirstIndexSlotAvailable();
                                 if (availableIndex != -1)
                                 {
                                     itemSlotList[availableIndex]
                                         .SetItemSlotProperties(item, amountRemaining); 
+                                }
+                                else
+                                {
+                                    remainingItemsWithoutSpace = amountRemaining;
                                 }
                             }
                             return true;
@@ -133,7 +137,6 @@ namespace Inventory
             }
             //WE CREATE A NEW SLOT, IF AVAILABLE (NEED TO CHECK)
             availableIndex = GetFirstIndexSlotAvailable();
-
             if (availableIndex != -1)
             {
                 Debug.Log(availableIndex);
@@ -142,6 +145,7 @@ namespace Inventory
             }
             else
             {
+                remainingItemsWithoutSpace = amount;
                 return false;
             }
         }

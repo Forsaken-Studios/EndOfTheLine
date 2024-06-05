@@ -52,7 +52,6 @@ namespace Inventory
             }
             else
             {
-                
                 //Remember we swap images, so the one that check if it is in the
                 //If it comes from loot crate
                 ItemSlot itemInCrate = parentBeforeDrag.GetComponentInParent<ItemSlot>();
@@ -62,12 +61,20 @@ namespace Inventory
                 if (itemInCrate.GetIfIsComingFromLootCrate() && !itemInInventory.GetIfIsComingFromLootCrate())
                 {
                     ItemSlot itemSlot = parentAfterDrag.GetComponent<ItemSlot>();
-                    LogManager.Log(itemSlot.GetItemInSlot().itemName.ToString(), FeatureType.Loot);
-                    LogManager.Log(itemSlot.amount.ToString(), FeatureType.Loot);
                     PlayerInventory.Instance.TryAddingItemDragging(itemSlot.GetItemInSlot(), itemSlot.amount);
-                    //We need to delete item from lootable object
                     LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemSlot.GetItemInSlot());
                     //Check if we need to destroy the bag, but actually we wont need to do it, because we will have crates, not bags
+                }
+                else
+                {
+                    if (!itemInCrate.GetIfIsComingFromLootCrate() && itemInInventory.GetIfIsComingFromLootCrate())
+                    {
+                        //Then we are moving from our inventory to crate
+                        ItemSlot itemSlot = parentAfterDrag.GetComponent<ItemSlot>();
+                        PlayerInventory.Instance.RemovingItemDragging(itemSlot.GetItemInSlot(), itemSlot.amount);
+                        LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemSlot.GetItemInSlot(), 
+                            itemSlot.amount);
+                    }
                 }
                 transform.SetParent(parentAfterDrag);
                 this.transform.position = parentAfterDrag.position; 

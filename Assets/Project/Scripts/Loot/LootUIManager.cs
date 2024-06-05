@@ -64,6 +64,7 @@ public class LootUIManager : MonoBehaviour
     {
         currentCrateLooting.LootAllItems();
         DesactivateLootUIPanel();
+        InventoryManager.Instance.DesactivateInventory();
         currentCrateLooting = null;
     }
     

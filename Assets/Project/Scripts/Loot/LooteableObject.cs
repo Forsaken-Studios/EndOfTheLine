@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = System.Object;
@@ -85,17 +86,34 @@ namespace Loot
 
         public void LootAllItems()
         {
+            Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
+   
             foreach (var item in itemsInLootableObject)
             {
-                PlayerInventory.Instance.TryAddItem(item.Key as Item, item.Value);
+                int remainingItems = 0;
+                if (!PlayerInventory.Instance.TryAddItem(item.Key as Item, item.Value, out remainingItems))
+                {
+                    //If we cant find a place, we add it to recover items
+                    //We will need to check if we take X amount of the stack
+                    recoverItems.Add(item.Key, remainingItems);
+                }
             } 
-            
+            //We cant clear, we need to check if we dont take an item because we dont have space in inventory
             itemsInLootableObject.Clear();
+            foreach (var items in recoverItems)
+            {
+                itemsInLootableObject.Add(items.Key, items.Value);
+            }
             InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
             //Check if we need to destroy the bag, but actually we wont need to do it, because we will have crates in map 
             // we don't want to destroy them
             //Destroy(this.gameObject);
             //_isLooteable = false;
+        }
+        
+        public void AddItemToList(Item item, int amount)
+        {
+            itemsInLootableObject.Add(item, amount);
         }
         
         public void DeleteItemFromList(Item item)
@@ -114,5 +132,7 @@ namespace Loot
             hotkeyImage.SetActive(false);
             _isLooteable = false;
         }
+
+
     }
 }
