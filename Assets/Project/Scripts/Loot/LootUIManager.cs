@@ -47,16 +47,19 @@ public class LootUIManager : MonoBehaviour
             {
                 LootAllItemsInCrate();
             }
-            
             //Check if we need to disable it if we are to far away
-            if(Vector2.Distance(PlayerInventory.Instance.transform.position, currentCrateLooting.transform.position) >
-                distanceNeededToClosePanel)
+            if (currentCrateLooting != null)
             {
-                LogManager.Log( Vector2.Distance(PlayerInventory.Instance.transform.position, 
-                    this.gameObject.transform.position).ToString(), FeatureType.Inventory);
-                DesactivateLootUIPanel();
-                InventoryManager.Instance.DesactivateInventory();
+                if(Vector2.Distance(PlayerInventory.Instance.transform.position, currentCrateLooting.transform.position) >
+                    distanceNeededToClosePanel)
+                {
+                    LogManager.Log( Vector2.Distance(PlayerInventory.Instance.transform.position, 
+                        this.gameObject.transform.position).ToString(), FeatureType.Inventory);
+                    DesactivateLootUIPanel();
+                    InventoryManager.Instance.DesactivateInventory();
+                }
             }
+
         }
     }
 

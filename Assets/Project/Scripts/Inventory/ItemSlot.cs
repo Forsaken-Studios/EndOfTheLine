@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.EventSystems;
+using Utils.CustomLogs;
 
 namespace Inventory
 {
@@ -104,33 +105,65 @@ namespace Inventory
             //Check to do, to add more amount to an item
             if (this.itemID == 0)
             {
-                ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();
-                //Cambiamos la imagen de la que estaba aqui, y la cantidad, y la mandamos al otro lado
-                itemSlotBeforeDrop.ChangeImage(itemSlotImage.gameObject);
-                int auxAmount = itemSlotBeforeDrop.amount;
-                int auxID = itemSlotBeforeDrop.itemID;
-                Item auxItem = itemSlotBeforeDrop.GetItemInSlot();
+                AddNewItemToInventory(draggableItem);
+            }else if (this.itemID == draggableItem.parentBeforeDrag.GetComponent<ItemSlot>().GetItemInSlot().itemID)
+            {
+                //Mismo id, por lo tanto podemos sumar
+                LogManager.Log("ADDING ITEM TO INVENTORY WITH SAME ID", FeatureType.Loot);
+                AddExistingItemToInventory(draggableItem);
+            }
+        }
+
+        private void AddExistingItemToInventory(DraggableItem draggableItem)
+        {
+            ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();
+            int auxAmount = itemSlotBeforeDrop.amount;
+            int remainingItems = 0;
+
+            if (InventoryManager.Instance.TryAddInventoryToItemSlot(itemSlotBeforeDrop.GetItemInSlot(), auxAmount,
+                    out remainingItems))
+            {
+                //We have size, we take all items of this type
                 itemSlotBeforeDrop.itemInSlot = null;
                 itemSlotBeforeDrop.amount = 0;
                 itemSlotBeforeDrop.itemID = 0;
                 itemSlotBeforeDrop.itemSlotAmountText.text = "";
-                //Ahora ponemos la que hemos movido aqui
-                if (auxAmount == 0)
-                {
-                    itemSlotAmountText.text = "";
-                }
-                else
-                {
-                    itemSlotAmountText.text = "x" + auxAmount;
-                }
-               
-                itemSlotImage.gameObject.transform.position = draggableItem.parentBeforeDrag.position;
-                amount = auxAmount;
-                itemInSlot = auxItem;
-                itemID = auxID;
-                this.ChangeImage(draggableItem.GetComponent<Image>().gameObject);
-                draggableItem.parentAfterDrag = transform;
+                itemSlotBeforeDrop.itemSlotImage.sprite = emptySprite;
+                draggableItem.parentAfterDrag = this.transform;
             }
+            else
+            {
+                //No size for all items, we need to let X items in crate
+            }
+        }
+
+        private void AddNewItemToInventory(DraggableItem draggableItem)
+        {
+            ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();
+            //Cambiamos la imagen de la que estaba aqui, y la cantidad, y la mandamos al otro lado
+            itemSlotBeforeDrop.ChangeImage(itemSlotImage.gameObject);
+            int auxAmount = itemSlotBeforeDrop.amount;
+            int auxID = itemSlotBeforeDrop.itemID;
+            Item auxItem = itemSlotBeforeDrop.GetItemInSlot();
+            itemSlotBeforeDrop.itemInSlot = null;
+            itemSlotBeforeDrop.amount = 0;
+            itemSlotBeforeDrop.itemID = 0;
+            itemSlotBeforeDrop.itemSlotAmountText.text = "";
+            //Ahora ponemos la que hemos movido aqui
+            if (auxAmount == 0)
+            {
+                itemSlotAmountText.text = "";
+            }
+            else
+            {
+                itemSlotAmountText.text = "x" + auxAmount;
+            }
+            itemSlotImage.gameObject.transform.position = draggableItem.parentBeforeDrag.position;
+            amount = auxAmount;
+            itemInSlot = auxItem;
+            itemID = auxID;
+            this.ChangeImage(draggableItem.GetComponent<Image>().gameObject);
+            draggableItem.parentAfterDrag = transform;
         }
 
         public Item GetItemInSlot()

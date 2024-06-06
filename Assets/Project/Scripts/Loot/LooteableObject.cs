@@ -6,6 +6,7 @@ using Inventory;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils.CustomLogs;
 using Object = System.Object;
 using Random = UnityEngine.Random;
 
@@ -118,6 +119,7 @@ namespace Loot
         
         public void DeleteItemFromList(Item item)
         {
+            LogManager.Log("ITEM DELETED" + item.ToString(), FeatureType.Loot);
             itemsInLootableObject.Remove(item);
         }
 
