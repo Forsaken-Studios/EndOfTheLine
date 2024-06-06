@@ -346,6 +346,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1417132208963953142, guid: d29996ca65805a6479b779894101554e, type: 3}
+      propertyPath: comeFromLootCrate
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3866138195922990228, guid: d29996ca65805a6479b779894101554e, type: 3}
       propertyPath: m_Name
       value: InventorySlot (2)
@@ -792,7 +796,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 2147171236}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &53423735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2266,7 +2270,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 856974555}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &218970410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3301,7 +3305,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 1107034302}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &437682022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4119,7 +4123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 1102399640}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &507908204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4464,7 +4468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 2098008738}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &516079760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5210,7 +5214,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 947106216}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &608267507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5385,7 +5389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 174627388}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &616485806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6099,7 +6103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 1471358384}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &662433197
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6507,7 +6511,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 420151819}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &708762064
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7017,7 +7021,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 2067609157}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &758284241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7911,7 +7915,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 1646879071}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &880219558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10134,7 +10138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 1799768053}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!1 &1114774735
 GameObject:
   m_ObjectHideFlags: 0
@@ -10355,6 +10359,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 514894100994788015, guid: d29996ca65805a6479b779894101554e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417132208963953142, guid: d29996ca65805a6479b779894101554e, type: 3}
+      propertyPath: comeFromLootCrate
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3866138195922990228, guid: d29996ca65805a6479b779894101554e, type: 3}
@@ -11840,7 +11848,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 1133412776}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &1288179695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12118,7 +12126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 310541593}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &1317498387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13293,7 +13301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 176580568}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &1426457166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14107,6 +14115,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 514894100994788015, guid: d29996ca65805a6479b779894101554e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1417132208963953142, guid: d29996ca65805a6479b779894101554e, type: 3}
+      propertyPath: comeFromLootCrate
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3866138195922990228, guid: d29996ca65805a6479b779894101554e, type: 3}
@@ -15032,7 +15044,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 1497567410}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &1634690590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15628,6 +15640,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1417132208963953142, guid: d29996ca65805a6479b779894101554e, type: 3}
+      propertyPath: comeFromLootCrate
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3866138195922990228, guid: d29996ca65805a6479b779894101554e, type: 3}
       propertyPath: m_Name
       value: InventorySlot (3)
@@ -15728,7 +15744,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 511967479}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &1719296153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16299,7 +16315,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   looteableItemsPanel: {fileID: 469774865}
   player: {fileID: 2098173565}
-  maxSlotsInCrate: 3
+  maxSlotsInCrate: 6
 --- !u!114 &1745299496
 MonoBehaviour:
   m_ObjectHideFlags: 0

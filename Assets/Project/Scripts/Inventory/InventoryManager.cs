@@ -128,6 +128,7 @@ namespace Inventory
                                 else
                                 {
                                     remainingItemsWithoutSpace = amountRemaining;
+                                    return false;
                                 }
                             }
                             return true;
@@ -139,7 +140,6 @@ namespace Inventory
             availableIndex = GetFirstIndexSlotAvailable();
             if (availableIndex != -1)
             {
-                Debug.Log(availableIndex);
                 itemSlotList[availableIndex].SetItemSlotProperties(item, amount);
                 return true; 
             }
@@ -160,6 +160,11 @@ namespace Inventory
                 }
             }
             return -1;
+        }
+
+        public int GetMaxItemsForSlots()
+        {
+            return MAX_AMOUNT_PER_SLOT;
         }
     }
 }

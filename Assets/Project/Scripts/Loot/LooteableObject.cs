@@ -114,13 +114,30 @@ namespace Loot
         
         public void AddItemToList(Item item, int amount)
         {
-            itemsInLootableObject.Add(item, amount);
+            Debug.Log("SAVING REMAINING ITEM ");
+            if (itemsInLootableObject.ContainsKey(item))
+            {
+                Debug.Log(itemsInLootableObject[item]);
+                itemsInLootableObject[item] += amount - 1;
+            }
+            else
+            {
+                itemsInLootableObject.Add(item, amount);
+            }
         }
         
-        public void DeleteItemFromList(Item item)
+        public void DeleteItemFromList(Item item, int amount)
         {
             LogManager.Log("ITEM DELETED" + item.ToString(), FeatureType.Loot);
-            itemsInLootableObject.Remove(item);
+            if (itemsInLootableObject[item] > amount)
+            {
+                itemsInLootableObject[item] -= amount; 
+            }
+            else
+            {
+                itemsInLootableObject.Remove(item); 
+            }
+            
         }
 
         public void ActivateKeyHotkeyImage()

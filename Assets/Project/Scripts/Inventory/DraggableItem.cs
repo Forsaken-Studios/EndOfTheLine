@@ -13,7 +13,8 @@ namespace Inventory
         public Image image;
         [HideInInspector] public Transform parentBeforeDrag;
         [HideInInspector] public Transform parentAfterDrag;
- 
+        private bool itemFromInventoryToCrate = false;
+        private int amountBeforeMoving = 0;
         /// <summary>
         /// Method used when we start draggin an item, saving references from parents and putting outside of his parent
         /// so we can visualize the image around the game. (Not visible behind other images)
@@ -24,6 +25,7 @@ namespace Inventory
             parentBeforeDrag = transform.parent;
             parentAfterDrag = transform.parent;
             transform.SetParent(transform.root);
+            amountBeforeMoving = parentAfterDrag.GetComponentInParent<ItemSlot>().amount;
             transform.SetAsLastSibling();
             image.raycastTarget = false;
         }
@@ -54,35 +56,47 @@ namespace Inventory
             {
                 //Remember we swap images, so the one that check if it is in the
                 //If it comes from loot crate
-                ItemSlot itemInCrate = parentBeforeDrag.GetComponentInParent<ItemSlot>();
+                ItemSlot itemSlotMoving = parentBeforeDrag.GetComponentInParent<ItemSlot>();
                 //And moves to our inventory
-                ItemSlot itemInInventory = parentAfterDrag.GetComponentInParent<ItemSlot>();
+                ItemSlot itemSlotFinal = parentAfterDrag.GetComponentInParent<ItemSlot>();
                 //Si movemos desde loot a inventario, añadimos objeto a inventario
-                if (itemInCrate.GetIfIsComingFromLootCrate() && !itemInInventory.GetIfIsComingFromLootCrate())
+                if (itemSlotMoving.GetIfIsLootCrate() && !itemSlotFinal.GetIfIsLootCrate())
                 {
                     ItemSlot itemSlot = parentAfterDrag.GetComponent<ItemSlot>();
                     PlayerInventory.Instance.TryAddingItemDragging(itemSlot.GetItemInSlot(), itemSlot.amount);
-                    LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemSlot.GetItemInSlot());
+                    LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemSlot.GetItemInSlot(), itemSlot.amount);
                     //Check if we need to destroy the bag, but actually we wont need to do it, because we will have crates, not bags
                 }
                 else
                 {
-                    if (!itemInCrate.GetIfIsComingFromLootCrate() && itemInInventory.GetIfIsComingFromLootCrate())
+                    if (!itemSlotMoving.GetIfIsLootCrate() && itemSlotFinal.GetIfIsLootCrate()
+                        && itemFromInventoryToCrate)
                     {
-                        //Then we are moving from our inventory to crate
+                        //Then we are from our inventory to crate, later with slide
                         ItemSlot itemSlot = parentAfterDrag.GetComponent<ItemSlot>();
                         PlayerInventory.Instance.RemovingItemDragging(itemSlot.GetItemInSlot(), itemSlot.amount);
                         LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemSlot.GetItemInSlot(), 
                             itemSlot.amount);
                     }
                 }
-                transform.SetParent(parentAfterDrag);
-                this.transform.position = parentAfterDrag.position; 
-               
+                if (amountBeforeMoving == itemSlotFinal.amount)
+                {
+                    transform.SetParent(parentBeforeDrag);
+                    //this.transform.position = parentAfterDrag.position;  
+                }
+                else
+                {
+                    transform.SetParent(parentBeforeDrag);
+                   //this.transform.position = parentBeforeDrag.position;  
+                }
             }
-
             transform.SetAsFirstSibling();
             image.raycastTarget = true;
+        }
+
+        public void SetItemComingFromInventoryToCrate(bool aux)
+        {
+            this.itemFromInventoryToCrate = aux; 
         }
     }
 }
