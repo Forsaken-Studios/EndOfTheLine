@@ -35,7 +35,7 @@ namespace Player
         private void Update()
         {
             
-            LogManager.Log("GAME STATUS: " + GameManager.Instance.GameState.ToString(), FeatureType.General);
+            //LogManager.Log("GAME STATUS: " + GameManager.Instance.GameState.ToString(), FeatureType.General);
             if (GameManager.Instance.GameState == GameState.OnGame && playerCanMove)
             {
                 if (isDashing)

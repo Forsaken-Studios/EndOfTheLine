@@ -59,7 +59,6 @@ namespace Inventory
                 }
                 ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
                 InventoryManager.Instance.ChangeText(inventoryItemDictionary);
-                LogManager.Log("REMAINING: " + remainingItemsWithoutSpace.ToString(), FeatureType.Loot);
                 if (remainingItemsWithoutSpace > 0)
                     return false;
                 else
@@ -102,12 +101,15 @@ namespace Inventory
         }
         public void RemovingItemDragging(Item item, int itemSlotAmount)
         {
-            inventoryItemDictionary[item] -= itemSlotAmount;
-            if (inventoryItemDictionary[item] <= 0)
-            {
-                inventoryItemDictionary.Remove(item);
+            if (inventoryItemDictionary.ContainsKey(item))
+            {         
+                inventoryItemDictionary[item] -= itemSlotAmount;
+                if (inventoryItemDictionary[item] <= 0)
+                {
+                    inventoryItemDictionary.Remove(item);
+                }
+                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             }
-            InventoryManager.Instance.ChangeText(inventoryItemDictionary);
         }
     }
 }
