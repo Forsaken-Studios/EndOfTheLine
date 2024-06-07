@@ -75,7 +75,6 @@ public class LootUIManager : MonoBehaviour
     {
         foreach (var item in itemsInLootableObject)
         {
-            Debug.Log(item.Key);
              int remainingItems = 0;
              if (!itemsSlotsList[GetFirstIndexSlotAvailable()]
                  .TrySetItemSlotPropertiesForManager(item.Key, item.Value, out remainingItems))
@@ -155,7 +154,6 @@ public class LootUIManager : MonoBehaviour
             availableIndex = GetFirstIndexSlotAvailable();
             if (availableIndex != -1)
             {
-                Debug.Log(availableIndex);
                 itemsSlotsList[availableIndex].SetItemSlotProperties(item, amount);
                 return true; 
             }

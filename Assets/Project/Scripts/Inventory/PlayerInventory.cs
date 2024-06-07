@@ -89,7 +89,6 @@ namespace Inventory
         {
             if (floatingTextPrefab)
             {
-
                 GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity);
                 prefab.GetComponentInChildren<TextMeshProUGUI>().text = "x" + amount + " " + name;
             }

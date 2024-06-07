@@ -114,11 +114,9 @@ namespace Loot
         
         public void AddItemToList(Item item, int amount)
         {
-            Debug.Log("SAVING REMAINING ITEM ");
             if (itemsInLootableObject.ContainsKey(item))
             {
-                Debug.Log(itemsInLootableObject[item]);
-                itemsInLootableObject[item] += amount - 1;
+                itemsInLootableObject[item] = amount;
             }
             else
             {
@@ -128,7 +126,6 @@ namespace Loot
         
         public void DeleteItemFromList(Item item, int amount)
         {
-            LogManager.Log("ITEM DELETED" + item.ToString(), FeatureType.Loot);
             if (itemsInLootableObject[item] > amount)
             {
                 itemsInLootableObject[item] -= amount; 

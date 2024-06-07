@@ -68,7 +68,6 @@ namespace Inventory
         public void ActivateInventory()
         {
             GameManager.Instance.GameState = GameState.OnInventory;
-            LogManager.Log("GAME STATE CHANGED TO INVENTORY: " + GameManager.Instance.GameState, FeatureType.General);
             inventoryHUD.SetActive(true);
             inventoryHUDPanel.SetActive(true);
         }
@@ -87,11 +86,6 @@ namespace Inventory
             {
                 inventoryText.text += item.Key.name + "  x" + item.Value + "\n";
             }
-        }
-
-        public void CheckIfThereIsSlotAvailable()
-        {
-            
         }
 
         public bool TryAddInventoryToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
@@ -123,7 +117,8 @@ namespace Inventory
                                 if (availableIndex != -1)
                                 {
                                     itemSlotList[availableIndex]
-                                        .SetItemSlotProperties(item, amountRemaining); 
+                                        .SetItemSlotProperties(item, amountRemaining);
+                                    return true;
                                 }
                                 else
                                 {
