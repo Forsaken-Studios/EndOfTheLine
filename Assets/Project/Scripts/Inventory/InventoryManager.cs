@@ -39,10 +39,6 @@ namespace Inventory
         {
             inventoryHUD.SetActive(false);
             inventoryHUDPanel.SetActive(false);
-            foreach (var itemSlot in itemSlotList)
-            {
-                // itemSlot.ClearItemSlot();
-            }
         }
 
         void Update()

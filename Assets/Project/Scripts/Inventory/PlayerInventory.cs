@@ -70,7 +70,7 @@ namespace Inventory
             }
         }
 
-        public bool TryAddingItemDragging(Item item, int amount)
+        public bool TryAddingItemDragging(Item item, int amount, bool showMessage)
         {
             if (inventoryItemDictionary.ContainsKey(item))
             {
@@ -80,7 +80,8 @@ namespace Inventory
             {
                 inventoryItemDictionary.Add(item, amount);
             }
-            ShowItemTaken(item.itemName, amount);
+            if(showMessage)
+                ShowItemTaken(item.itemName, amount);
             InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             return true; 
         }
