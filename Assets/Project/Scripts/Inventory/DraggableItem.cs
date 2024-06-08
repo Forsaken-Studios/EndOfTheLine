@@ -72,9 +72,6 @@ namespace Inventory
                     {
                         //Then we are from our inventory to crate, later with slide
                         ItemSlot itemSlot = parentAfterDrag.GetComponent<ItemSlot>();
-                        PlayerInventory.Instance.RemovingItemDragging(itemSlot.GetItemInSlot(), itemSlot.amount);
-                        LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemSlot.GetItemInSlot(), 
-                            itemSlot.amount);
                     }
                 }
                 if (amountBeforeMoving == itemSlotFinal.amount)

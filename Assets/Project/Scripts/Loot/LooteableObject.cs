@@ -116,7 +116,7 @@ namespace Loot
         {
             if (itemsInLootableObject.ContainsKey(item))
             {
-                itemsInLootableObject[item] = amount;
+                itemsInLootableObject[item] += amount;
             }
             else
             {
