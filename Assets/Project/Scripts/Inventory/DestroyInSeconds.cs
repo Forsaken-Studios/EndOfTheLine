@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,4 +11,8 @@ public class DestroyInSeconds : MonoBehaviour
         Destroy(gameObject, secondsToDestroy);
     }
 
+    private void Update()
+    {
+        
+    }
 }

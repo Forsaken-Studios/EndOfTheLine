@@ -11,13 +11,20 @@ public class PlayerAim : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.GameState == GameState.OnGame)
+        {
+            HandleAim();
+        }
+    }
+
+    private void HandleAim()
+    {
         Vector3 mousePosition = GetMouseWorldPosition();
         //In 2D, we only want to rotate over Z axis
         //X Y AIM DIRECTION VALUE
         Vector3 aimDirection = (mousePosition - transform.position).normalized; 
         //AIM DIRECTION -> EULER ANGLE
         float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
-
         this.transform.eulerAngles = new Vector3(0, 0, angle);
     }
 

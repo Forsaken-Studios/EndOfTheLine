@@ -119,20 +119,16 @@ namespace FieldOfView
                 }
                 else
                 {
-
-                    /*if (raycastHit2D.collider.gameObject.CompareTag("Player"))
+                    if (raycastHit2D.collider.gameObject.CompareTag("Player"))
                      {
-                         if(raycastHit2D.collider.gameObject.layer == obstacleLayerMask)
-                             vertex = origin + GetVectorFromAngle(angle) * viewDistance;
-
-                         if (!enemyGameObject.GetComponent<Enemy>().PlayerIsDetected)
-                         {
-                             detectionBar.gameObject.SetActive(true);
-                             Debug.Log("PLAYER SAW?");
-                         }
-                     }*/
-                    //hit obstacle
-                    vertex = raycastHit2D.point;
+                         vertex = origin + GetVectorFromAngle(angle) * viewDistance;
+                     }
+                    else
+                    {
+                        //hit obstacle
+                        vertex = raycastHit2D.point;  
+                    }
+                
 
                 }
 

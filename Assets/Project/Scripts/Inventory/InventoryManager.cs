@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Utils.CustomLogs;
 
 namespace Inventory
 {
@@ -12,12 +13,13 @@ namespace Inventory
 
         public static InventoryManager Instance;
 
+        [Header("Inventory Panels")]
         [SerializeField] private GameObject inventoryHUD;
         [SerializeField] private GameObject inventoryHUDPanel;
         [SerializeField] private TextMeshProUGUI inventoryText;
         [SerializeField] private List<ItemSlot> itemSlotList;
-
         [SerializeField] private int nextIndexSlotAvailable = 0;
+        
         private int MAX_AMOUNT_PER_SLOT = 4;
 
         private void Awake()
@@ -37,22 +39,42 @@ namespace Inventory
         {
             inventoryHUD.SetActive(false);
             inventoryHUDPanel.SetActive(false);
-            foreach (var itemSlot in itemSlotList)
-            {
-                // itemSlot.ClearItemSlot();
-            }
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
-                inventoryHUD.SetActive(!inventoryHUD.activeSelf);
-                inventoryHUDPanel.SetActive(!inventoryHUDPanel.activeSelf);
-
+                ReverseInventoryStatus();
+                if(LootUIManager.Instance.GetIfCrateIsOpened())
+                    LootUIManager.Instance.DesactivateLootUIPanel();
             }
         }
 
+        /// <summary>
+        /// If inventory is opened, we close it, if it is the other way, we open it
+        /// </summary>
+        public void ReverseInventoryStatus()
+        {
+            inventoryHUD.SetActive(!inventoryHUD.activeSelf);
+            inventoryHUDPanel.SetActive(!inventoryHUDPanel.activeSelf);
+            GameManager.Instance.GameState = inventoryHUD.activeSelf ? GameState.OnInventory: GameState.OnGame;
+        }
+
+        public void ActivateInventory()
+        {
+            GameManager.Instance.GameState = GameState.OnInventory;
+            inventoryHUD.SetActive(true);
+            inventoryHUDPanel.SetActive(true);
+        }
+
+        public void DesactivateInventory()
+        {
+            GameManager.Instance.GameState = GameState.OnGame;
+            inventoryHUD.SetActive(false);
+            inventoryHUDPanel.SetActive(false);
+        }
+        
         public void ChangeText(Dictionary<Item, int> inventoryItems)
         {
             inventoryText.text = "";
@@ -62,14 +84,10 @@ namespace Inventory
             }
         }
 
-        public void CheckIfThereIsSlotAvailable()
-        {
-            
-        }
-
-        public bool TryAddInventoryToItemSlot(Item item, int amount)
+        public bool TryAddInventoryToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
         {
             int availableIndex = 0;
+            remainingItemsWithoutSpace = 0;
             foreach (var itemSlot in itemSlotList)
             {
                 if (itemSlot.itemID == item.itemID)
@@ -77,47 +95,100 @@ namespace Inventory
                     int totalAmount = itemSlot.amount + amount;
                     if (totalAmount <= MAX_AMOUNT_PER_SLOT)
                     {
+                        LogManager.Log("FIND EMPTY SLOT", FeatureType.Loot);
                         //ADD ELEMENT TO THIS SLOT
                         itemSlot.AddMoreItemsToSameSlot(amount);
                         return true;
                     }
                     else
                     {
-                        //We refill one slot and create another one
-                        if (itemSlot.amount != MAX_AMOUNT_PER_SLOT) //We dont check a full slot
+                        if (itemSlot.amount != MAX_AMOUNT_PER_SLOT) //We dont want to check a full slot
                         {
-                            int amountToFill = MAX_AMOUNT_PER_SLOT - itemSlot.amount;
-                            int amountRemaining = amount - amountToFill;
+                            //We refill one slot and fill other slots until we are completed
+                            int amountToFill = MAX_AMOUNT_PER_SLOT - itemSlot.amount; //Space available
+                            int amountRemaining = amount - amountToFill; //Remaining Items
                             itemSlot.AddMoreItemsToSameSlot(amountToFill);
-                            if (amountRemaining > 0)
+                            if (amountRemaining > 0) //If there are items left to save
                             {
-                                
                                 availableIndex = GetFirstIndexSlotAvailable();
                                 if (availableIndex != -1)
                                 {
-                                    itemSlotList[availableIndex]
-                                        .SetItemSlotProperties(item.itemIcon, amountRemaining, item.itemID); 
+                                    return SetRemainingItemsSlots(amountRemaining, availableIndex, item, out remainingItemsWithoutSpace);
+                                }
+                                else
+                                {
+                                    remainingItemsWithoutSpace = amountRemaining;
+                                    return false;
                                 }
                             }
+
                             return true;
                         }
                     }
                 }
             }
-            //WE CREATE A NEW SLOT, IF AVAILABLE (NEED TO CHECK)
+            //NO SLOTS WITH THIS ITEM IN INVENTORY, WE CREATE A NEW ONE
             availableIndex = GetFirstIndexSlotAvailable();
-
-            if (availableIndex != -1)
+            if (availableIndex != -1) //-1 => NO SLOT AVAILABLE
             {
-                Debug.Log(availableIndex);
-                itemSlotList[availableIndex].SetItemSlotProperties(item.itemIcon, amount, item.itemID);
-                return true; 
+                return SetRemainingItemsSlots(amount, availableIndex, item, out remainingItemsWithoutSpace);
+            }
+
+            remainingItemsWithoutSpace = amount;
+            return false;
+        }
+
+        private bool SetRemainingItemsSlots(int amount, int availableIndex, Item item, out int remainingAmount)
+        {
+            if (amount >= MAX_AMOUNT_PER_SLOT)
+            {
+                itemSlotList[availableIndex].SetItemSlotProperties(item, MAX_AMOUNT_PER_SLOT);
+                int remainingItemsAux = amount - MAX_AMOUNT_PER_SLOT;
+                int remainingItemsInLoop = 0;
+                while (remainingItemsAux > 0)
+                {
+                    int nextAmountToFill = GetNextAmountToFill(remainingItemsAux, out remainingItemsInLoop);
+                    availableIndex = GetFirstIndexSlotAvailable();
+                    if (availableIndex != -1)
+                    {
+                        itemSlotList[availableIndex]
+                            .SetItemSlotProperties(item, nextAmountToFill);
+                        remainingItemsAux = remainingItemsInLoop;
+                    }
+                    else
+                    {
+                        remainingAmount = remainingItemsInLoop;
+                        return false;
+                    }
+                }
             }
             else
             {
-                return false;
+                itemSlotList[availableIndex].SetItemSlotProperties(item, amount);
+                remainingAmount = 0;
+                return true;
             }
-        
+
+            LogManager.Log("IF ELSE NOT WORKING PROPERLY", FeatureType.Loot);
+            remainingAmount = 0;
+            return true; 
+        }
+
+        private int GetNextAmountToFill(int totalAmount, out int remainingItems)
+        {
+            // if > MAX -> itemToFill = MAX | remaining -= MAX
+            // if < MAX -> itemToFill = remaining
+            remainingItems = totalAmount;
+            if (totalAmount >= MAX_AMOUNT_PER_SLOT)
+            {
+                remainingItems -= MAX_AMOUNT_PER_SLOT;
+                return MAX_AMOUNT_PER_SLOT;
+            }
+            else
+            {
+                remainingItems = 0;
+                return totalAmount;
+            }
         }
 
         private int GetFirstIndexSlotAvailable()
@@ -129,8 +200,12 @@ namespace Inventory
                     return i;
                 }
             }
-
             return -1;
+        }
+
+        public int GetMaxItemsForSlots()
+        {
+            return MAX_AMOUNT_PER_SLOT;
         }
     }
 }

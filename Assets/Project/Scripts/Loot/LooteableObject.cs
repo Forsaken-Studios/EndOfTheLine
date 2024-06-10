@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils.CustomLogs;
 using Object = System.Object;
 using Random = UnityEngine.Random;
 
@@ -44,7 +46,8 @@ namespace Loot
             List<Object> allItemsList = allItems.ToList();
             int itemsToLoot = 1;
             if (!onlyOneItemInBag)
-                itemsToLoot = Random.Range(2, 3);
+                itemsToLoot = Random.Range(2, looteableObjectUI.GetMaxSlotsInCrate());
+                //itemsToLoot = Random.Range(2, 3); NO PANEL
             for (int i = 0; i < itemsToLoot; i++)
             {
                 int randomItemIndex = Random.Range(0, allItemsList.Count);
@@ -52,10 +55,11 @@ namespace Loot
                 Item itemSO = allItemsList[randomItemIndex] as Item;
                 //Debug.Log("ITEM IN LOOTABLE OBJECT: " + itemSO.name + " -> x" + randomQuantity);
                 itemsInLootableObject.Add(itemSO, randomQuantity);
+                //WE MODIFIE THE UI
+                //looteableObjectUI.AddItemToCrate(itemSO, randomQuantity);
                 allItemsList.RemoveAt(randomItemIndex);
             }
         }
-
         private void Update()
         {
             if (_isLooteable)
@@ -63,21 +67,74 @@ namespace Loot
                 if (Input.GetKeyDown(KeyCode.F))
                 {
                     //Loot
-
-                    foreach (var item in itemsInLootableObject)
+                    if (LootUIManager.Instance.GetIfCrateIsOpened())
                     {
-                        looteableObjectUI.ActivateLooteablePanel();
-                        //PlayerInventory.Instance.TryAddItem(item.Key as Item, item.Value);
+                        LootUIManager.Instance.DesactivateLootUIPanel();
+                        InventoryManager.Instance.DesactivateInventory();
+                        //looteableObjectUI.DesactivateLooteablePanel(); 
                     }
-                    
-                    //InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
-                    //TODO: Ahora mismo, esto no funciona, pero si looteamos por raton, esto no haría falta, hay que hacerlo de la otra forma.
-                        //Destroy(this.gameObject);
-                        //_isLooteable = false;
-                    
-
+                    else
+                    {
+                        //We load objects to this panel
+                        LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
+                        InventoryManager.Instance.ActivateInventory();
+                        //looteableObjectUI.ActivateLooteablePanel();
+                    }
+                    //LootAllItems();
                 }
             }
+        }
+
+        public void LootAllItems()
+        {
+            Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
+            
+            foreach (var item in itemsInLootableObject)
+            {
+                int remainingItems = 0;
+                if (!PlayerInventory.Instance.TryAddItem(item.Key, item.Value, out remainingItems))
+                {
+                    //If we cant find a place, we add it to recover items
+                    //We will need to check if we take X amount of the stack
+                    recoverItems.Add(item.Key, remainingItems);
+                }
+            } 
+            //We cant clear, we need to check if we dont take an item because we dont have space in inventory
+            itemsInLootableObject.Clear();
+            foreach (var items in recoverItems)
+            {
+                itemsInLootableObject.Add(items.Key, items.Value);
+            }
+            InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
+            //Check if we need to destroy the bag, but actually we wont need to do it, because we will have crates in map 
+            // we don't want to destroy them
+            //Destroy(this.gameObject);
+            //_isLooteable = false;
+        }
+        
+        public void AddItemToList(Item item, int amount)
+        {
+            if (itemsInLootableObject.ContainsKey(item))
+            {
+                itemsInLootableObject[item] += amount;
+            }
+            else
+            {
+                itemsInLootableObject.Add(item, amount);
+            }
+        }
+        
+        public void DeleteItemFromList(Item item, int amount)
+        {
+            if (itemsInLootableObject[item] > amount)
+            {
+                itemsInLootableObject[item] -= amount; 
+            }
+            else
+            {
+                itemsInLootableObject.Remove(item); 
+            }
+            
         }
 
         public void ActivateKeyHotkeyImage()
@@ -91,5 +148,7 @@ namespace Loot
             hotkeyImage.SetActive(false);
             _isLooteable = false;
         }
+
+
     }
 }

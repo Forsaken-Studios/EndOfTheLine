@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using Utils.CustomLogs;
 
 namespace Inventory
 {
@@ -44,9 +45,9 @@ namespace Inventory
 
         }
 
-        public bool TryAddItem(Item item, int amount)
+        public bool TryAddItem(Item item, int amount, out int remainingItemsWithoutSpace)
         {
-            if (InventoryManager.Instance.TryAddInventoryToItemSlot(item, amount))
+            if (InventoryManager.Instance.TryAddInventoryToItemSlot(item, amount, out remainingItemsWithoutSpace))
             {
                 if (inventoryItemDictionary.ContainsKey(item))
                 {
@@ -56,8 +57,12 @@ namespace Inventory
                 {
                     inventoryItemDictionary.Add(item, amount);
                 }
-                ShowItemTaken(item.itemName, amount);
-                return true; 
+                ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
+                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+                if (remainingItemsWithoutSpace > 0)
+                    return false;
+                else
+                    return true; 
             }
             else
             {
@@ -65,13 +70,27 @@ namespace Inventory
             }
         }
 
+        public bool TryAddingItemDragging(Item item, int amount, bool showMessage)
+        {
+            if (inventoryItemDictionary.ContainsKey(item))
+            {
+                inventoryItemDictionary[item] += amount;
+            }
+            else
+            {
+                inventoryItemDictionary.Add(item, amount);
+            }
+            if(showMessage)
+                ShowItemTaken(item.itemName, amount);
+            InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+            return true; 
+        }
+
         private void ShowItemTaken(string name, int amount)
         {
             if (floatingTextPrefab)
             {
-                GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity,
-                    this.transform);
-
+                GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity);
                 prefab.GetComponentInChildren<TextMeshProUGUI>().text = "x" + amount + " " + name;
             }
         }
@@ -79,6 +98,18 @@ namespace Inventory
         public Dictionary<Item, int> GetInventoryItems()
         {
             return inventoryItemDictionary;
+        }
+        public void RemovingItemDragging(Item item, int itemSlotAmount)
+        {
+            if (inventoryItemDictionary.ContainsKey(item))
+            {         
+                inventoryItemDictionary[item] -= itemSlotAmount;
+                if (inventoryItemDictionary[item] <= 0)
+                {
+                    inventoryItemDictionary.Remove(item);
+                }
+                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+            }
         }
     }
 }
