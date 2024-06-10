@@ -39,10 +39,6 @@ namespace Inventory
         {
             inventoryHUD.SetActive(false);
             inventoryHUDPanel.SetActive(false);
-            foreach (var itemSlot in itemSlotList)
-            {
-                // itemSlot.ClearItemSlot();
-            }
         }
 
         void Update()
@@ -68,7 +64,6 @@ namespace Inventory
         public void ActivateInventory()
         {
             GameManager.Instance.GameState = GameState.OnInventory;
-            LogManager.Log("GAME STATE CHANGED TO INVENTORY: " + GameManager.Instance.GameState, FeatureType.General);
             inventoryHUD.SetActive(true);
             inventoryHUDPanel.SetActive(true);
         }
@@ -89,11 +84,6 @@ namespace Inventory
             }
         }
 
-        public void CheckIfThereIsSlotAvailable()
-        {
-            
-        }
-
         public bool TryAddInventoryToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
         {
             int availableIndex = 0;
@@ -105,25 +95,25 @@ namespace Inventory
                     int totalAmount = itemSlot.amount + amount;
                     if (totalAmount <= MAX_AMOUNT_PER_SLOT)
                     {
+                        LogManager.Log("FIND EMPTY SLOT", FeatureType.Loot);
                         //ADD ELEMENT TO THIS SLOT
                         itemSlot.AddMoreItemsToSameSlot(amount);
                         return true;
                     }
                     else
                     {
-                        //We refill one slot and create another one
-                        if (itemSlot.amount != MAX_AMOUNT_PER_SLOT) //We dont check a full slot
+                        if (itemSlot.amount != MAX_AMOUNT_PER_SLOT) //We dont want to check a full slot
                         {
-                            int amountToFill = MAX_AMOUNT_PER_SLOT - itemSlot.amount;
-                            int amountRemaining = amount - amountToFill;
+                            //We refill one slot and fill other slots until we are completed
+                            int amountToFill = MAX_AMOUNT_PER_SLOT - itemSlot.amount; //Space available
+                            int amountRemaining = amount - amountToFill; //Remaining Items
                             itemSlot.AddMoreItemsToSameSlot(amountToFill);
-                            if (amountRemaining > 0)
+                            if (amountRemaining > 0) //If there are items left to save
                             {
                                 availableIndex = GetFirstIndexSlotAvailable();
                                 if (availableIndex != -1)
                                 {
-                                    itemSlotList[availableIndex]
-                                        .SetItemSlotProperties(item, amountRemaining); 
+                                    return SetRemainingItemsSlots(amountRemaining, availableIndex, item, out remainingItemsWithoutSpace);
                                 }
                                 else
                                 {
@@ -131,22 +121,73 @@ namespace Inventory
                                     return false;
                                 }
                             }
+
                             return true;
                         }
                     }
                 }
             }
-            //WE CREATE A NEW SLOT, IF AVAILABLE (NEED TO CHECK)
+            //NO SLOTS WITH THIS ITEM IN INVENTORY, WE CREATE A NEW ONE
             availableIndex = GetFirstIndexSlotAvailable();
-            if (availableIndex != -1)
+            if (availableIndex != -1) //-1 => NO SLOT AVAILABLE
             {
-                itemSlotList[availableIndex].SetItemSlotProperties(item, amount);
-                return true; 
+                return SetRemainingItemsSlots(amount, availableIndex, item, out remainingItemsWithoutSpace);
+            }
+
+            remainingItemsWithoutSpace = amount;
+            return false;
+        }
+
+        private bool SetRemainingItemsSlots(int amount, int availableIndex, Item item, out int remainingAmount)
+        {
+            if (amount >= MAX_AMOUNT_PER_SLOT)
+            {
+                itemSlotList[availableIndex].SetItemSlotProperties(item, MAX_AMOUNT_PER_SLOT);
+                int remainingItemsAux = amount - MAX_AMOUNT_PER_SLOT;
+                int remainingItemsInLoop = 0;
+                while (remainingItemsAux > 0)
+                {
+                    int nextAmountToFill = GetNextAmountToFill(remainingItemsAux, out remainingItemsInLoop);
+                    availableIndex = GetFirstIndexSlotAvailable();
+                    if (availableIndex != -1)
+                    {
+                        itemSlotList[availableIndex]
+                            .SetItemSlotProperties(item, nextAmountToFill);
+                        remainingItemsAux = remainingItemsInLoop;
+                    }
+                    else
+                    {
+                        remainingAmount = remainingItemsInLoop;
+                        return false;
+                    }
+                }
             }
             else
             {
-                remainingItemsWithoutSpace = amount;
-                return false;
+                itemSlotList[availableIndex].SetItemSlotProperties(item, amount);
+                remainingAmount = 0;
+                return true;
+            }
+
+            LogManager.Log("IF ELSE NOT WORKING PROPERLY", FeatureType.Loot);
+            remainingAmount = 0;
+            return true; 
+        }
+
+        private int GetNextAmountToFill(int totalAmount, out int remainingItems)
+        {
+            // if > MAX -> itemToFill = MAX | remaining -= MAX
+            // if < MAX -> itemToFill = remaining
+            remainingItems = totalAmount;
+            if (totalAmount >= MAX_AMOUNT_PER_SLOT)
+            {
+                remainingItems -= MAX_AMOUNT_PER_SLOT;
+                return MAX_AMOUNT_PER_SLOT;
+            }
+            else
+            {
+                remainingItems = 0;
+                return totalAmount;
             }
         }
 

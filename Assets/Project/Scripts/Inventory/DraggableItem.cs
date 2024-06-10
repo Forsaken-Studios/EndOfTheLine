@@ -62,9 +62,7 @@ namespace Inventory
                 //Si movemos desde loot a inventario, añadimos objeto a inventario
                 if (itemSlotMoving.GetIfIsLootCrate() && !itemSlotFinal.GetIfIsLootCrate())
                 {
-                    ItemSlot itemSlot = parentAfterDrag.GetComponent<ItemSlot>();
-                    PlayerInventory.Instance.TryAddingItemDragging(itemSlot.GetItemInSlot(), itemSlot.amount);
-                    LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemSlot.GetItemInSlot(), itemSlot.amount);
+                    //LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemSlotFinal.GetItemInSlot(), itemSlotFinal.amount);
                     //Check if we need to destroy the bag, but actually we wont need to do it, because we will have crates, not bags
                 }
                 else
@@ -74,9 +72,6 @@ namespace Inventory
                     {
                         //Then we are from our inventory to crate, later with slide
                         ItemSlot itemSlot = parentAfterDrag.GetComponent<ItemSlot>();
-                        PlayerInventory.Instance.RemovingItemDragging(itemSlot.GetItemInSlot(), itemSlot.amount);
-                        LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemSlot.GetItemInSlot(), 
-                            itemSlot.amount);
                     }
                 }
                 if (amountBeforeMoving == itemSlotFinal.amount)

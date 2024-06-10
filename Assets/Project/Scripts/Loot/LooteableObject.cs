@@ -88,11 +88,11 @@ namespace Loot
         public void LootAllItems()
         {
             Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
-   
+            
             foreach (var item in itemsInLootableObject)
             {
                 int remainingItems = 0;
-                if (!PlayerInventory.Instance.TryAddItem(item.Key as Item, item.Value, out remainingItems))
+                if (!PlayerInventory.Instance.TryAddItem(item.Key, item.Value, out remainingItems))
                 {
                     //If we cant find a place, we add it to recover items
                     //We will need to check if we take X amount of the stack
@@ -114,11 +114,9 @@ namespace Loot
         
         public void AddItemToList(Item item, int amount)
         {
-            Debug.Log("SAVING REMAINING ITEM ");
             if (itemsInLootableObject.ContainsKey(item))
             {
-                Debug.Log(itemsInLootableObject[item]);
-                itemsInLootableObject[item] += amount - 1;
+                itemsInLootableObject[item] += amount;
             }
             else
             {
@@ -128,7 +126,6 @@ namespace Loot
         
         public void DeleteItemFromList(Item item, int amount)
         {
-            LogManager.Log("ITEM DELETED" + item.ToString(), FeatureType.Loot);
             if (itemsInLootableObject[item] > amount)
             {
                 itemsInLootableObject[item] -= amount; 
