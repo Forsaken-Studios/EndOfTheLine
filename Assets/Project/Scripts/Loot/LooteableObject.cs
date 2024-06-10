@@ -88,11 +88,11 @@ namespace Loot
         public void LootAllItems()
         {
             Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
-   
+            
             foreach (var item in itemsInLootableObject)
             {
                 int remainingItems = 0;
-                if (!PlayerInventory.Instance.TryAddItem(item.Key as Item, item.Value, out remainingItems))
+                if (!PlayerInventory.Instance.TryAddItem(item.Key, item.Value, out remainingItems))
                 {
                     //If we cant find a place, we add it to recover items
                     //We will need to check if we take X amount of the stack
