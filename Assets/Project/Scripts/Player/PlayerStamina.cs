@@ -67,7 +67,6 @@ public class PlayerStamina : MonoBehaviour
        {
            if (stamina != MAX_STAMINA && canRecoverEnergy)
            {
-               Debug.Log("CORROUTINE INCREASE");
                IncreaseStamina(recoveryStaminaSpeed);
                yield return new WaitForSeconds(recoveryStaminaTime);
            }
@@ -83,7 +82,6 @@ public class PlayerStamina : MonoBehaviour
        {
            if (stamina >= 0.01)
            {
-               Debug.Log("CORROUTINE DECREASE");
                DecreaseStamina(gasZoneStaminaDecrease);
                yield return new WaitForSeconds(recoveryStaminaTime);
            }

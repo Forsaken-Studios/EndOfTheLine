@@ -23,24 +23,16 @@ public class Sound
     }
 }
 
-public enum SoundAction
-{
-    Undefined,
-    Inventory_OpenInventory,
-    Inventory_CloseInventory,
-    Inventory_MoveItem,
-}
-
-
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
-    
+
+
     private List<Sound> inventoryAudioClips;
     //Se tendría que ver como lo renombramos en resources para tener varios sonidos para lo mismo
     private Dictionary<SoundAction, AudioClip> audioDictionary;
     [SerializeField] private AudioSource musicSource, sfxSource;
-    
+    private float currentVolume = 0;
     private void Awake()
     {
         if (Instance != null)
@@ -56,6 +48,7 @@ public class SoundManager : MonoBehaviour
     {
         inventoryAudioClips = new List<Sound>();
         audioDictionary = new Dictionary<SoundAction, AudioClip>();
+        currentVolume = sfxSource.volume;
         LoadAllSounds();
     }
 
@@ -64,6 +57,7 @@ public class SoundManager : MonoBehaviour
        //LoadSpecificSounds("Sounds/Inventory", inventoryAudioClips);
        //Debug.Log(inventoryAudioClips[0].GetSoundName());
        LoadSpecificSoundsInDictionary("Sounds/Inventory");
+       LoadSpecificSoundsInDictionary("Sounds/Gas Zone");
     }
 
     private void LoadSpecificSounds(string path, List<Sound> soundList)
@@ -80,7 +74,6 @@ public class SoundManager : MonoBehaviour
         List<UnityEngine.Object> allSpecificItems = UnityEngine.Resources.LoadAll(path).ToList();
         foreach (var sound in allSpecificItems)
         {
-           
             SoundAction soundAction;
             if (Enum.IsDefined(typeof(SoundAction), sound.name))
             {
@@ -88,21 +81,12 @@ public class SoundManager : MonoBehaviour
             }
             else
             {
-                
                 soundAction = SoundAction.Undefined; 
                 LogManager.Log("THERE IS NO ENUM TO ASSOCIATE WITH THIS NAME", FeatureType.General);
             }
-          
-            
             audioDictionary.Add(soundAction, (AudioClip) sound);
         }
-        
-        //CHECK 
-        foreach (var pair in audioDictionary)
-        {
-            Debug.Log(pair.Key);
-        }
-     
+   
     }
     
     private AudioClip GetAudioClipFromName(SoundAction audioAction)
@@ -120,6 +104,37 @@ public class SoundManager : MonoBehaviour
         {
             sfxSource.PlayOneShot(audioClip);
         }
+    }
+    
+    /// <summary>
+    /// Coming from https://johnleonardfrench.com/how-to-fade-audio-in-unity-i-tested-every-method-this-ones-the-best/#first_method
+    /// Check if it is needed or not, if we want to just desactivate the audio, or fade the audio
+    /// </summary>
+    /// <param name="audioSource"></param>
+    /// <param name="duration"></param>
+    /// <param name="targetVolume"></param>
+    /// <returns></returns>
+    public IEnumerator StartFade(AudioSource audioSource, float duration, float targetVolume)
+    {
+        float currentTime = 0;
+        float start = audioSource.volume;
+        currentVolume = start;
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
+            yield return null;
+        }
+        sfxSource.volume = currentVolume;
+        audioSource.Stop();
+        StopAllCoroutines();
+        yield break;
+    }
+    public void StopSound()
+    {
+  
+        StartCoroutine(StartFade(sfxSource, 0.5f, 0f));
+        //sfxSource.Stop();
     }
     
 }
