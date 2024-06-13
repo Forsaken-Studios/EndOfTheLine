@@ -32,7 +32,7 @@ namespace Resources.Scripts.Menu
 
         private void PlayGame()
         {
-            SceneManager.LoadSceneAsync("Scenes/Gameplay/TestLevel");
+            SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
         }
 
         private void QuitGame()

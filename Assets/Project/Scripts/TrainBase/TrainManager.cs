@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils.CustomLogs;
 
 public class TrainManager : MonoBehaviour
@@ -19,10 +20,23 @@ public class TrainManager : MonoBehaviour
     /// </summary>
     private int currentIndex = 0;
     [SerializeField] private Train train;
+    private TrainPanels trainPanelsScript;
+    [Header("Canvas for different wagons")]
+    [SerializeField] private GameObject missionSelectorCanvas;
+    [SerializeField] private GameObject controlRoomCanvas;
+    [SerializeField] private GameObject extraRoomCanvas;
 
+    private GameObject currentCanvas;
+
+    private bool canvasActivated
+    {
+        get { return currentCanvas.activeSelf;  }
+    }
     private void Start()
     {
+        currentCanvas = missionSelectorCanvas;
         TrainStatus = TrainStatus.onMissionSelector;
+        trainPanelsScript = GetComponent<TrainPanels>(); 
     }
 
     // Update is called once per frame
@@ -30,7 +44,8 @@ public class TrainManager : MonoBehaviour
     {
         LogManager.Log("TRAIN STATUS: " + TrainStatus.ToString(), FeatureType.TrainBase);
         HandleButtonPressed();
-        HandleMovement();
+        if(!canvasActivated)
+            HandleMovement();
     }
 
     private void HandleMovement()
@@ -61,20 +76,21 @@ public class TrainManager : MonoBehaviour
             //TODO: Modify in which room are we.
             currentIndex++;
             UpdateRoomInfo();
+            trainPanelsScript.HideTrainRoom(currentIndex - 1);
+            trainPanelsScript.ShowTrainRoom(currentIndex);
             LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
             train.MoveTrainToLeft();  
         }
-
     }
-
-
-
+    
     private void MoveTrainToRight()
     {
         if (train.CanMove)
         {
             currentIndex--;
             UpdateRoomInfo();
+            trainPanelsScript.HideTrainRoom(currentIndex + 1);
+            trainPanelsScript.ShowTrainRoom(currentIndex);
             LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
             train.MoveTrainToRight();
         }
@@ -86,12 +102,15 @@ public class TrainManager : MonoBehaviour
         {
             case 0:
                 TrainStatus = TrainStatus.onMissionSelector;
+                currentCanvas = missionSelectorCanvas;
                 break; 
             case 1:
                 TrainStatus = TrainStatus.onControlRoom;
+                currentCanvas = controlRoomCanvas;
                 break; 
             case 2:
                 TrainStatus = TrainStatus.onExtraRoom;
+                currentCanvas = extraRoomCanvas;
                 break;
         }
     }
@@ -100,7 +119,7 @@ public class TrainManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            switch (TrainStatus)
+          /*  switch (TrainStatus)
             {
                 case TrainStatus.onMissionSelector:
                     ActivateMissionSelectorMenu(); 
@@ -111,20 +130,20 @@ public class TrainManager : MonoBehaviour
                 case TrainStatus.onExtraRoom:
                     ActivateExtraRoom();
                     break;
-            }
+            }*/
+          if (currentCanvas.activeSelf)
+          {
+              currentCanvas.SetActive(false);
+          }
+          else
+          {
+              currentCanvas.SetActive(true);
+          }
         } 
     }
     
-    private void ActivateMissionSelectorMenu()
+    private void OnDestroy()
     {
-        LogManager.Log("BUTTON PRESSED ON MISSION SELECTOR", FeatureType.TrainBase);
-    }   
-    private void ActivateControlRoom()
-    {
-        LogManager.Log("BUTTON PRESSED ON CONTROL ROOM", FeatureType.TrainBase);
-    }   
-    private void ActivateExtraRoom()
-    {
-        LogManager.Log("BUTTON PRESSED ON EXTRA ROOM", FeatureType.TrainBase);
+        StopAllCoroutines();
     }
 }
