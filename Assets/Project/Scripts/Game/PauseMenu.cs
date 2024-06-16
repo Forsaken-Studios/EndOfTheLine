@@ -13,15 +13,23 @@ public class PauseMenu : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button playButton;
     [SerializeField] private Button quitButton;
+    [SerializeField] private Button returnToTrainButton;
     
      private void Start()
     {
         playButton.onClick.AddListener(() => ResumeGame());
+        returnToTrainButton.onClick.AddListener(() => ReturnToTrain());
         quitButton.onClick.AddListener(() => QuitGame());
         pauseMenuGameObject.SetActive(false);
     }
 
-     private void Update()
+    private void ReturnToTrain()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
+    }
+
+    private void Update()
      {
          if (Input.GetKeyDown(KeyCode.Escape))
          {

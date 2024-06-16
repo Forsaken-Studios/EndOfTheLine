@@ -47,7 +47,7 @@ public class LootUIManager : MonoBehaviour
             {
                 LootAllItemsInCrate();
             }
-            //Check if we need to disable it if we are to far away
+            /*//Check if we need to disable it if we are to far away
             if (currentCrateLooting != null)
             {
                 if(Vector2.Distance(PlayerInventory.Instance.transform.position, currentCrateLooting.transform.position) >
@@ -58,7 +58,7 @@ public class LootUIManager : MonoBehaviour
                     DesactivateLootUIPanel();
                     InventoryManager.Instance.DesactivateInventory();
                 }
-            }
+            }*/
 
         }
     }
@@ -97,12 +97,14 @@ public class LootUIManager : MonoBehaviour
     
     public void ActivateLootUIPanel()
     {
+        SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenCrate);
         lootUIPanel.SetActive(true);
         getIfCrateIsOpened = true;
     }
 
     public void DesactivateLootUIPanel()
     {
+        SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseCrate);
         lootUIPanel.SetActive(false);
         getIfCrateIsOpened = false;
     }

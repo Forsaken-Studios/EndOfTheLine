@@ -56,6 +56,15 @@ namespace Inventory
         /// </summary>
         public void ReverseInventoryStatus()
         {
+            if (!inventoryHUD.activeSelf)
+            {
+                SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenInventory);
+            }
+            else
+            {
+                SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseInventory);
+            }
+              
             inventoryHUD.SetActive(!inventoryHUD.activeSelf);
             inventoryHUDPanel.SetActive(!inventoryHUDPanel.activeSelf);
             GameManager.Instance.GameState = inventoryHUD.activeSelf ? GameState.OnInventory: GameState.OnGame;
