@@ -39,7 +39,6 @@ public class Train : MonoBehaviour
             {
                 //Sumamos
                 Vector2 currentPosition = new Vector2(transform.localPosition.x, 0);
-                Debug.Log(positionToArrive);
                 this.gameObject.transform.localPosition = Vector2.Lerp(currentPosition, positionToArrive, 
                     timeMoving * Time.deltaTime);
                 //Hay que ver, porque supuestamente en el lerp no es recomendable meter el time.delta time, porque habría 

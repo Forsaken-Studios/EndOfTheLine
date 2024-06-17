@@ -177,8 +177,6 @@ namespace Inventory
                 remainingAmount = 0;
                 return true;
             }
-
-            LogManager.Log("IF ELSE NOT WORKING PROPERLY", FeatureType.Loot);
             remainingAmount = 0;
             return true; 
         }
