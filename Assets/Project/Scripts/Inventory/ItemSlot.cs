@@ -53,7 +53,7 @@ namespace Inventory
             this.itemInSlot = item;
             this.itemSlotImage.sprite = item.itemIcon;
             this.itemID = item.itemID;
-            this.itemSlotAmountText.text = "x" + itemSlotAmount.ToString();
+            this.itemSlotAmountText.text = itemSlotAmount == 1 ? "" : "x" + itemSlotAmount.ToString();
             this.amount = itemSlotAmount;
             
         }

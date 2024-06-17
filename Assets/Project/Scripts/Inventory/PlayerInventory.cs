@@ -111,5 +111,12 @@ namespace Inventory
                 InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             }
         }
+
+        public bool CheckIfPlayerHasKey()
+        {
+            Object itemNeeded = UnityEngine.Resources.Load("Items/Keycards/Keycard");
+            Item keycardItem = itemNeeded as Item;
+            return inventoryItemDictionary.ContainsKey(keycardItem);
+        }
     }
 }
