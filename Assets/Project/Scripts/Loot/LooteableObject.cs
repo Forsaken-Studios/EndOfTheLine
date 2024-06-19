@@ -79,7 +79,6 @@ namespace Loot
         {
             foreach (var itemName in itemsList)
             {
-                LogManager.Log("ITEM NEEDED TO SPAWN: " + itemName, FeatureType.Loot);
                 Object itemNeeded = UnityEngine.Resources.Load("Items/Keycards/Keycard");
                 Item itemSO = itemNeeded as Item;
                 itemsNeededToSpawn.Add(itemSO);

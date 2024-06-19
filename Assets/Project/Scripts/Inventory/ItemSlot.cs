@@ -59,17 +59,17 @@ namespace Inventory
             
         }
   
-        public bool TrySetItemSlotPropertiesForManager(Item item, int itemSlotAmount, out int remaningItems)
+        public bool TrySetItemSlotPropertiesForManager(Item item, int itemSlotAmount, out int remainingItems)
         {
             int MAX_ITEMS_SLOT = InventoryManager.Instance.GetMaxItemsForSlots();
             if (itemSlotAmount > MAX_ITEMS_SLOT)
             {
                 SetItemSlotProperties(item, MAX_ITEMS_SLOT);
-                remaningItems = itemSlotAmount - MAX_ITEMS_SLOT;
+                remainingItems = itemSlotAmount - MAX_ITEMS_SLOT;
                 return false; 
             }
             SetItemSlotProperties(item, itemSlotAmount);
-            remaningItems = 0; 
+            remainingItems = 0; 
             return true;
             
         }
@@ -338,18 +338,17 @@ namespace Inventory
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.clickCount == 2) {
-                Debug.Log ("double click");
                 if (ValidMovementFromInventoryToCrate())
                 {
                     //MOVING FROM INVENTORY TO CRATE
-                    LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM INVENTORY TO CRATE", FeatureType.Loot);
+                   // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM INVENTORY TO CRATE", FeatureType.Loot);
                     DoubleClickOnItemFromInventoryToCrate();
 
                 }
                 else if(ValidMovementFromCrateToInventory())
                 {
                     //MOVING FROM CRATE TO INVENTORY
-                    LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM CRATE TO INVENTORY", FeatureType.Loot);
+                   // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM CRATE TO INVENTORY", FeatureType.Loot);
                     DoubleClickOnItemFromCrateToInventory();
                 }
             }

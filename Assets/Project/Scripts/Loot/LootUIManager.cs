@@ -75,14 +75,22 @@ public class LootUIManager : MonoBehaviour
     {
         foreach (var item in itemsInLootableObject)
         {
+            Debug.Log("AMOUNT DE : " + item.Key.itemName+ " x" + item.Value);
              int remainingItems = 0;
+             int nextRemainingItems = 0;
              if (!itemsSlotsList[GetFirstIndexSlotAvailable()]
                  .TrySetItemSlotPropertiesForManager(item.Key, item.Value, out remainingItems))
-             {
+             { 
+                 Debug.Log("REMAINING: " + remainingItems);
                  itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
-                     remainingItems, out remainingItems);
+                     remainingItems, out  nextRemainingItems);
+                 while (nextRemainingItems > 0)
+                 {
+                     remainingItems = nextRemainingItems;
+                     itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
+                         remainingItems, out nextRemainingItems);
+                 }
              }
-
         }
     }
 
