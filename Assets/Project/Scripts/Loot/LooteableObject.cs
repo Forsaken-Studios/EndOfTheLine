@@ -62,7 +62,6 @@ namespace Loot
                 int remainingItems = maxSlotsInCrate - itemsList.Count;
                 if (remainingItems > 0)
                 {
-                    Debug.Log(  remainingItems.ToString() + " SLOTS AVAILABLE FOR THAT CRATE");
                     PrepareLoot(remainingItems); 
                 }
                 else
@@ -91,7 +90,6 @@ namespace Loot
         private void PrepareLoot(int remainingSlotsInCrate)
         {
             Object[] allItems = UnityEngine.Resources.LoadAll("Items/Scrap");
-            Debug.Log(allItems.Length);
             List<Object> allItemsList = allItems.ToList();
             int itemsToLoot = 1;
             if (!onlyOneItemInBag)

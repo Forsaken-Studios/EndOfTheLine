@@ -99,7 +99,7 @@ namespace Inventory
         {
             return inventoryItemDictionary;
         }
-        public void RemovingItemDragging(Item item, int itemSlotAmount)
+        public void RemovingItem(Item item, int itemSlotAmount)
         {
             if (inventoryItemDictionary.ContainsKey(item))
             {         
