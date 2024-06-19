@@ -16,6 +16,7 @@ namespace Inventory
         [Header("Inventory Panels")]
         [SerializeField] private GameObject inventoryHUD;
         [SerializeField] private GameObject inventoryHUDPanel;
+        [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private TextMeshProUGUI inventoryText;
         [SerializeField] private List<ItemSlot> itemSlotList;
         [SerializeField] private int nextIndexSlotAvailable = 0;
@@ -91,6 +92,9 @@ namespace Inventory
             {
                 inventoryText.text += item.Key.name + "  x" + item.Value + "\n";
             }
+
+            weightText.text = PlayerInventory.Instance.GetCurrentWeight().ToString() + " / " +
+                              PlayerInventory.Instance.GetMaxWeight() + " KG";
         }
 
         public bool TryAddInventoryToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)

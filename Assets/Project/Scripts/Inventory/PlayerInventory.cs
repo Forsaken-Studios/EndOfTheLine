@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils.CustomLogs;
 
@@ -20,8 +21,12 @@ namespace Inventory
         private TakeItemText takeItemScript;
 
         private Dictionary<Item, int> inventoryItemDictionary;
+        private float currentWeight;
+        private float MAX_WEIGHT = 34.5f;
         private int MAX_INVENTORY_SLOTS = 10;
         private int MAX_STACK_PER_SLOT = 4;
+
+   
 
 
         private void Awake()
@@ -53,11 +58,14 @@ namespace Inventory
                 if (inventoryItemDictionary.ContainsKey(item))
                 {
                     inventoryItemDictionary[item] += amount;
+                
                 }
                 else
                 {
                     inventoryItemDictionary.Add(item, amount);
-                }
+                }  
+                Debug.Log("ADDING: " + item.itemWeight * amount );
+                AddWeight(item.itemWeight * amount);
                 if(showItemsTakenMessage)
                      ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
                 InventoryManager.Instance.ChangeText(inventoryItemDictionary);
@@ -82,6 +90,7 @@ namespace Inventory
             {
                 inventoryItemDictionary.Add(item, amount);
             }
+            AddWeight(item.itemWeight * amount);
             if(showMessage)
                 ShowItemTaken(item.itemName, amount);
             InventoryManager.Instance.ChangeText(inventoryItemDictionary);
@@ -125,6 +134,8 @@ namespace Inventory
                 {
                     inventoryItemDictionary.Remove(item);
                 }
+                
+                DecreaseWeight(item.itemWeight * itemSlotAmount);
                 InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             }
         }
@@ -134,6 +145,35 @@ namespace Inventory
             Object itemNeeded = UnityEngine.Resources.Load("Items/Keycards/Keycard");
             Item keycardItem = itemNeeded as Item;
             return inventoryItemDictionary.ContainsKey(keycardItem);
+        }
+
+
+        private void UpdateFullCurrentWeight()
+        {
+            foreach (var item in inventoryItemDictionary)
+            {
+                currentWeight += item.Value * item.Key.itemWeight; 
+            }
+        }
+
+        private void AddWeight(float weight)
+        {
+            currentWeight += weight;
+        }
+
+        private void DecreaseWeight(float weight)
+        {
+            currentWeight -= weight;
+        }
+
+        public float GetCurrentWeight()
+        {
+            return currentWeight;
+        }
+
+        public float GetMaxWeight()
+        {
+            return MAX_WEIGHT;
         }
     }
 }

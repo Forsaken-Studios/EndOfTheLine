@@ -50,6 +50,12 @@ namespace Inventory
 
             if (parentAfterDrag == parentBeforeDrag)
             {
+              /* throw items to the ground, we should instantiate a looteableObject
+               ItemSlot itemSlotMoving = parentBeforeDrag.GetComponentInParent<ItemSlot>();
+                Debug.Log("TIRAMOS "  + itemSlotMoving.amount + " " + itemSlotMoving.GetItemInSlot().itemName);
+                PlayerInventory.Instance.RemovingItem(itemSlotMoving.GetItemInSlot(), itemSlotMoving.amount);
+                itemSlotMoving.ClearItemSlot();
+                */
                 transform.SetParent(parentBeforeDrag);
                 this.transform.position = parentBeforeDrag.position;
             }

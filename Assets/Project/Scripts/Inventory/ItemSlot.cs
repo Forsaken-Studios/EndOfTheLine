@@ -386,7 +386,6 @@ namespace Inventory
                 //We return remainingItems To crate
                 LootUIManager.Instance.TryAddItemCrateToItemSlot(itemToLoot, 
                     remainingItemsWithoutSpace, out int remainingItems); 
-                //and n
                 LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToLoot, remainingItemsWithoutSpace);
                 //And update item slot
                 ModifyItemSlotAmount(remainingItemsWithoutSpace);
