@@ -380,13 +380,12 @@ namespace Inventory
         {
             int remainingItemsWithoutSpace = 0;
             Item itemToLoot = this.itemInSlot; 
-            PlayerInventory.Instance.TryAddItem(itemToLoot, this.amount, out remainingItemsWithoutSpace); 
+            PlayerInventory.Instance.TryAddItem(itemToLoot, this.amount, out remainingItemsWithoutSpace, true); 
             if (remainingItemsWithoutSpace > 0)
             {
                 //We return remainingItems To crate
                 LootUIManager.Instance.TryAddItemCrateToItemSlot(itemToLoot, 
                     remainingItemsWithoutSpace, out int remainingItems); 
-                //and n
                 LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToLoot, remainingItemsWithoutSpace);
                 //And update item slot
                 ModifyItemSlotAmount(remainingItemsWithoutSpace);

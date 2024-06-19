@@ -41,17 +41,52 @@ namespace Loot
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsNeededToSpawn = new List<Item>();
             List<string> testList = new List<string>();
+            testList.Add("Keycard");
 
-            if (needToSpawnXObject)
+            //En el futuro, hay que ver esto, porque no podemos hacer spawn en el start, habrá que modificar las opciones antes
+            StartSpawingObjects(testList, true);
+        }
+        private void Update()
+        {
+            if (_isLooteable)
             {
-                testList.Add("Keycard");
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    //Loot
+                    if (LootUIManager.Instance.GetIfCrateIsOpened())
+                    {
+                        LootUIManager.Instance.DesactivateLootUIPanel();
+                        InventoryManager.Instance.DesactivateInventory();
+                        //looteableObjectUI.DesactivateLooteablePanel(); 
+                    }
+                    else
+                    {
+                        //We load objects to this panel
+                        LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
+                        InventoryManager.Instance.ActivateInventory();
+                        //looteableObjectUI.ActivateLooteablePanel();
+                    }
+                    //LootAllItems();
+                }
+            }
+        }
+
+        public void ClearLooteableObject()
+        {
+            itemsInLootableObject.Clear();
+        }
+        
+        public void StartSpawingObjects(List<string> testList, bool needToSpawnObject)
+        {
+            if (needToSpawnObject)
+            {
                 InitializeLootObject(testList);  
             }
             else
             {
                 InitializeLootObject(null);  
             }
-            
+            needToSpawnXObject = needToSpawnObject; 
         }
 
         private void InitializeLootObject(List<string> itemsList)
@@ -105,43 +140,25 @@ namespace Loot
                 allItemsList.RemoveAt(randomItemIndex);
             }
         }
-        private void Update()
-        {
-            if (_isLooteable)
-            {
-                if (Input.GetKeyDown(KeyCode.F))
-                {
-                    //Loot
-                    if (LootUIManager.Instance.GetIfCrateIsOpened())
-                    {
-                        LootUIManager.Instance.DesactivateLootUIPanel();
-                        InventoryManager.Instance.DesactivateInventory();
-                        //looteableObjectUI.DesactivateLooteablePanel(); 
-                    }
-                    else
-                    {
-                        //We load objects to this panel
-                        LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
-                        InventoryManager.Instance.ActivateInventory();
-                        //looteableObjectUI.ActivateLooteablePanel();
-                    }
-                    //LootAllItems();
-                }
-            }
-        }
+
 
         public void LootAllItems()
         {
             Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
-            
+            Dictionary<Item, int> itemsTaken = new Dictionary<Item, int>();
             foreach (var item in itemsInLootableObject)
             {
                 int remainingItems = 0;
-                if (!PlayerInventory.Instance.TryAddItem(item.Key, item.Value, out remainingItems))
+                if (!PlayerInventory.Instance.TryAddItem(item.Key, item.Value, 
+                        out remainingItems, false))
                 {
                     //If we cant find a place, we add it to recover items
                     //We will need to check if we take X amount of the stack
                     recoverItems.Add(item.Key, remainingItems);
+                }
+                else
+                {
+                    itemsTaken.Add(item.Key, item.Value);
                 }
             } 
             //We cant clear, we need to check if we dont take an item because we dont have space in inventory
@@ -150,11 +167,10 @@ namespace Loot
             {
                 itemsInLootableObject.Add(items.Key, items.Value);
             }
+            
+            //Text to indicate we take X Item
+            PlayerInventory.Instance.ShowFullListItemTaken(itemsTaken);
             InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
-            //Check if we need to destroy the bag, but actually we wont need to do it, because we will have crates in map 
-            // we don't want to destroy them
-            //Destroy(this.gameObject);
-            //_isLooteable = false;
         }
         
         public void AddItemToList(Item item, int amount)

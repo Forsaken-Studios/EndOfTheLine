@@ -16,10 +16,11 @@ namespace Inventory
         [Header("Inventory Panels")]
         [SerializeField] private GameObject inventoryHUD;
         [SerializeField] private GameObject inventoryHUDPanel;
+        [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private TextMeshProUGUI inventoryText;
         [SerializeField] private List<ItemSlot> itemSlotList;
-        [SerializeField] private int nextIndexSlotAvailable = 0;
-        
+        private int nextIndexSlotAvailable = 0;
+        [SerializeField] private GameObject looteableObjectPrefab;
         private int MAX_AMOUNT_PER_SLOT = 4;
 
         private void Awake()
@@ -91,6 +92,9 @@ namespace Inventory
             {
                 inventoryText.text += item.Key.name + "  x" + item.Value + "\n";
             }
+
+            weightText.text = PlayerInventory.Instance.GetCurrentWeight().ToString() + " / " +
+                              PlayerInventory.Instance.GetMaxWeight() + " KG";
         }
 
         public bool TryAddInventoryToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
@@ -213,6 +217,11 @@ namespace Inventory
         public int GetMaxItemsForSlots()
         {
             return MAX_AMOUNT_PER_SLOT;
+        }
+
+        public GameObject GetLooteableObjectPrefab()
+        {
+            return looteableObjectPrefab; 
         }
     }
 }
