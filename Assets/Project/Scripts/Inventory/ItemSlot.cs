@@ -380,7 +380,7 @@ namespace Inventory
         {
             int remainingItemsWithoutSpace = 0;
             Item itemToLoot = this.itemInSlot; 
-            PlayerInventory.Instance.TryAddItem(itemToLoot, this.amount, out remainingItemsWithoutSpace); 
+            PlayerInventory.Instance.TryAddItem(itemToLoot, this.amount, out remainingItemsWithoutSpace, true); 
             if (remainingItemsWithoutSpace > 0)
             {
                 //We return remainingItems To crate

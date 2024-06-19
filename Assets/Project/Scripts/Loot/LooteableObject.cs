@@ -133,15 +133,20 @@ namespace Loot
         public void LootAllItems()
         {
             Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
-            
+            Dictionary<Item, int> itemsTaken = new Dictionary<Item, int>();
             foreach (var item in itemsInLootableObject)
             {
                 int remainingItems = 0;
-                if (!PlayerInventory.Instance.TryAddItem(item.Key, item.Value, out remainingItems))
+                if (!PlayerInventory.Instance.TryAddItem(item.Key, item.Value, 
+                        out remainingItems, false))
                 {
                     //If we cant find a place, we add it to recover items
                     //We will need to check if we take X amount of the stack
                     recoverItems.Add(item.Key, remainingItems);
+                }
+                else
+                {
+                    itemsTaken.Add(item.Key, item.Value);
                 }
             } 
             //We cant clear, we need to check if we dont take an item because we dont have space in inventory
@@ -150,11 +155,10 @@ namespace Loot
             {
                 itemsInLootableObject.Add(items.Key, items.Value);
             }
+            
+            //Text to indicate we take X Item
+            PlayerInventory.Instance.ShowFullListItemTaken(itemsTaken);
             InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
-            //Check if we need to destroy the bag, but actually we wont need to do it, because we will have crates in map 
-            // we don't want to destroy them
-            //Destroy(this.gameObject);
-            //_isLooteable = false;
         }
         
         public void AddItemToList(Item item, int amount)

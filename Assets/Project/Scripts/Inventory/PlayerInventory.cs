@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using Utils.CustomLogs;
@@ -45,7 +46,7 @@ namespace Inventory
 
         }
 
-        public bool TryAddItem(Item item, int amount, out int remainingItemsWithoutSpace)
+        public bool TryAddItem(Item item, int amount, out int remainingItemsWithoutSpace, bool showItemsTakenMessage)
         {
             if (InventoryManager.Instance.TryAddInventoryToItemSlot(item, amount, out remainingItemsWithoutSpace))
             {
@@ -57,7 +58,8 @@ namespace Inventory
                 {
                     inventoryItemDictionary.Add(item, amount);
                 }
-                ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
+                if(showItemsTakenMessage)
+                     ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
                 InventoryManager.Instance.ChangeText(inventoryItemDictionary);
                 if (remainingItemsWithoutSpace > 0)
                     return false;
@@ -92,6 +94,21 @@ namespace Inventory
             {
                 GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity);
                 prefab.GetComponentInChildren<TextMeshProUGUI>().text = "x" + amount + " " + name;
+            }
+        }
+        public void ShowFullListItemTaken(Dictionary<Item, int> itemList)
+        {
+            string fullItemList = "";
+
+            foreach (var item in itemList)
+            {
+                fullItemList += "x" + item.Value + " " + item.Key.itemName + "\n"; 
+            }
+            
+            if (floatingTextPrefab)
+            {
+                GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity);
+                prefab.GetComponentInChildren<TextMeshProUGUI>().text = fullItemList;
             }
         }
 
