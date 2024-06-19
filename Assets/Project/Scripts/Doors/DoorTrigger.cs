@@ -11,7 +11,7 @@ public class DoorTrigger : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            doorUIKeycard.SwapKeycardIcon();
+            doorUIKeycard.SwapKeycardIcon(false);
             keycardSprite.SetActive(true);
         }
     }
@@ -20,7 +20,7 @@ public class DoorTrigger : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            doorUIKeycard.SwapKeycardIcon();
+            doorUIKeycard.SwapKeycardIcon(true);
             keycardSprite.SetActive(false);
         }
     }

@@ -50,12 +50,7 @@ namespace Inventory
 
             if (parentAfterDrag == parentBeforeDrag)
             {
-              /* throw items to the ground, we should instantiate a looteableObject
-               ItemSlot itemSlotMoving = parentBeforeDrag.GetComponentInParent<ItemSlot>();
-                Debug.Log("TIRAMOS "  + itemSlotMoving.amount + " " + itemSlotMoving.GetItemInSlot().itemName);
-                PlayerInventory.Instance.RemovingItem(itemSlotMoving.GetItemInSlot(), itemSlotMoving.amount);
-                itemSlotMoving.ClearItemSlot();
-                */
+                ThrowItemToGround();
                 transform.SetParent(parentBeforeDrag);
                 this.transform.position = parentBeforeDrag.position;
             }
@@ -100,7 +95,29 @@ namespace Inventory
         {
             this.itemFromInventoryToCrate = aux; 
         }
-              
+
+        private void ThrowItemToGround()
+        {
+            // throw items to the ground, we should instantiate a looteableObject
+            /* ItemSlot itemSlotMoving = parentBeforeDrag.GetComponentInParent<ItemSlot>();
+             Debug.Log("TIRAMOS "  + itemSlotMoving.amount + " " + itemSlotMoving.GetItemInSlot().itemName);
+             PlayerInventory.Instance.RemovingItem(itemSlotMoving.GetItemInSlot(), itemSlotMoving.amount);
+
+
+             GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
+                 PlayerInventory.Instance.transform.position, Quaternion.identity);
+
+             Object backpack = UnityEngine.Resources.Load("Sprites/backpack");
+             Debug.Log(backpack);
+             Sprite backpackSprite = backpack as Sprite;
+             looteableObject.GetComponent<SpriteRenderer>().sprite = backpackSprite;
+             LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
+             Debug.Log(lootObject);
+             lootObject.ClearLooteableObject();
+             lootObject.AddItemToList(itemSlotMoving.GetItemInSlot(), itemSlotMoving.amount);
+             itemSlotMoving.ClearItemSlot();
+             */
+        }
     
   
     }

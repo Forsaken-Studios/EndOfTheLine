@@ -26,11 +26,11 @@ public class DoorUI : MonoBehaviour
         HandleOpeningDoor();
     }
 
-    public void SwapKeycardIcon()
+    public void SwapKeycardIcon(bool playerIsFarAway)
     {
         bool playerHasKey = PlayerInventory.Instance.CheckIfPlayerHasKey(); 
         keycardRenderer.sprite = playerHasKey ? haveKeycardSprite : notKeycardSprite;
-        playerCanTryToOpenTheDoor = playerHasKey; 
+        playerCanTryToOpenTheDoor = !playerIsFarAway && playerHasKey; 
     }
 
     private void HandleOpeningDoor()

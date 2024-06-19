@@ -41,17 +41,52 @@ namespace Loot
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsNeededToSpawn = new List<Item>();
             List<string> testList = new List<string>();
+            testList.Add("Keycard");
 
-            if (needToSpawnXObject)
+            //En el futuro, hay que ver esto, porque no podemos hacer spawn en el start, habrá que modificar las opciones antes
+            StartSpawingObjects(testList, true);
+        }
+        private void Update()
+        {
+            if (_isLooteable)
             {
-                testList.Add("Keycard");
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    //Loot
+                    if (LootUIManager.Instance.GetIfCrateIsOpened())
+                    {
+                        LootUIManager.Instance.DesactivateLootUIPanel();
+                        InventoryManager.Instance.DesactivateInventory();
+                        //looteableObjectUI.DesactivateLooteablePanel(); 
+                    }
+                    else
+                    {
+                        //We load objects to this panel
+                        LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
+                        InventoryManager.Instance.ActivateInventory();
+                        //looteableObjectUI.ActivateLooteablePanel();
+                    }
+                    //LootAllItems();
+                }
+            }
+        }
+
+        public void ClearLooteableObject()
+        {
+            itemsInLootableObject.Clear();
+        }
+        
+        public void StartSpawingObjects(List<string> testList, bool needToSpawnObject)
+        {
+            if (needToSpawnObject)
+            {
                 InitializeLootObject(testList);  
             }
             else
             {
                 InitializeLootObject(null);  
             }
-            
+            needToSpawnXObject = needToSpawnObject; 
         }
 
         private void InitializeLootObject(List<string> itemsList)
@@ -105,30 +140,7 @@ namespace Loot
                 allItemsList.RemoveAt(randomItemIndex);
             }
         }
-        private void Update()
-        {
-            if (_isLooteable)
-            {
-                if (Input.GetKeyDown(KeyCode.F))
-                {
-                    //Loot
-                    if (LootUIManager.Instance.GetIfCrateIsOpened())
-                    {
-                        LootUIManager.Instance.DesactivateLootUIPanel();
-                        InventoryManager.Instance.DesactivateInventory();
-                        //looteableObjectUI.DesactivateLooteablePanel(); 
-                    }
-                    else
-                    {
-                        //We load objects to this panel
-                        LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
-                        InventoryManager.Instance.ActivateInventory();
-                        //looteableObjectUI.ActivateLooteablePanel();
-                    }
-                    //LootAllItems();
-                }
-            }
-        }
+
 
         public void LootAllItems()
         {

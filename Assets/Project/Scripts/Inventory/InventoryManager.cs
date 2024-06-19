@@ -19,8 +19,8 @@ namespace Inventory
         [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private TextMeshProUGUI inventoryText;
         [SerializeField] private List<ItemSlot> itemSlotList;
-        [SerializeField] private int nextIndexSlotAvailable = 0;
-        
+        private int nextIndexSlotAvailable = 0;
+        [SerializeField] private GameObject looteableObjectPrefab;
         private int MAX_AMOUNT_PER_SLOT = 4;
 
         private void Awake()
@@ -217,6 +217,11 @@ namespace Inventory
         public int GetMaxItemsForSlots()
         {
             return MAX_AMOUNT_PER_SLOT;
+        }
+
+        public GameObject GetLooteableObjectPrefab()
+        {
+            return looteableObjectPrefab; 
         }
     }
 }
