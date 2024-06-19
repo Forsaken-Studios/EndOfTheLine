@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Loot;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -93,5 +94,8 @@ namespace Inventory
         {
             this.itemFromInventoryToCrate = aux; 
         }
+              
+    
+  
     }
 }

@@ -46,6 +46,7 @@ namespace FieldOfView
             UpdateFieldOfViewMesh();
             // FindTargetPlayer();
 
+            //Maybe we need to check in every raycast instead of foreach like this
             if (!CheckIfPlayerIsBeingDetected())
             {
                 if (detectionBar.GetIfPlayerIsDetected())
@@ -57,10 +58,8 @@ namespace FieldOfView
                 {
                     if (detectionBar.gameObject.activeSelf)
                     {
-                        LogManager.Log("CHECK", FeatureType.FieldOfView);
                         detectionBar.SetIfPlayerIsBeingDetected(false);
                     }
-
                 }
             }
             else
@@ -73,7 +72,9 @@ namespace FieldOfView
                 if (!detectionBar.GetIfPlayerIsDetected())
                 {
                     detectionBar.gameObject.SetActive(true);
+                    detectionBar.SetIfPlayerIsBeingDetected(true);
                 }
+                
             }
         }
 
@@ -118,18 +119,8 @@ namespace FieldOfView
                     vertex = origin + GetVectorFromAngle(angle) * viewDistance;
                 }
                 else
-                {
-                    if (raycastHit2D.collider.gameObject.CompareTag("Player"))
-                     {
-                         vertex = origin + GetVectorFromAngle(angle) * viewDistance;
-                     }
-                    else
-                    {
-                        //hit obstacle
-                        vertex = raycastHit2D.point;  
-                    }
-                
-
+                {  
+                    vertex = raycastHit2D.point;  
                 }
 
                 vertices[vertexIndex] = vertex;

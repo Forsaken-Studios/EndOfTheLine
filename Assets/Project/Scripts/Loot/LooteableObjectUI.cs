@@ -5,9 +5,12 @@ using Inventory;
 using UnityEngine;
 using UnityEngine.AI;
 using Utils.CustomLogs;
-
+/// <summary>
+/// NOT USING THIS CLASS
+/// </summary>
 public class LooteableObjectUI : MonoBehaviour
 {
+    
     [SerializeField] private GameObject looteableItemsPanel;
     [SerializeField] private GameObject player;
     private List<ItemSlot> itemSlotInBox;
@@ -22,8 +25,6 @@ public class LooteableObjectUI : MonoBehaviour
     private void Awake()
     {
         itemSlotInBox = new List<ItemSlot>(maxSlotsInCrate);
-     
-
     }
 
     private void Start()
@@ -54,7 +55,6 @@ public class LooteableObjectUI : MonoBehaviour
     public void AddItemToCrate(Item item, int amount)
     {
         //TODO: Añadir slot y setear la imagen del item Slot
-
         itemSlotInBox[availableSlotIndex].SetItemSlotProperties(item, amount);
         availableSlotIndex++;
     }

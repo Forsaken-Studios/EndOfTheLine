@@ -5,6 +5,7 @@ using System.Linq;
 using Inventory;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Internal;
 using UnityEngine.UI;
 using Utils.CustomLogs;
 using Object = System.Object;
@@ -19,13 +20,16 @@ namespace Loot
 
         [SerializeField] private GameObject hotkeyImage;
         private Dictionary<Item, int> itemsInLootableObject;
-        private LooteableObjectUI looteableObjectUI;
         [SerializeField] private bool onlyOneItemInBag;
-        private bool _isLooteable = false;
+        [SerializeField] private bool needToSpawnXObject;
         private bool isLooting = false;
-
+        /// <summary>
+        /// When we need to spawn X Items 100%
+        /// </summary>
+        private List<Item> itemsNeededToSpawn;
+        [SerializeField] private int maxSlotsInCrate;
         
-        
+        private bool _isLooteable = false;
         public bool IsLooteable
         {
             get { return _isLooteable; }
@@ -35,25 +39,66 @@ namespace Loot
         private void Start()
         {
             itemsInLootableObject = new Dictionary<Item, int>();
-            looteableObjectUI = GetComponent<LooteableObjectUI>();
-            PrepareLoot();
+            itemsNeededToSpawn = new List<Item>();
+            List<string> testList = new List<string>();
+
+            if (needToSpawnXObject)
+            {
+                testList.Add("Keycard");
+                InitializeLootObject(testList);  
+            }
+            else
+            {
+                InitializeLootObject(null);  
+            }
+            
         }
 
-        private void PrepareLoot()
+        private void InitializeLootObject(List<string> itemsList)
         {
-            //TODO: AQUI SE ELIGE QUE TIPO DE LOOT PODRIAMOS PONER (AHORA ES TODOS LOS ITEMS)
-            Object[] allItems = UnityEngine.Resources.LoadAll("Items");
+            if (itemsList != null)
+            {
+                PrepareItemsNeededToSpawn(itemsList);
+                int remainingItems = maxSlotsInCrate - itemsList.Count;
+                if (remainingItems > 0)
+                {
+                    PrepareLoot(remainingItems); 
+                }
+                else
+                {
+                    Debug.Log("NO SLOTS AVAILABLE FOR THAT CRATE");
+                }
+            }
+            else
+            {
+                PrepareLoot(maxSlotsInCrate);
+            }
+        }
+
+        private void PrepareItemsNeededToSpawn(List<string> itemsList)
+        {
+            foreach (var itemName in itemsList)
+            {
+                Object itemNeeded = UnityEngine.Resources.Load("Items/Keycards/Keycard");
+                Item itemSO = itemNeeded as Item;
+                itemsNeededToSpawn.Add(itemSO);
+                itemsInLootableObject.Add(itemSO, 1);
+            }
+        }
+
+        private void PrepareLoot(int remainingSlotsInCrate)
+        {
+            Object[] allItems = UnityEngine.Resources.LoadAll("Items/Scrap");
             List<Object> allItemsList = allItems.ToList();
             int itemsToLoot = 1;
             if (!onlyOneItemInBag)
-                itemsToLoot = Random.Range(2, looteableObjectUI.GetMaxSlotsInCrate());
+                itemsToLoot = Random.Range(1, remainingSlotsInCrate);
                 //itemsToLoot = Random.Range(2, 3); NO PANEL
             for (int i = 0; i < itemsToLoot; i++)
             {
                 int randomItemIndex = Random.Range(0, allItemsList.Count);
                 int randomQuantity = Random.Range(1, 4);
                 Item itemSO = allItemsList[randomItemIndex] as Item;
-                //Debug.Log("ITEM IN LOOTABLE OBJECT: " + itemSO.name + " -> x" + randomQuantity);
                 itemsInLootableObject.Add(itemSO, randomQuantity);
                 //WE MODIFIE THE UI
                 //looteableObjectUI.AddItemToCrate(itemSO, randomQuantity);

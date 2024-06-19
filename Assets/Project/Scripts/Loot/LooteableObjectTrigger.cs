@@ -10,9 +10,10 @@ namespace Loot
     {
         private LooteableObject looteableObject;
 
+        
         private void Start()
         {
-            looteableObject = this.gameObject.GetComponent<LooteableObject>();
+            looteableObject = this.gameObject.GetComponentInParent<LooteableObject>();
         }
 
         private void OnTriggerEnter2D(Collider2D other)

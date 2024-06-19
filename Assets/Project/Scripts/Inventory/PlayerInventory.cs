@@ -99,7 +99,7 @@ namespace Inventory
         {
             return inventoryItemDictionary;
         }
-        public void RemovingItemDragging(Item item, int itemSlotAmount)
+        public void RemovingItem(Item item, int itemSlotAmount)
         {
             if (inventoryItemDictionary.ContainsKey(item))
             {         
@@ -110,6 +110,13 @@ namespace Inventory
                 }
                 InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             }
+        }
+
+        public bool CheckIfPlayerHasKey()
+        {
+            Object itemNeeded = UnityEngine.Resources.Load("Items/Keycards/Keycard");
+            Item keycardItem = itemNeeded as Item;
+            return inventoryItemDictionary.ContainsKey(keycardItem);
         }
     }
 }
