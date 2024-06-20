@@ -51,11 +51,9 @@ namespace Inventory
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 isSplitting = true; 
-                Debug.Log("SHIFT PRESSED");
             }
             else
             {
-                Debug.Log("SHIFT NOT PRESSED");
                 isSplitting = false;
             }
             transform.position = Input.mousePosition;

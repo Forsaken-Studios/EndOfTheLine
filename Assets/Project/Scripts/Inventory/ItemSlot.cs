@@ -134,6 +134,7 @@ namespace Inventory
             }
             else
             {
+                Debug.Log("MOVING: " + amountToMove);
                 SwapItemsBetweenSlots(draggableItem, previousItemSlot, amountToMove);
             }
             
@@ -253,7 +254,7 @@ namespace Inventory
             ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();
             Item itemToAdd = itemSlotBeforeDrop.GetItemInSlot();
             int remainingItems = 0;
-
+            Debug.Log("MOVING FROM METHOD: " + amountToMove);
             if (LootUIManager.Instance.TryAddItemCrateToItemSlot(itemSlotBeforeDrop.GetItemInSlot(), 
                     amountToMove, out remainingItems))
             {
@@ -265,7 +266,6 @@ namespace Inventory
                 draggableItem.SetItemComingFromInventoryToCrate(true);
                 if (!itemSlotBeforeDrop.GetIfIsLootCrate() && this.GetIfIsLootCrate())
                 {
-                    PlayerInventory.Instance.RemovingItem(this.GetItemInSlot(), amountToMove);
                     LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToAdd, 
                         amountToMove);
                     PlayerInventory.Instance.RemovingItem(itemToAdd, amountToMove);
