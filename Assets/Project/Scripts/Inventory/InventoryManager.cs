@@ -97,6 +97,14 @@ namespace Inventory
                               PlayerInventory.Instance.GetMaxWeight() + " KG";
         }
 
+        
+        /// <summary>
+        /// Methods that finds and set the first available spot for item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="amount"></param>
+        /// <param name="remainingItemsWithoutSpace"></param>
+        /// <returns></returns>
         public bool TryAddInventoryToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
         {
             int availableIndex = 0;
@@ -222,6 +230,11 @@ namespace Inventory
         public GameObject GetLooteableObjectPrefab()
         {
             return looteableObjectPrefab; 
+        }
+
+        public void ActivateRightClickInterface(ItemSlot itemSlot)
+        {
+            Debug.Log("RIGHT CLICK IN ITEM SLOT WITH ITEM: " + itemSlot.GetItemInSlot().itemName);
         }
     }
 }

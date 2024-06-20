@@ -24,14 +24,12 @@ namespace Inventory
         /// <param name="eventData"></param>
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftControl))
             {
                 isSplitting = true; 
-                Debug.Log("SHIFT PRESSED");
             }
             else
             {
-                Debug.Log("SHIFT NOT PRESSED");
                 isSplitting = false;
             }
             parentBeforeDrag = transform.parent;
@@ -48,7 +46,7 @@ namespace Inventory
         /// <param name="eventData"></param>
         public void OnDrag(PointerEventData eventData)
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftControl))
             {
                 isSplitting = true; 
             }
@@ -75,7 +73,6 @@ namespace Inventory
             }
             else
             {
-               
                     ItemSlot itemSlotMoving = parentBeforeDrag.GetComponentInParent<ItemSlot>();
                     //And moves to our inventory
                     ItemSlot itemSlotFinal = parentAfterDrag.GetComponentInParent<ItemSlot>();

@@ -5,15 +5,17 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using Loot;
 using Unity.VisualScripting;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
 using Utils.CustomLogs;
+using Object = System.Object;
 
 namespace Inventory
 {
 
-    public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
+    public class ItemSlot : MonoBehaviour, IDropHandler, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         
         [FormerlySerializedAs("comeFromLootCrate")] [SerializeField] private bool isLootCrate = false;
@@ -21,6 +23,8 @@ namespace Inventory
         [SerializeField] private Image itemSlotImage;
         private TextMeshProUGUI itemSlotAmountText;
         private int ItemID;
+
+        private bool canThrowItemAway;
         private Item itemInSlot;
         public int itemID
         {
@@ -41,6 +45,18 @@ namespace Inventory
             this.itemSlotAmountText = this.GetComponentInChildren<TextMeshProUGUI>(includeInactive: true);
             this.itemSlotAmountText.text = "";
              emptySprite = (Sprite) UnityEngine.Resources.Load<Sprite>("Sprites/EmptySprite");
+        }
+
+        private void Update()
+        {
+            if (canThrowItemAway)
+            {
+                if (Input.GetKeyDown(KeyCode.X))
+                {
+                    Debug.Log("DESECHAR");
+                    ThrowItemToGround();
+                }
+            }
         }
 
         /// <summary>
@@ -142,6 +158,7 @@ namespace Inventory
         public void SwapItemsBetweenSlots(DraggableItem draggableItem, ItemSlot previousItemSlot,
             int amountToMove)
         {
+            int totalAmount = previousItemSlot.amount;
             //Check to do, to add more amount to an item
             if (this.itemID == 0 && previousItemSlot.itemID != 0)
             {
@@ -212,8 +229,14 @@ namespace Inventory
                         LogManager.Log("MOVING FROM CRATE TO CRATE (STACKING)", FeatureType.Loot);
                         StackingItemsInCrateDragging(draggableItem, amountToMove);
                     }
-   
                 }
+            }
+
+            LooteableObject loot = LootUIManager.Instance.GetCurrentLootableObject();
+            if (loot.GetIfItIsTemporalBox() && loot.CheckIfLootBoxIsEmpty())
+            {
+                Destroy(loot.gameObject);
+                Debug.Log("TEMPORAL BOX DESTROYED");
             }
         }
 
@@ -361,23 +384,7 @@ namespace Inventory
             itemSlotImage.gameObject.transform.position = draggableItem.parentAfterDrag.position;
         }    
       
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            if (eventData.clickCount == 2) {
-                if (ValidMovementFromInventoryToCrate())
-                {
-                    //MOVING FROM INVENTORY TO CRATE
-                   // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM INVENTORY TO CRATE", FeatureType.Loot);
-                    DoubleClickOnItemFromInventoryToCrate();
-                }
-                else if(ValidMovementFromCrateToInventory())
-                {
-                    //MOVING FROM CRATE TO INVENTORY
-                   // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM CRATE TO INVENTORY", FeatureType.Loot);
-                    DoubleClickOnItemFromCrateToInventory();
-                }
-            }
-        }
+
 
         private void DoubleClickOnItemFromInventoryToCrate()
         {
@@ -456,6 +463,84 @@ namespace Inventory
         public void ChangeSpriteImage(Sprite image)
         {
             this.itemSlotImage.sprite = image;
+        }
+
+    
+        private void ThrowItemToGround()
+        {
+            // throw items to the ground, we should instantiate a looteableObject
+            
+             Debug.Log("TIRAMOS "  + amount + " " + GetItemInSlot().itemName);
+             
+             //We will need to check if it crate or not
+             if (this.isLootCrate)
+             {
+                 //We throw item out of loot box 
+             }
+             else
+             {
+                 //We throw item out of inventory
+                 PlayerInventory.Instance.RemovingItem(GetItemInSlot(), amount);
+             }
+ 
+             
+             //We create new box
+             GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
+                 PlayerInventory.Instance.transform.position, Quaternion.identity);
+
+             looteableObject.name = "Temporal Box";
+             looteableObject.GetComponent<SpriteRenderer>().sprite = LootUIManager.Instance.GetTemporalBoxSprite();
+             
+             LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
+             
+             lootObject.SetIfItIsTemporalBox(true);
+             lootObject.ClearLooteableObject();
+             lootObject.AddItemToList(GetItemInSlot(), amount);
+             ClearItemSlot();
+             
+        }
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            //Doble click eventData.clickCount == 2
+            
+            if (Input.GetKey(KeyCode.LeftShift)) {
+                if (ValidMovementFromInventoryToCrate())
+                {
+                    //MOVING FROM INVENTORY TO CRATE
+                    // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM INVENTORY TO CRATE", FeatureType.Loot);
+                    DoubleClickOnItemFromInventoryToCrate();
+                }
+                else if(ValidMovementFromCrateToInventory())
+                {
+                    //MOVING FROM CRATE TO INVENTORY
+                    // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM CRATE TO INVENTORY", FeatureType.Loot);
+                    DoubleClickOnItemFromCrateToInventory();
+                }
+            }
+
+            if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                if (itemID != 0)
+                {
+                    InventoryManager.Instance.ActivateRightClickInterface(this);
+                }
+            }
+        }
+        
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (this.itemID != 0)
+            {
+                canThrowItemAway = true;
+            }
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (this.itemID != 0)
+            {
+                canThrowItemAway = false;
+            }
         }
     }
 }

@@ -32,7 +32,6 @@ public class Train : MonoBehaviour
 
     public void MoveTrain(int index)
     {
-        Debug.Log("INDEaX: " + index);
         switch (index)
         {
             case 0:

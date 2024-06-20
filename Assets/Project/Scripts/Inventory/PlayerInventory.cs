@@ -64,7 +64,6 @@ namespace Inventory
                 {
                     inventoryItemDictionary.Add(item, amount);
                 }  
-                Debug.Log("ADDING: " + item.itemWeight * amount );
                 AddWeight(item.itemWeight * amount);
                 if(showItemsTakenMessage)
                      ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);

@@ -18,6 +18,7 @@ public class LootUIManager : MonoBehaviour
     private LooteableObject currentCrateLooting;
     private bool getIfCrateIsOpened;
     private float distanceNeededToClosePanel = 2f;
+    [SerializeField] private Sprite temporalBoxSprite;
     [SerializeField] private GameObject splittingView; 
     private void Awake()
     {
@@ -188,7 +189,11 @@ public class LootUIManager : MonoBehaviour
         }
         return -1;
     }
-    
+
+    public Sprite GetTemporalBoxSprite()
+    {
+        return temporalBoxSprite;
+    }
     public bool GetIfCrateIsOpened()
     {
         return getIfCrateIsOpened;

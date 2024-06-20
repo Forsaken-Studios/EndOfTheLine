@@ -23,6 +23,7 @@ namespace Loot
         [SerializeField] private bool onlyOneItemInBag;
         [SerializeField] private bool needToSpawnXObject;
         private bool isLooting = false;
+        private bool isTemporalBox = false; 
         /// <summary>
         /// When we need to spawn X Items 100%
         /// </summary>
@@ -36,7 +37,7 @@ namespace Loot
             set { _isLooteable = value; }
         }
 
-        private void Start()
+        private void Awake()
         {
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsNeededToSpawn = new List<Item>();
@@ -73,7 +74,24 @@ namespace Loot
 
         public void ClearLooteableObject()
         {
+            itemsInLootableObject = new Dictionary<Item, int>();
             itemsInLootableObject.Clear();
+            Debug.Log(itemsInLootableObject.Count);
+        }
+        
+        public void SetIfItIsTemporalBox(bool aux)
+        {
+            this.isTemporalBox = aux;
+        }
+
+        public bool GetIfItIsTemporalBox()
+        {
+            return isTemporalBox;
+        }
+
+        public bool CheckIfLootBoxIsEmpty()
+        {
+            return itemsInLootableObject.Count == 0;
         }
         
         public void StartSpawingObjects(List<string> testList, bool needToSpawnObject)
@@ -171,6 +189,12 @@ namespace Loot
             //Text to indicate we take X Item
             PlayerInventory.Instance.ShowFullListItemTaken(itemsTaken);
             InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
+            
+            if (isTemporalBox)
+            {
+                Destroy(this.gameObject);
+                Debug.Log("DESTROYING TEMPORAL BOX");
+            }
         }
         
         public void AddItemToList(Item item, int amount)
