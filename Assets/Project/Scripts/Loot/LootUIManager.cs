@@ -18,6 +18,8 @@ public class LootUIManager : MonoBehaviour
     private LooteableObject currentCrateLooting;
     private bool getIfCrateIsOpened;
     private float distanceNeededToClosePanel = 2f;
+    [SerializeField] private Sprite temporalBoxSprite;
+    [SerializeField] private GameObject splittingView; 
     private void Awake()
     {
         if (Instance != null)
@@ -115,6 +117,11 @@ public class LootUIManager : MonoBehaviour
         getIfCrateIsOpened = false;
     }
     
+    public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
+    {
+        this.splittingView.SetActive(true);
+        this.splittingView.GetComponent<SplittingView>().SetUpProperties(maxAmount, draggableItem, itemSlot, previousItemSlot);
+    }
     public bool TryAddItemCrateToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
         {
             int availableIndex = 0;
@@ -182,7 +189,11 @@ public class LootUIManager : MonoBehaviour
         }
         return -1;
     }
-    
+
+    public Sprite GetTemporalBoxSprite()
+    {
+        return temporalBoxSprite;
+    }
     public bool GetIfCrateIsOpened()
     {
         return getIfCrateIsOpened;
@@ -205,4 +216,6 @@ public class LootUIManager : MonoBehaviour
         LootUIManager.Instance.LoadItemsInSlots(itemsInLootableObject);
         LootUIManager.Instance.ActivateLootUIPanel();
     }
+
+
 }

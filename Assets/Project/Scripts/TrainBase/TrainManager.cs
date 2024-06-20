@@ -42,7 +42,6 @@ public class TrainManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(currentIndex);
         HandleButtonPressed();
         if(!canvasActivated)
             HandleMovement();
