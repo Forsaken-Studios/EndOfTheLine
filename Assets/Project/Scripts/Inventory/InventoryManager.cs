@@ -93,7 +93,7 @@ namespace Inventory
                 inventoryText.text += item.Key.name + "  x" + item.Value + "\n";
             }
 
-            weightText.text = PlayerInventory.Instance.GetCurrentWeight().ToString() + " / " +
+            weightText.text = PlayerInventory.Instance.GetCurrentWeight().ToString("F2") + " / " +
                               PlayerInventory.Instance.GetMaxWeight() + " KG";
         }
 
