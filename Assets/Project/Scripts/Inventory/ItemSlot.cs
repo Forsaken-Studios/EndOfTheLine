@@ -233,10 +233,13 @@ namespace Inventory
             }
 
             LooteableObject loot = LootUIManager.Instance.GetCurrentLootableObject();
-            if (loot.GetIfItIsTemporalBox() && loot.CheckIfLootBoxIsEmpty())
+            if (loot != null)
             {
-                Destroy(loot.gameObject);
-                Debug.Log("TEMPORAL BOX DESTROYED");
+                if (loot.GetIfItIsTemporalBox() && loot.CheckIfLootBoxIsEmpty())
+                {
+                    Destroy(loot.gameObject);
+                    Debug.Log("TEMPORAL BOX DESTROYED");
+                }
             }
         }
 
@@ -522,7 +525,7 @@ namespace Inventory
             {
                 if (itemID != 0)
                 {
-                    InventoryManager.Instance.ActivateRightClickInterface(this);
+                    InventoryManager.Instance.ActivateContextMenuInterface(this);
                 }
             }
         }
