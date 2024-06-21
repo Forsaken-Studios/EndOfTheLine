@@ -34,16 +34,20 @@ public class ContextMenu : MonoBehaviour, IDeselectHandler, IPointerClickHandler
     private void UseItem()
     {
         Debug.Log("USE ITEM");
+        InventoryManager.Instance.TryDestroyContextMenu();
     }
 
     private void InspectItem()
     {
         Debug.Log("INSPECT ITEM");
+        InventoryManager.Instance.TryDestroyContextMenu();
     }
 
     private void DiscardItem()
     {
         Debug.Log("DISCARD ITEM " + itemSlot.GetItemInSlot().itemName);
+        itemSlot.ThrowItemToGround();
+        InventoryManager.Instance.TryDestroyContextMenu();
     }
 
     public void SetItemSlotProperties(ItemSlot itemSlot)
@@ -60,11 +64,9 @@ public class ContextMenu : MonoBehaviour, IDeselectHandler, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("POINT CLICK NO IF"); 
-        Debug.Log(eventData.pointerClick);
-
         if (eventData.pointerPress.gameObject.CompareTag("BackgroundToDeleteContextMenu"))
         {
+            Debug.Log("CLICK OUTSIDE");
             Destroy(this.gameObject);
         }
     }

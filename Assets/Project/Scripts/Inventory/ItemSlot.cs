@@ -469,7 +469,7 @@ namespace Inventory
         }
 
     
-        private void ThrowItemToGround()
+        public void ThrowItemToGround()
         {
             // throw items to the ground, we should instantiate a looteableObject
             
@@ -485,8 +485,6 @@ namespace Inventory
                  //We throw item out of inventory
                  PlayerInventory.Instance.RemovingItem(GetItemInSlot(), amount);
              }
- 
-             
              //We create new box
              GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
                  PlayerInventory.Instance.transform.position, Quaternion.identity);
