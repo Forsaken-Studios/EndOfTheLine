@@ -248,6 +248,11 @@ namespace Inventory
             this.SetItemSlotProperties(itemToAdd, amountToMove);
         }
 
+        /// <summary>
+        /// Stacking items from inventory to inventory
+        /// </summary>
+        /// <param name="draggableItem"></param>
+        /// <param name="amountToMove"></param>
         private void DraggingItemToOtherItem(DraggableItem draggableItem, int amountToMove)
         {
             ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();
@@ -279,68 +284,152 @@ namespace Inventory
             
         }
         
+        /// <summary>
+        /// Stacking items from inventory to crate
+        /// </summary>
+        /// <param name="draggableItem"></param>
+        /// <param name="amountToMove"></param>
         private void AddItemFromInventoryToCrateStacking(DraggableItem draggableItem, int amountToMove)
         {
             ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();
             Item itemToAdd = itemSlotBeforeDrop.GetItemInSlot();
             int remainingItems = 0;
             
- 
-            
-            if (LootUIManager.Instance.TryAddItemCrateToItemSlot(itemSlotBeforeDrop.GetItemInSlot(), 
-                    amountToMove, out remainingItems))
+            if (this.amount + amountToMove <= InventoryManager.Instance.GetMaxItemsForSlots())
             {
-                if (amountToMove == itemSlotBeforeDrop.amount)
+                //Just move 
+                this.ModifyItemSlotAmount(this.amount + amountToMove);
+                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemInSlot, amountToMove);
+                PlayerInventory.Instance.RemovingItem(itemToAdd, amountToMove);
+                itemSlotBeforeDrop.ClearItemSlot();
+            }else if(this.amount == InventoryManager.Instance.GetMaxItemsForSlots())
+            {
+                StackItemsFromInventoryToCrate(itemSlotBeforeDrop, amountToMove, draggableItem, itemToAdd);
+            }
+            else
+            {
+                int remainingSpace = (this.amount + amountToMove) - InventoryManager.Instance.GetMaxItemsForSlots();
+                int valueToMove = InventoryManager.Instance.GetMaxItemsForSlots() - this.amount;
+                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemInSlot, valueToMove);
+                PlayerInventory.Instance.RemovingItem(itemToAdd, valueToMove);
+                itemSlotBeforeDrop.ModifyItemSlotAmount(remainingSpace);
+                this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
+
+                    
+                StackItemsFromInventoryToCrate(itemSlotBeforeDrop, remainingSpace, draggableItem, itemToAdd);
+
+            }
+        }
+        /// <summary>
+        /// Aux method from inventory to cache
+        /// </summary>
+        /// <param name="itemSlotBeforeDrop"></param>
+        /// <param name="remainingSpace"></param>
+        /// <param name="draggableItem"></param>
+        /// <param name="itemToAdd"></param>
+        private void StackItemsFromInventoryToCrate(ItemSlot itemSlotBeforeDrop, int remainingSpace,
+            DraggableItem draggableItem, Item itemToAdd)
+        {
+            if (LootUIManager.Instance.TryAddItemCrateToItemSlot(itemSlotBeforeDrop.GetItemInSlot(), 
+                    remainingSpace, out int remainingItems))
+            {
+                if (remainingSpace == itemSlotBeforeDrop.amount)
                     ResetItemSlot(itemSlotBeforeDrop, draggableItem);
                 else
-                    itemSlotBeforeDrop.ModifyItemSlotAmount(itemSlotBeforeDrop.amount - amountToMove);
+                    itemSlotBeforeDrop.ModifyItemSlotAmount(itemSlotBeforeDrop.amount - remainingSpace);
                 
                 draggableItem.SetItemComingFromInventoryToCrate(true);
-                if (!itemSlotBeforeDrop.GetIfIsLootCrate() && this.GetIfIsLootCrate())
-                {
-                    LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToAdd, 
-                        amountToMove);
-                    PlayerInventory.Instance.RemovingItem(itemToAdd, amountToMove);
-                }
+                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToAdd, 
+                    remainingSpace);
+                PlayerInventory.Instance.RemovingItem(itemToAdd, remainingSpace);
+                    
                 draggableItem.parentAfterDrag = this.transform;
             }
             else
             {
                 itemSlotBeforeDrop.SetItemSlotProperties(itemSlotBeforeDrop.GetItemInSlot(), remainingItems);
                 LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemSlotBeforeDrop.GetItemInSlot(), 
-                   amountToMove - remainingItems);
-                PlayerInventory.Instance.RemovingItem(itemToAdd, amountToMove - remainingItems);
+                    remainingSpace - remainingItems);
+                PlayerInventory.Instance.RemovingItem(itemToAdd, remainingSpace - remainingItems);
             }
+            
         }
-        
+
+        /// <summary>
+        /// Stacking items from crate into inventory
+        /// </summary>
+        /// <param name="draggableItem"></param>
+        /// <param name="amountToMove"></param>
         private void AddExistingItemToInventoryDragging(DraggableItem draggableItem, int amountToMove)
         {
             ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();
             Item itemToAdd = itemSlotBeforeDrop.GetItemInSlot();
             int remainingItems = 0;
-
-            if (InventoryManager.Instance.TryAddInventoryToItemSlot(itemSlotBeforeDrop.GetItemInSlot(), amountToMove,
-                    out remainingItems))
+            
+            if (this.amount + amountToMove <= InventoryManager.Instance.GetMaxItemsForSlots())
+            {
+                //Just move 
+                this.ModifyItemSlotAmount(this.amount + amountToMove);
+                LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemInSlot, amountToMove);
+                PlayerInventory.Instance.TryAddingItemDragging(itemToAdd, amountToMove, true);
+                itemSlotBeforeDrop.ClearItemSlot();
+            }else if (this.amount == InventoryManager.Instance.GetMaxItemsForSlots())
+            {
+                StackItemsFromCrateToInventory(itemSlotBeforeDrop, amountToMove, draggableItem, itemToAdd);
+            }
+            else
+            {
+                //TODO: TENEMOS QUE HACER QUE EL ITEM SLOT DE BEFORE SE PONGA BIEN
+                int remainingSpace = (this.amount + amountToMove) - InventoryManager.Instance.GetMaxItemsForSlots();
+                int valueToMove = InventoryManager.Instance.GetMaxItemsForSlots() - this.amount;
+                LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemInSlot, valueToMove);
+                PlayerInventory.Instance.TryAddingItemDragging(itemToAdd, valueToMove, true);
+                itemSlotBeforeDrop.ModifyItemSlotAmount(remainingSpace);
+                this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
+                
+                StackItemsFromCrateToInventory(itemSlotBeforeDrop, remainingSpace, draggableItem, itemToAdd);
+            }
+        }
+        /// <summary>
+        /// Aux method from crate to inventory
+        /// </summary>
+        /// <param name="itemSlotBeforeDrop"></param>
+        /// <param name="remainingSpace"></param>
+        /// <param name="draggableItem"></param>
+        /// <param name="itemToAdd"></param>
+        private void StackItemsFromCrateToInventory(ItemSlot itemSlotBeforeDrop, int remainingSpace, DraggableItem draggableItem, Item itemToAdd)
+        {
+            if (InventoryManager.Instance.TryAddInventoryToItemSlot(itemToAdd,
+                    remainingSpace,
+                    out int remainingItems))
             {
                 //We have size, we take all items of this type
-                if (amountToMove == itemSlotBeforeDrop.amount)
+                if (remainingSpace == itemSlotBeforeDrop.amount)
                     ResetItemSlot(itemSlotBeforeDrop, draggableItem);
                 else
-                    itemSlotBeforeDrop.ModifyItemSlotAmount(itemSlotBeforeDrop.amount - amountToMove);
-                PlayerInventory.Instance.TryAddingItemDragging(this.GetItemInSlot(), amountToMove, true);
+                    itemSlotBeforeDrop.ModifyItemSlotAmount(itemSlotBeforeDrop.amount - remainingSpace);
+                
+                
+                PlayerInventory.Instance.TryAddingItemDragging(this.GetItemInSlot(), remainingSpace, true);
+                LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemToAdd,
+                    remainingSpace);
                 draggableItem.SetItemComingFromInventoryToCrate(false);
                 draggableItem.parentAfterDrag = this.transform;
             }
             else
             {
-                PlayerInventory.Instance.TryAddingItemDragging(this.GetItemInSlot(), amountToMove - remainingItems, true);
+                PlayerInventory.Instance.TryAddingItemDragging(this.GetItemInSlot(), remainingSpace - remainingItems,
+                    true);
                 itemSlotBeforeDrop.SetItemSlotProperties(itemSlotBeforeDrop.GetItemInSlot(), remainingItems);
             }
-            
-            LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemToAdd,
-                amountToMove);
+
         }
         
+        /// <summary>
+        /// Stacking items in crate
+        /// </summary>
+        /// <param name="draggableItem"></param>
+        /// <param name="amountToMove"></param>
         private void StackingItemsInCrateDragging(DraggableItem draggableItem, int amountToMove)
         {
             ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();

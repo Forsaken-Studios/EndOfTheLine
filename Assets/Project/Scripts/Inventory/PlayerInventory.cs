@@ -51,6 +51,7 @@ namespace Inventory
 
         }
 
+  
         public bool TryAddItem(Item item, int amount, out int remainingItemsWithoutSpace, bool showItemsTakenMessage)
         {
             if (InventoryManager.Instance.TryAddInventoryToItemSlot(item, amount, out remainingItemsWithoutSpace))

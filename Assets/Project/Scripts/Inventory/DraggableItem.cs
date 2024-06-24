@@ -79,6 +79,7 @@ namespace Inventory
                     //And moves to our inventory
                     ItemSlot itemSlotFinal = parentAfterDrag.GetComponentInParent<ItemSlot>();
                     transform.SetParent(parentBeforeDrag);
+                    this.transform.position = parentBeforeDrag.position;
             }
             transform.SetAsFirstSibling();
             image.raycastTarget = true;
