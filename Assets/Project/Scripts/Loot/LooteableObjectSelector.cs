@@ -71,6 +71,10 @@ public class LooteableObjectSelector : MonoBehaviour
         return looteableObjectInRange.Count;
     }
 
+    public List<LooteableObject> GetLootList()
+    {
+        return looteableObjectInRange;
+    }
     public bool GetIfSelectorIsActive()
     {
         return looteableObjectInRange.Count > 1;
