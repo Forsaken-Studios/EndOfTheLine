@@ -53,30 +53,46 @@ namespace Loot
             {
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    //Loot
-                    if (LootUIManager.Instance.GetIfCrateIsOpened())
+                    if (LooteableObjectSelector.Instance.GetIfSelectorIsActive() &&
+                        LooteableObjectSelector.Instance.GetIfIndexIsThisLooteableObject(this))
                     {
-                        LootUIManager.Instance.DesactivateLootUIPanel();
-                        InventoryManager.Instance.DesactivateInventory();
-                        //looteableObjectUI.DesactivateLooteablePanel(); 
+                        //CUIDADO QUE ESTÁ AL REVES, PILLA EL NOMBRE DEL OTRO
+                        Debug.Log(this.name);
+                        HandleInventory();
                     }
-                    else
+                    
+                    
+                    if(!LooteableObjectSelector.Instance.GetIfSelectorIsActive())
                     {
-                        //We load objects to this panel
-                        LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
-                        InventoryManager.Instance.ActivateInventory();
-                        //looteableObjectUI.ActivateLooteablePanel();
+                        //No scroll selector
+                        HandleInventory();
                     }
-                    //LootAllItems();
                 }
             }
         }
 
+        private void HandleInventory()
+        {
+            //Loot
+            if (LootUIManager.Instance.GetIfCrateIsOpened())
+            {
+                LootUIManager.Instance.DesactivateLootUIPanel();
+                InventoryManager.Instance.DesactivateInventory();
+                //looteableObjectUI.DesactivateLooteablePanel(); 
+            }
+            else
+            {
+                //We load objects to this panel
+                LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
+                InventoryManager.Instance.ActivateInventory();
+                //looteableObjectUI.ActivateLooteablePanel();
+            }
+        }
+        
         public void ClearLooteableObject()
         {
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsInLootableObject.Clear();
-            Debug.Log(itemsInLootableObject.Count);
         }
         
         public void SetIfItIsTemporalBox(bool aux)

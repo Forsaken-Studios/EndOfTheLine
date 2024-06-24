@@ -25,10 +25,12 @@ namespace Inventory
         private int nextIndexSlotAvailable = 0;
         [SerializeField] private GameObject looteableObjectPrefab;
         [SerializeField] private GameObject rightClickInterfacePrefab;
-
+        
         private GameObject currentRightClickInterface;
         private int MAX_AMOUNT_PER_SLOT = 4;
 
+     
+        
         private void Awake()
         {
             if (Instance != null)
@@ -37,7 +39,6 @@ namespace Inventory
                 Destroy(gameObject);
                 return;
             }
-
             Instance = this;
 
         }
@@ -243,8 +244,7 @@ namespace Inventory
 
         public void ActivateContextMenuInterface(ItemSlot itemSlot)
         {
-            Debug.Log("RIGHT CLICK IN ITEM SLOT WITH ITEM: " + itemSlot.GetItemInSlot().itemName);
-
+            
             if (currentRightClickInterface != null)
             {
                 Destroy(currentRightClickInterface.gameObject);
@@ -265,7 +265,7 @@ namespace Inventory
                 currentRightClickInterface = null; 
             }
         }
-     
+
     }
 }
 

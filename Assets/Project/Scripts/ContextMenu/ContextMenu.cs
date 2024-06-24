@@ -45,7 +45,6 @@ public class ContextMenu : MonoBehaviour, IDeselectHandler, IPointerClickHandler
 
     private void DiscardItem()
     {
-        Debug.Log("DISCARD ITEM " + itemSlot.GetItemInSlot().itemName);
         itemSlot.ThrowItemToGround();
         InventoryManager.Instance.TryDestroyContextMenu();
     }

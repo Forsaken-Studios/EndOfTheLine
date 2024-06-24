@@ -150,7 +150,6 @@ namespace Inventory
             }
             else
             {
-                Debug.Log("MOVING: " + amountToMove);
                 SwapItemsBetweenSlots(draggableItem, previousItemSlot, amountToMove);
             }
             
@@ -471,14 +470,12 @@ namespace Inventory
     
         public void ThrowItemToGround()
         {
-            // throw items to the ground, we should instantiate a looteableObject
-            
-             Debug.Log("TIRAMOS "  + amount + " " + GetItemInSlot().itemName);
-             
+
              //We will need to check if it crate or not
              if (this.isLootCrate)
              {
-                 //We throw item out of loot box 
+                 //We throw item out of loot box
+                 LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(GetItemInSlot(), amount);
              }
              else
              {
@@ -488,10 +485,6 @@ namespace Inventory
              //We create new box
              GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
                  PlayerInventory.Instance.transform.position, Quaternion.identity);
-
-             looteableObject.name = "Temporal Box";
-             looteableObject.GetComponent<SpriteRenderer>().sprite = LootUIManager.Instance.GetTemporalBoxSprite();
-             
              LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
              
              lootObject.SetIfItIsTemporalBox(true);

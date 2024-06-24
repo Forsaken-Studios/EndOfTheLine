@@ -3242,6 +3242,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2472250987447768814, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
   m_PrefabInstance: {fileID: 619902899}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &632003256
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 632003257}
+  - component: {fileID: 632003258}
+  m_Layer: 0
+  m_Name: LooteableObjectSelectorUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &632003257
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632003256}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &632003258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632003256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51e511aac727f3549ac9e593a3a1ab8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &633462521
 GameObject:
   m_ObjectHideFlags: 0
@@ -8009,7 +8053,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 13cb03bd8c6d2534395ac355f1fb7606, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -12796,6 +12840,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2144102059}
   - component: {fileID: 2144102060}
+  - component: {fileID: 2144102061}
   m_Layer: 0
   m_Name: InventoryManager
   m_TagString: Untagged
@@ -12849,8 +12894,21 @@ MonoBehaviour:
   - {fileID: 839036861}
   - {fileID: 1181667735}
   - {fileID: 729597975}
-  looteableObjectPrefab: {fileID: 1437372468086054429, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
+  looteableObjectPrefab: {fileID: 1437372468086054429, guid: 50aa65171201bcc44a5fd1ef43ba0d90, type: 3}
   rightClickInterfacePrefab: {fileID: 4792720288501569853, guid: 577036473e1ad03449e6e50119b00e82, type: 3}
+--- !u!114 &2144102061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2144102058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcf84401aecb87045878758553331bc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootSelectorGameObject: {fileID: 632003256}
 --- !u!1 &2145688363
 GameObject:
   m_ObjectHideFlags: 0
@@ -13139,3 +13197,4 @@ SceneRoots:
   - {fileID: 171207752}
   - {fileID: 3384894646429015016}
   - {fileID: 1744962124}
+  - {fileID: 632003257}

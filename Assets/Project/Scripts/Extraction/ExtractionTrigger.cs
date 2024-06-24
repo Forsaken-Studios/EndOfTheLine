@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Inventory;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -14,6 +15,7 @@ namespace Extraction
             {
                 CheckIfWeCanExtractPlayers(other);
             }
+  
         }
 
         private void OnTriggerStay2D(Collider2D other)
