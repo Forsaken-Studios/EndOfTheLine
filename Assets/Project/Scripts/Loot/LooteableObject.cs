@@ -17,8 +17,7 @@ namespace Loot
 
     public class LooteableObject : MonoBehaviour
     {
-
-        [SerializeField] private GameObject hotkeyImage;
+        private GameObject currentHotkeyGameObject;
         private Dictionary<Item, int> itemsInLootableObject;
         [SerializeField] private bool onlyOneItemInBag;
         [SerializeField] private bool needToSpawnXObject;
@@ -240,13 +239,15 @@ namespace Loot
 
         public void ActivateKeyHotkeyImage()
         {
-            hotkeyImage.SetActive(true);
+            currentHotkeyGameObject = Instantiate(LootUIManager.Instance.GetHotkeyPrefab(),
+                new Vector2(this.transform.position.x, this.transform.position.y + 1), Quaternion.identity); 
             _isLooteable = true;
         }
 
         public void DesactivateKeyHotkeyImage()
         {
-            hotkeyImage.SetActive(false);
+            Destroy(currentHotkeyGameObject);
+            currentHotkeyGameObject = null;
             _isLooteable = false;
         }
 

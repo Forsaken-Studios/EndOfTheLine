@@ -19,10 +19,10 @@ public class LooteableObjectSelectorUI : MonoBehaviour
     {
         EventSystem.current.SetSelectedGameObject(optionsAvailable[currentIndex].gameObject);
         Debug.Log(currentIndex);
-        if (Input.GetAxis("Mouse ScrollWheel") > 0)
+        if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
             IncreaseIndex();
-        }else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+        }else if (Input.GetAxis("Mouse ScrollWheel") > 0)
         {
            DecreaseIndex();
         }

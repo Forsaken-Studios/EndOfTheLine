@@ -18,7 +18,8 @@ public class LootUIManager : MonoBehaviour
     private LooteableObject currentCrateLooting;
     private bool getIfCrateIsOpened;
     private float distanceNeededToClosePanel = 2f;
-    [SerializeField] private GameObject splittingView; 
+    [SerializeField] private GameObject splittingView;
+    [SerializeField] private GameObject hotkeyPrefab;
     private void Awake()
     {
         if (Instance != null)
@@ -198,5 +199,9 @@ public class LootUIManager : MonoBehaviour
         LootUIManager.Instance.ActivateLootUIPanel();
     }
 
-
+    public GameObject GetHotkeyPrefab()
+    {
+        return hotkeyPrefab;
+    }
+    
 }

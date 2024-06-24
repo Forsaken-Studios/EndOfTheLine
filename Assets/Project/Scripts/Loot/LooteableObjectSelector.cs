@@ -23,12 +23,13 @@ public class LooteableObjectSelector : MonoBehaviour
 
     private List<LooteableObject> looteableObjectInRange;
 
-    [SerializeField] private GameObject lootSelectorGameObject;
+    [SerializeField] private GameObject lootSelectorPrefab;
+    private GameObject lootSelectorGameObject;
     private LooteableObjectSelectorUI looteableObjectSelectorUI;
     private void Start()
     {
         looteableObjectInRange = new List<LooteableObject>();
-        looteableObjectSelectorUI = lootSelectorGameObject.GetComponent<LooteableObjectSelectorUI>();
+      
     }
     
 
@@ -37,7 +38,6 @@ public class LooteableObjectSelector : MonoBehaviour
         looteableObjectInRange.Add(loot);
         if (looteableObjectInRange.Count > 1)
         {
-            //TODO: GameObject not made yet
             ShowItemSelector();
         }
     }
@@ -52,18 +52,23 @@ public class LooteableObjectSelector : MonoBehaviour
         looteableObjectInRange.Remove(loot);
         if (looteableObjectInRange.Count < 2)
         {
-            //TODO: GameObject not made yet
             HideItemSelector();
         }
     }
     
     private void ShowItemSelector()
     {
-        lootSelectorGameObject.SetActive(true);
+        lootSelectorGameObject = Instantiate(lootSelectorPrefab,
+            looteableObjectInRange[0].gameObject.transform.position, Quaternion.identity);
+        looteableObjectSelectorUI = lootSelectorGameObject.GetComponent<LooteableObjectSelectorUI>();
     } 
     private void HideItemSelector()
     {
-        lootSelectorGameObject.SetActive(false);
+        if (lootSelectorGameObject != null)
+        {
+            Destroy(lootSelectorGameObject);
+            looteableObjectSelectorUI = null;
+        }
     }
 
     public int GetLooteableObjectCount()
