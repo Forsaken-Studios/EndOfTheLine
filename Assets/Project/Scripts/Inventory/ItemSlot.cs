@@ -146,7 +146,8 @@ namespace Inventory
             if (draggableItem.GetIfIsSplitting())
             {
                 //We show slider
-                LootUIManager.Instance.ActivateSplittingView(previousItemSlot.amount, draggableItem, this, previousItemSlot);
+                if(this.itemID == previousItemSlot.itemID || this.itemID == 0)
+                    LootUIManager.Instance.ActivateSplittingView(previousItemSlot.amount, draggableItem, this, previousItemSlot);
             }
             else
             {
@@ -210,7 +211,7 @@ namespace Inventory
                     {
                         LogManager.Log("MOVING FROM INVENTORY TO CRATE (STACKING)", FeatureType.Loot);
                         //Moving from inventory to crate
-                        AddItemFromInventoryToCrate(draggableItem, amountToMove);
+                        AddItemFromInventoryToCrateStacking(draggableItem, amountToMove);
                     }
    
                 }
@@ -231,15 +232,7 @@ namespace Inventory
                 }
             }
 
-            LooteableObject loot = LootUIManager.Instance.GetCurrentLootableObject();
-            if (loot != null)
-            {
-                if (loot.GetIfItIsTemporalBox() && loot.CheckIfLootBoxIsEmpty())
-                {
-                    Destroy(loot.gameObject);
-                    Debug.Log("TEMPORAL BOX DESTROYED");
-                }
-            }
+            CheckIfWeNeedToHideHUD();
         }
 
         private void MoveItemInCrate(DraggableItem draggableItem, int amountToMove)
@@ -264,22 +257,36 @@ namespace Inventory
                 ResetItemSlot(itemSlotBeforeDrop, draggableItem);
             else
                 itemSlotBeforeDrop.ModifyItemSlotAmount(itemSlotBeforeDrop.amount - amountToMove);
-            PlayerInventory.Instance.RemovingItem(itemToAdd, amountToMove);
-            if (InventoryManager.Instance.TryAddInventoryToItemSlot(itemToAdd, 
-                    amountToMove, out remainingItems))
+
+            if (this.amount + amountToMove <= InventoryManager.Instance.GetMaxItemsForSlots())
             {
-                PlayerInventory.Instance.TryAddingItemDragging(this.GetItemInSlot(), amountToMove, false);
-                draggableItem.SetItemComingFromInventoryToCrate(false);
-                draggableItem.parentAfterDrag = this.transform;
+                //Just move 
+                this.ModifyItemSlotAmount(this.amount + amountToMove);
             }
+            else
+            {
+                int remainingSpace = (this.amount + amountToMove) - InventoryManager.Instance.GetMaxItemsForSlots();
+                this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
+                PlayerInventory.Instance.RemovingItem(itemToAdd, remainingSpace);
+                if (InventoryManager.Instance.TryAddInventoryToItemSlot(itemToAdd, 
+                        remainingSpace, out remainingItems))
+                {
+                    PlayerInventory.Instance.TryAddingItemDragging(this.GetItemInSlot(), remainingSpace, false);
+                    draggableItem.SetItemComingFromInventoryToCrate(false);
+                    draggableItem.parentAfterDrag = this.transform;
+                }
+            }
+            
         }
         
-        private void AddItemFromInventoryToCrate(DraggableItem draggableItem, int amountToMove)
+        private void AddItemFromInventoryToCrateStacking(DraggableItem draggableItem, int amountToMove)
         {
             ItemSlot itemSlotBeforeDrop = draggableItem.parentBeforeDrag.GetComponent<ItemSlot>();
             Item itemToAdd = itemSlotBeforeDrop.GetItemInSlot();
             int remainingItems = 0;
-            Debug.Log("MOVING FROM METHOD: " + amountToMove);
+            
+ 
+            
             if (LootUIManager.Instance.TryAddItemCrateToItemSlot(itemSlotBeforeDrop.GetItemInSlot(), 
                     amountToMove, out remainingItems))
             {
@@ -496,8 +503,7 @@ namespace Inventory
         public void OnPointerClick(PointerEventData eventData)
         {
             //Doble click eventData.clickCount == 2
-            
-            if (Input.GetKey(KeyCode.LeftShift)) {
+            if (Input.GetKey(KeyCode.LeftShift) && eventData.button == PointerEventData.InputButton.Left) {
                 if (ValidMovementFromInventoryToCrate())
                 {
                     //MOVING FROM INVENTORY TO CRATE
@@ -510,6 +516,7 @@ namespace Inventory
                     // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM CRATE TO INVENTORY", FeatureType.Loot);
                     DoubleClickOnItemFromCrateToInventory();
                 }
+                CheckIfWeNeedToHideHUD();
             }
 
             if (eventData.button == PointerEventData.InputButton.Right)
@@ -517,6 +524,21 @@ namespace Inventory
                 if (itemID != 0)
                 {
                     InventoryManager.Instance.ActivateContextMenuInterface(this);
+                }
+            }
+        }
+
+        private void CheckIfWeNeedToHideHUD()
+        {
+            LooteableObject loot = LootUIManager.Instance.GetCurrentLootableObject();
+            if (loot != null)
+            {
+                if (loot.GetIfItIsTemporalBox() && loot.CheckIfLootBoxIsEmpty())
+                {
+                    Destroy(loot.gameObject);
+                    Debug.Log("TEMPORAL BOX DESTROYED");
+                    InventoryManager.Instance.DesactivateInventory();
+                    LootUIManager.Instance.DesactivateLootUIPanel();
                 }
             }
         }

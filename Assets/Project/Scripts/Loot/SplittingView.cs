@@ -59,8 +59,10 @@ public class SplittingView : MonoBehaviour
         this.finalItemSlot = itemSlot;
         this.previousItemSlot = previousItemSlot; 
         this.maxText.text = maxAmount.ToString();
+        inputField.text = slider.value.ToString();
         slider.maxValue = maxAmount;
         slider.value = maxAmount / 2;
+        inputField.text = slider.value.ToString();
         currentAmount.text = maxAmount.ToString();
     }
     private void Split()

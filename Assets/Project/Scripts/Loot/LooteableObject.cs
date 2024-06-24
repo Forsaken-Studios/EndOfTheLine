@@ -209,6 +209,8 @@ namespace Loot
             {
                 Destroy(this.gameObject);
                 Debug.Log("DESTROYING TEMPORAL BOX");
+                InventoryManager.Instance.DesactivateInventory();
+                LootUIManager.Instance.DesactivateLootUIPanel();
             }
         }
         
