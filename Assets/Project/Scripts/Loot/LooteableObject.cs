@@ -17,8 +17,7 @@ namespace Loot
 
     public class LooteableObject : MonoBehaviour
     {
-
-        [SerializeField] private GameObject hotkeyImage;
+        private GameObject currentHotkeyGameObject;
         private Dictionary<Item, int> itemsInLootableObject;
         [SerializeField] private bool onlyOneItemInBag;
         [SerializeField] private bool needToSpawnXObject;
@@ -53,30 +52,46 @@ namespace Loot
             {
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    //Loot
-                    if (LootUIManager.Instance.GetIfCrateIsOpened())
+                    if (LooteableObjectSelector.Instance.GetIfSelectorIsActive() &&
+                        LooteableObjectSelector.Instance.GetIfIndexIsThisLooteableObject(this))
                     {
-                        LootUIManager.Instance.DesactivateLootUIPanel();
-                        InventoryManager.Instance.DesactivateInventory();
-                        //looteableObjectUI.DesactivateLooteablePanel(); 
+                        //CUIDADO QUE ESTÁ AL REVES, PILLA EL NOMBRE DEL OTRO
+                        Debug.Log(this.name);
+                        HandleInventory();
                     }
-                    else
+                    
+                    
+                    if(!LooteableObjectSelector.Instance.GetIfSelectorIsActive())
                     {
-                        //We load objects to this panel
-                        LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
-                        InventoryManager.Instance.ActivateInventory();
-                        //looteableObjectUI.ActivateLooteablePanel();
+                        //No scroll selector
+                        HandleInventory();
                     }
-                    //LootAllItems();
                 }
             }
         }
 
+        private void HandleInventory()
+        {
+            //Loot
+            if (LootUIManager.Instance.GetIfCrateIsOpened())
+            {
+                LootUIManager.Instance.DesactivateLootUIPanel();
+                InventoryManager.Instance.DesactivateInventory();
+                //looteableObjectUI.DesactivateLooteablePanel(); 
+            }
+            else
+            {
+                //We load objects to this panel
+                LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
+                InventoryManager.Instance.ActivateInventory();
+                //looteableObjectUI.ActivateLooteablePanel();
+            }
+        }
+        
         public void ClearLooteableObject()
         {
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsInLootableObject.Clear();
-            Debug.Log(itemsInLootableObject.Count);
         }
         
         public void SetIfItIsTemporalBox(bool aux)
@@ -194,6 +209,8 @@ namespace Loot
             {
                 Destroy(this.gameObject);
                 Debug.Log("DESTROYING TEMPORAL BOX");
+                InventoryManager.Instance.DesactivateInventory();
+                LootUIManager.Instance.DesactivateLootUIPanel();
             }
         }
         
@@ -224,13 +241,15 @@ namespace Loot
 
         public void ActivateKeyHotkeyImage()
         {
-            hotkeyImage.SetActive(true);
+            currentHotkeyGameObject = Instantiate(LootUIManager.Instance.GetHotkeyPrefab(),
+                new Vector2(this.transform.position.x, this.transform.position.y + 1), Quaternion.identity); 
             _isLooteable = true;
         }
 
         public void DesactivateKeyHotkeyImage()
         {
-            hotkeyImage.SetActive(false);
+            Destroy(currentHotkeyGameObject);
+            currentHotkeyGameObject = null;
             _isLooteable = false;
         }
 

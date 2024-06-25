@@ -18,8 +18,8 @@ public class LootUIManager : MonoBehaviour
     private LooteableObject currentCrateLooting;
     private bool getIfCrateIsOpened;
     private float distanceNeededToClosePanel = 2f;
-    [SerializeField] private Sprite temporalBoxSprite;
-    [SerializeField] private GameObject splittingView; 
+    [SerializeField] private GameObject splittingView;
+    [SerializeField] private GameObject hotkeyPrefab;
     private void Awake()
     {
         if (Instance != null)
@@ -36,7 +36,6 @@ public class LootUIManager : MonoBehaviour
     {
         itemsSlotsList = new List<ItemSlot>();
         itemsSlotsList = lootUIPanel.GetComponentsInChildren<ItemSlot>().ToList();
-        
         lootUIPanel.SetActive(false);
     }
 
@@ -49,19 +48,6 @@ public class LootUIManager : MonoBehaviour
             {
                 LootAllItemsInCrate();
             }
-            /*//Check if we need to disable it if we are to far away
-            if (currentCrateLooting != null)
-            {
-                if(Vector2.Distance(PlayerInventory.Instance.transform.position, currentCrateLooting.transform.position) >
-                    distanceNeededToClosePanel)
-                {
-                    LogManager.Log( Vector2.Distance(PlayerInventory.Instance.transform.position, 
-                        this.gameObject.transform.position).ToString(), FeatureType.Inventory);
-                    DesactivateLootUIPanel();
-                    InventoryManager.Instance.DesactivateInventory();
-                }
-            }*/
-
         }
     }
 
@@ -189,11 +175,7 @@ public class LootUIManager : MonoBehaviour
         }
         return -1;
     }
-
-    public Sprite GetTemporalBoxSprite()
-    {
-        return temporalBoxSprite;
-    }
+    
     public bool GetIfCrateIsOpened()
     {
         return getIfCrateIsOpened;
@@ -217,5 +199,9 @@ public class LootUIManager : MonoBehaviour
         LootUIManager.Instance.ActivateLootUIPanel();
     }
 
-
+    public GameObject GetHotkeyPrefab()
+    {
+        return hotkeyPrefab;
+    }
+    
 }

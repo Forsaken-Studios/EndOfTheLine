@@ -2,7 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using Utils.CustomLogs;
 
 namespace Inventory
@@ -21,8 +24,13 @@ namespace Inventory
         [SerializeField] private List<ItemSlot> itemSlotList;
         private int nextIndexSlotAvailable = 0;
         [SerializeField] private GameObject looteableObjectPrefab;
+        [SerializeField] private GameObject rightClickInterfacePrefab;
+        
+        private GameObject currentRightClickInterface;
         private int MAX_AMOUNT_PER_SLOT = 4;
 
+     
+        
         private void Awake()
         {
             if (Instance != null)
@@ -31,7 +39,6 @@ namespace Inventory
                 Destroy(gameObject);
                 return;
             }
-
             Instance = this;
 
         }
@@ -64,6 +71,8 @@ namespace Inventory
             else
             {
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseInventory);
+                TryDestroyContextMenu();
+                
             }
               
             inventoryHUD.SetActive(!inventoryHUD.activeSelf);
@@ -82,6 +91,7 @@ namespace Inventory
         {
             GameManager.Instance.GameState = GameState.OnGame;
             inventoryHUD.SetActive(false);
+            TryDestroyContextMenu();
             inventoryHUDPanel.SetActive(false);
         }
         
@@ -93,7 +103,7 @@ namespace Inventory
                 inventoryText.text += item.Key.name + "  x" + item.Value + "\n";
             }
 
-            weightText.text = PlayerInventory.Instance.GetCurrentWeight().ToString() + " / " +
+            weightText.text = PlayerInventory.Instance.GetCurrentWeight().ToString("F2") + " / " +
                               PlayerInventory.Instance.GetMaxWeight() + " KG";
         }
 
@@ -232,10 +242,30 @@ namespace Inventory
             return looteableObjectPrefab; 
         }
 
-        public void ActivateRightClickInterface(ItemSlot itemSlot)
+        public void ActivateContextMenuInterface(ItemSlot itemSlot)
         {
-            Debug.Log("RIGHT CLICK IN ITEM SLOT WITH ITEM: " + itemSlot.GetItemInSlot().itemName);
+            
+            if (currentRightClickInterface != null)
+            {
+                Destroy(currentRightClickInterface.gameObject);
+            }
+            GameObject rightClickInterface = Instantiate(rightClickInterfacePrefab, Input.mousePosition, Quaternion.identity);
+            rightClickInterface.GetComponentInChildren<ContextMenu>().SetItemSlotProperties(itemSlot);
+            //Adding offset
+            Vector2 newPositon = new Vector2(Input.mousePosition.x + 80, Input.mousePosition.y + 80);
+            rightClickInterface.GetComponentInChildren<Image>().rectTransform.anchoredPosition = newPositon;
+            currentRightClickInterface = rightClickInterface;
         }
+
+        public void TryDestroyContextMenu()
+        {
+            if (currentRightClickInterface != null)
+            {
+                Destroy(currentRightClickInterface);
+                currentRightClickInterface = null; 
+            }
+        }
+
     }
 }
 

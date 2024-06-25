@@ -24,6 +24,8 @@ namespace Inventory
         /// <param name="eventData"></param>
         public void OnBeginDrag(PointerEventData eventData)
         {
+
+            InventoryManager.Instance.TryDestroyContextMenu();
             if (Input.GetKey(KeyCode.LeftControl))
             {
                 isSplitting = true; 
@@ -77,6 +79,7 @@ namespace Inventory
                     //And moves to our inventory
                     ItemSlot itemSlotFinal = parentAfterDrag.GetComponentInParent<ItemSlot>();
                     transform.SetParent(parentBeforeDrag);
+                    this.transform.position = parentBeforeDrag.position;
             }
             transform.SetAsFirstSibling();
             image.raycastTarget = true;

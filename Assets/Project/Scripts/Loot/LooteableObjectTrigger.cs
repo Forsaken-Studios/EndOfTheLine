@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Inventory;
 using UnityEngine;
 
 namespace Loot
@@ -9,7 +10,6 @@ namespace Loot
     public class LooteableObjectTrigger : MonoBehaviour
     {
         private LooteableObject looteableObject;
-
         
         private void Start()
         {
@@ -21,6 +21,7 @@ namespace Loot
             if (other.CompareTag("Player"))
             {
                 looteableObject.ActivateKeyHotkeyImage();
+                LooteableObjectSelector.Instance.AddOneInTrigger(looteableObject);
             }
         }
 
@@ -29,6 +30,7 @@ namespace Loot
             if (other.CompareTag("Player"))
             {
                 looteableObject.DesactivateKeyHotkeyImage();
+                LooteableObjectSelector.Instance.DecreaseOneInTrigger(looteableObject);
             }
         }
     }
