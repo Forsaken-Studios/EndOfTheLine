@@ -12,11 +12,13 @@ public class LooteableObjectSelectorUI : MonoBehaviour
 {
 
     private int currentIndex = 0;
+    [SerializeField] private GameObject optionPrefab;
+    private List<Button> optionsAvailable;
 
-    [SerializeField] private List<Button> optionsAvailable;
-    
-    private void Update()
+
+    private void LateUpdate()
     {
+        Debug.Log(optionsAvailable.Count);
         EventSystem.current.SetSelectedGameObject(optionsAvailable[currentIndex].gameObject);
         Debug.Log(currentIndex);
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
@@ -55,6 +57,7 @@ public class LooteableObjectSelectorUI : MonoBehaviour
     private void OnEnable()
     {
         Debug.Log("ENABLE");
+        optionsAvailable = new List<Button>();
         SetUpProperties();
         this.transform.position = LooteableObjectSelector.Instance.GetLootList()[0].transform.position;
         currentIndex = 0;
@@ -63,9 +66,14 @@ public class LooteableObjectSelectorUI : MonoBehaviour
     private void SetUpProperties()
     {
         List<LooteableObject> auxList = LooteableObjectSelector.Instance.GetLootList();
+        GridLayoutGroup gridLayoutParent = this.GetComponentInChildren<GridLayoutGroup>();
         for (int i = 0; i < auxList.Count; i++)
         {
-            optionsAvailable[i].GetComponentInChildren<TextMeshProUGUI>().text = SwapNames(auxList[i].name);
+            GameObject option = Instantiate(optionPrefab, this.transform.position, Quaternion.identity, gridLayoutParent.gameObject.transform);
+            Button optionButton = option.GetComponent<Button>();
+            optionsAvailable.Add(optionButton);
+            Debug.Log("ADDED: "  +optionsAvailable.Count );
+            option.GetComponentInChildren<TextMeshProUGUI>().text = SwapNames(auxList[i].name);
         }
     }
 
