@@ -91,7 +91,7 @@ namespace Inventory
                 inventoryItemDictionary.Add(item, amount);
             }
             AddWeight(item.itemWeight * amount);
-            if(showMessage)
+            if(showMessage){}
                 ShowItemTaken(item.itemName, amount);
             InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             return true; 
@@ -99,11 +99,15 @@ namespace Inventory
 
         private void ShowItemTaken(string name, int amount)
         {
-            if (floatingTextPrefab)
+            if (amount > 0)
             {
-                GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity);
-                prefab.GetComponentInChildren<TextMeshProUGUI>().text = "x" + amount + " " + name;
+                if (floatingTextPrefab)
+                {
+                    GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity);
+                    prefab.GetComponentInChildren<TextMeshProUGUI>().text = "x" + amount + " " + name;
+                } 
             }
+           
         }
         public void ShowFullListItemTaken(Dictionary<Item, int> itemList)
         {
