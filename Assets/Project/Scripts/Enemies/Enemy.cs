@@ -25,6 +25,11 @@ public class Enemy : MonoBehaviour
         enemyFOV.SetOrigin(this.gameObject.transform.position);
     }
 
+    private void Update()
+    {
+        Debug.Log("PlayerDetected: " + PlayerDetected);
+    }
+
     /// <summary>
     /// When enemy stop seeing the player, we activate the timer for him to forget the player
     /// We are checking in other methods if player is being detected again. 
@@ -38,6 +43,7 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(timeBeforeForgettingPlayer);
             //Forget player
             enemyIsForgetting = false;
+            PlayerDetected = false; 
             detectionBar.ForgetPlayer();
             StopAllCoroutines();
             //StopCoroutine(nameof(StartCountdownToForgetPlayer));
