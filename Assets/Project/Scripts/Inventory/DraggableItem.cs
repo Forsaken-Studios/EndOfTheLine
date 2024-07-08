@@ -69,7 +69,6 @@ namespace Inventory
 
             if (parentAfterDrag == parentBeforeDrag)
             {
-                ThrowItemToGround();
                 transform.SetParent(parentBeforeDrag);
                 this.transform.position = parentBeforeDrag.position;
             }
@@ -80,6 +79,7 @@ namespace Inventory
                     ItemSlot itemSlotFinal = parentAfterDrag.GetComponentInParent<ItemSlot>();
                     transform.SetParent(parentBeforeDrag);
                     this.transform.position = parentBeforeDrag.position;
+                    SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_MoveItem);
             }
             transform.SetAsFirstSibling();
             image.raycastTarget = true;
@@ -95,28 +95,6 @@ namespace Inventory
             return isSplitting;
         }
         
-        private void ThrowItemToGround()
-        {
-            // throw items to the ground, we should instantiate a looteableObject
-            /* ItemSlot itemSlotMoving = parentBeforeDrag.GetComponentInParent<ItemSlot>();
-             Debug.Log("TIRAMOS "  + itemSlotMoving.amount + " " + itemSlotMoving.GetItemInSlot().itemName);
-             PlayerInventory.Instance.RemovingItem(itemSlotMoving.GetItemInSlot(), itemSlotMoving.amount);
-
-
-             GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
-                 PlayerInventory.Instance.transform.position, Quaternion.identity);
-
-             Object backpack = UnityEngine.Resources.Load("Sprites/backpack");
-             Debug.Log(backpack);
-             Sprite backpackSprite = backpack as Sprite;
-             looteableObject.GetComponent<SpriteRenderer>().sprite = backpackSprite;
-             LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
-             Debug.Log(lootObject);
-             lootObject.ClearLooteableObject();
-             lootObject.AddItemToList(itemSlotMoving.GetItemInSlot(), itemSlotMoving.amount);
-             itemSlotMoving.ClearItemSlot();
-             */
-        }
     
   
     }

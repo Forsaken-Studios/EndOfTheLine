@@ -6,7 +6,8 @@ public enum SoundAction
     Inventory_MoveItem,
     Inventory_OpenCrate,
     Inventory_CloseCrate,
-    GasZone_Geiger
+    GasZone_Geiger, 
+    Movement_Dash,
     
 }
 

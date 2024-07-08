@@ -3,55 +3,56 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+namespace Player
 {
-
-    private bool isPlayerInGasZone = false;
-    private bool isPlayerInExtractionPoint = false;
-
-    private PlayerStamina playerStamina;
-
-
-    private void Awake()
+    public class PlayerManager : MonoBehaviour
     {
-        this.playerStamina = GetComponent<PlayerStamina>();
-    }
 
-    public void PlayerEnteredGasZone()
-    {
-        isPlayerInGasZone = true; 
-        this.playerStamina.ActivateStaminaDecreasing(); 
-    }
-    
-    public void PlayerExitedGasZone()
-    {
-        isPlayerInGasZone = false;
-        this.playerStamina.DesactivateStaminaDecreasing(); 
-    }
-    
-    
-    
-    
-    #region Getters Setters
+        private bool isPlayerInGasZone = false;
+        private bool isPlayerInExtractionPoint = false;
 
-    public void SetIfPlayerIsInGasZone(bool aux)
-    {
-        this.isPlayerInGasZone = aux; 
-    }
+        private PlayerStamina playerStamina;
 
-    public bool GetIfPlayerIsInGasZone()
-    {
-        return isPlayerInGasZone;
-    }
-    
-    public void SetIfPlayerInExtractionPoint(bool aux)
-    {
-        this.isPlayerInExtractionPoint = aux; 
-    }
 
-    public bool GetIfPlayerInExtractionPoint()
-    {
-        return isPlayerInExtractionPoint;
+        private void Awake()
+        {
+            this.playerStamina = GetComponent<PlayerStamina>();
+        }
+
+        public void PlayerEnteredGasZone()
+        {
+            isPlayerInGasZone = true;
+            this.playerStamina.ActivateStaminaDecreasing();
+        }
+
+        public void PlayerExitedGasZone()
+        {
+            isPlayerInGasZone = false;
+            this.playerStamina.DesactivateStaminaDecreasing();
+        }
+        
+        #region Getters Setters
+
+        public void SetIfPlayerIsInGasZone(bool aux)
+        {
+            this.isPlayerInGasZone = aux;
+        }
+
+        public bool GetIfPlayerIsInGasZone()
+        {
+            return isPlayerInGasZone;
+        }
+
+        public void SetIfPlayerInExtractionPoint(bool aux)
+        {
+            this.isPlayerInExtractionPoint = aux;
+        }
+
+        public bool GetIfPlayerInExtractionPoint()
+        {
+            return isPlayerInExtractionPoint;
+        }
+
+        #endregion
     }
-    #endregion
 }
