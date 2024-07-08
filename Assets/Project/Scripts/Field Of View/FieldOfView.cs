@@ -20,7 +20,9 @@ namespace FieldOfView
         [SerializeField] private Vector3 origin = Vector3.zero;
 
         [Header("Enemy Script")] [SerializeField]
-        private Enemy enemyScript;
+        private Enemy enemyScript;       
+        [Header("FOV State Script")]
+        private EnemyFOVState fovState;
 
         [Header("Detection bar properties")] [SerializeField]
         private BarDetectionProgress detectionBar;
@@ -33,6 +35,7 @@ namespace FieldOfView
 
         void Start()
         {
+            fovState = GetComponent<EnemyFOVState>();
             mesh = new Mesh();
             raycastHitsList = new List<RaycastHit2D>();
             GetComponent<MeshFilter>().mesh = mesh;
@@ -46,33 +49,40 @@ namespace FieldOfView
             UpdateFieldOfViewMesh();
             // FindTargetPlayer();
 
-            //Maybe we need to check in every raycast instead of foreach like this
+
             if (!CheckIfPlayerIsBeingDetected())
             {
                 if (detectionBar.GetIfPlayerIsDetected())
                 {
                     //Start countdown to forget player
+                    
                     enemyScript.ActivateCountdownToForgetPlayer();
                 }
                 else
                 {
                     if (detectionBar.gameObject.activeSelf)
                     {
-                        detectionBar.SetIfPlayerIsBeingDetected(false);
+                        //We exit fov
+                        detectionBar.SetIfPlayerIsBeingDetected(false, fovState);
                     }
                 }
+                fovState.FOVState = FOVState.isWatching;
             }
             else
             {
                 if (enemyScript.GetIfEnemyIsForgetting())
                 {
+                    //We detect player again before forgetting
+                    fovState.FOVState = FOVState.isSeeing;
                     enemyScript.StopEnemyActionOfForgettingPlayer();
                 }
 
                 if (!detectionBar.GetIfPlayerIsDetected())
                 {
+                    //We detect player
+                    fovState.FOVState = FOVState.isDetecting;
                     detectionBar.gameObject.SetActive(true);
-                    detectionBar.SetIfPlayerIsBeingDetected(true);
+                    detectionBar.SetIfPlayerIsBeingDetected(true, fovState);
                 }
                 
             }
@@ -90,7 +100,6 @@ namespace FieldOfView
                     }
                 }
             }
-
             return false;
         }
 
