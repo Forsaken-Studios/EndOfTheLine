@@ -20,7 +20,7 @@ namespace FieldOfView
         [SerializeField] private bool playerDetected = false;
         [SerializeField] private float detectionIncreaseFactor;
         [SerializeField] private float detectionDecreaseFactor;
-
+        private EnemyFOVState enemyFOVState;
         public event EventHandler onPlayerDetected;
 
 
@@ -57,6 +57,8 @@ namespace FieldOfView
                 else
                 {
                     LogManager.Log("DETECTED", FeatureType.FieldOfView);
+                    GetComponentInParent<Enemy>().PlayerDetected = true; 
+                    enemyFOVState.FOVState = FOVState.isSeeing;
                     _image.fillAmount = 1;
                     playerDetected = true;
                     iconImage.sprite = detectedSprite;
@@ -109,8 +111,9 @@ namespace FieldOfView
             isDetecting = false;
         }
 
-        public void SetIfPlayerIsBeingDetected(bool aux)
+        public void SetIfPlayerIsBeingDetected(bool aux, EnemyFOVState enemyFOVState)
         {
+            this.enemyFOVState = enemyFOVState;
             this.isDetecting = aux;
         }
 

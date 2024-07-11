@@ -42,7 +42,6 @@ public class TrainManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        LogManager.Log("TRAIN STATUS: " + TrainStatus.ToString(), FeatureType.TrainBase);
         HandleButtonPressed();
         if(!canvasActivated)
             HandleMovement();
@@ -55,7 +54,7 @@ public class TrainManager : MonoBehaviour
             //Check if we are already on top left (For now extra room)
             if (TrainStatus != TrainStatus.onExtraRoom)
             {
-                MoveTrainToLeft();
+                MoveTrain(true);
             }
         }
         else if (Input.GetKeyDown(KeyCode.D))
@@ -63,38 +62,33 @@ public class TrainManager : MonoBehaviour
             //Check if we are already on top right
             if (TrainStatus != TrainStatus.onMissionSelector)
             {
-                MoveTrainToRight();
+                MoveTrain(false);
             }
         }
     }
 
-    private void MoveTrainToLeft()
+    private void MoveTrain(bool movingToLeft)
     {
-      
-        if (train.CanMove)
-        { 
-            //TODO: Modify in which room are we.
-            currentIndex++;
+            if (movingToLeft)
+            {
+                LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
+                currentIndex++;
+                UpdateRoomInfo();
+                trainPanelsScript.HideTrainRoom(currentIndex - 1);
+                trainPanelsScript.ShowTrainRoom(currentIndex);
+            }
+            else
+            {
+                LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
+                currentIndex--;
+                trainPanelsScript.HideTrainRoom(currentIndex + 1);
+                trainPanelsScript.ShowTrainRoom(currentIndex); 
+            }
+            
             UpdateRoomInfo();
-            trainPanelsScript.HideTrainRoom(currentIndex - 1);
-            trainPanelsScript.ShowTrainRoom(currentIndex);
-            LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
-            train.MoveTrainToLeft();  
-        }
+            train.MoveTrain(currentIndex);  
     }
-    
-    private void MoveTrainToRight()
-    {
-        if (train.CanMove)
-        {
-            currentIndex--;
-            UpdateRoomInfo();
-            trainPanelsScript.HideTrainRoom(currentIndex + 1);
-            trainPanelsScript.ShowTrainRoom(currentIndex);
-            LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
-            train.MoveTrainToRight();
-        }
-    }
+
     
     private void UpdateRoomInfo()
     {

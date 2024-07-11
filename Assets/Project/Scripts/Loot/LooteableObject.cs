@@ -5,6 +5,7 @@ using System.Linq;
 using Inventory;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Internal;
 using UnityEngine.UI;
 using Utils.CustomLogs;
 using Object = System.Object;
@@ -16,49 +17,34 @@ namespace Loot
 
     public class LooteableObject : MonoBehaviour
     {
-
-        [SerializeField] private GameObject hotkeyImage;
+        private GameObject currentHotkeyGameObject;
         private Dictionary<Item, int> itemsInLootableObject;
-        private LooteableObjectUI looteableObjectUI;
         [SerializeField] private bool onlyOneItemInBag;
-        private bool _isLooteable = false;
+        [SerializeField] private bool needToSpawnXObject;
         private bool isLooting = false;
-
+        private bool isTemporalBox = false; 
+        /// <summary>
+        /// When we need to spawn X Items 100%
+        /// </summary>
+        private List<Item> itemsNeededToSpawn;
+        [SerializeField] private int maxSlotsInCrate;
         
-        
+        private bool _isLooteable = false;
         public bool IsLooteable
         {
             get { return _isLooteable; }
             set { _isLooteable = value; }
         }
 
-        private void Start()
+        private void Awake()
         {
             itemsInLootableObject = new Dictionary<Item, int>();
-            looteableObjectUI = GetComponent<LooteableObjectUI>();
-            PrepareLoot();
-        }
+            itemsNeededToSpawn = new List<Item>();
+            List<string> testList = new List<string>();
+            testList.Add("Keycard");
 
-        private void PrepareLoot()
-        {
-            //TODO: AQUI SE ELIGE QUE TIPO DE LOOT PODRIAMOS PONER (AHORA ES TODOS LOS ITEMS)
-            Object[] allItems = UnityEngine.Resources.LoadAll("Items");
-            List<Object> allItemsList = allItems.ToList();
-            int itemsToLoot = 1;
-            if (!onlyOneItemInBag)
-                itemsToLoot = Random.Range(2, looteableObjectUI.GetMaxSlotsInCrate());
-                //itemsToLoot = Random.Range(2, 3); NO PANEL
-            for (int i = 0; i < itemsToLoot; i++)
-            {
-                int randomItemIndex = Random.Range(0, allItemsList.Count);
-                int randomQuantity = Random.Range(1, 4);
-                Item itemSO = allItemsList[randomItemIndex] as Item;
-                //Debug.Log("ITEM IN LOOTABLE OBJECT: " + itemSO.name + " -> x" + randomQuantity);
-                itemsInLootableObject.Add(itemSO, randomQuantity);
-                //WE MODIFIE THE UI
-                //looteableObjectUI.AddItemToCrate(itemSO, randomQuantity);
-                allItemsList.RemoveAt(randomItemIndex);
-            }
+            //En el futuro, hay que ver esto, porque no podemos hacer spawn en el start, habrá que modificar las opciones antes
+            StartSpawingObjects(testList, true);
         }
         private void Update()
         {
@@ -66,37 +52,146 @@ namespace Loot
             {
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    //Loot
-                    if (LootUIManager.Instance.GetIfCrateIsOpened())
+                    if (LooteableObjectSelector.Instance.GetIfSelectorIsActive() &&
+                        LooteableObjectSelector.Instance.GetIfIndexIsThisLooteableObject(this))
                     {
-                        LootUIManager.Instance.DesactivateLootUIPanel();
-                        InventoryManager.Instance.DesactivateInventory();
-                        //looteableObjectUI.DesactivateLooteablePanel(); 
+                        //CUIDADO QUE ESTÁ AL REVES, PILLA EL NOMBRE DEL OTRO
+                        Debug.Log(this.name);
+                        HandleInventory();
                     }
-                    else
+                    
+                    
+                    if(!LooteableObjectSelector.Instance.GetIfSelectorIsActive())
                     {
-                        //We load objects to this panel
-                        LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
-                        InventoryManager.Instance.ActivateInventory();
-                        //looteableObjectUI.ActivateLooteablePanel();
+                        //No scroll selector
+                        HandleInventory();
                     }
-                    //LootAllItems();
                 }
             }
         }
 
+        private void HandleInventory()
+        {
+            //Loot
+            if (LootUIManager.Instance.GetIfCrateIsOpened())
+            {
+                LootUIManager.Instance.DesactivateLootUIPanel();
+                InventoryManager.Instance.DesactivateInventory();
+                //looteableObjectUI.DesactivateLooteablePanel(); 
+            }
+            else
+            {
+                //We load objects to this panel
+                LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
+                InventoryManager.Instance.ActivateInventory();
+                //looteableObjectUI.ActivateLooteablePanel();
+            }
+        }
+        
+        public void ClearLooteableObject()
+        {
+            itemsInLootableObject = new Dictionary<Item, int>();
+            itemsInLootableObject.Clear();
+        }
+        
+        public void SetIfItIsTemporalBox(bool aux)
+        {
+            this.isTemporalBox = aux;
+        }
+
+        public bool GetIfItIsTemporalBox()
+        {
+            return isTemporalBox;
+        }
+
+        public bool CheckIfLootBoxIsEmpty()
+        {
+            return itemsInLootableObject.Count == 0;
+        }
+        
+        public void StartSpawingObjects(List<string> testList, bool needToSpawnObject)
+        {
+            if (needToSpawnObject)
+            {
+                InitializeLootObject(testList);  
+            }
+            else
+            {
+                InitializeLootObject(null);  
+            }
+            needToSpawnXObject = needToSpawnObject; 
+        }
+
+        private void InitializeLootObject(List<string> itemsList)
+        {
+            if (itemsList != null)
+            {
+                PrepareItemsNeededToSpawn(itemsList);
+                int remainingItems = maxSlotsInCrate - itemsList.Count;
+                if (remainingItems > 0)
+                {
+                    PrepareLoot(remainingItems); 
+                }
+                else
+                {
+                    Debug.Log("NO SLOTS AVAILABLE FOR THAT CRATE");
+                }
+            }
+            else
+            {
+                PrepareLoot(maxSlotsInCrate);
+            }
+        }
+
+        private void PrepareItemsNeededToSpawn(List<string> itemsList)
+        {
+            foreach (var itemName in itemsList)
+            {
+                Object itemNeeded = UnityEngine.Resources.Load("Items/Keycards/Keycard");
+                Item itemSO = itemNeeded as Item;
+                itemsNeededToSpawn.Add(itemSO);
+                itemsInLootableObject.Add(itemSO, 1);
+            }
+        }
+
+        private void PrepareLoot(int remainingSlotsInCrate)
+        {
+            Object[] allItems = UnityEngine.Resources.LoadAll("Items/Scrap");
+            List<Object> allItemsList = allItems.ToList();
+            int itemsToLoot = 1;
+            if (!onlyOneItemInBag)
+                itemsToLoot = Random.Range(1, remainingSlotsInCrate);
+                //itemsToLoot = Random.Range(2, 3); NO PANEL
+            for (int i = 0; i < itemsToLoot; i++)
+            {
+                int randomItemIndex = Random.Range(0, allItemsList.Count);
+                int randomQuantity = Random.Range(1, 4);
+                Item itemSO = allItemsList[randomItemIndex] as Item;
+                itemsInLootableObject.Add(itemSO, randomQuantity);
+                //WE MODIFIE THE UI
+                //looteableObjectUI.AddItemToCrate(itemSO, randomQuantity);
+                allItemsList.RemoveAt(randomItemIndex);
+            }
+        }
+
+
         public void LootAllItems()
         {
             Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
-            
+            Dictionary<Item, int> itemsTaken = new Dictionary<Item, int>();
             foreach (var item in itemsInLootableObject)
             {
                 int remainingItems = 0;
-                if (!PlayerInventory.Instance.TryAddItem(item.Key, item.Value, out remainingItems))
+                if (!PlayerInventory.Instance.TryAddItem(item.Key, item.Value, 
+                        out remainingItems, false))
                 {
                     //If we cant find a place, we add it to recover items
                     //We will need to check if we take X amount of the stack
                     recoverItems.Add(item.Key, remainingItems);
+                }
+                else
+                {
+                    itemsTaken.Add(item.Key, item.Value);
                 }
             } 
             //We cant clear, we need to check if we dont take an item because we dont have space in inventory
@@ -105,11 +200,18 @@ namespace Loot
             {
                 itemsInLootableObject.Add(items.Key, items.Value);
             }
+            
+            //Text to indicate we take X Item
+            PlayerInventory.Instance.ShowFullListItemTaken(itemsTaken);
             InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
-            //Check if we need to destroy the bag, but actually we wont need to do it, because we will have crates in map 
-            // we don't want to destroy them
-            //Destroy(this.gameObject);
-            //_isLooteable = false;
+            
+            if (isTemporalBox)
+            {
+                Destroy(this.gameObject);
+                Debug.Log("DESTROYING TEMPORAL BOX");
+                InventoryManager.Instance.DesactivateInventory();
+                LootUIManager.Instance.DesactivateLootUIPanel();
+            }
         }
         
         public void AddItemToList(Item item, int amount)
@@ -139,13 +241,15 @@ namespace Loot
 
         public void ActivateKeyHotkeyImage()
         {
-            hotkeyImage.SetActive(true);
+            currentHotkeyGameObject = Instantiate(LootUIManager.Instance.GetHotkeyPrefab(),
+                new Vector2(this.transform.position.x, this.transform.position.y + 1), Quaternion.identity); 
             _isLooteable = true;
         }
 
         public void DesactivateKeyHotkeyImage()
         {
-            hotkeyImage.SetActive(false);
+            Destroy(currentHotkeyGameObject);
+            currentHotkeyGameObject = null;
             _isLooteable = false;
         }
 

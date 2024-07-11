@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Inventory;
+using Player;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Extraction
-{
+{       
     public class ExtractionTrigger : MonoBehaviour
     {
         private void OnTriggerEnter2D(Collider2D other)
@@ -13,6 +16,7 @@ namespace Extraction
             {
                 CheckIfWeCanExtractPlayers(other);
             }
+  
         }
 
         private void OnTriggerStay2D(Collider2D other)
@@ -22,7 +26,6 @@ namespace Extraction
                 CheckIfWeCanExtractPlayers(other);
             }
         }
-
         private void OnTriggerExit2D(Collider2D other)
         {
             if (other.gameObject.CompareTag("Player"))

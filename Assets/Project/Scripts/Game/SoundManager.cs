@@ -58,6 +58,7 @@ public class SoundManager : MonoBehaviour
        //Debug.Log(inventoryAudioClips[0].GetSoundName());
        LoadSpecificSoundsInDictionary("Sounds/Inventory");
        LoadSpecificSoundsInDictionary("Sounds/Gas Zone");
+       LoadSpecificSoundsInDictionary("Sounds/Movement");
     }
 
     private void LoadSpecificSounds(string path, List<Sound> soundList)

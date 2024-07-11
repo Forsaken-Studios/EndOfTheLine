@@ -18,6 +18,8 @@ public class LootUIManager : MonoBehaviour
     private LooteableObject currentCrateLooting;
     private bool getIfCrateIsOpened;
     private float distanceNeededToClosePanel = 2f;
+    [SerializeField] private GameObject splittingView;
+    [SerializeField] private GameObject hotkeyPrefab;
     private void Awake()
     {
         if (Instance != null)
@@ -34,7 +36,6 @@ public class LootUIManager : MonoBehaviour
     {
         itemsSlotsList = new List<ItemSlot>();
         itemsSlotsList = lootUIPanel.GetComponentsInChildren<ItemSlot>().ToList();
-        
         lootUIPanel.SetActive(false);
     }
 
@@ -47,19 +48,6 @@ public class LootUIManager : MonoBehaviour
             {
                 LootAllItemsInCrate();
             }
-            /*//Check if we need to disable it if we are to far away
-            if (currentCrateLooting != null)
-            {
-                if(Vector2.Distance(PlayerInventory.Instance.transform.position, currentCrateLooting.transform.position) >
-                    distanceNeededToClosePanel)
-                {
-                    LogManager.Log( Vector2.Distance(PlayerInventory.Instance.transform.position, 
-                        this.gameObject.transform.position).ToString(), FeatureType.Inventory);
-                    DesactivateLootUIPanel();
-                    InventoryManager.Instance.DesactivateInventory();
-                }
-            }*/
-
         }
     }
 
@@ -76,13 +64,19 @@ public class LootUIManager : MonoBehaviour
         foreach (var item in itemsInLootableObject)
         {
              int remainingItems = 0;
+             int nextRemainingItems = 0;
              if (!itemsSlotsList[GetFirstIndexSlotAvailable()]
                  .TrySetItemSlotPropertiesForManager(item.Key, item.Value, out remainingItems))
-             {
+             { 
                  itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
-                     remainingItems, out remainingItems);
+                     remainingItems, out  nextRemainingItems);
+                 while (nextRemainingItems > 0)
+                 {
+                     remainingItems = nextRemainingItems;
+                     itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
+                         remainingItems, out nextRemainingItems);
+                 }
              }
-
         }
     }
 
@@ -109,6 +103,11 @@ public class LootUIManager : MonoBehaviour
         getIfCrateIsOpened = false;
     }
     
+    public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
+    {
+        this.splittingView.SetActive(true);
+        this.splittingView.GetComponent<SplittingView>().SetUpProperties(maxAmount, draggableItem, itemSlot, previousItemSlot);
+    }
     public bool TryAddItemCrateToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
         {
             int availableIndex = 0;
@@ -199,4 +198,10 @@ public class LootUIManager : MonoBehaviour
         LootUIManager.Instance.LoadItemsInSlots(itemsInLootableObject);
         LootUIManager.Instance.ActivateLootUIPanel();
     }
+
+    public GameObject GetHotkeyPrefab()
+    {
+        return hotkeyPrefab;
+    }
+    
 }

@@ -2,7 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using Utils.CustomLogs;
 
 namespace Inventory
@@ -16,12 +19,18 @@ namespace Inventory
         [Header("Inventory Panels")]
         [SerializeField] private GameObject inventoryHUD;
         [SerializeField] private GameObject inventoryHUDPanel;
+        [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private TextMeshProUGUI inventoryText;
         [SerializeField] private List<ItemSlot> itemSlotList;
-        [SerializeField] private int nextIndexSlotAvailable = 0;
+        private int nextIndexSlotAvailable = 0;
+        [SerializeField] private GameObject looteableObjectPrefab;
+        [SerializeField] private GameObject rightClickInterfacePrefab;
         
+        private GameObject currentRightClickInterface;
         private int MAX_AMOUNT_PER_SLOT = 4;
 
+     
+        
         private void Awake()
         {
             if (Instance != null)
@@ -30,7 +39,6 @@ namespace Inventory
                 Destroy(gameObject);
                 return;
             }
-
             Instance = this;
 
         }
@@ -63,6 +71,8 @@ namespace Inventory
             else
             {
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseInventory);
+                TryDestroyContextMenu();
+                
             }
               
             inventoryHUD.SetActive(!inventoryHUD.activeSelf);
@@ -81,6 +91,7 @@ namespace Inventory
         {
             GameManager.Instance.GameState = GameState.OnGame;
             inventoryHUD.SetActive(false);
+            TryDestroyContextMenu();
             inventoryHUDPanel.SetActive(false);
         }
         
@@ -91,8 +102,19 @@ namespace Inventory
             {
                 inventoryText.text += item.Key.name + "  x" + item.Value + "\n";
             }
+
+            weightText.text = PlayerInventory.Instance.GetCurrentWeight().ToString("F2") + " / " +
+                              PlayerInventory.Instance.GetMaxWeight() + " KG";
         }
 
+        
+        /// <summary>
+        /// Methods that finds and set the first available spot for item
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="amount"></param>
+        /// <param name="remainingItemsWithoutSpace"></param>
+        /// <returns></returns>
         public bool TryAddInventoryToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
         {
             int availableIndex = 0;
@@ -177,8 +199,6 @@ namespace Inventory
                 remainingAmount = 0;
                 return true;
             }
-
-            LogManager.Log("IF ELSE NOT WORKING PROPERLY", FeatureType.Loot);
             remainingAmount = 0;
             return true; 
         }
@@ -216,6 +236,36 @@ namespace Inventory
         {
             return MAX_AMOUNT_PER_SLOT;
         }
+
+        public GameObject GetLooteableObjectPrefab()
+        {
+            return looteableObjectPrefab; 
+        }
+
+        public void ActivateContextMenuInterface(ItemSlot itemSlot)
+        {
+            
+            if (currentRightClickInterface != null)
+            {
+                Destroy(currentRightClickInterface.gameObject);
+            }
+            GameObject rightClickInterface = Instantiate(rightClickInterfacePrefab, Input.mousePosition, Quaternion.identity);
+            rightClickInterface.GetComponentInChildren<ContextMenu>().SetItemSlotProperties(itemSlot);
+            //Adding offset
+            Vector2 newPositon = new Vector2(Input.mousePosition.x + 80, Input.mousePosition.y + 80);
+            rightClickInterface.GetComponentInChildren<Image>().rectTransform.anchoredPosition = newPositon;
+            currentRightClickInterface = rightClickInterface;
+        }
+
+        public void TryDestroyContextMenu()
+        {
+            if (currentRightClickInterface != null)
+            {
+                Destroy(currentRightClickInterface);
+                currentRightClickInterface = null; 
+            }
+        }
+
     }
 }
 

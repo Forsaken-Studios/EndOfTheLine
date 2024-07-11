@@ -4,5 +4,5 @@ using UnityEngine;
 
 public enum ItemType
 {
-    Unkown, Resources, Scrap, Lore
+    Unkown, Resources, Scrap, Lore, Key
 }
