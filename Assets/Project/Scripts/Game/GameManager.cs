@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
     public void DesactivateExtractionZone()
     {
         extractionZoneImage.GetComponent<SpriteRenderer>().color = Color.gray;
-        ExtractionManager.Instance.SetIfExtractionArrived(true);
+        ExtractionManager.Instance.SetIfExtractionArrived(false);
     }
     
     public void EndGame()

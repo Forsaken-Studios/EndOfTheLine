@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils.CustomLogs;
 
 namespace Player
 {
+
     public class PlayerController : MonoBehaviour
     {
         [SerializeField] private float moveSpeed; 
@@ -33,6 +35,8 @@ namespace Player
 
         private void Update()
         {
+            
+            //LogManager.Log("GAME STATUS: " + GameManager.Instance.GameState.ToString(), FeatureType.General);
             if (GameManager.Instance.GameState == GameState.OnGame && playerCanMove)
             {
                 if (isDashing)
@@ -40,12 +44,14 @@ namespace Player
                     PlayerStamina.Instance.SetCanRecoveryEnergy(false);
                     return;
                 }
-            
                 HandleMovementInputs();
-                HandleDashInputs();
             }
             else
             {
+                if (GameManager.Instance.GameState == GameState.OnInventory)
+                {
+                    _animator.SetBool("running", false);
+                }
                 speedX = 0;
                 speedY = 0; 
             }
@@ -64,9 +70,12 @@ namespace Player
         {
             speedX = Input.GetAxisRaw("Horizontal");
             speedY = Input.GetAxisRaw("Vertical");
-            
-            if(speedX != 0 || speedY != 0)
+
+            if (speedX != 0 || speedY != 0)
+            {
+                HandleDashInputs();
                 _animator.SetBool("running", true);
+            }
             else
                 _animator.SetBool("running", false);
             
@@ -75,16 +84,17 @@ namespace Player
 
         private void HandleDashInputs()
         {
-            if (Input.GetKeyDown(dashInput) && canDash && PlayerStamina.Instance.GetStamina() >= DASH_STAMINA_COST)
+            if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetStamina() >= DASH_STAMINA_COST)
             {
                 StartCoroutine(Dash());
+                SoundManager.Instance.ActivateSoundByName(SoundAction.Movement_Dash);
             }
         }
 
         private IEnumerator Dash()
         {
-            PlayerStamina.Instance.DecreaseStamina(DASH_STAMINA_COST);
-            PlayerStamina.Instance.SetCanRecoveryEnergy(false);
+            PlayerOverheating.Instance.DecreaseStamina(DASH_STAMINA_COST);
+            PlayerOverheating.Instance.SetCanRecoveryEnergy(false);
             canDash = false;
             isDashing = true;
             _rb.velocity = new Vector2(speedX * dashSpeed, speedY * dashSpeed / 2);
@@ -95,7 +105,7 @@ namespace Player
             canDash = true;
 
             yield return new WaitForSeconds(2f);
-            PlayerStamina.Instance.SetCanRecoveryEnergy(true);
+            PlayerOverheating.Instance.SetCanRecoveryEnergy(true);
         }
 
 

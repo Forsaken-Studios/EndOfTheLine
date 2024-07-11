@@ -20,7 +20,9 @@ namespace FieldOfView
         [SerializeField] private Vector3 origin = Vector3.zero;
 
         [Header("Enemy Script")] [SerializeField]
-        private Enemy enemyScript;
+        private Enemy enemyScript;       
+        [Header("FOV State Script")]
+        private EnemyFOVState fovState;
 
         [Header("Detection bar properties")] [SerializeField]
         private BarDetectionProgress detectionBar;
@@ -33,6 +35,7 @@ namespace FieldOfView
 
         void Start()
         {
+            fovState = GetComponent<EnemyFOVState>();
             mesh = new Mesh();
             raycastHitsList = new List<RaycastHit2D>();
             GetComponent<MeshFilter>().mesh = mesh;
@@ -46,34 +49,42 @@ namespace FieldOfView
             UpdateFieldOfViewMesh();
             // FindTargetPlayer();
 
+
             if (!CheckIfPlayerIsBeingDetected())
             {
                 if (detectionBar.GetIfPlayerIsDetected())
                 {
                     //Start countdown to forget player
+                    
                     enemyScript.ActivateCountdownToForgetPlayer();
                 }
                 else
                 {
                     if (detectionBar.gameObject.activeSelf)
                     {
-                        LogManager.Log("CHECK", FeatureType.FieldOfView);
-                        detectionBar.SetIfPlayerIsBeingDetected(false);
+                        //We exit fov
+                        detectionBar.SetIfPlayerIsBeingDetected(false, fovState);
                     }
-
                 }
+                fovState.FOVState = FOVState.isWatching;
             }
             else
             {
                 if (enemyScript.GetIfEnemyIsForgetting())
                 {
+                    //We detect player again before forgetting
+                    fovState.FOVState = FOVState.isSeeing;
                     enemyScript.StopEnemyActionOfForgettingPlayer();
                 }
 
                 if (!detectionBar.GetIfPlayerIsDetected())
                 {
+                    //We detect player
+                    fovState.FOVState = FOVState.isDetecting;
                     detectionBar.gameObject.SetActive(true);
+                    detectionBar.SetIfPlayerIsBeingDetected(true, fovState);
                 }
+                
             }
         }
 
@@ -89,7 +100,6 @@ namespace FieldOfView
                     }
                 }
             }
-
             return false;
         }
 
@@ -118,22 +128,8 @@ namespace FieldOfView
                     vertex = origin + GetVectorFromAngle(angle) * viewDistance;
                 }
                 else
-                {
-
-                    /*if (raycastHit2D.collider.gameObject.CompareTag("Player"))
-                     {
-                         if(raycastHit2D.collider.gameObject.layer == obstacleLayerMask)
-                             vertex = origin + GetVectorFromAngle(angle) * viewDistance;
-
-                         if (!enemyGameObject.GetComponent<Enemy>().PlayerIsDetected)
-                         {
-                             detectionBar.gameObject.SetActive(true);
-                             Debug.Log("PLAYER SAW?");
-                         }
-                     }*/
-                    //hit obstacle
-                    vertex = raycastHit2D.point;
-
+                {  
+                    vertex = raycastHit2D.point;  
                 }
 
                 vertices[vertexIndex] = vertex;

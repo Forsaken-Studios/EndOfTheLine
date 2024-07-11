@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Inventory;
 using UnityEngine;
 
 namespace Loot
@@ -9,10 +10,10 @@ namespace Loot
     public class LooteableObjectTrigger : MonoBehaviour
     {
         private LooteableObject looteableObject;
-
+        
         private void Start()
         {
-            looteableObject = this.gameObject.GetComponent<LooteableObject>();
+            looteableObject = this.gameObject.GetComponentInParent<LooteableObject>();
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -20,6 +21,7 @@ namespace Loot
             if (other.CompareTag("Player"))
             {
                 looteableObject.ActivateKeyHotkeyImage();
+                LooteableObjectSelector.Instance.AddOneInTrigger(looteableObject);
             }
         }
 
@@ -28,6 +30,7 @@ namespace Loot
             if (other.CompareTag("Player"))
             {
                 looteableObject.DesactivateKeyHotkeyImage();
+                LooteableObjectSelector.Instance.DecreaseOneInTrigger(looteableObject);
             }
         }
     }
