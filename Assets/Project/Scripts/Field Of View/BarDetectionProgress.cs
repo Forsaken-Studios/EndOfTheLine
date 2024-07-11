@@ -9,10 +9,7 @@ namespace FieldOfView
 {
     public class BarDetectionProgress : MonoBehaviour
     {
-
-        [SerializeField] private Sprite questionSprite;
-        [SerializeField] private Sprite detectedSprite;
-        [SerializeField] private Image iconImage;
+        
         private Animator _animator;
         private Image _image;
         private float speedBasedInDistance = 1f;
@@ -22,8 +19,8 @@ namespace FieldOfView
         [SerializeField] private float detectionDecreaseFactor;
         private EnemyFOVState enemyFOVState;
         public event EventHandler onPlayerDetected;
-
-
+        private AlertColorHUD alertColorHUD;
+        [SerializeField] private float detectionValue;
         private void Awake()
         {
             _animator = GetComponent<Animator>();
@@ -33,6 +30,7 @@ namespace FieldOfView
         void Start()
         {
             this.gameObject.SetActive(false);
+            alertColorHUD = GetComponent<AlertColorHUD>();
         }
 
         private void Update()
@@ -50,47 +48,48 @@ namespace FieldOfView
         {
             if (isDetecting)
             {
-                if (_image.fillAmount < 1)
+                if (detectionValue < 1)
                 {
-                    _image.fillAmount += detectionIncreaseFactor * Time.deltaTime;
+                    detectionValue += detectionIncreaseFactor * Time.deltaTime;
                 }
                 else
                 {
                     LogManager.Log("DETECTED", FeatureType.FieldOfView);
                     GetComponentInParent<Enemy>().PlayerDetected = true; 
                     enemyFOVState.FOVState = FOVState.isSeeing;
-                    _image.fillAmount = 1;
-                    playerDetected = true;
-                    iconImage.sprite = detectedSprite;
-                    _image.enabled = false;
+                    detectionValue = 1;
+                    playerDetected = true; 
+                    //_image.enabled = false;
                     isDetecting = false;
                 }
             }
             else
             {
-                if (_image.fillAmount == 0)
+                if (detectionValue == 0)
                 {
                     isDetecting = false;
                     this.gameObject.SetActive(false);
                 }
 
-                if (_image.fillAmount >= 0)
+                if (detectionValue >= 0)
                 {
-                    _image.fillAmount -= detectionIncreaseFactor * Time.deltaTime;
+                    Debug.Log("DECREASE ");
+                   detectionValue -= detectionIncreaseFactor * Time.deltaTime;
                 }
                 else
                 {
-                    _image.fillAmount = 0;
+                    detectionValue = 0;
                 }
             }
+            
+            alertColorHUD.UpdateHealth(detectionValue);
         }
 
         public void ForgetPlayer()
         {
             isDetecting = false;
-            _image.fillAmount = 0;
+            detectionValue = 0;
             playerDetected = false;
-            iconImage.sprite = questionSprite;
             _image.enabled = true;
         }
 
@@ -98,7 +97,6 @@ namespace FieldOfView
         {
             // this._animator.speed = speedBasedInDistance;
             isDetecting = true;
-            iconImage.sprite = questionSprite;
         }
 
         private void OnDisable()
