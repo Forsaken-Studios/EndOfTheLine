@@ -18,11 +18,14 @@ namespace FieldOfView
         [SerializeField] float viewDistance;
         [SerializeField] private float currentAngle;
         [SerializeField] private Vector3 origin = Vector3.zero;
+        [SerializeField] private GameObject _playerTransform;
+
+        private Vector2 _currentDirection;
 
         [Header("Enemy Script")] [SerializeField]
-        private Enemy enemyScript;       
+        private EnemyVision enemyScript;       
         [Header("FOV State Script")]
-        private EnemyFOVState fovState;
+        public EnemyFOVState fovState;
 
         [Header("Detection bar properties")] [SerializeField]
         private BarDetectionProgress detectionBar;
@@ -88,6 +91,16 @@ namespace FieldOfView
             }
         }
 
+        void Update()
+        {
+            UpdateCurrentDirection();
+        }
+
+        private void UpdateCurrentDirection()
+        {
+            _currentDirection = new Vector2(transform.rotation.x, transform.rotation.y);
+        }
+
         private bool CheckIfPlayerIsBeingDetected()
         {
             foreach (var raycast in raycastHitsList)
@@ -106,6 +119,7 @@ namespace FieldOfView
         private void UpdateFieldOfViewMesh()
         {
             raycastHitsList.Clear();
+            currentAngle = _playerTransform.transform.eulerAngles.z - fov / 2f; //Cambio
             angle = currentAngle;
             float angleIncrease = fov / rayCount;
 
@@ -215,6 +229,16 @@ namespace FieldOfView
         public float GetAngle()
         {
             return currentAngle;
+        }
+
+        public FOVState GetFOVState()
+        {
+            return fovState.FOVState;
+        }
+
+        public float GetFov()
+        {
+            return fov;
         }
     }
 }

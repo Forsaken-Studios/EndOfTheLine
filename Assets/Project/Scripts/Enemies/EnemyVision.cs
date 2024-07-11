@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using FieldOfView;
 using UnityEngine;
 using FieldOfView;
-public class Enemy : MonoBehaviour
+public class EnemyVision : MonoBehaviour
 {
-    [SerializeField] private float rotationSpeed = 5f;
     [SerializeField] private FieldOfView.FieldOfView enemyFOV;
     [SerializeField] private BarDetectionProgress detectionBar;
     [SerializeField] private float timeBeforeForgettingPlayer = 3f;
@@ -20,14 +19,15 @@ public class Enemy : MonoBehaviour
     
     private void Start()
     {
-      //  detectionBar.onPlayerDetected += OnPlayerDetected;
+        //  detectionBar.onPlayerDetected += OnPlayerDetected;
         //enemyFOV.SetAimDirection(new Vector3(360, 360, 0));
-        enemyFOV.SetOrigin(this.gameObject.transform.position);
+        
     }
 
     private void Update()
     {
         Debug.Log("PlayerDetected: " + PlayerDetected);
+        enemyFOV.SetOrigin(this.gameObject.transform.position);
     }
 
     /// <summary>

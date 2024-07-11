@@ -22,6 +22,7 @@ namespace FieldOfView
         [SerializeField] private float detectionDecreaseFactor;
         private EnemyFOVState enemyFOVState;
         public event EventHandler onPlayerDetected;
+        [SerializeField] EnemyVision _enemyVision;
 
 
         private void Awake()
@@ -37,6 +38,8 @@ namespace FieldOfView
 
         private void Update()
         {
+            transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+
             if (!playerDetected)
             {
                 CheckPlayerDetection();
@@ -57,7 +60,7 @@ namespace FieldOfView
                 else
                 {
                     LogManager.Log("DETECTED", FeatureType.FieldOfView);
-                    GetComponentInParent<Enemy>().PlayerDetected = true; 
+                    _enemyVision.PlayerDetected = true; 
                     enemyFOVState.FOVState = FOVState.isSeeing;
                     _image.fillAmount = 1;
                     playerDetected = true;

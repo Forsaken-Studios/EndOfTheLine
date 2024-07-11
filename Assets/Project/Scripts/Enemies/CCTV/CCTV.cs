@@ -14,7 +14,7 @@ public class CCTV : MonoBehaviour
     private bool increasing = true;
     private void Start()
     {
-        cctvFOV = GetComponent<Enemy>().GetFOV();
+        cctvFOV = GetComponent<EnemyVision>().GetFOV();
     }
 
     /// <summary>
