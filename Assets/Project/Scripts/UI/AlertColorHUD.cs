@@ -20,14 +20,14 @@ public class AlertColorHUD : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateHealth(0);
+        
     }
 
     //Updates the fill ammount and the color of the alert meter
     public void UpdateHealth(float quantity)
     {
-        detection = Mathf.Clamp(detection + quantity, 0, maxDetection);
-        alertMeter.fillAmount = detection / maxDetection;
+        detection = Mathf.Clamp(quantity, 0, maxDetection);
+        alertMeter.fillAmount = quantity;
 
         //Debug.Log(colorGradient.Evaluate(alertMeter.fillAmount));
         alertMeter.color = colorGradient.Evaluate(alertMeter.fillAmount);
