@@ -8,6 +8,7 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class BasicEnemyAI : BTree
 {
     private BasicEnemyActions _enemyActions;
+    [SerializeField] private DetectionPlayerManager _detectionPlayer;
 
     protected override void Start()
     {
@@ -25,17 +26,17 @@ public class BasicEnemyAI : BTree
         // Enemigo en Alerta
         Node alertSequence = new NodeSequence(new List<Node>
         {
-            new AlertCondition(_enemyActions),
+            new AlertCondition(_detectionPlayer),
             new NodeSelector(new List<Node>
             {
                 new NodeSequence(new List<Node>
                 {
-                    new SeeingPlayerCondition(_enemyActions),
+                    new SeeingPlayerCondition(_detectionPlayer),
                     new ChasePlayerAction(_enemyActions)
                 }),
                 new NodeSequence(new List<Node>
                 {
-                    new NotSeeingPlayerCondition(_enemyActions),
+                    new NotSeeingPlayerCondition(_enemyActions, _detectionPlayer),
                     new NodeSelector(new List<Node>
                     {
                         new NodeSequence(new List<Node>
@@ -56,12 +57,12 @@ public class BasicEnemyAI : BTree
         // Enemigo Idle
         Node idleSequence = new NodeSequence(new List<Node>
         {
-            new NotAlertCondition(_enemyActions),
+            new NotAlertCondition(_detectionPlayer),
             new NodeSelector(new List<Node>
             {
                 new NodeSequence(new List<Node>
                 {
-                    new SeeingPlayerCondition(_enemyActions),
+                    new DetectingPlayerCondition(_detectionPlayer),
                     new StopLookingForPlayerAction(_enemyActions)
                 }),
                 new NodeSequence(new List<Node>

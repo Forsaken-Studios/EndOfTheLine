@@ -5,16 +5,17 @@ using UnityEngine;
 
 public class CCTV : MonoBehaviour
 {
-    [SerializeField] private float rotationSpeed = 5f;
-    private FieldOfView.FieldOfView cctvFOV; 
-    
-    [SerializeField] private float MAX_ANGLE = 180;
-    [SerializeField] private float MIN_ANGLE = 120;
-    
-    private bool increasing = true;
-    private void Start()
+    [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
+    [SerializeField] private float _rotationSpeed = 5f;
+    [SerializeField] private float _angle = 60f;
+
+    private float _targetAngle;
+    private float _currentAngle;
+    private bool _increasing = true;
+
+    void Start()
     {
-        cctvFOV = GetComponent<EnemyVision>().GetFOV();
+        _targetAngle = _angle;
     }
 
     /// <summary>
@@ -23,23 +24,38 @@ public class CCTV : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (increasing)
+        _currentAngle = transform.rotation.eulerAngles.z;
+
+        if (_currentAngle > 180)
         {
-            if (cctvFOV.GetAngle() >= MAX_ANGLE)
-                increasing = false;
-            
-            cctvFOV.SetAngle(cctvFOV.GetAngle() + rotationSpeed * Time.deltaTime);
+            _currentAngle -= 360;
+        }
+
+        if (_increasing)
+        {
+            if (_currentAngle >= _angle)
+            {
+                _targetAngle = -_angle;
+                _increasing = false;
+            }
         }
         else
         {
-            if (cctvFOV.GetAngle() <= MIN_ANGLE)
-                increasing = true;
-            
-            cctvFOV.SetAngle(cctvFOV.GetAngle() - rotationSpeed * Time.deltaTime);
+            if (_currentAngle <= -_angle)
+            {
+                _targetAngle = _angle;
+                _increasing = true;
+            }
         }
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, _targetAngle), _rotationSpeed * Time.deltaTime);
     }
 
-    
-    
-    
+    void OnDrawGizmos()
+    {
+        if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, _basicEnemyDetection.GetMaxDistanceToNearEnemyPartner());
+        }
+    }
 }

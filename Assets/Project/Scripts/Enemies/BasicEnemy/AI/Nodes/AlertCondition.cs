@@ -6,16 +6,16 @@ using UnityEngine.AI;
 
 public class AlertCondition : Node
 {
-    private BasicEnemyActions _enemyActions;
+    private DetectionPlayerManager _detectionPlayer;
 
-    public AlertCondition(BasicEnemyActions enemyActions)
+    public AlertCondition(DetectionPlayerManager detectionPlayer)
     {
-        _enemyActions = enemyActions;
+        _detectionPlayer = detectionPlayer;
     }
 
     public override NodeState Evaluate()
     {
-        if(_enemyActions.getIsDetected() == true)
+        if(_detectionPlayer.isPlayerDetected == true)
         {
             return NodeState.SUCCESS;
         }

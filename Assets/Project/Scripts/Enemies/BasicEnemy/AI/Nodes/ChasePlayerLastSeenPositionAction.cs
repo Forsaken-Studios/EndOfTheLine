@@ -15,6 +15,7 @@ public class ChasePlayerLastSeenPositionAction : Node
     public override NodeState Evaluate()
     {
         _enemyActions.ChasePlayerLastSeenPosition();
+        Debug.Log("Chase player last seen position.");
         return NodeState.SUCCESS;
     }
 }

@@ -5,16 +5,16 @@ using BehaviorTree;
 
 public class SeeingPlayerCondition : Node
 {
-    private BasicEnemyActions _enemyActions;
+    private DetectionPlayerManager _detectionPlayer;
 
-    public SeeingPlayerCondition(BasicEnemyActions enemyActions)
+    public SeeingPlayerCondition(DetectionPlayerManager detectionPlayer)
     {
-        _enemyActions = enemyActions;
+        _detectionPlayer = detectionPlayer;
     }
 
     public override NodeState Evaluate()
     {
-        if (_enemyActions.GetFOVState() == FieldOfView.FOVState.isSeeing)
+        if (_detectionPlayer.currentState == EnemyStates.FOVState.isSeeing)
         {
             SetData("isLookingForPlayer", false);
             return NodeState.SUCCESS;

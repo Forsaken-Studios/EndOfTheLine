@@ -15,6 +15,7 @@ public class StopLookingForPlayerAction : Node
     public override NodeState Evaluate()
     {
         _enemyActions.StopRotating();
+        Debug.Log("Stop look for player.");
         return NodeState.SUCCESS;
     }
 }

@@ -27,8 +27,6 @@ public class LookForPlayerAction : Node
             SetData("isLookingForPlayer", true);
         }
 
-        Debug.Log($"%%%%%: {_isLookingForPlayer}");
-
         if(_isLookingForPlayer == false)
         {
             _timer = _enemyActions.GetTimeToLookForPlayer();
@@ -36,20 +34,17 @@ public class LookForPlayerAction : Node
             SetData("isLookingForPlayer", true);
         }
 
-        Debug.Log($"%%%%%: {_isLookingForPlayer}");
-
         _timer -= Time.deltaTime;
-
-        Debug.Log($"%%%%%: {_timer}");
         if (_timer <= 0)
         {
             _isLookingForPlayer = false;
             _timer = _enemyActions.GetTimeToLookForPlayer();
-            GameEventsEnemy.OnForgetPlayer?.Invoke();
+            EnemiesEvents.OnForgetPlayer?.Invoke();
             return NodeState.SUCCESS;
         }
         else
         {
+            _enemyActions.RotateInPlace();
             return NodeState.RUNNING;
         }
     }

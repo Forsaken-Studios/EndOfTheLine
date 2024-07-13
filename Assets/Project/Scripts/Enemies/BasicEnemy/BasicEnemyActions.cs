@@ -1,4 +1,3 @@
-using FieldOfView;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -9,79 +8,92 @@ using static UnityEngine.GraphicsBuffer;
 
 public class BasicEnemyActions : MonoBehaviour
 {
-    private EnemyVision _basicEnemyVision;
-    private FieldOfView.FieldOfView _basicEnemyFOV;
+    [Header("Adjsutable properties")]
+    [SerializeField] private float _movementSpeed = 1f;
+    [SerializeField] private float rotationSpeed = 15f;
+    [SerializeField] private float _killPlayerDistance = 1f;
+    [SerializeField] private float _timeToLookForPlayer = 5f;
+
+    [Header("External scripts")]
+    [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
 
     private bool _isRotating = true;
-    private float rotationSpeed = 3f;
-    private Vector3 _playerLastSeenPosition;
-    private Vector3 _initialPosition;
     private Transform _player;
     private bool _isChasing = false;
     private Vector3 _positionChased;
     private NavMeshAgent _agent;
     private Vector3 _initialPositionSelf;
-    private Vector3 _initialPositionCanvas;
-    [SerializeField] private float _maxDistanceToNearEnemyPartner = 5f;
-    [SerializeField] private float _killPlayerDistance = 1f;
-    [SerializeField] private GameObject _CanvasObject;
-    [SerializeField] private float _timeToLookForPlayer;
 
     public bool isAtPlayerLastSeenPosition { get; private set; }
     public bool isAtInitialPosition { get; private set; }
 
-    void Awake()
-    {
-        GameEventsEnemy.OnSeeingPlayer += CheckIfFollowPlayer;
-    }
-
-    private void OnDestroy()
-    {
-        GameEventsEnemy.OnSeeingPlayer -= CheckIfFollowPlayer;
-    }
-
     void Start()
     {
-        _basicEnemyVision = GetComponent<EnemyVision>();
-        _basicEnemyFOV = _basicEnemyVision.GetFOV();
         _initialPositionSelf = transform.position;
-        _initialPositionCanvas = _CanvasObject.transform.position;
 
         isAtPlayerLastSeenPosition = false;
         isAtInitialPosition = true;
 
-        _initialPosition = transform.position;
-
         _agent = GetComponent<NavMeshAgent>();
+        _agent.updateUpAxis = false;
+
         _player = GameObject.FindWithTag("Player").transform;
         StopChasing();
     }
 
     void Update()
     {
-        UpdateCanvasPosition();
-        //CheckIfKillPlayer();
-        SavePlayerLastSeenPosition();
-        UpdateRotationEnemy();
+        FixXYAxis();
+        SetMovementSpeed();
+
+        CheckIfKillPlayer();
         CheckIsAtInitialPosition();
         CheckIsAtPlayerLastSeenPosition();
 
         if (_isChasing)
         {
-            _agent.isStopped = false;
             _agent.SetDestination(_positionChased);
         }
         else if (_isRotating)
         {
-            transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
+            transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
         }
     }
 
-    private void UpdateCanvasPosition()
+    private void SetMovementSpeed()
     {
-        Vector3 differenceMovement = transform.position - _initialPositionSelf;
+        _agent.speed = _movementSpeed;
+    }
 
-        _CanvasObject.transform.position = _initialPositionCanvas + differenceMovement;
+    private void FixXYAxis()
+    {
+        if(_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
+        {
+            // Dirección hacia el objetivo
+            Vector3 direction = _player.position - transform.position;
+            direction.z = 0; // Asegurarse de que la dirección esté en el plano XY
+
+            // Calcular el ángulo en el plano XY
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            // Aplicar la rotación solo en el eje Z
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+        else
+        {
+            // Mantener las rotaciones X e Y fijas en 0
+            Vector3 fixedRotation = transform.rotation.eulerAngles;
+            fixedRotation.x = 0;
+            fixedRotation.y = 0;
+            transform.rotation = Quaternion.Euler(fixedRotation);
+
+            // Rotar el agente para seguir la dirección del movimiento
+            if (_agent.velocity != Vector3.zero)
+            {
+                float angle = Mathf.Atan2(_agent.velocity.y, _agent.velocity.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(0, 0, angle);
+            }
+        }
     }
 
     private void CheckIfKillPlayer()
@@ -93,59 +105,30 @@ public class BasicEnemyActions : MonoBehaviour
             Vector3 directionToPlayer = (_player.position - transform.position).normalized;
             float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
 
-            if (angleToPlayer < _basicEnemyFOV.GetFov() / 2)
+            if (angleToPlayer < _basicEnemyDetection.GetFOVAngle() / 2)
             {
                 GameManager.Instance.EndGame();
             }
         }
     }
 
-    private void SavePlayerLastSeenPosition()
-    {
-        if (GetFOVState() == FOVState.isSeeing)
-        {
-            _playerLastSeenPosition = _player.position;
-            GameEventsEnemy.OnSeeingPlayer?.Invoke(transform, _player);
-        }
-    }
-
-    private void UpdateRotationEnemy()
-    {
-        _basicEnemyFOV.SetAimDirection(transform.rotation.eulerAngles);
-    }
-
-    public void ChasePlayer()
-    {
-        StopRotating();
-        _isChasing = true;
-        _positionChased = _player.position;
-    }
-
-    public void ChasePosition(Vector3 newPosition)
-    {
-        StopRotating();
-        _isChasing = true;
-        _positionChased = newPosition;
-    }
-
     public void ChasePlayerLastSeenPosition()
     {
         StopRotating();
         _isChasing = true;
-        _positionChased = _playerLastSeenPosition;
+        _positionChased = _basicEnemyDetection.playerLastSeenPosition;
     }
 
     public void ChaseInitialPosition()
     {
         StopRotating();
         _isChasing = true;
-        _positionChased = _initialPosition;
+        _positionChased = _initialPositionSelf;
     }
 
     private void StopChasing()
     {
         _isChasing = false;
-        _agent.isStopped = true;
     }
 
     public void StopRotating()
@@ -161,7 +144,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void CheckIsAtInitialPosition()
     {
-        if (Vector3.Distance(transform.position, _initialPosition) < 0.1f)
+        if (Vector3.Distance(transform.position, _initialPositionSelf) < 0.5f)
         {
             isAtInitialPosition = true;
         }
@@ -173,34 +156,14 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void CheckIsAtPlayerLastSeenPosition()
     {
-        if (Vector3.Distance(transform.position, _playerLastSeenPosition) < 0.1f)
+        if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) < 0.5f)
         {
             isAtPlayerLastSeenPosition = true;
+            EnemiesEvents.OnIsAtPlayerLastSeenPosition?.Invoke();
         }
         else
         {
             isAtPlayerLastSeenPosition = false;
-        }
-    }
-
-    public bool getIsDetected()
-    {
-        return _basicEnemyVision.PlayerDetected;
-    }
-
-    public FOVState GetFOVState()
-    {
-        return _basicEnemyFOV.GetFOVState();
-    }
-
-    private void CheckIfFollowPlayer(Transform enemySenderPosition, Transform playerLastSeenPosition)
-    {
-        float distanceToEnemySender = Vector3.Distance(transform.position, enemySenderPosition.position);
-
-        if (distanceToEnemySender <= _maxDistanceToNearEnemyPartner)
-        {
-            _basicEnemyVision.PlayerDetected = true;
-            _playerLastSeenPosition = playerLastSeenPosition.position;
         }
     }
 
@@ -211,10 +174,10 @@ public class BasicEnemyActions : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (GetFOVState() == FOVState.isSeeing)
+        if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
         {
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, _maxDistanceToNearEnemyPartner);
+            Gizmos.DrawWireSphere(transform.position, _basicEnemyDetection.GetMaxDistanceToNearEnemyPartner());
         }
     }
 }

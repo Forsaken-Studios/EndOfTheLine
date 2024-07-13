@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class NotSeeingPlayerCondition : Node
 {
-    private BasicEnemyActions _enemyActions;
+    private DetectionPlayerManager _detectionPlayer;
 
-    public NotSeeingPlayerCondition(BasicEnemyActions enemyActions)
+    public NotSeeingPlayerCondition(BasicEnemyActions enemyActions, DetectionPlayerManager detectionPlayer)
     {
-        _enemyActions = enemyActions;
+        _detectionPlayer = detectionPlayer;
     }
 
     public override NodeState Evaluate()
     {
-        if (_enemyActions.GetFOVState() != FieldOfView.FOVState.isSeeing)
+        if (_detectionPlayer.currentState != EnemyStates.FOVState.isSeeing)
         {
             return NodeState.SUCCESS;
         }
