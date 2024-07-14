@@ -146,6 +146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onlyOneItemInBag: 0
   needToSpawnXObject: 1
+  itemsToSpawn: []
   maxSlotsInCrate: 5
 --- !u!1 &8613546276900521728
 GameObject:
@@ -157,6 +158,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6157957717027500669}
   - component: {fileID: 7335373175765468151}
+  - component: {fileID: 1738778026605316245}
   m_Layer: 0
   m_Name: LooteableObjectTrigger
   m_TagString: Untagged
@@ -224,3 +226,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.8896117, y: 2.3223548}
   m_EdgeRadius: 0
+--- !u!114 &1738778026605316245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8613546276900521728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4825581250586047ae49d88212daa14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
