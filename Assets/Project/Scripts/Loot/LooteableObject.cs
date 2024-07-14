@@ -41,8 +41,6 @@ namespace Loot
         {
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsNeededToSpawn = new List<Item>();
-            List<string> testList = new List<string>();
-            
             //En el futuro, hay que ver esto, porque no podemos hacer spawn en el start, habrá que modificar las opciones antes
             StartSpawingObjects(itemsToSpawn);
         }
@@ -126,15 +124,20 @@ namespace Loot
             if (itemsList != null)
             {
                 PrepareItemsNeededToSpawn(itemsList);
-                int remainingItems = maxSlotsInCrate - itemsList.Count;
-                if (remainingItems > 0)
+
+                if (!onlyOneItemInBag)
                 {
-                    PrepareLoot(remainingItems); 
+                    int remainingItems = maxSlotsInCrate - itemsList.Count;
+                    if (remainingItems > 0)
+                    {
+                        PrepareLoot(remainingItems); 
+                    }
+                    else
+                    {
+                        Debug.Log("NO SLOTS AVAILABLE FOR THAT CRATE");
+                    } 
                 }
-                else
-                {
-                    Debug.Log("NO SLOTS AVAILABLE FOR THAT CRATE");
-                }
+            
             }
             else
             {
