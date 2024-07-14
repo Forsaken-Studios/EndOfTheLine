@@ -15,8 +15,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject blackFade;
 
     [Header("Extraction Properties")] 
-    [Tooltip("Variable para prototipo, y poder cambiar el color cuando este disponible")]
-    [SerializeField] private GameObject extractionZoneImage; 
     private GameState _gameState;
     public GameState GameState
     {
@@ -56,13 +54,11 @@ public class GameManager : MonoBehaviour
     
     public void ActivateExtractionZone()
     {
-        extractionZoneImage.GetComponent<SpriteRenderer>().color = Color.green;
         ExtractionManager.Instance.SetIfExtractionArrived(true);
     }
 
     public void DesactivateExtractionZone()
     {
-        extractionZoneImage.GetComponent<SpriteRenderer>().color = Color.gray;
         ExtractionManager.Instance.SetIfExtractionArrived(false);
     }
     
