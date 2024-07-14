@@ -146,7 +146,7 @@ namespace Inventory
 
         public bool CheckIfPlayerHasKey()
         {
-            Object itemNeeded = UnityEngine.Resources.Load("Items/Keycards/Keycard");
+            Object itemNeeded = UnityEngine.Resources.Load("Items/Special/Keycard");
             Item keycardItem = itemNeeded as Item;
             return inventoryItemDictionary.ContainsKey(keycardItem);
         }
