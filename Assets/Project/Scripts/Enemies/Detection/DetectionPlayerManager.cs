@@ -39,16 +39,16 @@ public class DetectionPlayerManager : MonoBehaviour
 
     void Awake()
     {
-        EnemiesEvents.OnForgetPlayer += StopPlayerDetected;
-        EnemiesEvents.OnSeenPlayer += CheckIfFollowPlayer;
-        EnemiesEvents.OnIsAtPlayerLastSeenPosition += ActivateIsAtPlayerLastSeenPosition;
+        EnemyEvents.OnForgetPlayer += StopPlayerDetected;
+        EnemyEvents.OnSeenPlayer += CheckIfFollowPlayer;
+        EnemyEvents.OnIsAtPlayerLastSeenPosition += ActivateIsAtPlayerLastSeenPosition;
     }
 
     void OnDestroy()
     {
-        EnemiesEvents.OnForgetPlayer -= StopPlayerDetected;
-        EnemiesEvents.OnSeenPlayer -= CheckIfFollowPlayer;
-        EnemiesEvents.OnIsAtPlayerLastSeenPosition -= ActivateIsAtPlayerLastSeenPosition;
+        EnemyEvents.OnForgetPlayer -= StopPlayerDetected;
+        EnemyEvents.OnSeenPlayer -= CheckIfFollowPlayer;
+        EnemyEvents.OnIsAtPlayerLastSeenPosition -= ActivateIsAtPlayerLastSeenPosition;
     }
 
     void Start()
@@ -76,7 +76,7 @@ public class DetectionPlayerManager : MonoBehaviour
         UpdateDetection();
         CheckDetectionBarActive();
         UpdatePlayerLastSeenPosition();
-        _detectionUI.UpdateDetectionBar(_detectionLevel, isPlayerDetected);
+        _detectionUI.UpdateDetectionBar(_detectionLevel);
 
         CheckLogs();
     }
@@ -124,7 +124,7 @@ public class DetectionPlayerManager : MonoBehaviour
         if(currentState == EnemyStates.FOVState.isSeeing)
         {
             playerLastSeenPosition = _playerTransform.position;
-            EnemiesEvents.OnSeenPlayer?.Invoke(_bodyTransform.position, playerLastSeenPosition);
+            EnemyEvents.OnSeenPlayer?.Invoke(_bodyTransform.position, playerLastSeenPosition);
         }
     }
 

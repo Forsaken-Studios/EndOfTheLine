@@ -220,6 +220,7 @@ GameObject:
   - component: {fileID: 177305827673072661}
   - component: {fileID: 1264656350440971043}
   - component: {fileID: 4608514527592144812}
+  - component: {fileID: 704773679167596203}
   m_Layer: 0
   m_Name: DOOR CLOSED_0
   m_TagString: Untagged
@@ -311,7 +312,7 @@ MonoBehaviour:
   haveKeycardSprite: {fileID: 21300000, guid: 54bf78a79c02f2b4db8d5bcfbdb07ed0, type: 3}
   notKeycardSprite: {fileID: 21300000, guid: 029b643f21483e543b84059664c2af6c, type: 3}
   keycardRenderer: {fileID: 892811934807729800}
-  doorOpenedSprite: {fileID: 0}
+  doorOpenedSprite: {fileID: 1944532801, guid: 4d8f8718fa6ede7469f276a073361420, type: 3}
 --- !u!61 &4608514527592144812
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -357,3 +358,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.46, y: 3.4608066}
   m_EdgeRadius: 0
+--- !u!114 &704773679167596203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8250734560005326195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff

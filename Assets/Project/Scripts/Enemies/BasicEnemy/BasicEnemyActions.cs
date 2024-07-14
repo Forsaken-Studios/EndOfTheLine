@@ -159,7 +159,7 @@ public class BasicEnemyActions : MonoBehaviour
         if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) < 0.5f)
         {
             isAtPlayerLastSeenPosition = true;
-            EnemiesEvents.OnIsAtPlayerLastSeenPosition?.Invoke();
+            EnemyEvents.OnIsAtPlayerLastSeenPosition?.Invoke();
         }
         else
         {

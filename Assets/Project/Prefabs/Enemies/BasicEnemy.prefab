@@ -99,11 +99,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a944412d8088b6a49b46e913995215d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _movementSpeed: 1
   rotationSpeed: 15
   _killPlayerDistance: 2
   _timeToLookForPlayer: 5
   _basicEnemyDetection: {fileID: 1733303260723519078}
-  _movementSpeed: 1
 --- !u!114 &5438903967239801222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,7 +165,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2836507106303988754}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -175,7 +175,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -972.08, y: -540.8}
+  m_AnchoredPosition: {x: -972.07, y: -540.83}
   m_SizeDelta: {x: 1.4043, y: 1.3567}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2334060203943051577
@@ -206,14 +206,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -774469847, guid: 2073df606251df446bfd7dcef086bdca, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 015aeb8032e18bb4eba6f9843f8292ef, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 0
+  m_FillMethod: 1
+  m_FillAmount: 0.197
   m_FillClockwise: 1
-  m_FillOrigin: 2
+  m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
 --- !u!114 &4818511853940094315
@@ -228,10 +228,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9346db7b8b0771f45a11bb4918329a6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _detectionBarImage: {fileID: 560630416659213100}
-  _iconAlertState: {fileID: 5987257322120602110}
-  _questionSprite: {fileID: 21300000, guid: 3c3761beecc646c4fb465600fd375313, type: 3}
-  _detectedSprite: {fileID: 21300000, guid: ee19c16de4f509349b59025f8e8eb5c4, type: 3}
+  _alertMeter: {fileID: 560630416659213100}
+  _colorGradient:
+    serializedVersion: 2
+    key0: {r: 0.9266098, g: 0.9339623, b: 0.5066305, a: 1}
+    key1: {r: 0.9716981, g: 0.76261425, b: 0.12375401, a: 1}
+    key2: {r: 0.8207547, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 13685
+    ctime1: 31804
+    ctime2: 65535
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_ColorSpace: -1
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  _detection: 0
+  _maxDetection: 1
   _bodyTransform: {fileID: 694794157653344902}
 --- !u!1 &3577257253367052740
 GameObject:
@@ -364,7 +393,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5870036317474096871}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -373,8 +402,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00000017136, y: -0.04}
-  m_SizeDelta: {x: 0.8051, y: 0.9971}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1.4043, y: 1.3567}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8465779042925757913
 CanvasRenderer:
@@ -404,11 +433,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3c3761beecc646c4fb465600fd375313, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 1
+  m_Sprite: {fileID: 21300000, guid: 40fcf7fa31115e647b2a93eaa3755943, type: 3}
+  m_Type: 3
+  m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 1
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
