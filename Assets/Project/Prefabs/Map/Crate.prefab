@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9083137236410049022}
   - component: {fileID: 6051215831162623185}
   - component: {fileID: 5332866364636433274}
+  - component: {fileID: 3264312420080910223}
   m_Layer: 3
   m_Name: Crate
   m_TagString: Obstacle
@@ -148,6 +149,22 @@ MonoBehaviour:
   needToSpawnXObject: 0
   itemsToSpawn: []
   maxSlotsInCrate: 0
+--- !u!114 &3264312420080910223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7512406211256044260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &7889141175428977122
 GameObject:
   m_ObjectHideFlags: 0
