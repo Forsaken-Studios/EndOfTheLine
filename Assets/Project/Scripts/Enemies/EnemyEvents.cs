@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public static class EnemiesEvents
+public static class EnemyEvents
 {
     public static Action<Vector3, Vector3> OnSeenPlayer; // First self position, second player position.
     public static Action OnForgetPlayer;

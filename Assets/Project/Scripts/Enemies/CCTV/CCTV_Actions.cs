@@ -3,11 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CCTV : MonoBehaviour
+public class CCTV_Actions : MonoBehaviour
 {
-    [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
+    [Header("Adjustable properties")]
     [SerializeField] private float _rotationSpeed = 5f;
     [SerializeField] private float _angle = 60f;
+
+    [Header("Exernal elements")]
+    [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
+
+    [Header("Timer")]
+    [SerializeField] private float timeToForget;
+    private float _timer;
 
     private float _targetAngle;
     private float _currentAngle;
@@ -15,6 +22,7 @@ public class CCTV : MonoBehaviour
 
     void Start()
     {
+        _timer = timeToForget;
         _targetAngle = _angle;
     }
 
@@ -23,6 +31,32 @@ public class CCTV : MonoBehaviour
     /// We need to set MAX_ANGLE and MIN_ANGLE
     /// </summary>
     private void Update()
+    {
+        RotateCamera();
+        Timer();
+    }
+
+    private void Timer()
+    {
+        if (_basicEnemyDetection.isPlayerDetected)
+        {
+            if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
+            {
+                _timer = timeToForget;
+            }
+            else
+            {
+                _timer -= Time.deltaTime;
+
+                if (_timer <= 0)
+                {
+                    _basicEnemyDetection.StopDetection();
+                }
+            }
+        }
+    }
+
+    private void RotateCamera()
     {
         _currentAngle = transform.rotation.eulerAngles.z;
 

@@ -39,7 +39,7 @@ public class LookForPlayerAction : Node
         {
             _isLookingForPlayer = false;
             _timer = _enemyActions.GetTimeToLookForPlayer();
-            EnemiesEvents.OnForgetPlayer?.Invoke();
+            EnemyEvents.OnForgetPlayer?.Invoke();
             return NodeState.SUCCESS;
         }
         else
