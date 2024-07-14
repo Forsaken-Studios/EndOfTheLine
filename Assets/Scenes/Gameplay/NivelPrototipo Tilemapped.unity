@@ -795,7 +795,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &242611681
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14374,7 +14374,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &640405528
 Canvas:
   m_ObjectHideFlags: 0
@@ -82140,9 +82140,37 @@ PrefabInstance:
       propertyPath: m_Name
       value: PLAYER_PARENT
       objectReference: {fileID: 0}
+    - target: {fileID: 2625966237649996951, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6993874265996280656, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
       propertyPath: m_SortingOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7485685232456042516, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601617119248288954, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601617119248288954, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601617119248288954, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601617119248288954, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7601617119248288954, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 8261873527939161885, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
       propertyPath: staminaBar
