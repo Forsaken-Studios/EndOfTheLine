@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 9142719316100293497}
   - component: {fileID: 9083137236410049022}
   - component: {fileID: 6051215831162623185}
-  - component: {fileID: 8642425098476247303}
   m_Layer: 3
   m_Name: Crate
   m_TagString: Obstacle
@@ -29,8 +28,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.12475199, y: 0.10966972, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.95, y: 0.95, z: 0.95}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -131,19 +130,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 7.737344, y: 7.922102}
   m_EdgeRadius: 0
---- !u!114 &8642425098476247303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7512406211256044260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 1
-  m_IgnoreFromBuild: 0
-  m_AffectedAgents: ffffffff
