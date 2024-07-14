@@ -21,6 +21,7 @@ namespace Loot
         private Dictionary<Item, int> itemsInLootableObject;
         [SerializeField] private bool onlyOneItemInBag;
         [SerializeField] private bool needToSpawnXObject;
+        [SerializeField] private List<string> itemsToSpawn;
         private bool isLooting = false;
         private bool isTemporalBox = false; 
         /// <summary>
@@ -41,10 +42,9 @@ namespace Loot
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsNeededToSpawn = new List<Item>();
             List<string> testList = new List<string>();
-            testList.Add("Keycard");
-
+            
             //En el futuro, hay que ver esto, porque no podemos hacer spawn en el start, habrá que modificar las opciones antes
-            StartSpawingObjects(testList, true);
+            StartSpawingObjects(itemsToSpawn);
         }
         private void Update()
         {
@@ -109,9 +109,9 @@ namespace Loot
             return itemsInLootableObject.Count == 0;
         }
         
-        public void StartSpawingObjects(List<string> testList, bool needToSpawnObject)
+        public void StartSpawingObjects(List<string> testList)
         {
-            if (needToSpawnObject)
+            if (needToSpawnXObject)
             {
                 InitializeLootObject(testList);  
             }
@@ -119,7 +119,6 @@ namespace Loot
             {
                 InitializeLootObject(null);  
             }
-            needToSpawnXObject = needToSpawnObject; 
         }
 
         private void InitializeLootObject(List<string> itemsList)
@@ -147,7 +146,7 @@ namespace Loot
         {
             foreach (var itemName in itemsList)
             {
-                Object itemNeeded = UnityEngine.Resources.Load("Items/Keycards/Keycard");
+                Object itemNeeded = UnityEngine.Resources.Load("Items/Special/" + itemsList[0].ToString());
                 Item itemSO = itemNeeded as Item;
                 itemsNeededToSpawn.Add(itemSO);
                 itemsInLootableObject.Add(itemSO, 1);
