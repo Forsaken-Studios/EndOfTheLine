@@ -6,8 +6,9 @@ using UnityEngine;
 public class CCTV_Actions : MonoBehaviour
 {
     [Header("Adjustable properties")]
-    [SerializeField] private float _rotationSpeed = 5f;
-    [SerializeField] private float _angle = 60f;
+    [SerializeField] private float _rotationSpeed = 15f;
+    [SerializeField] private float _angle = 45f;
+    private float _realAngle;
 
     [Header("Exernal elements")]
     [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
@@ -22,6 +23,7 @@ public class CCTV_Actions : MonoBehaviour
 
     void Start()
     {
+        _realAngle = _angle / 2;
         _timer = timeToForget;
         _targetAngle = _angle;
     }
@@ -67,17 +69,17 @@ public class CCTV_Actions : MonoBehaviour
 
         if (_increasing)
         {
-            if (_currentAngle >= _angle)
+            if (_currentAngle >= _realAngle)
             {
-                _targetAngle = -_angle;
+                _targetAngle = -_realAngle;
                 _increasing = false;
             }
         }
         else
         {
-            if (_currentAngle <= -_angle)
+            if (_currentAngle <= -_realAngle)
             {
-                _targetAngle = _angle;
+                _targetAngle = _realAngle;
                 _increasing = true;
             }
         }
@@ -88,7 +90,7 @@ public class CCTV_Actions : MonoBehaviour
     {
         if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
         {
-            Gizmos.color = Color.blue;
+            Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, _basicEnemyDetection.GetMaxDistanceToNearEnemyPartner());
         }
     }

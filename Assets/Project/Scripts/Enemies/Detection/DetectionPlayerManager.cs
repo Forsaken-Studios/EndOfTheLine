@@ -213,7 +213,6 @@ public class DetectionPlayerManager : MonoBehaviour
     public void StopDetection()
     {
         isPlayerDetected = false;
-        _detectionLevel = 0f;
     }
 
     public EnemyStates.FOVState GetCurrentState()

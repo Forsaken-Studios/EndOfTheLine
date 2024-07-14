@@ -17,6 +17,7 @@ public class DoorUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        doorCollider = GetComponent<BoxCollider2D>();
         doorSpriteRenderer = GetComponent<SpriteRenderer>();
         keycardRenderer.gameObject.SetActive(false);
     }
@@ -32,7 +33,6 @@ public class DoorUI : MonoBehaviour
         bool playerHasKey = PlayerInventory.Instance.CheckIfPlayerHasKey(); 
         keycardRenderer.sprite = playerHasKey ? haveKeycardSprite : notKeycardSprite;
         playerCanTryToOpenTheDoor = !playerIsFarAway && playerHasKey;
-        doorCollider = GetComponent<Collider2D>();
     }
 
     private void HandleOpeningDoor()
@@ -59,9 +59,10 @@ public class DoorUI : MonoBehaviour
         //Cambiar sprite
         doorOpened = true;
         //En este caso sería animator en vez de cambiar sprite
-        doorSpriteRenderer.sprite = doorOpenedSprite;
         doorCollider.enabled = false;
+        doorSpriteRenderer.sprite = doorOpenedSprite;
         StartCoroutine(CloseDoorInXTime(4f));
+        
     }
 
     public void CloseDoorAI()
