@@ -65,8 +65,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b602001b94399d43b9296b73b52836c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3
-  dashSpeed: 20
+  moveSpeed: 18
+  dashSpeed: 120
   dashDuration: 0.1
   dashCooldown: 0
 --- !u!114 &13750783165856908
@@ -107,7 +107,7 @@ MonoBehaviour:
   recoveryStaminaSpeed: 5
   recoveryStaminaTime: 0.2
   recoveryStaminaTimeLerp: 0.2
-  valueStaminaDecrease: 12
+  valueStaminaDecrease: 9
   barLerpSpeed: 0
 --- !u!114 &5359413421954690112
 MonoBehaviour:
@@ -255,13 +255,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3088495139295148661}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4827816227378439758}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!212 &6993874265996280656
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -322,7 +322,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3088495139295148661}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 9f2a11a83a6d6c9479ca0785e0f9b723, type: 2}
   m_CullingMode: 0
@@ -444,8 +444,8 @@ Transform:
   m_GameObject: {fileID: 6708745685372991606}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0, y: -0.21, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8908747350478651800}
