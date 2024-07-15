@@ -8,24 +8,29 @@ public class CCTV_Actions : MonoBehaviour
     [Header("Adjustable properties")]
     [SerializeField] private float _rotationSpeed = 15f;
     [SerializeField] private float _angle = 45f;
-    private float _realAngle;
 
-    [Header("Exernal elements")]
+    [Header("External elements")]
     [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
 
     [Header("Timer")]
     [SerializeField] private float timeToForget;
     private float _timer;
 
-    private float _targetAngle;
+    private float _maxAngle;
+    private float _minAngle;
     private float _currentAngle;
     private bool _increasing = true;
 
     void Start()
     {
-        _realAngle = _angle / 2;
+        _currentAngle = transform.localEulerAngles.z;
+        _maxAngle = _currentAngle + (_angle / 2);
+        _minAngle = _currentAngle - (_angle / 2);
+
+        Debug.Log("Max Angle: " + _maxAngle);
+        Debug.Log("Min Angle: " + _minAngle);
+
         _timer = timeToForget;
-        _targetAngle = _angle;
     }
 
     /// <summary>
@@ -60,35 +65,33 @@ public class CCTV_Actions : MonoBehaviour
 
     private void RotateCamera()
     {
-        _currentAngle = transform.rotation.eulerAngles.z;
-
-        if (_currentAngle > 180)
-        {
-            _currentAngle -= 360;
-        }
+        _currentAngle = transform.localEulerAngles.z;
 
         if (_increasing)
         {
-            if (_currentAngle >= _realAngle)
+            _currentAngle += _rotationSpeed * Time.deltaTime;
+            if (_currentAngle >= _maxAngle)
             {
-                _targetAngle = -_realAngle;
+                _currentAngle = _maxAngle;
                 _increasing = false;
             }
         }
         else
         {
-            if (_currentAngle <= -_realAngle)
+            _currentAngle -= _rotationSpeed * Time.deltaTime;
+            if (_currentAngle <= _minAngle)
             {
-                _targetAngle = _realAngle;
+                _currentAngle = _minAngle;
                 _increasing = true;
             }
         }
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 0, _targetAngle), _rotationSpeed * Time.deltaTime);
+
+        transform.localEulerAngles = new Vector3(0, 0, _currentAngle);
     }
 
     void OnDrawGizmos()
     {
-        if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
+        if (_basicEnemyDetection != null && _basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, _basicEnemyDetection.GetMaxDistanceToNearEnemyPartner());
