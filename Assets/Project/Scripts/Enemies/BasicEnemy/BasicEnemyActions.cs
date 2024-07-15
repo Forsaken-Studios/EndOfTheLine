@@ -29,6 +29,7 @@ public class BasicEnemyActions : MonoBehaviour
     void Start()
     {
         _initialPositionSelf = transform.position;
+        _positionChased = _initialPositionSelf;
 
         isAtPlayerLastSeenPosition = false;
         isAtInitialPosition = true;
@@ -48,7 +49,6 @@ public class BasicEnemyActions : MonoBehaviour
         CheckIfKillPlayer();
         CheckIsAtInitialPosition();
         CheckIsAtPlayerLastSeenPosition();
-
 
         _agent.SetDestination(_positionChased);
 
@@ -143,7 +143,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void CheckIsAtInitialPosition()
     {
-        if (Vector3.Distance(transform.position, _initialPositionSelf) < 0.5f)
+        if (Vector3.Distance(transform.position, _initialPositionSelf) < 3f)
         {
             isAtInitialPosition = true;
         }
@@ -155,7 +155,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void CheckIsAtPlayerLastSeenPosition()
     {
-        if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) < 0.5f)
+        if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) < 3f)
         {
             isAtPlayerLastSeenPosition = true;
             EnemyEvents.OnIsAtPlayerLastSeenPosition?.Invoke();
