@@ -50,20 +50,24 @@ namespace Loot
             {
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    if (LooteableObjectSelector.Instance.GetIfSelectorIsActive() &&
-                        LooteableObjectSelector.Instance.GetIfIndexIsThisLooteableObject(this))
+                    if (InventoryManager.Instance.GetInspectViewList().Count == 0)
                     {
-                        //CUIDADO QUE ESTÁ AL REVES, PILLA EL NOMBRE DEL OTRO
-                        Debug.Log(this.name);
-                        HandleInventory();
-                    }
+                        if (LooteableObjectSelector.Instance.GetIfSelectorIsActive() &&
+                            LooteableObjectSelector.Instance.GetIfIndexIsThisLooteableObject(this))
+                        {
+                            //CUIDADO QUE ESTÁ AL REVES, PILLA EL NOMBRE DEL OTRO
+                            Debug.Log(this.name);
+                            HandleInventory();
+                        }
                     
                     
-                    if(!LooteableObjectSelector.Instance.GetIfSelectorIsActive())
-                    {
-                        //No scroll selector
-                        HandleInventory();
+                        if(!LooteableObjectSelector.Instance.GetIfSelectorIsActive())
+                        {
+                            //No scroll selector
+                            HandleInventory();
+                        } 
                     }
+                  
                 }
             }
         }

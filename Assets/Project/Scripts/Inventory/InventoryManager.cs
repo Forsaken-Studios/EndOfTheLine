@@ -29,7 +29,7 @@ namespace Inventory
         private GameObject currentRightClickInterface;
         private int MAX_AMOUNT_PER_SLOT = 4;
 
-     
+        private List<GameObject> inspectListViewList;
         
         private void Awake()
         {
@@ -45,6 +45,7 @@ namespace Inventory
 
         private void Start()
         {
+            inspectListViewList = new List<GameObject>();
             inventoryHUD.SetActive(false);
             inventoryHUDPanel.SetActive(false);
         }
@@ -250,7 +251,7 @@ namespace Inventory
                 Destroy(currentRightClickInterface.gameObject);
             }
             GameObject rightClickInterface = Instantiate(rightClickInterfacePrefab, Input.mousePosition, Quaternion.identity);
-            rightClickInterface.GetComponentInChildren<ContextMenu>().SetItemSlotProperties(itemSlot);
+            rightClickInterface.GetComponentInChildren<ContextMenu.ContextMenu>().SetItemSlotProperties(itemSlot);
             //Adding offset
             Vector2 newPositon = new Vector2(Input.mousePosition.x + 80, Input.mousePosition.y + 80);
             rightClickInterface.GetComponentInChildren<Image>().rectTransform.anchoredPosition = newPositon;
@@ -266,6 +267,19 @@ namespace Inventory
             }
         }
 
+        public List<GameObject> GetInspectViewList()
+        {
+            return inspectListViewList;
+        }
+
+        public void AddInspectView(GameObject gameObject)
+        {
+            this.inspectListViewList.Add(gameObject);
+        }  
+        public void RemoveInspectView(GameObject gameObject)
+        {
+            this.inspectListViewList.Remove(gameObject);
+        }
     }
 }
 
