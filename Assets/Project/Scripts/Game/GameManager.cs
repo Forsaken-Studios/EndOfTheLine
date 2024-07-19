@@ -10,10 +10,14 @@ public class GameManager : MonoBehaviour
 {
 
     public static GameManager Instance;
-
+    
     [Header("End game")]
     [SerializeField] private GameObject blackFade;
 
+    [Header("Canvas Helper")]
+    [Tooltip("We use this reference, to link inspect item to this parent")]
+    [SerializeField] private GameObject inspectItemCanvas; 
+    
     [Header("Extraction Properties")] 
     private GameState _gameState;
     public GameState GameState
@@ -70,5 +74,10 @@ public class GameManager : MonoBehaviour
     private void OnDestroy()
     {
         StopAllCoroutines();
+    }
+
+    public GameObject GetCanvasParent()
+    {
+        return inspectItemCanvas;
     }
 }

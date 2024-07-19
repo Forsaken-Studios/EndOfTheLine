@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Inventory;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -33,9 +34,19 @@ public class PauseMenu : MonoBehaviour
      {
          if (Input.GetKeyDown(KeyCode.Escape))
          {
-             pauseMenuGameObject.SetActive(!pauseMenuGameObject.activeSelf);
-             GameManager.Instance.GameState = pauseMenuGameObject.activeSelf ? GameState.OnPause : GameState.OnGame;
-             Time.timeScale = pauseMenuGameObject.activeSelf ? 0f: 1f;
+             if (InventoryManager.Instance.GetInspectViewList().Count == 0)
+             {
+                 pauseMenuGameObject.SetActive(!pauseMenuGameObject.activeSelf);
+                 GameManager.Instance.GameState = pauseMenuGameObject.activeSelf ? GameState.OnPause : GameState.OnGame;
+                 Time.timeScale = pauseMenuGameObject.activeSelf ? 0f: 1f;
+             }
+             else
+             {
+                 List<GameObject> inspectList = InventoryManager.Instance.GetInspectViewList();
+                 GameObject mostRecentInspectView = inspectList[inspectList.Count - 1];
+                 Destroy(mostRecentInspectView);
+                 InventoryManager.Instance.RemoveInspectView(mostRecentInspectView);
+             }
          }
      }
      
