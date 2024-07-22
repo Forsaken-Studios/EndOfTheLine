@@ -55,7 +55,11 @@ public class TrainManager : MonoBehaviour
         {
             RESOURCES_GOLD = value;
             if (OnVariableChange != null)
+            {
                 OnVariableChange(RESOURCES_GOLD, 2);
+                PlayerPrefs.SetInt(RESOURCES_GOLD_NAME, RESOURCES_GOLD);
+            }
+   
 
         
         }
@@ -67,7 +71,11 @@ public class TrainManager : MonoBehaviour
         {
             RESOURCES_FOOD = value;
             if (OnVariableChange != null)
+            {
                 OnVariableChange(RESOURCES_FOOD, 0);
+                PlayerPrefs.SetInt(RESOURCES_FOOD_NAME, RESOURCES_FOOD);
+            }
+            
             
         }
     }    
@@ -78,7 +86,11 @@ public class TrainManager : MonoBehaviour
         {
             RESOURCES_MATERIAL = value;
             if (OnVariableChange != null)
+            {
+                PlayerPrefs.SetInt(RESOURCES_MATERIAL_NAME, RESOURCES_MATERIAL);
                 OnVariableChange(RESOURCES_MATERIAL, 1);
+            }
+     
 
         }
     }
@@ -119,17 +131,31 @@ public class TrainManager : MonoBehaviour
         if(!canvasActivated)
             HandleMovement();
 
-
+        //TODO: JUST FOR TESTING 
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
- 
             resourceMaterial--;
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             resourceMaterial++;
         }
-        
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            resourceFood--;
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            resourceFood++;
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            resourceGold--;
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            resourceGold++;
+        }
 
     }
 
