@@ -11,6 +11,7 @@ public class Train : MonoBehaviour
     private Vector2 missionSelectorPosition = new Vector2(-1908, 0); 
     private Vector2 controlRoomPosition = new Vector2(0, 0); 
     private Vector2 extraRoomPosition = new Vector2(1908, 0);
+    private Vector2 extraRoom2Position = new Vector2(3816, 0);
 
     private int currentIndex = 0;
     private int previousIndex = 0;
@@ -45,6 +46,10 @@ public class Train : MonoBehaviour
             case 2:
                 //Extra Room
                 positionToArrive = extraRoomPosition;
+                break;        
+            case 3:
+                //Extra Room 2
+                positionToArrive = extraRoom2Position;
                 break; 
         }
         previousIndex = currentIndex;
