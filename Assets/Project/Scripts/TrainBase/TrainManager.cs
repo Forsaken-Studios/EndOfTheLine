@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils.CustomLogs;
+using Object = UnityEngine.Object;
 
 public class TrainManager : MonoBehaviour
 {
@@ -22,6 +23,8 @@ public class TrainManager : MonoBehaviour
     /// Extra - 2
     /// </summary>
     private int currentIndex = 0;
+
+    [SerializeField] private int numberOfWagons;
     [SerializeField] private Train train;
     private TrainPanels trainPanelsScript;
     [Header("Canvas for different wagons")]
@@ -29,6 +32,12 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private GameObject controlRoomCanvas;
     [SerializeField] private GameObject extraRoomCanvas;
 
+    [Header("Wagon Lock List")] 
+    private bool[] unlockedWagonsList; //True -> Unlocked, False -> Locked
+
+    [Header("Lock Icon")]
+    [SerializeField] private GameObject lockIcon;
+    
     private GameObject currentCanvas;
 
     [Header("Resources In Train")] 
@@ -39,7 +48,6 @@ public class TrainManager : MonoBehaviour
     private string RESOURCES_GOLD_NAME = "Resources_Gold"; 
     private string RESOURCES_FOOD_NAME = "Resources_Food"; 
     private string RESOURCES_MATERIAL_NAME = "Resources_Material";
-    
     
     /// <summary>
     /// 0 - Food
@@ -59,9 +67,6 @@ public class TrainManager : MonoBehaviour
                 OnVariableChange(RESOURCES_GOLD, 2);
                 PlayerPrefs.SetInt(RESOURCES_GOLD_NAME, RESOURCES_GOLD);
             }
-   
-
-        
         }
     }   
     public int resourceFood
@@ -108,6 +113,7 @@ public class TrainManager : MonoBehaviour
             Destroy(this);
         }
         Instance = this;
+        unlockedWagonsList = new bool[numberOfWagons];
     }
     
     
@@ -120,8 +126,10 @@ public class TrainManager : MonoBehaviour
         
         RESOURCES_GOLD = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
         RESOURCES_MATERIAL = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
-        RESOURCES_FOOD = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME); 
+        RESOURCES_FOOD = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME);
         
+        
+        LoadWagonsUnlockedList();
     }
 
     // Update is called once per frame
@@ -159,12 +167,30 @@ public class TrainManager : MonoBehaviour
 
     }
 
+    private void LoadWagonsUnlockedList()
+    {
+        //Mission Selector always true [Unlocked]
+        unlockedWagonsList[0] = true;
+        //Home always unlocked
+        unlockedWagonsList[1] = true;
+        
+        if (PlayerPrefs.GetInt("Wagon 3") == 0)
+            PlayerPrefs.SetInt("Wagon 3", -1);     
+        if (PlayerPrefs.GetInt("Wagon 4") == 0)
+            PlayerPrefs.SetInt("Wagon 4", -1);
+        
+        unlockedWagonsList[2] = PlayerPrefs.GetInt("Wagon 3") == 1; 
+        unlockedWagonsList[3] = PlayerPrefs.GetInt("Wagon 4") == 1;
+
+
+    }
+
     private void HandleMovement()
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
             //Check if we are already on top left (For now extra room)
-            if (TrainStatus != TrainStatus.onExtraRoom)
+            if (TrainStatus != TrainStatus.onExtraRoom2)
             {
                 MoveTrain(true);
             }
@@ -187,14 +213,14 @@ public class TrainManager : MonoBehaviour
                 currentIndex++;
                 UpdateRoomInfo();
                 trainPanelsScript.HideTrainRoom(currentIndex - 1);
-                trainPanelsScript.ShowTrainRoom(currentIndex);
+                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
             }
             else
             {
                 LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
                 currentIndex--;
                 trainPanelsScript.HideTrainRoom(currentIndex + 1);
-                trainPanelsScript.ShowTrainRoom(currentIndex); 
+                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]); 
             }
             
             UpdateRoomInfo();
@@ -204,6 +230,8 @@ public class TrainManager : MonoBehaviour
     
     private void UpdateRoomInfo()
     {
+
+        lockIcon.SetActive(!unlockedWagonsList[currentIndex]);
         switch (currentIndex)
         {
             case 0:
@@ -217,6 +245,10 @@ public class TrainManager : MonoBehaviour
             case 2:
                 TrainStatus = TrainStatus.onExtraRoom;
                 currentCanvas = extraRoomCanvas;
+                break;    
+            case 3:
+                TrainStatus = TrainStatus.onExtraRoom2;
+                currentCanvas = extraRoomCanvas;
                 break;
         }
     }
@@ -225,26 +257,27 @@ public class TrainManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.E))
         {
-          /*  switch (TrainStatus)
+            if (unlockedWagonsList[currentIndex])
             {
-                case TrainStatus.onMissionSelector:
-                    ActivateMissionSelectorMenu(); 
-                    break; 
-                case TrainStatus.onControlRoom:
-                    ActivateControlRoom(); 
-                    break; 
-                case TrainStatus.onExtraRoom:
-                    ActivateExtraRoom();
-                    break;
-            }*/
-          if (currentCanvas.activeSelf)
-          {
-              currentCanvas.SetActive(false);
-          }
-          else
-          {
-              currentCanvas.SetActive(true);
-          }
+                if (currentCanvas.activeSelf)
+                {
+                    currentCanvas.SetActive(false);
+                }
+                else
+                {
+                    currentCanvas.SetActive(true);
+                }
+            }
+            else
+            {
+                //We would like to buy this wagon
+                Object price = UnityEngine.Resources.Load("Wagons/Wagon " + (currentIndex + 1));
+                Debug.Log(price);
+                WagonPrice wagonPrice = price as WagonPrice;
+                
+                Debug.Log("BUY TRAIN FOR: " + wagonPrice.foodNeeded  + " " +
+                          wagonPrice.materialNeeded + " " + wagonPrice.goldNeeded );
+            }
         } 
     }
     
