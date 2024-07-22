@@ -32,6 +32,13 @@ public class TrainPanels : MonoBehaviour
         blackPanel.GetComponent<Animator>().SetBool("hideRoom", false); 
     }
 
+    public void UnlockTrain(int index)
+    {
+        GameObject blackPanel = trainPanels[index].gameObject;
+        Image trainImage = blackPanel.transform.parent.GetComponent<Image>();
+        SetTrainColor(trainImage, true);
+    }
+
     private void SetTrainColor(Image trainImage, bool isUnlocked)
     {
         if (isUnlocked)

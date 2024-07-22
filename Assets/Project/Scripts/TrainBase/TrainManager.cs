@@ -48,7 +48,12 @@ public class TrainManager : MonoBehaviour
     private string RESOURCES_GOLD_NAME = "Resources_Gold"; 
     private string RESOURCES_FOOD_NAME = "Resources_Food"; 
     private string RESOURCES_MATERIAL_NAME = "Resources_Material";
-    
+
+
+    [Header("Buy Wagon UI Prefab")] 
+    [SerializeField] private GameObject buyWagonPrefab;
+    private bool isShowingWagonBuyUI = false;
+    [SerializeField] private GameObject generalCanvas; 
     /// <summary>
     /// 0 - Food
     /// 1 - Material
@@ -173,7 +178,9 @@ public class TrainManager : MonoBehaviour
         unlockedWagonsList[0] = true;
         //Home always unlocked
         unlockedWagonsList[1] = true;
-        
+        //Just for testing
+        //PlayerPrefs.SetInt("Wagon 3", -1);
+        // -1 = Locked | 0 = Not defined | 1 = Unlocked
         if (PlayerPrefs.GetInt("Wagon 3") == 0)
             PlayerPrefs.SetInt("Wagon 3", -1);     
         if (PlayerPrefs.GetInt("Wagon 4") == 0)
@@ -187,20 +194,23 @@ public class TrainManager : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (!isShowingWagonBuyUI)
         {
-            //Check if we are already on top left (For now extra room)
-            if (TrainStatus != TrainStatus.onExtraRoom2)
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                MoveTrain(true);
+                //Check if we are already on top left (For now extra room)
+                if (TrainStatus != TrainStatus.onExtraRoom2)
+                {
+                    MoveTrain(true);
+                }
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        { 
-            //Check if we are already on top right
-            if (TrainStatus != TrainStatus.onMissionSelector)
+            else if (Input.GetKeyDown(KeyCode.D))
             {
-                MoveTrain(false);
+                //Check if we are already on top right
+                if (TrainStatus != TrainStatus.onMissionSelector)
+                {
+                    MoveTrain(false);
+                }
             }
         }
     }
@@ -270,13 +280,20 @@ public class TrainManager : MonoBehaviour
             }
             else
             {
-                //We would like to buy this wagon
-                Object price = UnityEngine.Resources.Load("Wagons/Wagon " + (currentIndex + 1));
-                Debug.Log(price);
-                WagonPrice wagonPrice = price as WagonPrice;
+                if (!isShowingWagonBuyUI)
+                {
+                    isShowingWagonBuyUI = true;
+                    //We would like to buy this wagon
+                    Object price = UnityEngine.Resources.Load("Wagons/Wagon " + (currentIndex + 1));
+                    Debug.Log(price);
+                    WagonPrice wagonPrice = price as WagonPrice;
+                    
+                    Vector2 initialPosition = new Vector2(960, 540);
+                    GameObject buyWagonUI = Instantiate(buyWagonPrefab, initialPosition, Quaternion.identity, generalCanvas.transform);
                 
-                Debug.Log("BUY TRAIN FOR: " + wagonPrice.foodNeeded  + " " +
-                          wagonPrice.materialNeeded + " " + wagonPrice.goldNeeded );
+                    buyWagonUI.GetComponent<BuyWagon>().SetUpProperties(wagonPrice.foodNeeded, wagonPrice.materialNeeded, wagonPrice.goldNeeded);
+
+                }
             }
         } 
     }
@@ -285,7 +302,25 @@ public class TrainManager : MonoBehaviour
     {
         StopAllCoroutines();
     }
-    
-    
+
+    public bool TryToBuyWagon(int foodNeeded, int materialNeeded, int goldNeeded)
+    {
+        if (foodNeeded <= resourceFood && materialNeeded <= resourceMaterial && goldNeeded <= resourceGold)
+        {
+            resourceFood -= foodNeeded;
+            resourceMaterial -= materialNeeded;
+            resourceGold -= goldNeeded;
+            unlockedWagonsList[currentIndex] = true;
+            trainPanelsScript.UnlockTrain(currentIndex);
+            PlayerPrefs.SetInt("Wagon " + (currentIndex + 1), 1);
+            isShowingWagonBuyUI = false;
+            lockIcon.SetActive(false);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     
 }
