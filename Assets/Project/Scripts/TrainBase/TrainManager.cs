@@ -7,6 +7,9 @@ using Utils.CustomLogs;
 
 public class TrainManager : MonoBehaviour
 {
+
+    public static TrainManager Instance;
+    
     private TrainStatus _trainStatus;
     public  TrainStatus TrainStatus
     {
@@ -28,15 +31,97 @@ public class TrainManager : MonoBehaviour
 
     private GameObject currentCanvas;
 
+    [Header("Resources In Train")] 
+    private int RESOURCES_GOLD; 
+    private int RESOURCES_FOOD; 
+    private int RESOURCES_MATERIAL; 
+
+    private string RESOURCES_GOLD_NAME = "Resources_Gold"; 
+    private string RESOURCES_FOOD_NAME = "Resources_Food"; 
+    private string RESOURCES_MATERIAL_NAME = "Resources_Material";
+    
+    
+    /// <summary>
+    /// 0 - Food
+    /// 1 - Material
+    /// 2 - Gold
+    /// </summary>
+    public delegate void OnVariableChangeDelegate(int newVal, int resourceType);
+    public event OnVariableChangeDelegate OnVariableChange;
+    public int resourceGold
+    {
+        get { return RESOURCES_GOLD; }
+        set
+        {
+            RESOURCES_GOLD = value;
+            if (OnVariableChange != null)
+            {
+                OnVariableChange(RESOURCES_GOLD, 2);
+                PlayerPrefs.SetInt(RESOURCES_GOLD_NAME, RESOURCES_GOLD);
+            }
+   
+
+        
+        }
+    }   
+    public int resourceFood
+    {
+        get { return RESOURCES_FOOD; }
+        set
+        {
+            RESOURCES_FOOD = value;
+            if (OnVariableChange != null)
+            {
+                OnVariableChange(RESOURCES_FOOD, 0);
+                PlayerPrefs.SetInt(RESOURCES_FOOD_NAME, RESOURCES_FOOD);
+            }
+            
+            
+        }
+    }    
+    public int resourceMaterial
+    {
+        get { return RESOURCES_MATERIAL; }
+        set
+        {
+            RESOURCES_MATERIAL = value;
+            if (OnVariableChange != null)
+            {
+                PlayerPrefs.SetInt(RESOURCES_MATERIAL_NAME, RESOURCES_MATERIAL);
+                OnVariableChange(RESOURCES_MATERIAL, 1);
+            }
+     
+
+        }
+    }
+    
     private bool canvasActivated
     {
         get { return currentCanvas.activeSelf;  }
     }
+    
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogWarning("[GameManager.cs] : There is already a TrainManager Instance");
+            Destroy(this);
+        }
+        Instance = this;
+    }
+    
+    
+    
     private void Start()
     {
         currentCanvas = missionSelectorCanvas;
         TrainStatus = TrainStatus.onMissionSelector;
         trainPanelsScript = GetComponent<TrainPanels>(); 
+        
+        RESOURCES_GOLD = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
+        RESOURCES_MATERIAL = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
+        RESOURCES_FOOD = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME); 
+        
     }
 
     // Update is called once per frame
@@ -45,6 +130,33 @@ public class TrainManager : MonoBehaviour
         HandleButtonPressed();
         if(!canvasActivated)
             HandleMovement();
+
+        //TODO: JUST FOR TESTING 
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            resourceMaterial--;
+        }
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            resourceMaterial++;
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            resourceFood--;
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            resourceFood++;
+        }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            resourceGold--;
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            resourceGold++;
+        }
+
     }
 
     private void HandleMovement()
@@ -140,4 +252,7 @@ public class TrainManager : MonoBehaviour
     {
         StopAllCoroutines();
     }
+    
+    
+    
 }

@@ -26,6 +26,10 @@ namespace Inventory
         private int MAX_INVENTORY_SLOTS = 10;
         private int MAX_STACK_PER_SLOT = 4;
 
+        [Header("Player Prefs")] 
+        private string RESOURCES_GOLD_NAME = "Resources_Gold"; 
+        private string RESOURCES_FOOD_NAME = "Resources_Food"; 
+        private string RESOURCES_MATERIAL_NAME = "Resources_Material"; 
    
 
 
@@ -107,8 +111,41 @@ namespace Inventory
                     prefab.GetComponentInChildren<TextMeshProUGUI>().text = "x" + amount + " " + name;
                 } 
             }
-           
         }
+
+        public void HandleItemsAtEndGame()
+        {
+            int currentGold = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
+            int currentMaterialAmount = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
+            int currentFoodAmount = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME); 
+            foreach (var item in inventoryItemDictionary)
+            {
+                switch (item.Key.ItemType)
+                {
+                    //Sell
+                    case ItemType.Scrap:
+                        currentGold += item.Value * item.Key.itemValue;
+                        Debug.Log("CURRENT GOLD: x" + currentGold);
+                        break;
+                    //Save Material
+                    case ItemType.Resources_Material:
+                        currentMaterialAmount += item.Value;
+                        Debug.Log("WE ADDED MATERIAL: x" + item.Value);
+                        break;
+                    //Save Food
+                    case ItemType.Resources_Food:
+                        currentFoodAmount += item.Value;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            PlayerPrefs.SetInt(RESOURCES_GOLD_NAME, currentGold);
+            PlayerPrefs.SetInt(RESOURCES_MATERIAL_NAME, currentMaterialAmount);
+            PlayerPrefs.SetInt(RESOURCES_FOOD_NAME, currentFoodAmount);
+        }
+        
         public void ShowFullListItemTaken(Dictionary<Item, int> itemList)
         {
             string fullItemList = "";
@@ -179,5 +216,6 @@ namespace Inventory
         {
             return MAX_WEIGHT;
         }
+        
     }
 }

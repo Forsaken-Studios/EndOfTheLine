@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Extraction;
+using Inventory;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -68,6 +69,9 @@ public class GameManager : MonoBehaviour
     
     public void EndGame()
     {
+        //Sell scrap Items && Save items for train base
+        PlayerInventory.Instance.HandleItemsAtEndGame();
+        //End Game
         StartCoroutine(EndGameCorroutine());
     }
 

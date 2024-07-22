@@ -17,6 +17,6 @@ public class MissionSelector : MonoBehaviour
     private void PlayMission()
     {
         //Aqui ya tendríamos que hacer la generación o lo que sea, por ahora iniciamos test level
-        SceneManager.LoadSceneAsync("Scenes/Gameplay/NivelPrototipo Tilemapped");
+        SceneManager.LoadSceneAsync("Scenes/Gameplay/WorkingSceneAdriG");
     }
 }
