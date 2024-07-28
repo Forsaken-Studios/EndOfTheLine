@@ -334,11 +334,11 @@ public class TrainManager : MonoBehaviour
     {
         int previousDay = PlayerPrefs.GetInt("PreviousDay"); 
         int currentDayLocal = PlayerPrefs.GetInt("CurrentDay");
-
-
+        Debug.Log("CURRENT: " + currentDayLocal);
+        Debug.Log("PREVIOUS: " + previousDay);
         if (currentDayLocal != previousDay)
         {
-            PlayerPrefs.SetInt("PreviousDay", currentDay);
+            PlayerPrefs.SetInt("PreviousDay", currentDayLocal);
             this.currentDay = currentDayLocal;
             currentDayText.text = "DAY: " + currentDayLocal.ToString();
             //Update store

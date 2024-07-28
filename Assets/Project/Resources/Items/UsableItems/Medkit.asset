@@ -9,14 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82a3d01e32347204597c06375b274302, type: 3}
+  m_Script: {fileID: 11500000, guid: fffe19c152926e947889aed9f4d1bd8b, type: 3}
   m_Name: Medkit
   m_EditorClassIdentifier: 
-  itemIcon: {fileID: 0}
+  itemIcon: {fileID: 21300000, guid: c7c16028f8baa88499068c1c3a95e9bd, type: 3}
   ItemType: 0
-  itemValue: 0
+  itemValue: 12
   itemWeight: 0
-  itemName: 
-  itemDescription: 
+  itemName: Medkit
+  itemDescription: Restores 15 Overheat
   itemID: 0
-  isUsable: 0
+  modifierDatas:
+  - statModifier: {fileID: 11400000, guid: f55f9c626c610474298df362ae07dd5a, type: 2}
+    value: 20
