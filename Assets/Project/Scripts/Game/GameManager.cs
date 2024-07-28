@@ -71,6 +71,12 @@ public class GameManager : MonoBehaviour
     {
         //Sell scrap Items && Save items for train base
         PlayerInventory.Instance.HandleItemsAtEndGame();
+        //Add one more day to game
+        
+        int currentDay = PlayerPrefs.GetInt("CurrentDay");
+        PlayerPrefs.SetInt("PreviousDay", currentDay);
+        PlayerPrefs.SetInt("CurrentDay", currentDay + 1);
+        
         //End Game
         StartCoroutine(EndGameCorroutine());
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils.CustomLogs;
@@ -24,6 +25,12 @@ public class TrainManager : MonoBehaviour
     /// </summary>
     private int currentIndex = 0;
 
+    [Header("Day in Game")]
+    private int currentDay = 0;
+    [SerializeField] private TextMeshProUGUI currentDayText;
+
+
+    
     [SerializeField] private int numberOfWagons;
     [SerializeField] private Train train;
     private TrainPanels trainPanelsScript;
@@ -48,8 +55,7 @@ public class TrainManager : MonoBehaviour
     private string RESOURCES_GOLD_NAME = "Resources_Gold"; 
     private string RESOURCES_FOOD_NAME = "Resources_Food"; 
     private string RESOURCES_MATERIAL_NAME = "Resources_Material";
-
-
+    
     [Header("Buy Wagon UI Prefab")] 
     [SerializeField] private GameObject buyWagonPrefab;
     private bool isShowingWagonBuyUI = false;
@@ -61,6 +67,7 @@ public class TrainManager : MonoBehaviour
     /// </summary>
     public delegate void OnVariableChangeDelegate(int newVal, int resourceType);
     public event OnVariableChangeDelegate OnVariableChange;
+    public event EventHandler OnDayChanged;
     public int resourceGold
     {
         get { return RESOURCES_GOLD; }
@@ -133,7 +140,7 @@ public class TrainManager : MonoBehaviour
         RESOURCES_MATERIAL = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
         RESOURCES_FOOD = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME);
         
-        
+        NewDayInGame();
         LoadWagonsUnlockedList();
     }
 
@@ -322,5 +329,26 @@ public class TrainManager : MonoBehaviour
             return false;
         }
     }
-    
+
+    private void NewDayInGame()
+    {
+        int previousDay = PlayerPrefs.GetInt("PreviousDay"); 
+        int currentDayLocal = PlayerPrefs.GetInt("CurrentDay");
+        Debug.Log("CURRENT: " + currentDayLocal);
+        Debug.Log("PREVIOUS: " + previousDay);
+        if (currentDayLocal != previousDay)
+        {
+            PlayerPrefs.SetInt("PreviousDay", currentDayLocal);
+            this.currentDay = currentDayLocal;
+            currentDayText.text = "DAY: " + currentDayLocal.ToString();
+            //Update store
+            UpdateStore();
+        }
+    }
+
+
+    private void UpdateStore()
+    {
+        OnDayChanged?.Invoke(this, EventArgs.Empty);
+    }
 }
