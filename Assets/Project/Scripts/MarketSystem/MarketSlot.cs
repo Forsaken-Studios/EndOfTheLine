@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class MarketSlot : MonoBehaviour, IPointerClickHandler
 {
@@ -10,11 +12,14 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
     private UsableItemSO item;
 
     public event EventHandler onItemClicked;
-
+    private Sprite emptySprite;
+    [SerializeField] private Image itemSlotImage;
+   
 
     public void SetUpProperties(UsableItemSO itemInSlot)
     {
         item = itemInSlot;
+        this.itemSlotImage.sprite = itemInSlot.itemIcon;
     }
     
     public string GetItemName()

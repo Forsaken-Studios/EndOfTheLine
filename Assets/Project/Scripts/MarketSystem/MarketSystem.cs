@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Inventory;
-using TMPro;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,7 +29,9 @@ public class MarketSystem : MonoBehaviour
         TrainManager.Instance.OnDayChanged += UpdateStoreEvent;
         buyButton.onClick.AddListener(() => BuyItem());
 
-   
+        //TODO: Here we have to put the same store we had before we closed the game
+        UpdateStore();
+        SubscribeMarketSlotsEvents();
     }
 
     private void UnsubscribeAllEvents()
@@ -54,8 +54,8 @@ public class MarketSystem : MonoBehaviour
     private void OnItemClicked(object sender, EventArgs e)
     {
         //TODO: Da error
-       // UsableItemSO item = sender as UsableItemSO;
-      //  Debug.Log("CLICKED SLOT WITH ITEM: " + item.itemName);
+        MarketSlot item = sender as MarketSlot;
+        Debug.Log("CLICKED SLOT WITH ITEM: " + item.GetItem().itemName);
     }
 
     private void UpdateStoreEvent(object sender, EventArgs e)
@@ -67,17 +67,19 @@ public class MarketSystem : MonoBehaviour
 
     private void UpdateStore()
     {
-        System.Object itemNeeded = UnityEngine.Resources.Load("Items/UsableItems/Medkit");
-        UsableItemSO medkitTest = itemNeeded as UsableItemSO;
+        System.Object[] allItems = UnityEngine.Resources.LoadAll("Items/UsableItems");
+        List<System.Object> itemsToSpawn = allItems.ToList();
         Debug.Log("UPDATING STORE");
         //TODO: Dependiendo de lo que queramos, aparecerán X Objetos, por ahora vamos a poner 3 o 4
         float numberOfItemsToBuy = UnityEngine.Random.Range(3, 4);
 
         for (int i = 0; i < numberOfItemsToBuy; i++)
-        {
-           marketSlots[i].SetUpProperties(medkitTest);
+        { 
+            //TODO: Cuando pongamos un elemento, debemos de eliminarlo de la lista (Cuando tengamos mas objetos)
+            int itemToSpawnIndex = UnityEngine.Random.Range(0, itemsToSpawn.Count);
+            UsableItemSO item = allItems.GetValue(itemToSpawnIndex) as UsableItemSO;
+            marketSlots[i].SetUpProperties(item);
         }
-        
     }
 
     private void OnDestroy()
