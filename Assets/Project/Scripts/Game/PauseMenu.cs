@@ -34,18 +34,26 @@ public class PauseMenu : MonoBehaviour
      {
          if (Input.GetKeyDown(KeyCode.Escape))
          {
-             if (InventoryManager.Instance.GetInspectViewList().Count == 0)
+             if (InventoryManager.Instance.GetInspectViewList().Count == 0 
+                 && !LoreManager.Instance.GetIfPlayerIsReadingLore())
              {
-                 pauseMenuGameObject.SetActive(!pauseMenuGameObject.activeSelf);
-                 GameManager.Instance.GameState = pauseMenuGameObject.activeSelf ? GameState.OnPause : GameState.OnGame;
-                 Time.timeScale = pauseMenuGameObject.activeSelf ? 0f: 1f;
+                    PauseGame();
              }
              else
              {
-                 List<GameObject> inspectList = InventoryManager.Instance.GetInspectViewList();
-                 GameObject mostRecentInspectView = inspectList[inspectList.Count - 1];
-                 Destroy(mostRecentInspectView);
-                 InventoryManager.Instance.RemoveInspectView(mostRecentInspectView);
+                 if (LoreManager.Instance.GetIfPlayerIsReadingLore())
+                 {
+                     GameManager.Instance.GameState = GameState.OnGame;
+                     LoreManager.Instance.SetIfPlayerIsReadingLore(false);
+                     LoreManager.Instance.DestroyCurrentExpandedView(); 
+                     LoreManager.Instance.SetCurrentLoreView(null);
+                 }else
+                 {
+                     List<GameObject> inspectList = InventoryManager.Instance.GetInspectViewList();
+                     GameObject mostRecentInspectView = inspectList[inspectList.Count - 1];
+                     Destroy(mostRecentInspectView);
+                     InventoryManager.Instance.RemoveInspectView(mostRecentInspectView);
+                 }
              }
          }
      }
@@ -55,6 +63,13 @@ public class PauseMenu : MonoBehaviour
         pauseMenuGameObject.SetActive(false);
         GameManager.Instance.GameState = GameState.OnGame;
         Time.timeScale = 1f;
+    }
+
+    private void PauseGame()
+    {
+        pauseMenuGameObject.SetActive(!pauseMenuGameObject.activeSelf);
+        GameManager.Instance.GameState = pauseMenuGameObject.activeSelf ? GameState.OnPause : GameState.OnGame;
+        Time.timeScale = pauseMenuGameObject.activeSelf ? 0f: 1f;
     }
 
     private void QuitGame()

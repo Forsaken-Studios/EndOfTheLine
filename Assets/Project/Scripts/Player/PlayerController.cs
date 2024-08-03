@@ -48,7 +48,8 @@ namespace Player
             }
             else
             {
-                if (GameManager.Instance.GameState == GameState.OnInventory)
+                if (GameManager.Instance.GameState == GameState.OnInventory || 
+                    GameManager.Instance.GameState == GameState.onLoreView)
                 {
                     _animator.SetBool("running", false);
                 }
