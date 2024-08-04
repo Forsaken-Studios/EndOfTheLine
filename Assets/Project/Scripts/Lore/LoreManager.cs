@@ -24,6 +24,7 @@ public class LoreManager : MonoBehaviour
         }
         Instance = this;
     }
+    #region Getters Setters 
     
     public GameObject GetPickUpLorePrefab()
     {
@@ -58,4 +59,6 @@ public class LoreManager : MonoBehaviour
     {
         return currentNumberOfLorePages;
     }
+    
+    #endregion
 }

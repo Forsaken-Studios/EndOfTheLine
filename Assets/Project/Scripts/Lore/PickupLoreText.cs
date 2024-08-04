@@ -11,22 +11,18 @@ public class PickupLoreText : MonoBehaviour
     private Animator _animator;
     private LoreSO loreSO;
     
-    // Start is called before the first frame update
     void Start()
     {
         _animator = GetComponent<Animator>();
         StartCoroutine(StartCountDownToDestroyObject(4f));
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         if (canRead)
         {
             if (Input.GetKeyDown(KeyCode.E))
-            {
                 OpenExpandedView();
-            }
         }
     }
 
@@ -41,7 +37,6 @@ public class PickupLoreText : MonoBehaviour
         DestroyElement();
     }
     
-
     public void SetLoreSO(LoreSO loreSO)
     {
         this.loreSO = loreSO;
@@ -52,7 +47,6 @@ public class PickupLoreText : MonoBehaviour
         {
             canRead = true;
             yield return new WaitForSeconds(time);
-
             canRead = false;
             _animator.SetTrigger("destroyPanel");
         }

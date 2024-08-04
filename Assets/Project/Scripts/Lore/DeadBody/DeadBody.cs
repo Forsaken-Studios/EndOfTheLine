@@ -36,13 +36,16 @@ public class DeadBody : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Prepare the lore page the player is going to take from the dead body
+    /// We prepare it when the player loot it, not in the start.
+    /// </summary>
     private void PrepareLore()
     {
         int playerLore = PlayerPrefs.GetInt("CurrentLoreIndex");
         UnityEngine.Object loreObject = UnityEngine.Resources.Load("Lore/Lore " + playerLore);
         LoreSO loreSO = loreObject as LoreSO;
         lore = loreSO;
-        Debug.Log("SE HA COLOCADO EL LORE [ " + playerLore + " ]");
     }
 
     private void UpdateLoreIndex()
@@ -55,13 +58,18 @@ public class DeadBody : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Hotkey button showed when close to dead body
+    /// </summary>
     public void ActivateKeyHotkeyImage()
     {
         currentHotkeyGameObject = Instantiate(LootUIManager.Instance.GetHotkeyPrefab(),
             new Vector2(this.transform.position.x, this.transform.position.y + 1), Quaternion.identity); 
         _isLooteable = true;
     }
-
+    /// <summary>
+    /// Hotkey button hided when close to dead body
+    /// </summary>
     public void DesactivateKeyHotkeyImage()
     {
         Destroy(currentHotkeyGameObject);
