@@ -274,6 +274,12 @@ namespace Inventory
 
         public void AddInspectView(GameObject gameObject)
         {
+            if (inspectListViewList.Count == 3)
+            {
+                GameObject mostRecentInspectView = inspectListViewList[0];
+                Destroy(mostRecentInspectView);
+                RemoveInspectView(mostRecentInspectView);
+            }
             this.inspectListViewList.Add(gameObject);
         }  
         public void RemoveInspectView(GameObject gameObject)
