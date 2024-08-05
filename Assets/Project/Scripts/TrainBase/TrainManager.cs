@@ -185,7 +185,7 @@ public class TrainManager : MonoBehaviour
         unlockedWagonsList[0] = true;
         //Home always unlocked
         unlockedWagonsList[1] = true;
-        //Just for testing
+        //TODO: Just for testing
         //PlayerPrefs.SetInt("Wagon 3", -1);
         // -1 = Locked | 0 = Not defined | 1 = Unlocked
         if (PlayerPrefs.GetInt("Wagon 3") == 0)
