@@ -70,7 +70,10 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         //Sell scrap Items && Save items for train base
-        PlayerInventory.Instance.HandleItemsAtEndGame();
+        //PlayerInventory.Instance.HandleItemsAtEndGame();
+        Dictionary<int, int> idDictionary = SaveManager.Instance.ConvertItemsDictionaryIntoIDDictionary(PlayerInventory.Instance.GetInventoryItems());
+        DataPlayerInventory data = new DataPlayerInventory(idDictionary);
+        SaveManager.Instance.SavePlayerInventoryJson(data);
         //Add one more day to game
         
         int currentDay = PlayerPrefs.GetInt("CurrentDay");
@@ -80,6 +83,8 @@ public class GameManager : MonoBehaviour
         //End Game
         StartCoroutine(EndGameCorroutine());
     }
+
+
 
     private void OnDestroy()
     {

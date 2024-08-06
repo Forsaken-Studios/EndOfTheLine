@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils.CustomLogs;
 
 namespace Inventory
@@ -46,14 +48,43 @@ namespace Inventory
             inventoryItemDictionary = new Dictionary<Item, int>();
         }
 
-
-        void Update()
-        {
-
+        public bool TryAddItem(Item item, int amount, out int remainingItemsWithoutSpace, bool showItemsTakenMessage)
+        {  
+            if (SceneManager.GetActiveScene().name != "TrainBase")
+                return TryAddItemInGame(item, amount, out remainingItemsWithoutSpace, showItemsTakenMessage);
+            else
+               return TryAddItemInBase(item, amount, out remainingItemsWithoutSpace, showItemsTakenMessage);
         }
 
-  
-        public bool TryAddItem(Item item, int amount, out int remainingItemsWithoutSpace, bool showItemsTakenMessage)
+        public bool TryAddItemInBase(Item item, int amount, out int remainingItemsWithoutSpace,
+            bool showItemsTakenMessage)
+        {
+            if (TrainInventoryManager.Instance.TryAddInventoryToItemSlot(item, amount, out remainingItemsWithoutSpace))
+            {
+                if (inventoryItemDictionary.ContainsKey(item))
+                {
+                    inventoryItemDictionary[item] += amount;
+                }
+                else
+                {
+                    inventoryItemDictionary.Add(item, amount);
+                }  
+                AddWeight(item.itemWeight * amount);
+                if(showItemsTakenMessage)
+                    ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
+                if (remainingItemsWithoutSpace > 0)
+                    return false;
+                else
+                    return true; 
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool TryAddItemInGame(Item item, int amount, out int remainingItemsWithoutSpace,
+            bool showItemsTakenMessage)
         {
             if (InventoryManager.Instance.TryAddInventoryToItemSlot(item, amount, out remainingItemsWithoutSpace))
             {
@@ -67,7 +98,7 @@ namespace Inventory
                 }  
                 AddWeight(item.itemWeight * amount);
                 if(showItemsTakenMessage)
-                     ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
+                    ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
                 InventoryManager.Instance.ChangeText(inventoryItemDictionary);
                 if (remainingItemsWithoutSpace > 0)
                     return false;
@@ -93,7 +124,8 @@ namespace Inventory
             AddWeight(item.itemWeight * amount);
             if(showMessage){}
                 ShowItemTaken(item.itemName, amount);
-            InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+            if (SceneManager.GetActiveScene().name != "TrainBase")
+                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             return true; 
         }
 
@@ -173,7 +205,8 @@ namespace Inventory
                 }
                 
                 DecreaseWeight(item.itemWeight * itemSlotAmount);
-                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+                if(InventoryManager.Instance != null)
+                    InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             }
         }
 
@@ -211,6 +244,11 @@ namespace Inventory
         public float GetMaxWeight()
         {
             return MAX_WEIGHT;
+        }
+
+        public void SetInventoryDictionary(Dictionary<Item, int> inventory)
+        {
+            this.inventoryItemDictionary = inventory;
         }
         
     }

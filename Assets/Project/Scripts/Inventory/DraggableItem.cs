@@ -25,7 +25,8 @@ namespace Inventory
         public void OnBeginDrag(PointerEventData eventData)
         {
 
-            InventoryManager.Instance.TryDestroyContextMenu();
+            if(InventoryManager.Instance != null)
+                InventoryManager.Instance.TryDestroyContextMenu();
             if (Input.GetKey(KeyCode.LeftControl))
             {
                 isSplitting = true; 

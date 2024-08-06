@@ -1,13 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Inventory;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TrainBaseInventory : MonoBehaviour
 {
     
     public static TrainBaseInventory Instance;
-        
+    
+    
+    private Dictionary<Item, int> itemsInLootableObject;
     [SerializeField] private List<ItemSlot> itemsSlotsList;
     [SerializeField] private GameObject splittingView;
     private void Awake()
@@ -21,7 +26,13 @@ public class TrainBaseInventory : MonoBehaviour
 
         Instance = this;
     }
-     public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
+
+    private void Start()
+    {
+        itemsInLootableObject = new Dictionary<Item, int>();
+    }
+
+    public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
     {
         this.splittingView.SetActive(true);
         this.splittingView.GetComponent<SplittingView>().SetUpProperties(maxAmount, draggableItem, itemSlot, previousItemSlot);
@@ -29,7 +40,12 @@ public class TrainBaseInventory : MonoBehaviour
     public bool TryAddItemCrateToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
     {
         int availableIndex = 0;
-        int MAX_AMOUNT_PER_SLOT = InventoryManager.Instance.GetMaxItemsForSlots();
+        int MAX_AMOUNT_PER_SLOT = 0;
+        if (SceneManager.GetActiveScene().name == "TrainBase")
+           MAX_AMOUNT_PER_SLOT = TrainInventoryManager.Instance.GetMaxItemsForSlots();
+        else
+            MAX_AMOUNT_PER_SLOT = InventoryManager.Instance.GetMaxItemsForSlots();
+    
         remainingItemsWithoutSpace = 0;
         foreach (var itemSlot in itemsSlotsList)
         {
@@ -82,6 +98,32 @@ public class TrainBaseInventory : MonoBehaviour
             return false;
         }
     }
+    
+    public void AddItemToList(Item item, int amount)
+    {
+        if (itemsInLootableObject.ContainsKey(item))
+        {
+            itemsInLootableObject[item] += amount;
+        }
+        else
+        {
+            itemsInLootableObject.Add(item, amount);
+        }
+    }   
+    
+    public void DeleteItemFromList(Item item, int amount)
+    {
+        if (itemsInLootableObject[item] > amount)
+        {
+            itemsInLootableObject[item] -= amount; 
+        }
+        else
+        {
+            itemsInLootableObject.Remove(item); 
+        }
+            
+    }
+    
     private int GetFirstIndexSlotAvailable()
     {
         for (int i = 0; i < itemsSlotsList.Count; i++)

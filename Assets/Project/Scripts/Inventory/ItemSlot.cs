@@ -8,6 +8,7 @@ using System.Linq;
 using Loot;
 using Unity.VisualScripting;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using Utils.CustomLogs;
 using Object = System.Object;
@@ -24,6 +25,7 @@ namespace Inventory
         private TextMeshProUGUI itemSlotAmountText;
         private int ItemID;
 
+        private string trainSceneName = "TrainBase";
         private bool canThrowItemAway;
         private Item itemInSlot;
         public int itemID
@@ -145,8 +147,14 @@ namespace Inventory
             if (draggableItem.GetIfIsSplitting())
             {
                 //We show slider
-                if(this.itemID == previousItemSlot.itemID || this.itemID == 0)
-                    LootUIManager.Instance.ActivateSplittingView(previousItemSlot.amount, draggableItem, this, previousItemSlot);
+                if (this.itemID == previousItemSlot.itemID || this.itemID == 0)
+                {
+                    if (SceneManager.GetActiveScene().name == trainSceneName)
+                        TrainBaseInventory.Instance.ActivateSplittingView(previousItemSlot.amount, draggableItem, this, previousItemSlot);
+                    else
+                        LootUIManager.Instance.ActivateSplittingView(previousItemSlot.amount, draggableItem, this, previousItemSlot);
+                }
+                   
             }
             else
             {
@@ -230,8 +238,11 @@ namespace Inventory
                     }
                 }
             }
-
-            CheckIfWeNeedToHideHUD();
+            if (SceneManager.GetActiveScene().name != trainSceneName)
+            {
+                CheckIfWeNeedToHideHUD();
+            }
+            
         }
 
         private void MoveItemInCrate(DraggableItem draggableItem, int amountToMove)
@@ -301,7 +312,10 @@ namespace Inventory
             {
                 //Just move 
                 this.ModifyItemSlotAmount(this.amount + amountToMove);
-                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemInSlot, amountToMove);
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                    TrainBaseInventory.Instance.AddItemToList(itemInSlot, amountToMove);
+                else
+                    LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemInSlot, amountToMove);
                 PlayerInventory.Instance.RemovingItem(itemToAdd, amountToMove);
                 itemSlotBeforeDrop.ClearItemSlot();
             }else if(this.amount == InventoryManager.Instance.GetMaxItemsForSlots())
@@ -312,7 +326,10 @@ namespace Inventory
             {
                 int remainingSpace = (this.amount + amountToMove) - InventoryManager.Instance.GetMaxItemsForSlots();
                 int valueToMove = InventoryManager.Instance.GetMaxItemsForSlots() - this.amount;
-                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemInSlot, valueToMove);
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                    TrainBaseInventory.Instance.AddItemToList(itemInSlot, valueToMove);
+                else
+                    LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemInSlot, valueToMove);
                 PlayerInventory.Instance.RemovingItem(itemToAdd, valueToMove);
                 itemSlotBeforeDrop.ModifyItemSlotAmount(remainingSpace);
                 this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
@@ -332,6 +349,43 @@ namespace Inventory
         private void StackItemsFromInventoryToCrate(ItemSlot itemSlotBeforeDrop, int remainingSpace,
             DraggableItem draggableItem, Item itemToAdd)
         {
+            if (SceneManager.GetActiveScene().name == trainSceneName)
+            {
+                StackItemsInBaseFromInventoryToCrate(itemSlotBeforeDrop, remainingSpace, draggableItem, itemToAdd);
+            }
+            else
+            {
+                StackItemsInGameFromInventoryToCrate(itemSlotBeforeDrop, remainingSpace, draggableItem, itemToAdd);
+            }
+            
+        }
+
+        private void StackItemsInBaseFromInventoryToCrate(ItemSlot itemSlotBeforeDrop, int remainingSpace,
+            DraggableItem draggableItem, Item itemToAdd)
+        {
+            if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemSlotBeforeDrop.GetItemInSlot(), 
+                    remainingSpace, out int remainingItems))
+            {
+                if (remainingSpace == itemSlotBeforeDrop.amount)
+                    ResetItemSlot(itemSlotBeforeDrop, draggableItem);
+                else
+                    itemSlotBeforeDrop.ModifyItemSlotAmount(itemSlotBeforeDrop.amount - remainingSpace);
+                draggableItem.SetItemComingFromInventoryToCrate(true);
+                TrainBaseInventory.Instance.AddItemToList(itemSlotBeforeDrop.GetItemInSlot(), remainingSpace);
+                PlayerInventory.Instance.RemovingItem(itemToAdd, remainingSpace);
+                draggableItem.parentAfterDrag = this.transform;
+            }
+            else
+            {
+                itemSlotBeforeDrop.SetItemSlotProperties(itemSlotBeforeDrop.GetItemInSlot(), remainingItems);
+                TrainBaseInventory.Instance.AddItemToList(itemSlotBeforeDrop.GetItemInSlot(), remainingSpace - remainingItems);
+                PlayerInventory.Instance.RemovingItem(itemToAdd, remainingSpace - remainingItems);
+            }
+        }
+
+        private void StackItemsInGameFromInventoryToCrate(ItemSlot itemSlotBeforeDrop, int remainingSpace,
+            DraggableItem draggableItem, Item itemToAdd)
+        {
             if (LootUIManager.Instance.TryAddItemCrateToItemSlot(itemSlotBeforeDrop.GetItemInSlot(), 
                     remainingSpace, out int remainingItems))
             {
@@ -339,22 +393,19 @@ namespace Inventory
                     ResetItemSlot(itemSlotBeforeDrop, draggableItem);
                 else
                     itemSlotBeforeDrop.ModifyItemSlotAmount(itemSlotBeforeDrop.amount - remainingSpace);
-                
                 draggableItem.SetItemComingFromInventoryToCrate(true);
                 LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToAdd, 
                     remainingSpace);
                 PlayerInventory.Instance.RemovingItem(itemToAdd, remainingSpace);
-                    
                 draggableItem.parentAfterDrag = this.transform;
             }
             else
             {
                 itemSlotBeforeDrop.SetItemSlotProperties(itemSlotBeforeDrop.GetItemInSlot(), remainingItems);
-                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemSlotBeforeDrop.GetItemInSlot(), 
+                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemSlotBeforeDrop.GetItemInSlot(),
                     remainingSpace - remainingItems);
                 PlayerInventory.Instance.RemovingItem(itemToAdd, remainingSpace - remainingItems);
             }
-            
         }
 
         /// <summary>
@@ -372,7 +423,10 @@ namespace Inventory
             {
                 //Just move 
                 this.ModifyItemSlotAmount(this.amount + amountToMove);
-                LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemInSlot, amountToMove);
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                    TrainBaseInventory.Instance.DeleteItemFromList(itemInSlot, amountToMove);
+                else
+                    LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemInSlot, amountToMove);
                 PlayerInventory.Instance.TryAddingItemDragging(itemToAdd, amountToMove, true);
                 itemSlotBeforeDrop.ClearItemSlot();
             }else if (this.amount == InventoryManager.Instance.GetMaxItemsForSlots())
@@ -383,7 +437,10 @@ namespace Inventory
             {
                 int remainingSpace = (this.amount + amountToMove) - InventoryManager.Instance.GetMaxItemsForSlots();
                 int valueToMove = InventoryManager.Instance.GetMaxItemsForSlots() - this.amount;
-                LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemInSlot, valueToMove);
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                    TrainBaseInventory.Instance.DeleteItemFromList(itemInSlot, valueToMove);
+                else
+                    LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemInSlot, valueToMove);
                 PlayerInventory.Instance.TryAddingItemDragging(itemToAdd, valueToMove, true);
                 itemSlotBeforeDrop.ModifyItemSlotAmount(remainingSpace);
                 this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
@@ -412,8 +469,11 @@ namespace Inventory
                 
                 
                 PlayerInventory.Instance.TryAddingItemDragging(this.GetItemInSlot(), remainingSpace, true);
-                LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemToAdd,
-                    remainingSpace);
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                    TrainBaseInventory.Instance.DeleteItemFromList(itemToAdd, remainingSpace);
+                else
+                    LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemToAdd,
+                        remainingSpace);
                 draggableItem.SetItemComingFromInventoryToCrate(false);
                 draggableItem.parentAfterDrag = this.transform;
             }
@@ -453,15 +513,6 @@ namespace Inventory
                 int valueRemainingInPreviousSlot = (this.amount + itemSlotBeforeDrop.amount) - InventoryManager.Instance.GetMaxItemsForSlots();
                 this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
                 itemSlotBeforeDrop.ModifyItemSlotAmount(valueRemainingInPreviousSlot);
-                /*LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemToAdd,
-                    amountToMove);
-                if (LootUIManager.Instance.TryAddItemCrateToItemSlot(itemToAdd, 
-                        amountToMove, out remainingItems))
-                {
-                    LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToAdd, amountToMove);
-                    draggableItem.SetItemComingFromInventoryToCrate(false);
-                    draggableItem.parentAfterDrag = this.transform;
-                } */
             }
         }
 
@@ -471,9 +522,14 @@ namespace Inventory
             SetItemSlotProperties(itemSlotBeforeDrop.GetItemInSlot(), amountToMove);
             if (fromInventoryToCrate)
             {
-                draggableItem.SetItemComingFromInventoryToCrate(true); 
-                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(this.GetItemInSlot(), 
+                draggableItem.SetItemComingFromInventoryToCrate(true);
+                Debug.Log(SceneManager.GetActiveScene().name.ToString());
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                    TrainBaseInventory.Instance.AddItemToList(this.GetItemInSlot(), amountToMove);
+                else 
+                    LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(this.GetItemInSlot(), 
                     amountToMove);
+                
                 PlayerInventory.Instance.RemovingItem(this.GetItemInSlot(), amountToMove);
             }
             else
@@ -482,8 +538,11 @@ namespace Inventory
                 {
                     PlayerInventory.Instance.TryAddingItemDragging(this.GetItemInSlot(), amountToMove, 
                         showMessage);
-                    LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemSlotBeforeDrop.GetItemInSlot(),
-                        amountToMove);
+                    if (SceneManager.GetActiveScene().name == trainSceneName)
+                        TrainBaseInventory.Instance.DeleteItemFromList(itemSlotBeforeDrop.GetItemInSlot(), amountToMove);
+                    else 
+                        LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemSlotBeforeDrop.GetItemInSlot(),
+                            amountToMove);
                     draggableItem.SetItemComingFromInventoryToCrate(false); 
                 }
             }
@@ -504,18 +563,27 @@ namespace Inventory
             int remainingItemsWithoutSpace = 0;
             Item itemToLoot = this.itemInSlot;
             int amountToLoot = this.amount; 
-            LootUIManager.Instance.TryAddItemCrateToItemSlot(itemToLoot, amountToLoot, out remainingItemsWithoutSpace);
+            if (SceneManager.GetActiveScene().name == trainSceneName)
+                TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemToLoot, amountToLoot, out remainingItemsWithoutSpace);
+            else
+                 LootUIManager.Instance.TryAddItemCrateToItemSlot(itemToLoot, amountToLoot, out remainingItemsWithoutSpace);
             Debug.Log("REMAINING ITEMS: " + remainingItemsWithoutSpace);
             if (remainingItemsWithoutSpace > 0)
             {
-                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToLoot, 
-                    amountToLoot - remainingItemsWithoutSpace);
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                    TrainBaseInventory.Instance.AddItemToList(itemToLoot, amountToLoot - remainingItemsWithoutSpace);
+                else 
+                    LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToLoot, 
+                        amountToLoot - remainingItemsWithoutSpace);
                 PlayerInventory.Instance.RemovingItem(itemToLoot, amountToLoot - remainingItemsWithoutSpace);
                 ModifyItemSlotAmount(remainingItemsWithoutSpace);
             }
             else
             {
-                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToLoot, amountToLoot);
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                    TrainBaseInventory.Instance.AddItemToList(itemToLoot, amountToLoot);
+                else 
+                    LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToLoot, amountToLoot);
                 PlayerInventory.Instance.RemovingItem(itemToLoot, amountToLoot);
                 this.ClearItemSlot();
             }
@@ -528,28 +596,51 @@ namespace Inventory
             PlayerInventory.Instance.TryAddItem(itemToLoot, this.amount, out remainingItemsWithoutSpace, true); 
             if (remainingItemsWithoutSpace > 0)
             {
+                
                 //We return remainingItems To crate
-                LootUIManager.Instance.TryAddItemCrateToItemSlot(itemToLoot, 
-                    remainingItemsWithoutSpace, out int remainingItems); 
-                LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemToLoot, remainingItemsWithoutSpace);
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                {
+                    TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemToLoot, remainingItemsWithoutSpace,
+                        out int remainingItems);
+                    TrainBaseInventory.Instance.AddItemToList(itemToLoot, remainingItemsWithoutSpace);
+                }
+                else
+                {
+                    LootUIManager.Instance.TryAddItemCrateToItemSlot(itemToLoot, remainingItemsWithoutSpace,
+                        out int remainingItems);
+                    LootUIManager.Instance.GetCurrentLootableObject()
+                        .AddItemToList(itemToLoot, remainingItemsWithoutSpace);
+                }
+
                 //And update item slot
                 ModifyItemSlotAmount(remainingItemsWithoutSpace);
             }
             else
             {
-                LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemToLoot, this.amount);
+                if (SceneManager.GetActiveScene().name == trainSceneName)
+                    TrainBaseInventory.Instance.DeleteItemFromList(itemToLoot, this.amount);
+                else
+                    LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemToLoot, this.amount);
+                
+                    
                 this.ClearItemSlot();
             }
         }
 
         private bool ValidMovementFromInventoryToCrate()
         {
-            return this.itemID != 0 && LootUIManager.Instance.GetIfCrateIsOpened() && !this.GetIfIsLootCrate();
+            if (SceneManager.GetActiveScene().name != trainSceneName)
+                return this.itemID != 0 && LootUIManager.Instance.GetIfCrateIsOpened() && !this.GetIfIsLootCrate();
+            else
+                return this.itemID != 0 && !this.GetIfIsLootCrate();
         }
         
         private bool ValidMovementFromCrateToInventory()
-        {
-            return this.itemID != 0 && LootUIManager.Instance.GetIfCrateIsOpened() && this.GetIfIsLootCrate();
+        {      
+            if (SceneManager.GetActiveScene().name != trainSceneName)
+                return this.itemID != 0 && LootUIManager.Instance.GetIfCrateIsOpened() && this.GetIfIsLootCrate();
+            else
+                return this.itemID != 0 && this.GetIfIsLootCrate();
         }
         
         private void ResetItemSlot(ItemSlot itemSlot, DraggableItem draggableItem)
@@ -586,7 +677,10 @@ namespace Inventory
              if (this.isLootCrate)
              {
                  //We throw item out of loot box
-                 LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(GetItemInSlot(), amount);
+                 if (SceneManager.GetActiveScene().name != trainSceneName)
+                     TrainBaseInventory.Instance.DeleteItemFromList(GetItemInSlot(), amount);
+                 else
+                     LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(GetItemInSlot(), amount);
              }
              else
              {
@@ -620,7 +714,9 @@ namespace Inventory
                     // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM CRATE TO INVENTORY", FeatureType.Loot);
                     DoubleClickOnItemFromCrateToInventory();
                 }
-                CheckIfWeNeedToHideHUD();
+                
+                if (SceneManager.GetActiveScene().name != trainSceneName)
+                    CheckIfWeNeedToHideHUD();
             }
 
             if (eventData.button == PointerEventData.InputButton.Right)
