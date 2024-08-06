@@ -148,7 +148,7 @@ public class TrainManager : MonoBehaviour
     void Update()
     {
         HandleButtonPressed();
-        if(!canvasActivated)
+        if(!canvasActivated && GameManager.Instance.GameState != GameState.OnInventory)
             HandleMovement();
 
         //TODO: JUST FOR TESTING 

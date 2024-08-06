@@ -15,10 +15,7 @@ namespace Inventory
 
         [SerializeField] private GameObject floatingTextPrefab;
 
-        [Tooltip(
-            "Variable to link with the script that help us to write on top of the character what item did he take")]
-        [SerializeField]
-        private TakeItemText takeItemScript;
+ 
 
         private Dictionary<Item, int> inventoryItemDictionary;
         private float currentWeight;
@@ -63,7 +60,6 @@ namespace Inventory
                 if (inventoryItemDictionary.ContainsKey(item))
                 {
                     inventoryItemDictionary[item] += amount;
-                
                 }
                 else
                 {
