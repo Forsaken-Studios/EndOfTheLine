@@ -12,7 +12,7 @@ public class TrainBaseInventory : MonoBehaviour
     public static TrainBaseInventory Instance;
     
     
-    private Dictionary<Item, int> itemsInLootableObject;
+    private Dictionary<Item, int> itemsInBase;
     [SerializeField] private List<ItemSlot> itemsSlotsList;
     [SerializeField] private GameObject splittingView;
     private void Awake()
@@ -29,7 +29,8 @@ public class TrainBaseInventory : MonoBehaviour
 
     private void Start()
     {
-        itemsInLootableObject = new Dictionary<Item, int>();
+        itemsInBase = new Dictionary<Item, int>();
+        
     }
 
     public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
@@ -98,32 +99,51 @@ public class TrainBaseInventory : MonoBehaviour
             return false;
         }
     }
+
+    public void AddItemInXSlot(int itemSlotIndex, Item item, int value)
+    {
+        itemsSlotsList[itemSlotIndex].SetItemSlotProperties(item, value);
+    }
+    
     
     public void AddItemToList(Item item, int amount)
     {
-        if (itemsInLootableObject.ContainsKey(item))
+        
+        if (itemsInBase.ContainsKey(item))
         {
-            itemsInLootableObject[item] += amount;
+            itemsInBase[item] += amount;
         }
         else
         {
-            itemsInLootableObject.Add(item, amount);
+            itemsInBase.Add(item, amount);
         }
     }   
     
     public void DeleteItemFromList(Item item, int amount)
     {
-        if (itemsInLootableObject[item] > amount)
+        if (itemsInBase[item] > amount)
         {
-            itemsInLootableObject[item] -= amount; 
+            itemsInBase[item] -= amount; 
         }
         else
         {
-            itemsInLootableObject.Remove(item); 
+            itemsInBase.Remove(item); 
         }
-            
     }
     
+    public Dictionary<int, ItemInBaseDataSave> GetBaseInventoryToSave()
+    {
+        Dictionary<int, ItemInBaseDataSave> itemList = new Dictionary<int, ItemInBaseDataSave>();
+
+        foreach (var itemSlot in itemsSlotsList)
+        {
+            ItemInBaseDataSave item = new ItemInBaseDataSave(itemSlot.itemID, itemSlot.amount);
+            itemList.Add(itemsSlotsList.IndexOf(itemSlot), item);
+        }
+
+
+        return itemList;
+    }
     private int GetFirstIndexSlotAvailable()
     {
         for (int i = 0; i < itemsSlotsList.Count; i++)

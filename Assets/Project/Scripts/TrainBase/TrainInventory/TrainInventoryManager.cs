@@ -24,6 +24,14 @@ public class TrainInventoryManager : IInventoryManager
     {
         base.Start();
         //We load elements from previous raid
+        LoadPlayerInventory();
+        
+        //Load base Inventory
+        LoadBaseInventory();
+    }
+
+    private void LoadPlayerInventory()
+    {
         DataPlayerInventory data = SaveManager.Instance.TryLoadPlayerInventoryInBaseJson();
         Dictionary<Item, int> inventory = new Dictionary<Item, int>();
         inventory = GetItemsFromID(data.GetInventory());
@@ -32,23 +40,45 @@ public class TrainInventoryManager : IInventoryManager
         {
             LoadItemsInPlayerInventory(inventory);
         }
-        
-        
-        //Load base Inventory
+    }
+
+    private void LoadBaseInventory()
+    {
+        DataBaseInventory dataBase = SaveManager.Instance.TryLoadInventoryInBaseJson();
+        Dictionary<int, ItemInBaseDataSave> baseInventory = new Dictionary<int, ItemInBaseDataSave>();
+        baseInventory = dataBase.GetInventory();
+        List<Item> itemsList = GetItemList();
+        foreach (var itemPair in baseInventory)
+        {
+            if (itemPair.Value.itemID != 0)
+            {
+                Item item = GetItemFromID(itemPair.Value.itemID, itemsList);
+                TrainBaseInventory.Instance.AddItemInXSlot(itemPair.Key, item,
+                    itemPair.Value.itemSlotAmount);
+                TrainBaseInventory.Instance.AddItemToList(item, itemPair.Value.itemSlotAmount);
+            }
+        }
     }
 
 
-    private Dictionary<Item, int>  GetItemsFromID(Dictionary<int, int> itemsID)
+    private Dictionary<Item, int> GetItemsFromID(Dictionary<int, int> itemsID)
     {
         Dictionary<Item, int> items = new Dictionary<Item, int>();
+        List<Item> itemsList = GetItemList();
+        foreach (var item in itemsID) { items.Add(GetItemFromID(item.Key, itemsList), item.Value); }
+        return items;
+    }
+
+    public List<Item> GetItemList()
+    {
         UnityEngine.Object[] itemsResource = UnityEngine.Resources.LoadAll("Items/Scrap");
         List<Item> itemsList = new List<Item>();
         foreach (var item in itemsResource)
         {
             itemsList.Add(item as Item);
         }
-        foreach (var item in itemsID) { items.Add(GetItemFromID(item.Key, itemsList), item.Value); }
-        return items;
+
+        return itemsList;
     }
 
     private Item GetItemFromID(int id, List<Item> list)

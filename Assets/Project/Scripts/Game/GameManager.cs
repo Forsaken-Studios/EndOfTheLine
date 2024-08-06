@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
         get { return _gameState; }
         set { _gameState = value; }
     }
+
+    private int MAX_AMOUNT_PER_SLOT = 4;
     
     private void Awake()
     {
@@ -51,7 +53,7 @@ public class GameManager : MonoBehaviour
             blackFade.GetComponent<Animator>().SetTrigger("ending");
 
             yield return new WaitForSeconds(3f);
-            SceneManager.LoadSceneAsync("Scenes/Menu/MainMenu");
+            SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
             StopAllCoroutines();
             yield return null; 
         }
@@ -84,7 +86,15 @@ public class GameManager : MonoBehaviour
         StartCoroutine(EndGameCorroutine());
     }
 
-
+    private void OnApplicationQuit()
+    {
+        SaveManager.Instance.SaveGame();
+    }
+    
+    public int GetMaxAmountPerSlot()
+    {
+        return MAX_AMOUNT_PER_SLOT;
+    }
 
     private void OnDestroy()
     {

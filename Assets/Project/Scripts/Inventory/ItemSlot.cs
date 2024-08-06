@@ -79,7 +79,7 @@ namespace Inventory
   
         public bool TrySetItemSlotPropertiesForManager(Item item, int itemSlotAmount, out int remainingItems)
         {
-            int MAX_ITEMS_SLOT = InventoryManager.Instance.GetMaxItemsForSlots();
+            int MAX_ITEMS_SLOT = GameManager.Instance.GetMaxAmountPerSlot();
             if (itemSlotAmount > MAX_ITEMS_SLOT)
             {
                 SetItemSlotProperties(item, MAX_ITEMS_SLOT);
@@ -269,7 +269,7 @@ namespace Inventory
             Item itemToAdd = itemSlotBeforeDrop.GetItemInSlot();
             int remainingItems = 0;
 
-            if (this.amount + amountToMove <= InventoryManager.Instance.GetMaxItemsForSlots())
+            if (this.amount + amountToMove <= GameManager.Instance.GetMaxAmountPerSlot())
             {
                 //Just move 
                 this.ModifyItemSlotAmount(this.amount + amountToMove);
@@ -280,19 +280,9 @@ namespace Inventory
             }
             else
             {
-                int valueRemainingInPreviousSlot = (this.amount + itemSlotBeforeDrop.amount) - InventoryManager.Instance.GetMaxItemsForSlots();
-                this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
+                int valueRemainingInPreviousSlot = (this.amount + itemSlotBeforeDrop.amount) - GameManager.Instance.GetMaxAmountPerSlot();
+                this.ModifyItemSlotAmount(GameManager.Instance.GetMaxAmountPerSlot());
                 itemSlotBeforeDrop.ModifyItemSlotAmount(valueRemainingInPreviousSlot);
-               /* int remainingSpace = (this.amount + amountToMove) - InventoryManager.Instance.GetMaxItemsForSlots();
-                this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
-                PlayerInventory.Instance.RemovingItem(itemToAdd, remainingSpace);
-                if (InventoryManager.Instance.TryAddInventoryToItemSlot(itemToAdd, 
-                        remainingSpace, out remainingItems))
-                {
-                    PlayerInventory.Instance.TryAddingItemDragging(this.GetItemInSlot(), remainingSpace, false);
-                    draggableItem.SetItemComingFromInventoryToCrate(false);
-                    draggableItem.parentAfterDrag = this.transform; 
-                }*/
             }
             
         }
@@ -308,7 +298,7 @@ namespace Inventory
             Item itemToAdd = itemSlotBeforeDrop.GetItemInSlot();
             int remainingItems = 0;
             
-            if (this.amount + amountToMove <= InventoryManager.Instance.GetMaxItemsForSlots())
+            if (this.amount + amountToMove <= GameManager.Instance.GetMaxAmountPerSlot())
             {
                 //Just move 
                 this.ModifyItemSlotAmount(this.amount + amountToMove);
@@ -318,21 +308,21 @@ namespace Inventory
                     LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemInSlot, amountToMove);
                 PlayerInventory.Instance.RemovingItem(itemToAdd, amountToMove);
                 itemSlotBeforeDrop.ClearItemSlot();
-            }else if(this.amount == InventoryManager.Instance.GetMaxItemsForSlots())
+            }else if(this.amount == GameManager.Instance.GetMaxAmountPerSlot())
             {
                 StackItemsFromInventoryToCrate(itemSlotBeforeDrop, amountToMove, draggableItem, itemToAdd);
             }
             else
             {
-                int remainingSpace = (this.amount + amountToMove) - InventoryManager.Instance.GetMaxItemsForSlots();
-                int valueToMove = InventoryManager.Instance.GetMaxItemsForSlots() - this.amount;
+                int remainingSpace = (this.amount + amountToMove) - GameManager.Instance.GetMaxAmountPerSlot();
+                int valueToMove = GameManager.Instance.GetMaxAmountPerSlot() - this.amount;
                 if (SceneManager.GetActiveScene().name == trainSceneName)
                     TrainBaseInventory.Instance.AddItemToList(itemInSlot, valueToMove);
                 else
                     LootUIManager.Instance.GetCurrentLootableObject().AddItemToList(itemInSlot, valueToMove);
                 PlayerInventory.Instance.RemovingItem(itemToAdd, valueToMove);
                 itemSlotBeforeDrop.ModifyItemSlotAmount(remainingSpace);
-                this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
+                this.ModifyItemSlotAmount(GameManager.Instance.GetMaxAmountPerSlot());
 
                     
                 StackItemsFromInventoryToCrate(itemSlotBeforeDrop, remainingSpace, draggableItem, itemToAdd);
@@ -419,7 +409,7 @@ namespace Inventory
             Item itemToAdd = itemSlotBeforeDrop.GetItemInSlot();
             int remainingItems = 0;
             
-            if (this.amount + amountToMove <= InventoryManager.Instance.GetMaxItemsForSlots())
+            if (this.amount + amountToMove <= GameManager.Instance.GetMaxAmountPerSlot())
             {
                 //Just move 
                 this.ModifyItemSlotAmount(this.amount + amountToMove);
@@ -429,21 +419,21 @@ namespace Inventory
                     LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemInSlot, amountToMove);
                 PlayerInventory.Instance.TryAddingItemDragging(itemToAdd, amountToMove, true);
                 itemSlotBeforeDrop.ClearItemSlot();
-            }else if (this.amount == InventoryManager.Instance.GetMaxItemsForSlots())
+            }else if (this.amount == GameManager.Instance.GetMaxAmountPerSlot())
             {
                 StackItemsFromCrateToInventory(itemSlotBeforeDrop, amountToMove, draggableItem, itemToAdd);
             }
             else
             {
-                int remainingSpace = (this.amount + amountToMove) - InventoryManager.Instance.GetMaxItemsForSlots();
-                int valueToMove = InventoryManager.Instance.GetMaxItemsForSlots() - this.amount;
+                int remainingSpace = (this.amount + amountToMove) - GameManager.Instance.GetMaxAmountPerSlot();
+                int valueToMove = GameManager.Instance.GetMaxAmountPerSlot() - this.amount;
                 if (SceneManager.GetActiveScene().name == trainSceneName)
                     TrainBaseInventory.Instance.DeleteItemFromList(itemInSlot, valueToMove);
                 else
                     LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(itemInSlot, valueToMove);
                 PlayerInventory.Instance.TryAddingItemDragging(itemToAdd, valueToMove, true);
                 itemSlotBeforeDrop.ModifyItemSlotAmount(remainingSpace);
-                this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
+                this.ModifyItemSlotAmount(GameManager.Instance.GetMaxAmountPerSlot());
                 
                 StackItemsFromCrateToInventory(itemSlotBeforeDrop, remainingSpace, draggableItem, itemToAdd);
             }
@@ -498,7 +488,7 @@ namespace Inventory
             int remainingItems = 0;
 
 
-            if (this.amount + amountToMove <= InventoryManager.Instance.GetMaxItemsForSlots())
+            if (this.amount + amountToMove <= GameManager.Instance.GetMaxAmountPerSlot())
             {
                 //Just move 
                 this.ModifyItemSlotAmount(this.amount + amountToMove);
@@ -510,8 +500,8 @@ namespace Inventory
             }
             else
             {
-                int valueRemainingInPreviousSlot = (this.amount + itemSlotBeforeDrop.amount) - InventoryManager.Instance.GetMaxItemsForSlots();
-                this.ModifyItemSlotAmount(InventoryManager.Instance.GetMaxItemsForSlots());
+                int valueRemainingInPreviousSlot = (this.amount + itemSlotBeforeDrop.amount) - GameManager.Instance.GetMaxAmountPerSlot();
+                this.ModifyItemSlotAmount(GameManager.Instance.GetMaxAmountPerSlot());
                 itemSlotBeforeDrop.ModifyItemSlotAmount(valueRemainingInPreviousSlot);
             }
         }
