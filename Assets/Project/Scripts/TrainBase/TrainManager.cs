@@ -247,7 +247,6 @@ public class TrainManager : MonoBehaviour
     
     private void UpdateRoomInfo()
     {
-
         lockIcon.SetActive(!unlockedWagonsList[currentIndex]);
         switch (currentIndex)
         {
@@ -299,10 +298,15 @@ public class TrainManager : MonoBehaviour
                     GameObject buyWagonUI = Instantiate(buyWagonPrefab, initialPosition, Quaternion.identity, generalCanvas.transform);
                 
                     buyWagonUI.GetComponent<BuyWagon>().SetUpProperties(wagonPrice.foodNeeded, wagonPrice.materialNeeded, wagonPrice.goldNeeded);
-
                 }
             }
         } 
+    }
+
+
+    public MissionSelector GetMissionSelector()
+    {
+        return missionSelectorCanvas.GetComponentInChildren<MissionSelector>();
     }
     
     private void OnDestroy()

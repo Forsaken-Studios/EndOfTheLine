@@ -140,8 +140,6 @@ public class TrainBaseInventory : MonoBehaviour
             ItemInBaseDataSave item = new ItemInBaseDataSave(itemSlot.itemID, itemSlot.amount);
             itemList.Add(itemsSlotsList.IndexOf(itemSlot), item);
         }
-
-
         return itemList;
     }
     private int GetFirstIndexSlotAvailable()

@@ -82,7 +82,32 @@ namespace Inventory
                 return false;
             }
         }
-
+        public void StashAllItemsInBase()
+        {
+            Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
+            Dictionary<Item, int> itemsTaken = new Dictionary<Item, int>();
+            foreach (var item in inventoryItemDictionary)
+            {
+                int remainingItems = 0;
+                if (!TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(item.Key, item.Value, 
+                        out remainingItems))
+                {
+                    //If we cant find a place, we add it to recover items
+                    //We will need to check if we take X amount of the stack
+                    recoverItems.Add(item.Key, remainingItems);
+                }
+                else
+                {
+                    itemsTaken.Add(item.Key, item.Value);
+                }
+            } 
+            //We cant clear, we need to check if we dont take an item because we dont have space in inventory
+            this.inventoryItemDictionary.Clear();
+            foreach (var items in recoverItems)
+            {
+                inventoryItemDictionary.Add(items.Key, items.Value);
+            }
+        }
         public bool TryAddItemInGame(Item item, int amount, out int remainingItemsWithoutSpace,
             bool showItemsTakenMessage)
         {

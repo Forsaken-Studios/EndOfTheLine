@@ -29,6 +29,8 @@ public class TrainInventoryManager : IInventoryManager
         //Load base Inventory
         LoadBaseInventory();
     }
+    
+    
 
     private void LoadPlayerInventory()
     {
