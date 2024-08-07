@@ -37,7 +37,8 @@ public class TrainManager : MonoBehaviour
     [Header("Canvas for different wagons")]
     [SerializeField] private GameObject missionSelectorCanvas;
     [SerializeField] private GameObject controlRoomCanvas;
-    [SerializeField] private GameObject extraRoomCanvas;
+    [SerializeField] private GameObject marketRoomCanvas;
+    [SerializeField] private GameObject expeditionRoomCanvas;
 
     [Header("Wagon Lock List")] 
     private bool[] unlockedWagonsList; //True -> Unlocked, False -> Locked
@@ -206,7 +207,7 @@ public class TrainManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A))
             {
                 //Check if we are already on top left (For now extra room)
-                if (TrainStatus != TrainStatus.onExtraRoom2)
+                if (TrainStatus != TrainStatus.onExpeditionRoom)
                 {
                     MoveTrain(true);
                 }
@@ -259,19 +260,19 @@ public class TrainManager : MonoBehaviour
                 currentCanvas = controlRoomCanvas;
                 break; 
             case 2:
-                TrainStatus = TrainStatus.onExtraRoom;
-                currentCanvas = extraRoomCanvas;
+                TrainStatus = TrainStatus.onMarketRoom;
+                currentCanvas = marketRoomCanvas;
                 break;    
             case 3:
-                TrainStatus = TrainStatus.onExtraRoom2;
-                currentCanvas = extraRoomCanvas;
+                TrainStatus = TrainStatus.onExpeditionRoom;
+                currentCanvas = expeditionRoomCanvas;
                 break;
         }
     }
     
     private void HandleButtonPressed()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && TrainStatus != TrainStatus.usingWagon)
         {
             if (unlockedWagonsList[currentIndex])
             {
@@ -340,11 +341,16 @@ public class TrainManager : MonoBehaviour
         int currentDayLocal = PlayerPrefs.GetInt("CurrentDay");
         if (currentDayLocal != previousDay)
         {
+            Debug.Log("DAY UPDATED: " + currentDayLocal);
             PlayerPrefs.SetInt("PreviousDay", currentDayLocal);
             this.currentDay = currentDayLocal;
             currentDayText.text = "DAY: " + currentDayLocal.ToString();
             //Update store
             UpdateStore();
+        }
+        else
+        {
+            currentDayText.text = "DAY: " + currentDayLocal.ToString();
         }
     }
 
