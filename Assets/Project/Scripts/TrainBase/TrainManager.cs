@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,18 +35,16 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private int numberOfWagons;
     [SerializeField] private Train train;
     private TrainPanels trainPanelsScript;
+    private List<GameObject> screensDisplayed;
     [Header("Canvas for different wagons")]
     [SerializeField] private GameObject missionSelectorCanvas;
     [SerializeField] private GameObject controlRoomCanvas;
     [SerializeField] private GameObject marketRoomCanvas;
     [SerializeField] private GameObject expeditionRoomCanvas;
-
     [Header("Wagon Lock List")] 
     private bool[] unlockedWagonsList; //True -> Unlocked, False -> Locked
-
     [Header("Lock Icon")]
     [SerializeField] private GameObject lockIcon;
-    
     private GameObject currentCanvas;
 
     [Header("Resources In Train")] 
@@ -130,13 +129,12 @@ public class TrainManager : MonoBehaviour
     }
     
     
-    
     private void Start()
     {
         currentCanvas = missionSelectorCanvas;
         TrainStatus = TrainStatus.onMissionSelector;
-        trainPanelsScript = GetComponent<TrainPanels>(); 
-        
+        trainPanelsScript = GetComponent<TrainPanels>();
+        screensDisplayed = new List<GameObject>();
         RESOURCES_GOLD = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
         RESOURCES_MATERIAL = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
         RESOURCES_FOOD = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME);
@@ -272,13 +270,22 @@ public class TrainManager : MonoBehaviour
     
     private void HandleButtonPressed()
     {
-        if (Input.GetKeyDown(KeyCode.E) && TrainStatus != TrainStatus.usingWagon)
+        if (Input.GetKeyDown(KeyCode.E))
         {
             if (unlockedWagonsList[currentIndex])
             {
                 if (currentCanvas.activeSelf)
                 {
-                    currentCanvas.SetActive(false);
+                    //Check if we need to disable some screen before
+                    if (screensDisplayed.Count == 0)
+                    {
+                        currentCanvas.SetActive(false);
+                    }
+                    else
+                    {
+                        RemoveScreenFromList(screensDisplayed.Last());
+                    }
+                    
                 }
                 else
                 {
@@ -358,5 +365,16 @@ public class TrainManager : MonoBehaviour
     private void UpdateStore()
     {
         OnDayChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void AddScreenToList(GameObject newScreen)
+    {
+        this.screensDisplayed.Add(newScreen);
+    }
+
+    public void RemoveScreenFromList(GameObject screen)
+    {
+        this.screensDisplayed.Remove(screen);
+        Destroy(screen);
     }
 }

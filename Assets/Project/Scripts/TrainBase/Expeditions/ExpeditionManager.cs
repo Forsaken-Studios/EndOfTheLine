@@ -10,6 +10,7 @@ public class ExpeditionManager : MonoBehaviour
 
      [SerializeField] private Button detailsButton;
      private ExpeditionSO stationToShow;
+     private ExpeditionLocation expeditionClicked;
      [SerializeField] private GameObject detailsPrefab;
      private void Awake()
      {
@@ -30,12 +31,16 @@ public class ExpeditionManager : MonoBehaviour
 
      private void ShowDetails()
      {
+          
           GameObject details = Instantiate(detailsPrefab, Vector2.zero, Quaternion.identity);
+          TrainManager.Instance.AddScreenToList(details);
+          details.GetComponentInChildren<DetailsView>().SetUpDetailsView(stationToShow);
           
      }
      
-     public void ShowDetailsButton(ExpeditionSO expeditionSO)
+     public void ShowDetailsButton(ExpeditionSO expeditionSO, ExpeditionLocation expeditionLocation)
      {
+          this.expeditionClicked = expeditionLocation;
           this.stationToShow = expeditionSO;
           Debug.Log("EXPEDITION IN: " + expeditionSO.stationName);
           TrainManager.Instance.TrainStatus = TrainStatus.usingWagon;
@@ -47,5 +52,10 @@ public class ExpeditionManager : MonoBehaviour
           this.stationToShow = null;
           TrainManager.Instance.TrainStatus = TrainStatus.onExpeditionRoom;
           detailsButton.gameObject.SetActive(false);
+     }
+
+     public ExpeditionLocation GetExpeditionClicked()
+     {
+          return expeditionClicked;
      }
 }

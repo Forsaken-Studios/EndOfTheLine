@@ -33,16 +33,24 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
     
     public void OnStationClicked()
     {
+        //UnClick previous station
+        if (ExpeditionManager.Instance.GetExpeditionClicked() != null && ExpeditionManager.Instance.GetExpeditionClicked() != this)
+        {
+            ExpeditionManager.Instance.GetExpeditionClicked().stationName.gameObject.SetActive(false);
+            ExpeditionManager.Instance.GetExpeditionClicked().HideButton();
+        }
         //Change location in expeditionManager
-        ExpeditionManager.Instance.ShowDetailsButton(expedition);
+        ExpeditionManager.Instance.ShowDetailsButton(expedition, this);
         isClicked = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        stationName.gameObject.SetActive(false);
-        if(!isClicked)
+        if (!isClicked)
+        {
+            stationName.gameObject.SetActive(false);
             HideButton();
+        }
     }
 
 
