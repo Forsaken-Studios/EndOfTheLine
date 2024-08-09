@@ -15,13 +15,16 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
     private Button stationButton;
     private bool isClicked;
 
+    private List<MissionStatSO> stationMissions;
+    
     private void Start()
-    { 
-        
+    {
+        stationMissions = new List<MissionStatSO>();
         buttonImage = GetComponentInChildren<Image>();
         stationButton = GetComponentInChildren<Button>();
         stationButton.onClick.AddListener(() => OnStationClicked());
         stationName.gameObject.SetActive(false);
+        GetResourceMissionFromStation();
         HideButton();
     }
     
@@ -53,7 +56,6 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
         }
     }
 
-
     private void HideButton()
     {
         var tempColor = buttonImage.color;
@@ -68,5 +70,23 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
         buttonImage.color = tempColor;
     }
 
+    public List<MissionStatSO> GetMissions()
+    {
+        return stationMissions;
+    }
+    
+    private void GetResourceMissionFromStation()
+    {
+        UnityEngine.Object[] missions = UnityEngine.Resources.LoadAll<MissionStatSO>("Expedition/MissionEXP" + expedition.stationID);
+        MissionObjectToList(missions);
+    }
 
+    private void MissionObjectToList(UnityEngine.Object[] missions) 
+    {
+        foreach (var mission in missions)
+        {
+            stationMissions.Add(mission as MissionStatSO);
+        }
+    }
+    
 }

@@ -35,7 +35,6 @@ public class ExpeditionManager : MonoBehaviour
           GameObject details = Instantiate(detailsPrefab, Vector2.zero, Quaternion.identity);
           TrainManager.Instance.AddScreenToList(details);
           details.GetComponentInChildren<DetailsView>().SetUpDetailsView(stationToShow);
-          
      }
      
      public void ShowDetailsButton(ExpeditionSO expeditionSO, ExpeditionLocation expeditionLocation)

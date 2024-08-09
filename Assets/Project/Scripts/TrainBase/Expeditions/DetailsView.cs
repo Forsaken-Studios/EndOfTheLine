@@ -11,8 +11,8 @@ public class DetailsView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI descriptionName;
     [SerializeField] private Image stationImage;
 
-
-
+    
+    
     public void SetUpDetailsView(ExpeditionSO expedition)
     {
         this.stationImage.sprite = expedition.expeditionImage;
