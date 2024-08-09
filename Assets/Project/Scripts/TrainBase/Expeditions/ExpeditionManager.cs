@@ -57,4 +57,9 @@ public class ExpeditionManager : MonoBehaviour
      {
           return expeditionClicked;
      }
+
+     public ExpeditionSO GetStationSelected()
+     {
+          return stationToShow;
+     }
 }

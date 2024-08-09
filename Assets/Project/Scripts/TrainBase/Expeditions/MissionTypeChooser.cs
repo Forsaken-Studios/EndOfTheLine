@@ -13,6 +13,11 @@ public class MissionTypeChooser : MonoBehaviour
     [SerializeField] private TextMeshProUGUI missionText;
     [Header("Chance of Success Text")]
     [SerializeField] private TextMeshProUGUI chanceOfSuccessText;
+
+    [Header("Requirements Needed")] 
+    [SerializeField] private GameObject requirementPrefab;
+    [SerializeField] private GameObject requirementGrid;
+    private List<GameObject> listOfRequirements;
     private float currentChanceOfSuccess;
     private int currentMissionIndex = 0;
     private List<MissionStatSO> missions;
@@ -21,6 +26,7 @@ public class MissionTypeChooser : MonoBehaviour
 
     private void OnEnable()
     {
+        listOfRequirements = new List<GameObject>();
         missions = new List<MissionStatSO>();
         missions = ExpeditionManager.Instance.GetExpeditionClicked().GetMissions();
         leftArrowButton.onClick.AddListener(() => SwapMissionToLeft());
@@ -38,13 +44,44 @@ public class MissionTypeChooser : MonoBehaviour
 
     private void SetUpProperties(int index)
     {
-        Debug.Log("COUNT " + missions.Count);
-        Debug.Log(missions[index]);
-        Debug.Log("INDEX: " + index);
+        UpdateChanceOfSuccess(missions[index].basicChanceOfSuccess);
        // Debug.Log(missions.Count);
         this.missionText.text = missions[index].missionName;
         currentMissionSelected = missions[index];
         //Set up requirements if needed
+        SetUpRequirements();
+    }
+
+    private void SetUpRequirements()
+    {
+
+        foreach (var aux in listOfRequirements)
+        {
+            Destroy(aux);
+        }
+        listOfRequirements.Clear();
+
+        string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
+                               (currentMissionIndex + 1) + "_MIS"  + (currentMissionIndex + 1) + "_Requirements";
+        
+        RequirementSO[] missionRequirements =
+            UnityEngine.Resources.LoadAll<RequirementSO>(resourcesPath);
+
+        if (missionRequirements.Length > 0)
+        {
+            foreach (var requirement in missionRequirements)
+            {
+                GameObject requirementGameObject = Instantiate(requirementPrefab, Vector2.zero, Quaternion.identity, requirementGrid.transform);
+                listOfRequirements.Add(requirementGameObject);
+                requirementGameObject.GetComponent<Requirement>().SetUpProperties(requirement); 
+            }
+        }
+        else
+        {
+            //MESSAGE OF NO REQUIERMENT NEEDED
+        }
+        
+ 
     }
     
     private void SwapMissionToLeft()
@@ -53,7 +90,6 @@ public class MissionTypeChooser : MonoBehaviour
         currentMissionIndex = (int) Mathf.Clamp(newIndex, 0, this.missions.Count - 1);
         SetUpProperties(currentMissionIndex);
         BlockButtonIfFirstMission(currentMissionIndex);
-        UpdateChanceOfSuccess(missions[currentMissionIndex].basicChanceOfSuccess);
     }
     
     private void SwapMissionToRight()
@@ -63,7 +99,6 @@ public class MissionTypeChooser : MonoBehaviour
         currentMissionIndex = Mathf.Clamp(newIndex, 0, this.missions.Count - 1);
         SetUpProperties(currentMissionIndex);
         BlockButtonIfLastMission(currentMissionIndex);
-        UpdateChanceOfSuccess(missions[currentMissionIndex].basicChanceOfSuccess);
     }
 
     private void UpdateChanceOfSuccess(float value )
