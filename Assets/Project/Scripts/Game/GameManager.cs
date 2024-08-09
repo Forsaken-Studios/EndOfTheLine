@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
         get { return _gameState; }
         set { _gameState = value; }
     }
+
+    private int MAX_AMOUNT_PER_SLOT = 4;
     
     private void Awake()
     {
@@ -51,7 +53,7 @@ public class GameManager : MonoBehaviour
             blackFade.GetComponent<Animator>().SetTrigger("ending");
 
             yield return new WaitForSeconds(3f);
-            SceneManager.LoadSceneAsync("Scenes/Menu/MainMenu");
+            SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
             StopAllCoroutines();
             yield return null; 
         }
@@ -70,7 +72,10 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         //Sell scrap Items && Save items for train base
-        PlayerInventory.Instance.HandleItemsAtEndGame();
+        //PlayerInventory.Instance.HandleItemsAtEndGame();
+        Dictionary<int, int> idDictionary = SaveManager.Instance.ConvertItemsDictionaryIntoIDDictionary(PlayerInventory.Instance.GetInventoryItems());
+        DataPlayerInventory data = new DataPlayerInventory(idDictionary);
+        SaveManager.Instance.SavePlayerInventoryJson(data);
         //Add one more day to game
         
         int currentDay = PlayerPrefs.GetInt("CurrentDay");
@@ -79,6 +84,16 @@ public class GameManager : MonoBehaviour
         
         //End Game
         StartCoroutine(EndGameCorroutine());
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveManager.Instance.SaveGame();
+    }
+    
+    public int GetMaxAmountPerSlot()
+    {
+        return MAX_AMOUNT_PER_SLOT;
     }
 
     private void OnDestroy()

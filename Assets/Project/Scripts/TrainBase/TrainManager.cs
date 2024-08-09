@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,17 +35,16 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private int numberOfWagons;
     [SerializeField] private Train train;
     private TrainPanels trainPanelsScript;
+    private List<GameObject> screensDisplayed;
     [Header("Canvas for different wagons")]
     [SerializeField] private GameObject missionSelectorCanvas;
     [SerializeField] private GameObject controlRoomCanvas;
-    [SerializeField] private GameObject extraRoomCanvas;
-
+    [SerializeField] private GameObject marketRoomCanvas;
+    [SerializeField] private GameObject expeditionRoomCanvas;
     [Header("Wagon Lock List")] 
     private bool[] unlockedWagonsList; //True -> Unlocked, False -> Locked
-
     [Header("Lock Icon")]
     [SerializeField] private GameObject lockIcon;
-    
     private GameObject currentCanvas;
 
     [Header("Resources In Train")] 
@@ -129,13 +129,12 @@ public class TrainManager : MonoBehaviour
     }
     
     
-    
     private void Start()
     {
         currentCanvas = missionSelectorCanvas;
         TrainStatus = TrainStatus.onMissionSelector;
-        trainPanelsScript = GetComponent<TrainPanels>(); 
-        
+        trainPanelsScript = GetComponent<TrainPanels>();
+        screensDisplayed = new List<GameObject>();
         RESOURCES_GOLD = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
         RESOURCES_MATERIAL = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
         RESOURCES_FOOD = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME);
@@ -148,7 +147,7 @@ public class TrainManager : MonoBehaviour
     void Update()
     {
         HandleButtonPressed();
-        if(!canvasActivated)
+        if(!canvasActivated && GameManager.Instance.GameState != GameState.OnInventory)
             HandleMovement();
 
         //TODO: JUST FOR TESTING 
@@ -185,7 +184,7 @@ public class TrainManager : MonoBehaviour
         unlockedWagonsList[0] = true;
         //Home always unlocked
         unlockedWagonsList[1] = true;
-        //Just for testing
+        //TODO: Just for testing
         //PlayerPrefs.SetInt("Wagon 3", -1);
         // -1 = Locked | 0 = Not defined | 1 = Unlocked
         if (PlayerPrefs.GetInt("Wagon 3") == 0)
@@ -206,7 +205,7 @@ public class TrainManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A))
             {
                 //Check if we are already on top left (For now extra room)
-                if (TrainStatus != TrainStatus.onExtraRoom2)
+                if (TrainStatus != TrainStatus.onExpeditionRoom)
                 {
                     MoveTrain(true);
                 }
@@ -247,7 +246,6 @@ public class TrainManager : MonoBehaviour
     
     private void UpdateRoomInfo()
     {
-
         lockIcon.SetActive(!unlockedWagonsList[currentIndex]);
         switch (currentIndex)
         {
@@ -260,12 +258,12 @@ public class TrainManager : MonoBehaviour
                 currentCanvas = controlRoomCanvas;
                 break; 
             case 2:
-                TrainStatus = TrainStatus.onExtraRoom;
-                currentCanvas = extraRoomCanvas;
+                TrainStatus = TrainStatus.onMarketRoom;
+                currentCanvas = marketRoomCanvas;
                 break;    
             case 3:
-                TrainStatus = TrainStatus.onExtraRoom2;
-                currentCanvas = extraRoomCanvas;
+                TrainStatus = TrainStatus.onExpeditionRoom;
+                currentCanvas = expeditionRoomCanvas;
                 break;
         }
     }
@@ -278,7 +276,16 @@ public class TrainManager : MonoBehaviour
             {
                 if (currentCanvas.activeSelf)
                 {
-                    currentCanvas.SetActive(false);
+                    //Check if we need to disable some screen before
+                    if (screensDisplayed.Count == 0)
+                    {
+                        currentCanvas.SetActive(false);
+                    }
+                    else
+                    {
+                        RemoveScreenFromList(screensDisplayed.Last());
+                    }
+                    
                 }
                 else
                 {
@@ -299,10 +306,15 @@ public class TrainManager : MonoBehaviour
                     GameObject buyWagonUI = Instantiate(buyWagonPrefab, initialPosition, Quaternion.identity, generalCanvas.transform);
                 
                     buyWagonUI.GetComponent<BuyWagon>().SetUpProperties(wagonPrice.foodNeeded, wagonPrice.materialNeeded, wagonPrice.goldNeeded);
-
                 }
             }
         } 
+    }
+
+
+    public MissionSelector GetMissionSelector()
+    {
+        return missionSelectorCanvas.GetComponentInChildren<MissionSelector>();
     }
     
     private void OnDestroy()
@@ -334,15 +346,18 @@ public class TrainManager : MonoBehaviour
     {
         int previousDay = PlayerPrefs.GetInt("PreviousDay"); 
         int currentDayLocal = PlayerPrefs.GetInt("CurrentDay");
-        Debug.Log("CURRENT: " + currentDayLocal);
-        Debug.Log("PREVIOUS: " + previousDay);
         if (currentDayLocal != previousDay)
         {
+            Debug.Log("DAY UPDATED: " + currentDayLocal);
             PlayerPrefs.SetInt("PreviousDay", currentDayLocal);
             this.currentDay = currentDayLocal;
             currentDayText.text = "DAY: " + currentDayLocal.ToString();
             //Update store
             UpdateStore();
+        }
+        else
+        {
+            currentDayText.text = "DAY: " + currentDayLocal.ToString();
         }
     }
 
@@ -350,5 +365,16 @@ public class TrainManager : MonoBehaviour
     private void UpdateStore()
     {
         OnDayChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void AddScreenToList(GameObject newScreen)
+    {
+        this.screensDisplayed.Add(newScreen);
+    }
+
+    public void RemoveScreenFromList(GameObject screen)
+    {
+        this.screensDisplayed.Remove(screen);
+        Destroy(screen);
     }
 }

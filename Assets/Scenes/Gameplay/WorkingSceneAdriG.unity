@@ -617,6 +617,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1679906822}
     m_Modifications:
+    - target: {fileID: 2624050692467064813, guid: edb0734fdc56f9b439b36b968e3eea61, type: 3}
+      propertyPath: timeToExtract
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 6473578390793086330, guid: edb0734fdc56f9b439b36b968e3eea61, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1086,11 +1090,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7955976171229919481, guid: e54be2533143fea489f0e60ba5e44ca2, type: 3}
       propertyPath: timeForTrainToLeave
-      value: 10
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7955976171229919481, guid: e54be2533143fea489f0e60ba5e44ca2, type: 3}
       propertyPath: timeForTrainToArrive
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9070930141255190193, guid: e54be2533143fea489f0e60ba5e44ca2, type: 3}
       propertyPath: m_Pivot.x
@@ -34956,9 +34960,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryHUD: {fileID: 638013189}
-  inventoryHUDPanel: {fileID: 2146570858}
-  weightText: {fileID: 2146570856}
-  inventoryText: {fileID: 2146570857}
   itemSlotList:
   - {fileID: 638013188}
   - {fileID: 638013187}
@@ -34974,8 +34975,11 @@ MonoBehaviour:
   - {fileID: 638013177}
   - {fileID: 638013176}
   - {fileID: 638013175}
-  looteableObjectPrefab: {fileID: 1437372468086054429, guid: 50aa65171201bcc44a5fd1ef43ba0d90, type: 3}
   rightClickInterfacePrefab: {fileID: 4792720288501569853, guid: 577036473e1ad03449e6e50119b00e82, type: 3}
+  inventoryHUDPanel: {fileID: 2146570858}
+  weightText: {fileID: 2146570856}
+  inventoryText: {fileID: 2146570857}
+  looteableObjectPrefab: {fileID: 1437372468086054429, guid: 50aa65171201bcc44a5fd1ef43ba0d90, type: 3}
 --- !u!4 &1042362778
 Transform:
   m_ObjectHideFlags: 0
@@ -76156,6 +76160,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1583109941}
   - component: {fileID: 1583109940}
+  - component: {fileID: 1583109942}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -76192,6 +76197,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 790256238}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1583109942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583109939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40cd5df4e210a8f45a01fb692df87f5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1587115141
 GameObject:
   m_ObjectHideFlags: 0

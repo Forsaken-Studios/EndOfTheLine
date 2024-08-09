@@ -2,7 +2,8 @@ public enum TrainStatus
 {
     onControlRoom, 
     onMissionSelector, 
-    onExtraRoom, 
-    onExtraRoom2, 
+    onMarketRoom, 
+    onExpeditionRoom, 
+    usingWagon,
     //TODO: To complete
 }

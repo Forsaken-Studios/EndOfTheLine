@@ -26,12 +26,12 @@ public class MarketSystem : MonoBehaviour
 
     private void Start()
     {
-        TrainManager.Instance.OnDayChanged += UpdateStoreEvent;
+        /*TrainManager.Instance.OnDayChanged += UpdateStoreEvent;
         buyButton.onClick.AddListener(() => BuyItem());
 
         //TODO: Here we have to put the same store we had before we closed the game
         UpdateStore();
-        SubscribeMarketSlotsEvents();
+        SubscribeMarketSlotsEvents();*/
     }
 
     private void UnsubscribeAllEvents()
