@@ -9,6 +9,7 @@ public class MissionStatSO : ScriptableObject
     public int id;
     public string missionName;
     public List<Requirements> requirements;
+    public List<MissionRewards> rewards;
     public float basicChanceOfSuccess;
 }
 
@@ -16,4 +17,10 @@ public class MissionStatSO : ScriptableObject
 public class Requirements
 { 
     public RequirementSO requirement;
+}
+
+[Serializable]
+public class MissionRewards
+{
+    public ExpeditionRewardSO reward;
 }

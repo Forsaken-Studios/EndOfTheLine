@@ -100,6 +100,14 @@ public class TrainBaseInventory : MonoBehaviour
         }
     }
 
+    public bool GetIfItemIsInInventory(Item item, int amount)
+    {
+        int amountAux = -1;
+        itemsInBase.TryGetValue(item, out amountAux);
+
+        return amountAux >= amount;
+    }
+
     public void AddItemInXSlot(int itemSlotIndex, Item item, int value)
     {
         itemsSlotsList[itemSlotIndex].SetItemSlotProperties(item, value);

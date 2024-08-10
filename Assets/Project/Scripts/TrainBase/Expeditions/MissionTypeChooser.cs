@@ -16,18 +16,29 @@ public class MissionTypeChooser : MonoBehaviour
 
     [Header("Requirements Needed")] 
     [SerializeField] private GameObject requirementPrefab;
-    [SerializeField] private GameObject requirementGrid;
+    [SerializeField] private GameObject requirementGrid; 
+        
     private List<GameObject> listOfRequirements;
+    private List<RequirementSO> listOfRequirementsSO;
+    [Header("Rewards Needed")] 
+    [SerializeField] private GameObject rewardsPrefab;
+    [SerializeField] private GameObject rewardsGrid;
+    private List<GameObject> listOfRewards;
+
     private float currentChanceOfSuccess;
     private int currentMissionIndex = 0;
     private List<MissionStatSO> missions;
     private MissionStatSO currentMissionSelected;
-    
+    [SerializeField] private Button startExpeditionButton;
+
 
     private void OnEnable()
     {
         listOfRequirements = new List<GameObject>();
+        listOfRewards = new List<GameObject>();
+        listOfRequirementsSO = new List<RequirementSO>();
         missions = new List<MissionStatSO>();
+        startExpeditionButton.onClick.AddListener(() => StartExpedition());
         missions = ExpeditionManager.Instance.GetExpeditionClicked().GetMissions();
         leftArrowButton.onClick.AddListener(() => SwapMissionToLeft());
         rightArrowButton.onClick.AddListener(() => SwapMissionToRight());
@@ -35,10 +46,16 @@ public class MissionTypeChooser : MonoBehaviour
         this.leftArrowButton.interactable = false;
         UpdateChanceOfSuccess(missions[currentMissionIndex].basicChanceOfSuccess);
     }
-
+  
+    private void StartExpedition()
+    {
+        
+    }
+    
     private void OnDisable()
     {
         leftArrowButton.onClick.RemoveAllListeners();
+        startExpeditionButton.onClick.RemoveAllListeners();
         rightArrowButton.onClick.RemoveAllListeners();
     }
 
@@ -50,19 +67,64 @@ public class MissionTypeChooser : MonoBehaviour
         currentMissionSelected = missions[index];
         //Set up requirements if needed
         SetUpRequirements();
+        
+        //Check if we meet the requirements
+        CheckIfWeMeetUpRequirements();
+        
+        //Change rewards
+        ChangeRewardsGrid();
+    }
+
+    private void ChangeRewardsGrid()
+    {
+        ClearList(listOfRewards);   
+        string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
+                               ExpeditionManager.Instance.GetStationSelected().stationID + "_MIS"  + (currentMissionIndex + 1) + "_Rewards";
+        
+        ExpeditionRewardSO[] missionRewards =
+            UnityEngine.Resources.LoadAll<ExpeditionRewardSO>(resourcesPath);
+
+        if (missionRewards.Length > 0)
+        {
+            foreach (var reward in missionRewards)
+            {
+                GameObject rewardGameObject = Instantiate(rewardsPrefab, Vector2.zero, Quaternion.identity, rewardsGrid.transform);
+                listOfRewards.Add(rewardGameObject);
+                rewardGameObject.GetComponent<RewardIcon>().SetUpProperties(reward); 
+            }
+        }
+    }
+
+    private void CheckIfWeMeetUpRequirements()
+    {
+
+        if (listOfRequirementsSO.Count > 0)
+        {
+            foreach (var requirement in listOfRequirementsSO)
+            {
+                //Check in inventory & playerInventory
+                if (!TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded))
+                {
+                    startExpeditionButton.interactable = false;
+                    break; 
+                }
+                else
+                {
+                    startExpeditionButton.interactable = true;
+                }
+            }   
+        }else
+            startExpeditionButton.interactable = true;
+       
     }
 
     private void SetUpRequirements()
     {
-
-        foreach (var aux in listOfRequirements)
-        {
-            Destroy(aux);
-        }
-        listOfRequirements.Clear();
-
+        ClearList(listOfRequirements);
+        listOfRequirementsSO.Clear();
+        
         string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
-                               (currentMissionIndex + 1) + "_MIS"  + (currentMissionIndex + 1) + "_Requirements";
+                                                         (currentMissionIndex + 1) + "_MIS"  + (currentMissionIndex + 1) + "_Requirements";
         
         RequirementSO[] missionRequirements =
             UnityEngine.Resources.LoadAll<RequirementSO>(resourcesPath);
@@ -73,6 +135,7 @@ public class MissionTypeChooser : MonoBehaviour
             {
                 GameObject requirementGameObject = Instantiate(requirementPrefab, Vector2.zero, Quaternion.identity, requirementGrid.transform);
                 listOfRequirements.Add(requirementGameObject);
+                listOfRequirementsSO.Add(requirement);
                 requirementGameObject.GetComponent<Requirement>().SetUpProperties(requirement); 
             }
         }
@@ -80,7 +143,15 @@ public class MissionTypeChooser : MonoBehaviour
         {
             //MESSAGE OF NO REQUIERMENT NEEDED
         }
-        
+    }
+
+    private void ClearList(List<GameObject> list)
+    {
+        foreach (var aux in list)
+        {
+            Destroy(aux);
+        }
+        list.Clear();
  
     }
     
