@@ -11,24 +11,28 @@ public class MissionTypeChooser : MonoBehaviour
     [SerializeField] private Button leftArrowButton;
     [SerializeField] private Button rightArrowButton;
     [SerializeField] private TextMeshProUGUI missionText;
-    [Header("Chance of Success Text")]
+    [SerializeField] private TextMeshProUGUI missionDaysToCompleteText;
+    [Header("Expedition Properties Text")]
     [SerializeField] private TextMeshProUGUI chanceOfSuccessText;
-
+    private float rewardsMultiplier = 1;
     [Header("Requirements Needed")] 
     [SerializeField] private GameObject requirementPrefab;
     [SerializeField] private GameObject requirementGrid; 
-        
     private List<GameObject> listOfRequirements;
     private List<RequirementSO> listOfRequirementsSO;
     [Header("Rewards Needed")] 
     [SerializeField] private GameObject rewardsPrefab;
     [SerializeField] private GameObject rewardsGrid;
     private List<GameObject> listOfRewards;
-
+    [Header("Bonuses Items Needed")] 
+    [SerializeField] private GameObject bonusesItemsPrefab;
+    [SerializeField] private GameObject bonusesItemsGrid;
+    private List<GameObject> listOfBonusesItems;
     private float currentChanceOfSuccess;
     private int currentMissionIndex = 0;
     private List<MissionStatSO> missions;
     private MissionStatSO currentMissionSelected;
+    [Header("Start Expedition Bonus")]
     [SerializeField] private Button startExpeditionButton;
 
 
@@ -36,6 +40,7 @@ public class MissionTypeChooser : MonoBehaviour
     {
         listOfRequirements = new List<GameObject>();
         listOfRewards = new List<GameObject>();
+        listOfBonusesItems = new List<GameObject>();
         listOfRequirementsSO = new List<RequirementSO>();
         missions = new List<MissionStatSO>();
         startExpeditionButton.onClick.AddListener(() => StartExpedition());
@@ -45,8 +50,12 @@ public class MissionTypeChooser : MonoBehaviour
         SetUpProperties(0);
         this.leftArrowButton.interactable = false;
         UpdateChanceOfSuccess(missions[currentMissionIndex].basicChanceOfSuccess);
+        
+        //Event
+        BonusItems.onButtonClicked += OnBonusItemClicked;
     }
-  
+
+
     private void StartExpedition()
     {
         
@@ -57,6 +66,7 @@ public class MissionTypeChooser : MonoBehaviour
         leftArrowButton.onClick.RemoveAllListeners();
         startExpeditionButton.onClick.RemoveAllListeners();
         rightArrowButton.onClick.RemoveAllListeners();
+        BonusItems.onButtonClicked -= OnBonusItemClicked;
     }
 
     private void SetUpProperties(int index)
@@ -64,15 +74,60 @@ public class MissionTypeChooser : MonoBehaviour
         UpdateChanceOfSuccess(missions[index].basicChanceOfSuccess);
        // Debug.Log(missions.Count);
         this.missionText.text = missions[index].missionName;
+        this.missionDaysToCompleteText.text = missions[index].daysToComplete.ToString() + " days";
         currentMissionSelected = missions[index];
         //Set up requirements if needed
         SetUpRequirements();
-        
         //Check if we meet the requirements
         CheckIfWeMeetUpRequirements();
-        
         //Change rewards
         ChangeRewardsGrid();
+        //Set Up bonuses items if needed
+        SetUpBonusesItems();
+    }
+
+    private void OnBonusItemClicked(object sender, EventBonusItemInfo e)
+    {
+        if (e.isActivated)
+        {
+            //Increase reward
+            rewardsMultiplier += e.missionBonus.itemsRewardsMultiplier;
+        }
+        else
+        {
+            rewardsMultiplier -= e.missionBonus.itemsRewardsMultiplier;
+        }
+        
+        //Change rewards text
+        UpdateRewardsText(rewardsMultiplier);
+    }
+
+    private void UpdateRewardsText(float multiplier)
+    {
+        foreach (var reward  in listOfRewards)
+        {
+            reward.GetComponent<RewardIcon>().WriteNewRewards(multiplier);
+        }
+    }
+
+    private void SetUpBonusesItems()
+    {
+        ClearList(listOfBonusesItems);   
+        string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
+                               ExpeditionManager.Instance.GetStationSelected().stationID + "_MIS"  + (currentMissionIndex + 1) + "_BonusItems";
+        
+        MissionBonusItemsSO[] missionBonusItems =
+            UnityEngine.Resources.LoadAll<MissionBonusItemsSO>(resourcesPath);
+
+        if (missionBonusItems.Length > 0)
+        {
+            foreach (var bonusItem in missionBonusItems)
+            {
+                GameObject bonusItemsGameObject = Instantiate(bonusesItemsPrefab, Vector2.zero, Quaternion.identity, bonusesItemsGrid.transform);
+                listOfBonusesItems.Add(bonusItemsGameObject);
+                bonusItemsGameObject.GetComponent<BonusItems>().SetUpProperties(bonusItem); 
+            }
+        }
     }
 
     private void ChangeRewardsGrid()
@@ -97,7 +152,6 @@ public class MissionTypeChooser : MonoBehaviour
 
     private void CheckIfWeMeetUpRequirements()
     {
-
         if (listOfRequirementsSO.Count > 0)
         {
             foreach (var requirement in listOfRequirementsSO)
@@ -136,7 +190,7 @@ public class MissionTypeChooser : MonoBehaviour
                 GameObject requirementGameObject = Instantiate(requirementPrefab, Vector2.zero, Quaternion.identity, requirementGrid.transform);
                 listOfRequirements.Add(requirementGameObject);
                 listOfRequirementsSO.Add(requirement);
-                requirementGameObject.GetComponent<Requirement>().SetUpProperties(requirement); 
+                requirementGameObject.GetComponent<Requirement>().SetUpProperties(requirement);
             }
         }
         else
