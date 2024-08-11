@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Inventory;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,6 +35,7 @@ public class MissionTypeChooser : MonoBehaviour
     private MissionStatSO currentMissionSelected;
     [Header("Start Expedition Bonus")]
     [SerializeField] private Button startExpeditionButton;
+    private bool canStartExpedition = true;
 
 
     private void OnEnable()
@@ -97,7 +99,6 @@ public class MissionTypeChooser : MonoBehaviour
         {
             rewardsMultiplier -= e.missionBonus.itemsRewardsMultiplier;
         }
-        
         //Change rewards text
         UpdateRewardsText(rewardsMultiplier);
     }
@@ -157,7 +158,8 @@ public class MissionTypeChooser : MonoBehaviour
             foreach (var requirement in listOfRequirementsSO)
             {
                 //Check in inventory & playerInventory
-                if (!TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded))
+                if (!TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
+                    !PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
                 {
                     startExpeditionButton.interactable = false;
                     break; 
@@ -169,7 +171,12 @@ public class MissionTypeChooser : MonoBehaviour
             }   
         }else
             startExpeditionButton.interactable = true;
-       
+    }
+
+    private bool GetIfWeHaveItem(Item item, int amount)
+    {
+        return TrainBaseInventory.Instance.GetIfItemIsInInventory(item, amount) ||
+               PlayerInventory.Instance.GetIfItemIsInPlayerInventory(item, amount);
     }
 
     private void SetUpRequirements()
@@ -178,7 +185,7 @@ public class MissionTypeChooser : MonoBehaviour
         listOfRequirementsSO.Clear();
         
         string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
-                                                         (currentMissionIndex + 1) + "_MIS"  + (currentMissionIndex + 1) + "_Requirements";
+                               ExpeditionManager.Instance.GetStationSelected().stationID + "_MIS"  + (currentMissionIndex + 1) + "_Requirements";
         
         RequirementSO[] missionRequirements =
             UnityEngine.Resources.LoadAll<RequirementSO>(resourcesPath);
@@ -190,7 +197,7 @@ public class MissionTypeChooser : MonoBehaviour
                 GameObject requirementGameObject = Instantiate(requirementPrefab, Vector2.zero, Quaternion.identity, requirementGrid.transform);
                 listOfRequirements.Add(requirementGameObject);
                 listOfRequirementsSO.Add(requirement);
-                requirementGameObject.GetComponent<Requirement>().SetUpProperties(requirement);
+                requirementGameObject.GetComponent<Requirement>().SetUpProperties(requirement, GetIfWeHaveItem(requirement.item, requirement.amountNeeded));
             }
         }
         else

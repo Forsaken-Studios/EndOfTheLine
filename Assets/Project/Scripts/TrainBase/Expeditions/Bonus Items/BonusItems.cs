@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Inventory;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,11 +31,14 @@ public class BonusItems : MonoBehaviour
 
     private void HandleBonusItem()
     {
-        blackPanel.SetActive(isActivated);
-        isActivated = !isActivated;
-
-        EventBonusItemInfo eventInfo = new EventBonusItemInfo(isActivated, missionBonusItem);
-        onButtonClicked?.Invoke(this, eventInfo);
+        if (TrainBaseInventory.Instance.GetIfItemIsInInventory(missionBonusItem.item, 1)
+            || PlayerInventory.Instance.GetIfItemIsInPlayerInventory(missionBonusItem.item, 1))
+        {
+            blackPanel.SetActive(isActivated);
+            isActivated = !isActivated;
+            EventBonusItemInfo eventInfo = new EventBonusItemInfo(isActivated, missionBonusItem);
+            onButtonClicked?.Invoke(this, eventInfo);
+        }
     }
 
     public MissionBonusItemsSO GetMissionBonusItem()

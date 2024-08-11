@@ -104,7 +104,6 @@ public class TrainBaseInventory : MonoBehaviour
     {
         int amountAux = -1;
         itemsInBase.TryGetValue(item, out amountAux);
-
         return amountAux >= amount;
     }
 
