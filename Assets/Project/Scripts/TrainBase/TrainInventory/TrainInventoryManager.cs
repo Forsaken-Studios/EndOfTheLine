@@ -63,11 +63,15 @@ public class TrainInventoryManager : IInventoryManager
     }
 
 
-    private Dictionary<Item, int> GetItemsFromID(Dictionary<int, int> itemsID)
+    public Dictionary<Item, int> GetItemsFromID(Dictionary<int, int> itemsID)
     {
         Dictionary<Item, int> items = new Dictionary<Item, int>();
         List<Item> itemsList = GetItemList();
-        foreach (var item in itemsID) { items.Add(GetItemFromID(item.Key, itemsList), item.Value); }
+            foreach (var item in itemsID)
+            {
+                Debug.Log(item.Key);
+                items.Add(GetItemFromID(item.Key, itemsList), item.Value);
+            }
         return items;
     }
 

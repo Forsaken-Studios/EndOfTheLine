@@ -359,6 +359,49 @@ public class TrainManager : MonoBehaviour
         {
             currentDayText.text = "DAY: " + currentDayLocal.ToString();
         }
+        
+        //Handle expedition behavior
+        int isExpeditionInProgress = PlayerPrefs.GetInt("ExpeditionInProgress");
+
+        if (isExpeditionInProgress == 1)
+        {
+            int endingDay = PlayerPrefs.GetInt("ExpeditionEndDay");
+
+            if (endingDay == currentDayLocal)
+            {
+                //Expedition ended
+                
+                PlayerPrefs.SetInt("ExpeditionInProgress", 0);
+                PlayerPrefs.SetInt("ExpeditionEndDay", 0);
+                
+                int result = PlayerPrefs.GetInt("ExpeditionResult");
+                if (result == 1)
+                {
+                    DataPlayerInventory rewardsData = SaveManager.Instance.TryLoadExpeditionRewardJson();
+                    Dictionary<Item, int> items = TrainInventoryManager.Instance.GetItemsFromID(rewardsData.GetInventory());
+                    foreach (var item in items)
+                    {
+                        Debug.Log(item);
+                        if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(item.Key, item.Value,
+                                out int remaining))
+                        {
+                            Debug.Log("ITEM REWARD ADDED");
+                        }
+                        else
+                        {
+                            Debug.Log("ITEM REWARD DIDNT FIT IN INVENTORY");
+                        }
+                    }
+                }
+                else
+                {
+                    //Send failure message
+                    Debug.Log("SEND FAILURE MESSAGE");
+                }
+            }
+        }
+
+
     }
 
 

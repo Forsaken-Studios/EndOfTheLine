@@ -25,6 +25,7 @@ public class MissionTypeChooser : MonoBehaviour
     [SerializeField] private GameObject rewardsPrefab;
     [SerializeField] private GameObject rewardsGrid;
     private List<GameObject> listOfRewards;
+    private List<ExpeditionRewardSO> listOfRewardsSO;
     [Header("Bonuses Items Needed")] 
     [SerializeField] private GameObject bonusesItemsPrefab;
     [SerializeField] private GameObject bonusesItemsGrid;
@@ -36,31 +37,90 @@ public class MissionTypeChooser : MonoBehaviour
     [Header("Start Expedition Bonus")]
     [SerializeField] private Button startExpeditionButton;
     private bool canStartExpedition = true;
+    private bool expeditionInProgress = false;
 
 
     private void OnEnable()
     {
+        //PlayerPrefs.SetInt("ExpeditionInProgress", 0);
+        InitializeList();
+        InitializeButtons();
+        SetUpProperties(0);
+        this.leftArrowButton.interactable = false;
+        UpdateChanceOfSuccess(missions[currentMissionIndex].basicChanceOfSuccess);
+        //Event
+        BonusItems.onButtonClicked += OnBonusItemClicked;
+        this.expeditionInProgress = PlayerPrefs.GetInt("ExpeditionInProgress") == 1;
+        
+        if (expeditionInProgress)
+        {
+            startExpeditionButton.interactable = false;
+            Debug.Log("EE");
+        }
+        else
+        {
+            startExpeditionButton.interactable = true; 
+        }
+    }
+
+    private void InitializeList()
+    {
         listOfRequirements = new List<GameObject>();
+        listOfRewardsSO = new List<ExpeditionRewardSO>();
         listOfRewards = new List<GameObject>();
         listOfBonusesItems = new List<GameObject>();
         listOfRequirementsSO = new List<RequirementSO>();
         missions = new List<MissionStatSO>();
-        startExpeditionButton.onClick.AddListener(() => StartExpedition());
         missions = ExpeditionManager.Instance.GetExpeditionClicked().GetMissions();
+    }
+
+    private void InitializeButtons()
+    {
+        startExpeditionButton.onClick.AddListener(() => StartExpedition());
         leftArrowButton.onClick.AddListener(() => SwapMissionToLeft());
         rightArrowButton.onClick.AddListener(() => SwapMissionToRight());
-        SetUpProperties(0);
-        this.leftArrowButton.interactable = false;
-        UpdateChanceOfSuccess(missions[currentMissionIndex].basicChanceOfSuccess);
-        
-        //Event
-        BonusItems.onButtonClicked += OnBonusItemClicked;
     }
 
 
     private void StartExpedition()
     {
-        
+        float randomValue = UnityEngine.Random.Range(0, 101);
+
+        if (randomValue < currentChanceOfSuccess)
+        {
+            Debug.Log("SUCCESS");
+            PlayerPrefs.SetInt("ExpeditionResult", 1);
+            PlayerPrefs.SetInt("ExpeditionInProgress", 1);
+            startExpeditionButton.interactable = false;
+            //Success expedition
+            SaveRewardsInJson();
+        }
+        else
+        {
+            //Failure expedition
+            PlayerPrefs.SetInt("ExpeditionResult", -1);
+            PlayerPrefs.SetInt("ExpeditionInProgress", 1);
+            startExpeditionButton.interactable = false;
+            Debug.Log("FAILURE");
+            // -1 => Failure
+        }
+
+        int endingDay = PlayerPrefs.GetInt("CurrentDay") + currentMissionSelected.daysToComplete;
+        PlayerPrefs.SetInt("ExpeditionEndDay", endingDay);
+    }
+
+    private void SaveRewardsInJson()
+    {
+        Dictionary<int, int> rewardsDictionary = new Dictionary<int, int>();
+            
+        foreach (var reward in listOfRewardsSO)
+        {
+            //We use this script as we use the same info
+            int rewardAmount = UnityEngine.Random.Range(reward.minAmount, reward.maxAmount + 1);
+            rewardsDictionary.Add(reward.item.itemID, rewardAmount);
+        }
+        DataPlayerInventory rewardsSave = new DataPlayerInventory(rewardsDictionary);
+        SaveManager.Instance.SaveExpeditionRewardJson(rewardsSave);
     }
     
     private void OnDisable()
@@ -81,7 +141,8 @@ public class MissionTypeChooser : MonoBehaviour
         //Set up requirements if needed
         SetUpRequirements();
         //Check if we meet the requirements
-        CheckIfWeMeetUpRequirements();
+        if(!expeditionInProgress)
+            CheckIfWeMeetUpRequirements();
         //Change rewards
         ChangeRewardsGrid();
         //Set Up bonuses items if needed
@@ -134,6 +195,7 @@ public class MissionTypeChooser : MonoBehaviour
     private void ChangeRewardsGrid()
     {
         ClearList(listOfRewards);   
+        listOfRewardsSO.Clear();
         string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
                                ExpeditionManager.Instance.GetStationSelected().stationID + "_MIS"  + (currentMissionIndex + 1) + "_Rewards";
         
@@ -146,6 +208,7 @@ public class MissionTypeChooser : MonoBehaviour
             {
                 GameObject rewardGameObject = Instantiate(rewardsPrefab, Vector2.zero, Quaternion.identity, rewardsGrid.transform);
                 listOfRewards.Add(rewardGameObject);
+                listOfRewardsSO.Add(reward);
                 rewardGameObject.GetComponent<RewardIcon>().SetUpProperties(reward); 
             }
         }
@@ -158,15 +221,15 @@ public class MissionTypeChooser : MonoBehaviour
             foreach (var requirement in listOfRequirementsSO)
             {
                 //Check in inventory & playerInventory
-                if (!TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
-                    !PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
-                {
-                    startExpeditionButton.interactable = false;
-                    break; 
-                }
-                else
+                if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
+                    PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
                 {
                     startExpeditionButton.interactable = true;
+                }
+                else
+                { 
+                    startExpeditionButton.interactable = false;
+                    break; 
                 }
             }   
         }else
