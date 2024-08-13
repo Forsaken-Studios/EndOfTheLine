@@ -47,6 +47,8 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private GameObject lockIcon;
     private GameObject currentCanvas;
 
+    [Header("Expedition Failed prefab")] 
+    [SerializeField] private GameObject expeditionFailed;
     [Header("Resources In Train")] 
     private int RESOURCES_GOLD; 
     private int RESOURCES_FOOD; 
@@ -143,11 +145,22 @@ public class TrainManager : MonoBehaviour
         LoadWagonsUnlockedList();
     }
 
+    private bool ValidStatusToMove()
+    {
+        return TrainStatus != TrainStatus.showingExpeditionResult && GameManager.Instance.GameState != GameState.OnInventory; 
+    }
+
+    public bool ValidStatusToOpenInventory()
+    {
+        return TrainStatus != TrainStatus.showingExpeditionResult;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        HandleButtonPressed();
-        if(!canvasActivated && GameManager.Instance.GameState != GameState.OnInventory)
+        if(ValidStatusToOpenInventory())
+            HandleButtonPressed();
+        if(!canvasActivated && ValidStatusToMove())
             HandleMovement();
 
         //TODO: JUST FOR TESTING 
@@ -310,6 +323,7 @@ public class TrainManager : MonoBehaviour
             }
         } 
     }
+    
 
 
     public MissionSelector GetMissionSelector()
@@ -361,6 +375,11 @@ public class TrainManager : MonoBehaviour
         }
         
         //Handle expedition behavior
+        HandleExpeditionResult(currentDayLocal);
+    }
+
+    private void HandleExpeditionResult(int currentDayLocal)
+    {
         int isExpeditionInProgress = PlayerPrefs.GetInt("ExpeditionInProgress");
 
         if (isExpeditionInProgress == 1)
@@ -397,11 +416,11 @@ public class TrainManager : MonoBehaviour
                 {
                     //Send failure message
                     Debug.Log("SEND FAILURE MESSAGE");
+                    GameObject expeditionFailed = Instantiate(this.expeditionFailed, Vector2.zero, Quaternion.identity);
+                    TrainStatus = TrainStatus.showingExpeditionResult;
                 }
             }
         }
-
-
     }
 
 

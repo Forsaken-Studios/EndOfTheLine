@@ -30,7 +30,17 @@ public class TrainInventoryManager : IInventoryManager
         LoadBaseInventory();
     }
     
-    
+    private void Update()
+    {
+        if (TrainManager.Instance.ValidStatusToOpenInventory())
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                ReverseInventoryStatus();
+            }
+        }
+    }
+
 
     private void LoadPlayerInventory()
     {
@@ -99,13 +109,7 @@ public class TrainInventoryManager : IInventoryManager
         return null;
     }
     
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            ReverseInventoryStatus();
-        }
-    }
+
 
 
     public void LoadItemsInPlayerInventory(Dictionary<Item, int> items)
