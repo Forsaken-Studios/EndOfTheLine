@@ -150,6 +150,13 @@ public class SaveManager : MonoBehaviour
     {
         SaveInventory();
     }
+
+    public void EmptyDictionaryIfDisconnectInRaid()
+    {
+        DataPlayerInventory idDictionary = new DataPlayerInventory();
+        
+        SaveManager.Instance.SavePlayerInventoryJson(idDictionary);
+    }
     
     private void SaveInventory()
     {

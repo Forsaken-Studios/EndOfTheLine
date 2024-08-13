@@ -17,7 +17,7 @@ namespace Inventory
 
         [SerializeField] private GameObject floatingTextPrefab;
 
- 
+        private int numberOfTools = -1;
 
         private Dictionary<Item, int> inventoryItemDictionary;
         private float currentWeight;
@@ -89,6 +89,9 @@ namespace Inventory
                 return false;
             }
         }
+        
+    
+        
         public void StashAllItemsInBase()
         {
             Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();

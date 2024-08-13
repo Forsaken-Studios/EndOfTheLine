@@ -30,5 +30,5 @@ public class MissionRewards
 [Serializable]
 public class MissionBonusItems
 {
-    public MissionBonusItems bonusItems;
+    public MissionBonusItemsSO bonusItems;
 }

@@ -88,7 +88,14 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        SaveManager.Instance.SaveGame();
+        if (SceneManager.GetActiveScene().name == "TrainBase" || SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            SaveManager.Instance.SaveGame();
+        }
+        else
+        { 
+            SaveManager.Instance.EmptyDictionaryIfDisconnectInRaid();
+        }
     }
     
     public int GetMaxAmountPerSlot()

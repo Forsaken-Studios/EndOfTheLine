@@ -30,6 +30,7 @@ public class TryingToRaidWithResources : MonoBehaviour
 
     private void CancelRaid()
     {
+        TrainManager.Instance.TrainStatus = TrainStatus.onMissionSelector;
         GameObject parent = this.gameObject.transform.parent.gameObject;
         TrainManager.Instance.GetMissionSelector().MakePlayButtonInteractable();
         Destroy(this.gameObject);

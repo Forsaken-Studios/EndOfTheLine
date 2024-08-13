@@ -8,7 +8,8 @@ using UnityEngine;
 public class TrainInventoryManager : IInventoryManager
 {
     public static TrainInventoryManager Instance;
-    
+
+    private int numberOfTools = -1;
     private void Awake()
     {
         if (Instance != null)
@@ -41,6 +42,30 @@ public class TrainInventoryManager : IInventoryManager
         }
     }
 
+    public int GetNumberOfToolsInInventory()
+    {
+        if (numberOfTools == -1)
+        {
+            numberOfTools = 0;
+            foreach (var itemSlot in itemSlotList)
+            {
+                if (itemSlot.GetItemInSlot() != null)
+                {
+                    if (itemSlot.GetItemInSlot().itemID == 8)
+                    {
+                        numberOfTools += itemSlot.amount;
+                    }
+                }
+               
+            }
+            return numberOfTools;
+        }
+        else
+        {
+            return numberOfTools;
+        }
+    }
+    
 
     private void LoadPlayerInventory()
     {

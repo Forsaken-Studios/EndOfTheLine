@@ -5,6 +5,6 @@ public enum TrainStatus
     onMarketRoom, 
     onExpeditionRoom, 
     usingWagon,
-    showingExpeditionResult,
+    showingSpecialScreen,
     //TODO: To complete
 }

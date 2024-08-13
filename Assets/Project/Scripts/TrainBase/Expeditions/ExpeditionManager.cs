@@ -41,7 +41,6 @@ public class ExpeditionManager : MonoBehaviour
      {
           this.expeditionClicked = expeditionLocation;
           this.stationToShow = expeditionSO;
-          Debug.Log("EXPEDITION IN: " + expeditionSO.stationName);
           TrainManager.Instance.TrainStatus = TrainStatus.usingWagon;
           detailsButton.gameObject.SetActive(true);
      }

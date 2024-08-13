@@ -50,6 +50,9 @@ public class MissionTypeChooser : MonoBehaviour
         UpdateChanceOfSuccess(missions[currentMissionIndex].basicChanceOfSuccess);
         //Event
         BonusItems.onButtonClicked += OnBonusItemClicked;
+        ItemsToHelpExpedition.onToolsIncreaseChanged += OnToolsIncreaseChanged;
+        ItemsToHelpExpedition.onToolsDecreaseChanged += OnToolsDecreaseChanged;
+        
         this.expeditionInProgress = PlayerPrefs.GetInt("ExpeditionInProgress") == 1;
         
         if (expeditionInProgress)
@@ -62,6 +65,17 @@ public class MissionTypeChooser : MonoBehaviour
             startExpeditionButton.interactable = true; 
         }
     }
+
+    private void OnToolsDecreaseChanged(object sender, int e)
+    {
+       RemoveChanceOfSuccess(e);
+    }
+
+    private void OnToolsIncreaseChanged(object sender, int e)
+    {
+        AddChanceOfSuccess(e);
+    }
+
 
     private void InitializeList()
     {
@@ -129,8 +143,10 @@ public class MissionTypeChooser : MonoBehaviour
         startExpeditionButton.onClick.RemoveAllListeners();
         rightArrowButton.onClick.RemoveAllListeners();
         BonusItems.onButtonClicked -= OnBonusItemClicked;
+        ItemsToHelpExpedition.onToolsIncreaseChanged -= OnToolsIncreaseChanged;
+        ItemsToHelpExpedition.onToolsDecreaseChanged -= OnToolsDecreaseChanged;
     }
-
+    
     private void SetUpProperties(int index)
     {
         UpdateChanceOfSuccess(missions[index].basicChanceOfSuccess);
@@ -175,19 +191,22 @@ public class MissionTypeChooser : MonoBehaviour
     private void SetUpBonusesItems()
     {
         ClearList(listOfBonusesItems);   
-        string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
+       /* string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
                                ExpeditionManager.Instance.GetStationSelected().stationID + "_MIS"  + (currentMissionIndex + 1) + "_BonusItems";
-        
         MissionBonusItemsSO[] missionBonusItems =
-            UnityEngine.Resources.LoadAll<MissionBonusItemsSO>(resourcesPath);
-
-        if (missionBonusItems.Length > 0)
+            UnityEngine.Resources.LoadAll<MissionBonusItemsSO>(resourcesPath);*/
+       
+       
+       List<MissionBonusItems> missionBonusItems = currentMissionSelected.bonusItems;
+       
+       
+        if (missionBonusItems.Count > 0)
         {
             foreach (var bonusItem in missionBonusItems)
             {
                 GameObject bonusItemsGameObject = Instantiate(bonusesItemsPrefab, Vector2.zero, Quaternion.identity, bonusesItemsGrid.transform);
                 listOfBonusesItems.Add(bonusItemsGameObject);
-                bonusItemsGameObject.GetComponent<BonusItems>().SetUpProperties(bonusItem); 
+                bonusItemsGameObject.GetComponent<BonusItems>().SetUpProperties(bonusItem.bonusItems); 
             }
         }
     }
@@ -196,20 +215,21 @@ public class MissionTypeChooser : MonoBehaviour
     {
         ClearList(listOfRewards);   
         listOfRewardsSO.Clear();
-        string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
+        /*string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
                                ExpeditionManager.Instance.GetStationSelected().stationID + "_MIS"  + (currentMissionIndex + 1) + "_Rewards";
-        
         ExpeditionRewardSO[] missionRewards =
-            UnityEngine.Resources.LoadAll<ExpeditionRewardSO>(resourcesPath);
+            UnityEngine.Resources.LoadAll<ExpeditionRewardSO>(resourcesPath);*/
+        
+        List<MissionRewards> missionRewards = currentMissionSelected.rewards;
 
-        if (missionRewards.Length > 0)
+        if (missionRewards.Count > 0)
         {
             foreach (var reward in missionRewards)
             {
                 GameObject rewardGameObject = Instantiate(rewardsPrefab, Vector2.zero, Quaternion.identity, rewardsGrid.transform);
                 listOfRewards.Add(rewardGameObject);
-                listOfRewardsSO.Add(reward);
-                rewardGameObject.GetComponent<RewardIcon>().SetUpProperties(reward); 
+                listOfRewardsSO.Add(reward.reward);
+                rewardGameObject.GetComponent<RewardIcon>().SetUpProperties(reward.reward); 
             }
         }
     }
@@ -247,20 +267,24 @@ public class MissionTypeChooser : MonoBehaviour
         ClearList(listOfRequirements);
         listOfRequirementsSO.Clear();
         
+        /*
         string resourcesPath = "Expedition/MissionEXP" + ExpeditionManager.Instance.GetStationSelected().stationID + "/EXP" + 
                                ExpeditionManager.Instance.GetStationSelected().stationID + "_MIS"  + (currentMissionIndex + 1) + "_Requirements";
-        
         RequirementSO[] missionRequirements =
-            UnityEngine.Resources.LoadAll<RequirementSO>(resourcesPath);
+            UnityEngine.Resources.LoadAll<RequirementSO>(resourcesPath);*/
+        
+        List<Requirements> missionRequirements = currentMissionSelected.requirements;
+ 
 
-        if (missionRequirements.Length > 0)
+        if (missionRequirements.Count > 0)
         {
             foreach (var requirement in missionRequirements)
             {
                 GameObject requirementGameObject = Instantiate(requirementPrefab, Vector2.zero, Quaternion.identity, requirementGrid.transform);
                 listOfRequirements.Add(requirementGameObject);
-                listOfRequirementsSO.Add(requirement);
-                requirementGameObject.GetComponent<Requirement>().SetUpProperties(requirement, GetIfWeHaveItem(requirement.item, requirement.amountNeeded));
+                listOfRequirementsSO.Add(requirement.requirement);
+                requirementGameObject.GetComponent<Requirement>().SetUpProperties(requirement.requirement, 
+                    GetIfWeHaveItem(requirement.requirement.item, requirement.requirement.amountNeeded));
             }
         }
         else
@@ -290,7 +314,6 @@ public class MissionTypeChooser : MonoBehaviour
     private void SwapMissionToRight()
     {
         int newIndex = currentMissionIndex + 1;
-        Debug.Log(newIndex);
         currentMissionIndex = Mathf.Clamp(newIndex, 0, this.missions.Count - 1);
         SetUpProperties(currentMissionIndex);
         BlockButtonIfLastMission(currentMissionIndex);
@@ -300,6 +323,18 @@ public class MissionTypeChooser : MonoBehaviour
     {
         currentChanceOfSuccess = value;
         chanceOfSuccessText.text = value.ToString() + " %";
+    }
+    
+    public void AddChanceOfSuccess(float value)
+    {
+        currentChanceOfSuccess += value;
+        chanceOfSuccessText.text = currentChanceOfSuccess.ToString() + " %";
+    }
+    public void RemoveChanceOfSuccess(float value )
+    {
+        currentChanceOfSuccess -= value;
+        Debug.Log(currentChanceOfSuccess);
+        chanceOfSuccessText.text = currentChanceOfSuccess.ToString() + " %";
     }
     private void BlockButtonIfFirstMission(int index)
     {

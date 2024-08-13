@@ -147,12 +147,12 @@ public class TrainManager : MonoBehaviour
 
     private bool ValidStatusToMove()
     {
-        return TrainStatus != TrainStatus.showingExpeditionResult && GameManager.Instance.GameState != GameState.OnInventory; 
+        return TrainStatus != TrainStatus.showingSpecialScreen && GameManager.Instance.GameState != GameState.OnInventory; 
     }
 
     public bool ValidStatusToOpenInventory()
     {
-        return TrainStatus != TrainStatus.showingExpeditionResult;
+        return TrainStatus != TrainStatus.showingSpecialScreen;
     }
 
     // Update is called once per frame
@@ -417,7 +417,7 @@ public class TrainManager : MonoBehaviour
                     //Send failure message
                     Debug.Log("SEND FAILURE MESSAGE");
                     GameObject expeditionFailed = Instantiate(this.expeditionFailed, Vector2.zero, Quaternion.identity);
-                    TrainStatus = TrainStatus.showingExpeditionResult;
+                    TrainStatus = TrainStatus.showingSpecialScreen;
                 }
             }
         }

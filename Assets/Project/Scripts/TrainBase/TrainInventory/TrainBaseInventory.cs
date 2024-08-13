@@ -10,8 +10,8 @@ public class TrainBaseInventory : MonoBehaviour
 {
     
     public static TrainBaseInventory Instance;
-    
-    
+
+    private int numberOfTools = -1;
     private Dictionary<Item, int> itemsInBase;
     [SerializeField] private List<ItemSlot> itemsSlotsList;
     [SerializeField] private GameObject splittingView;
@@ -30,9 +30,34 @@ public class TrainBaseInventory : MonoBehaviour
     private void Start()
     {
         itemsInBase = new Dictionary<Item, int>();
-        
+
     }
 
+    
+    public int GetNumberOfToolsInInventory()
+    {
+        if (numberOfTools == -1)
+        {
+            numberOfTools = 0;
+            foreach (var itemSlot in itemsSlotsList)
+            {
+                if (itemSlot.GetItemInSlot() != null)
+                {
+                    if (itemSlot.GetItemInSlot().itemID == 8)
+                    {
+                        numberOfTools += itemSlot.amount;
+                    }
+                }
+               
+            }
+            return numberOfTools;
+        }
+        else
+        {
+            return numberOfTools;
+        }
+    }
+    
     public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
     {
         this.splittingView.SetActive(true);

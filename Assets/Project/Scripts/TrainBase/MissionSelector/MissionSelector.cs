@@ -26,6 +26,7 @@ public class MissionSelector : MonoBehaviour
         {
             //Show message
             Instantiate(tryingToRaidWithResourcesPRefab, new Vector2(0, 0), Quaternion.identity);
+            TrainManager.Instance.TrainStatus = TrainStatus.showingSpecialScreen;
             playButton.interactable = false;
         }
         else
