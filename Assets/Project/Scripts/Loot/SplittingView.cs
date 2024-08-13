@@ -22,14 +22,14 @@ public class SplittingView : MonoBehaviour
     private ItemSlot previousItemSlot;
     private void Start()
     {
-        
-        splitButton = GetComponentInChildren<Button>();
-        slider = GetComponentInChildren<Slider>();
-        inputField = GetComponentInChildren<TMP_InputField>();
+        splitButton = GetComponentInChildren<Button>(true);
+        slider = GetComponentInChildren<Slider>(true);
+        inputField = GetComponentInChildren<TMP_InputField>(true);
         inputField.onValueChanged.AddListener(delegate { InputFieldChanged(); });
         splitButton.onClick.AddListener(() => Split());
         this.gameObject.SetActive(false);
     }
+    
 
     private void Update()
     {
@@ -59,9 +59,10 @@ public class SplittingView : MonoBehaviour
         this.finalItemSlot = itemSlot;
         this.previousItemSlot = previousItemSlot; 
         this.maxText.text = maxAmount.ToString();
-        inputField.text = slider.value.ToString();
+        Debug.Log(slider);
         slider.maxValue = maxAmount;
         slider.value = maxAmount / 2;
+        inputField.text = slider.value.ToString();
         inputField.text = slider.value.ToString();
         currentAmount.text = maxAmount.ToString();
     }

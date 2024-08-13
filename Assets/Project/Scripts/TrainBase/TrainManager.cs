@@ -158,37 +158,10 @@ public class TrainManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(ValidStatusToOpenInventory())
+        if(ValidStatusToOpenInventory() && GameManager.Instance.GameState != GameState.OnInventory)
             HandleButtonPressed();
         if(!canvasActivated && ValidStatusToMove())
             HandleMovement();
-
-        //TODO: JUST FOR TESTING 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            resourceMaterial--;
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            resourceMaterial++;
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            resourceFood--;
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            resourceFood++;
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            resourceGold--;
-        }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            resourceGold++;
-        }
-
     }
 
     private void LoadWagonsUnlockedList()
