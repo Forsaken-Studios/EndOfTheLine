@@ -44,6 +44,7 @@ public class MissionTypeChooser : MonoBehaviour
     private void OnEnable()
     {
         //PlayerPrefs.SetInt("ExpeditionInProgress", 0);
+        ExpeditionManager.Instance.SetMissionChooser(this);
         InitializeList();
         InitializeButtons();
         SetUpProperties(0);
@@ -53,7 +54,6 @@ public class MissionTypeChooser : MonoBehaviour
         BonusItems.onButtonClicked += OnBonusItemClicked;
         ItemsToHelpExpedition.onToolsIncreaseChanged += OnToolsIncreaseChanged;
         ItemsToHelpExpedition.onToolsDecreaseChanged += OnToolsDecreaseChanged;
-        TakeRewardsButton.onRewardsTaken += OnRewardsTaken;
         
         this.expeditionInProgress = PlayerPrefs.GetInt("ExpeditionInProgress") == 1;
         
@@ -68,12 +68,12 @@ public class MissionTypeChooser : MonoBehaviour
         }
     }
 
-    private void OnRewardsTaken(object sender, EventArgs e)
+    public void ResetStartExpeditionButton()
     {
         if(this.startExpeditionButton != null)
             this.startExpeditionButton.interactable = true;
     }
-
+    
     private void OnToolsDecreaseChanged(object sender, int e)
     {
        RemoveChanceOfSuccess(e);

@@ -665,8 +665,10 @@ namespace Inventory
              if (this.isLootCrate)
              {
                  //We throw item out of loot box
-                 if (SceneManager.GetActiveScene().name != GameManager.Instance.GetNameTrainScene())
+                 if (SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
+                 {
                      TrainBaseInventory.Instance.DeleteItemFromList(GetItemInSlot(), amount);
+                 }
                  else
                      LootUIManager.Instance.GetCurrentLootableObject().DeleteItemFromList(GetItemInSlot(), amount);
              }
@@ -676,13 +678,16 @@ namespace Inventory
                  PlayerInventory.Instance.RemovingItem(GetItemInSlot(), amount);
              }
              //We create new box
-             GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
-                 PlayerInventory.Instance.transform.position, Quaternion.identity);
-             LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
-             
-             lootObject.SetIfItIsTemporalBox(true);
-             lootObject.ClearLooteableObject();
-             lootObject.AddItemToList(GetItemInSlot(), amount);
+             if (SceneManager.GetActiveScene().name != GameManager.Instance.GetNameTrainScene())
+             {
+                 GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
+                     PlayerInventory.Instance.transform.position, Quaternion.identity);
+                 LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
+                 lootObject.SetIfItIsTemporalBox(true);
+                 lootObject.ClearLooteableObject();
+                 lootObject.AddItemToList(GetItemInSlot(), amount);
+             }
+
              ClearItemSlot();
              
         }

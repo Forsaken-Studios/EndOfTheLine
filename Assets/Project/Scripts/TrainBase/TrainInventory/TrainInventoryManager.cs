@@ -104,7 +104,6 @@ public class TrainInventoryManager : IInventoryManager
         List<Item> itemsList = GetItemList();
             foreach (var item in itemsID)
             {
-                Debug.Log(item.Key);
                 items.Add(GetItemFromID(item.Key, itemsList), item.Value);
             }
         return items;

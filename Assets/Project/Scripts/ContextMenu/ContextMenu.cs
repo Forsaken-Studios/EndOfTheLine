@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Inventory;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace ContextMenu
@@ -66,7 +67,15 @@ namespace ContextMenu
         private void DiscardItem()
         {
             itemSlot.ThrowItemToGround();
-            InventoryManager.Instance.TryDestroyContextMenu();
+            if (SceneManager.GetActiveScene().name != GameManager.Instance.GetNameTrainScene())
+            {
+                InventoryManager.Instance.TryDestroyContextMenu();
+            }
+            else
+            {
+                TrainInventoryManager.Instance.TryDestroyContextMenu();
+            }
+            
         }
 
         public void SetItemSlotProperties(ItemSlot itemSlot)

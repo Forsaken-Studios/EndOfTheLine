@@ -128,6 +128,7 @@ public class TrainBaseInventory : MonoBehaviour
     {
         if (itemsSlotsList[itemSlotIndex].amount == amount)
         {
+            Debug.Log("HEMOS QUITADO EL ITEM ENTERO: INDEX: " + itemSlotIndex);
             itemsSlotsList[itemSlotIndex].ClearItemSlot();
         }
         else
@@ -149,8 +150,7 @@ public class TrainBaseInventory : MonoBehaviour
        MAX_AMOUNT_PER_SLOT = TrainInventoryManager.Instance.GetMaxItemsForSlots();
     else
         MAX_AMOUNT_PER_SLOT = InventoryManager.Instance.GetMaxItemsForSlots();
-
-
+    
     foreach (var item in items)
     {
 
@@ -165,7 +165,7 @@ public class TrainBaseInventory : MonoBehaviour
                     itemSlot.AddMoreItemsToSameSlot(item.Value);
                     if (slotsUsed.ContainsKey(itemsSlotsList.IndexOf(itemSlot)))
                     {
-                        slotsUsed[itemsSlotsList.IndexOf(itemSlot)] += item.Value;
+                        slotsUsed[itemsSlotsList.IndexOf(itemSlot)] = item.Value;
                     }
                     else
                     {
@@ -184,7 +184,7 @@ public class TrainBaseInventory : MonoBehaviour
                         
                         if (slotsUsed.ContainsKey(itemsSlotsList.IndexOf(itemSlot)))
                         {
-                            slotsUsed[itemsSlotsList.IndexOf(itemSlot)] += amountToFill;
+                            slotsUsed[itemsSlotsList.IndexOf(itemSlot)] = amountToFill;
                         }
                         else
                         {

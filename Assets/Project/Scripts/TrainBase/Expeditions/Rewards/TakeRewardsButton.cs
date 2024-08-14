@@ -9,8 +9,9 @@ public class TakeRewardsButton : MonoBehaviour
     private Button takeRewardsButton;
     [Header("Expedition Failed prefab")] 
     [SerializeField] private GameObject expeditionFailed;
+    [SerializeField] private GameObject expeditionSuccess;
 
-    public static event EventHandler onRewardsTaken;
+
     
     private void OnEnable()
     {
@@ -49,11 +50,11 @@ public class TakeRewardsButton : MonoBehaviour
                     Dictionary<int, int> slotUsed = new Dictionary<int, int>();
                     if (TrainBaseInventory.Instance.TryCheckIfThereIsSpaceForAllItems(items, out slotUsed))
                     {
-                        Debug.Log("ITEM REWARD ADDED");
+                       
+                        GameObject expeditionSuccess= Instantiate(this.expeditionSuccess, Vector2.zero, Quaternion.identity);
+                        expeditionSuccess.GetComponentInChildren<ExpeditionSuccessPanel>().SetUpItemList(items);
+                        TrainManager.Instance.TrainStatus = TrainStatus.showingSpecialScreen;
                         takeRewardsButton.gameObject.SetActive(false);
-                        PlayerPrefs.SetInt("ExpeditionInProgress", 0);
-                        PlayerPrefs.SetInt("ExpeditionEndDay", 0);
-                        onRewardsTaken?.Invoke(this, EventArgs.Empty);
                     }
                     else
                     {
@@ -68,6 +69,8 @@ public class TakeRewardsButton : MonoBehaviour
                 {
                     GameObject expeditionFailed = Instantiate(this.expeditionFailed, Vector2.zero, Quaternion.identity);
                     TrainManager.Instance.TrainStatus = TrainStatus.showingSpecialScreen;
+                    takeRewardsButton.gameObject.SetActive(false);
+                    
                 }
             }
         }
