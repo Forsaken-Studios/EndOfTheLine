@@ -23,18 +23,31 @@ public class ItemsToHelpExpedition : MonoBehaviour
         maxNumberOfTools = TrainBaseInventory.Instance.GetNumberOfToolsInInventory(); //Base inventory
         maxNumberOfTools += TrainInventoryManager.Instance.GetNumberOfToolsInInventory(); //Player inventory 
         
- 
-        
         leftArrowButton.onClick.AddListener(() => SwapMissionToLeft());
         rightArrowButton.onClick.AddListener(() => SwapMissionToRight());
+        
+        MissionTypeChooser.onMissionChanged += onMissionChanged;
 
-        if (maxNumberOfTools == 0)
+        if (maxNumberOfTools == 0 || ExpeditionManager.Instance.GetMission().basicChanceOfSuccess == 100)
         {
             leftArrowButton.interactable = false;
             rightArrowButton.interactable = false;
         }
     }
 
+    private void onMissionChanged(object sender, EventArgs e)
+    {
+        if (ExpeditionManager.Instance.GetMission().basicChanceOfSuccess == 100)
+        {
+            leftArrowButton.interactable = false;
+            rightArrowButton.interactable = false; 
+        }
+        else
+        {
+            leftArrowButton.interactable = true;
+            rightArrowButton.interactable = true; 
+        }
+    }
     private void OnDisable()
     {
         leftArrowButton.onClick.RemoveAllListeners();

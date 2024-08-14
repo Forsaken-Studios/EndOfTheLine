@@ -52,10 +52,8 @@ public class TrainBaseInventory : MonoBehaviour
             }
             return numberOfTools;
         }
-        else
-        {
-            return numberOfTools;
-        }
+        
+        return numberOfTools;
     }
     
     public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
@@ -125,6 +123,108 @@ public class TrainBaseInventory : MonoBehaviour
         }
     }
 
+
+    public void RemoveItemFromItemSlot(int itemSlotIndex, int amount)
+    {
+        if (itemsSlotsList[itemSlotIndex].amount == amount)
+        {
+            itemsSlotsList[itemSlotIndex].ClearItemSlot();
+        }
+        else
+        {
+            itemsSlotsList[itemSlotIndex].amount -= amount;
+        }
+    }
+    
+    
+    
+    public bool TryCheckIfThereIsSpaceForAllItems(Dictionary<Item, int> items, out Dictionary<int, int> slotsUsed)
+    {
+        //itemSlot used, amount
+        slotsUsed = new Dictionary<int, int>();
+        
+    int availableIndex = 0;
+    int MAX_AMOUNT_PER_SLOT = 0;
+    if (SceneManager.GetActiveScene().name == "TrainBase")
+       MAX_AMOUNT_PER_SLOT = TrainInventoryManager.Instance.GetMaxItemsForSlots();
+    else
+        MAX_AMOUNT_PER_SLOT = InventoryManager.Instance.GetMaxItemsForSlots();
+
+
+    foreach (var item in items)
+    {
+
+        foreach (var itemSlot in itemsSlotsList)
+        {
+            if (itemSlot.itemID == item.Key.itemID)
+            {
+                int totalAmount = itemSlot.amount + item.Value;
+                if (totalAmount <= MAX_AMOUNT_PER_SLOT)
+                {
+                    //ADD ELEMENT TO THIS SLOT
+                    itemSlot.AddMoreItemsToSameSlot(item.Value);
+                    if (slotsUsed.ContainsKey(itemsSlotsList.IndexOf(itemSlot)))
+                    {
+                        slotsUsed[itemsSlotsList.IndexOf(itemSlot)] += item.Value;
+                    }
+                    else
+                    {
+                        slotsUsed.Add(itemsSlotsList.IndexOf(itemSlot), item.Value);
+                    }
+
+                }
+                else
+                {
+                    //We refill one slot and create another one
+                    if (itemSlot.amount != MAX_AMOUNT_PER_SLOT) //We dont check a full slot
+                    {
+                        int amountToFill = MAX_AMOUNT_PER_SLOT - itemSlot.amount;
+                        int amountRemaining = item.Value - amountToFill;
+                        itemSlot.AddMoreItemsToSameSlot(amountToFill);
+                        
+                        if (slotsUsed.ContainsKey(itemsSlotsList.IndexOf(itemSlot)))
+                        {
+                            slotsUsed[itemsSlotsList.IndexOf(itemSlot)] += amountToFill;
+                        }
+                        else
+                        {
+                            slotsUsed.Add(itemsSlotsList.IndexOf(itemSlot), amountToFill);
+                        }
+                        if (amountRemaining > 0)
+                        {
+                            availableIndex = GetFirstIndexSlotAvailable();
+                            if (availableIndex != -1)
+                            {
+                                itemsSlotsList[availableIndex]
+                                    .SetItemSlotProperties(item.Key, amountRemaining); 
+                                slotsUsed.Add(availableIndex, amountRemaining);
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //WE CREATE A NEW SLOT, IF AVAILABLE (NEED TO CHECK)
+        availableIndex = GetFirstIndexSlotAvailable();
+        if (availableIndex != -1)
+        {
+            itemsSlotsList[availableIndex].SetItemSlotProperties(item.Key, item.Value);
+            slotsUsed.Add(availableIndex, item.Value);
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return true;
+    }
+    
+
+    
     public bool GetIfItemIsInInventory(Item item, int amount)
     {
         int amountAux = -1;
@@ -140,7 +240,6 @@ public class TrainBaseInventory : MonoBehaviour
     
     public void AddItemToList(Item item, int amount)
     {
-        
         if (itemsInBase.ContainsKey(item))
         {
             itemsInBase[item] += amount;

@@ -11,6 +11,7 @@ public class ExpeditionManager : MonoBehaviour
      [SerializeField] private Button detailsButton;
      private ExpeditionSO stationToShow;
      private ExpeditionLocation expeditionClicked;
+     private MissionStatSO currentMissionSelected;
      [SerializeField] private GameObject detailsPrefab;
      private void Awake()
      {
@@ -60,5 +61,15 @@ public class ExpeditionManager : MonoBehaviour
      public ExpeditionSO GetStationSelected()
      {
           return stationToShow;
+     }
+
+     public void SetMissionSelected(MissionStatSO mission)
+     {
+          this.currentMissionSelected = mission;
+     }
+
+     public MissionStatSO GetMission()
+     {
+          return currentMissionSelected;
      }
 }

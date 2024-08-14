@@ -47,8 +47,7 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private GameObject lockIcon;
     private GameObject currentCanvas;
 
-    [Header("Expedition Failed prefab")] 
-    [SerializeField] private GameObject expeditionFailed;
+
     [Header("Resources In Train")] 
     private int RESOURCES_GOLD; 
     private int RESOURCES_FOOD; 
@@ -348,53 +347,10 @@ public class TrainManager : MonoBehaviour
         }
         
         //Handle expedition behavior
-        HandleExpeditionResult(currentDayLocal);
+        //HandleExpeditionResult(currentDayLocal); -> Now in takeRewardsButton
     }
 
-    private void HandleExpeditionResult(int currentDayLocal)
-    {
-        int isExpeditionInProgress = PlayerPrefs.GetInt("ExpeditionInProgress");
-
-        if (isExpeditionInProgress == 1)
-        {
-            int endingDay = PlayerPrefs.GetInt("ExpeditionEndDay");
-
-            if (endingDay == currentDayLocal)
-            {
-                //Expedition ended
-                
-                PlayerPrefs.SetInt("ExpeditionInProgress", 0);
-                PlayerPrefs.SetInt("ExpeditionEndDay", 0);
-                
-                int result = PlayerPrefs.GetInt("ExpeditionResult");
-                if (result == 1)
-                {
-                    DataPlayerInventory rewardsData = SaveManager.Instance.TryLoadExpeditionRewardJson();
-                    Dictionary<Item, int> items = TrainInventoryManager.Instance.GetItemsFromID(rewardsData.GetInventory());
-                    foreach (var item in items)
-                    {
-                        Debug.Log(item);
-                        if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(item.Key, item.Value,
-                                out int remaining))
-                        {
-                            Debug.Log("ITEM REWARD ADDED");
-                        }
-                        else
-                        {
-                            Debug.Log("ITEM REWARD DIDNT FIT IN INVENTORY");
-                        }
-                    }
-                }
-                else
-                {
-                    //Send failure message
-                    Debug.Log("SEND FAILURE MESSAGE");
-                    GameObject expeditionFailed = Instantiate(this.expeditionFailed, Vector2.zero, Quaternion.identity);
-                    TrainStatus = TrainStatus.showingSpecialScreen;
-                }
-            }
-        }
-    }
+ 
 
 
     private void UpdateStore()

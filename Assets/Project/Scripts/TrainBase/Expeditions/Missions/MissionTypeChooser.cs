@@ -39,6 +39,7 @@ public class MissionTypeChooser : MonoBehaviour
     private bool canStartExpedition = true;
     private bool expeditionInProgress = false;
 
+    public static event EventHandler onMissionChanged;
 
     private void OnEnable()
     {
@@ -52,6 +53,7 @@ public class MissionTypeChooser : MonoBehaviour
         BonusItems.onButtonClicked += OnBonusItemClicked;
         ItemsToHelpExpedition.onToolsIncreaseChanged += OnToolsIncreaseChanged;
         ItemsToHelpExpedition.onToolsDecreaseChanged += OnToolsDecreaseChanged;
+        TakeRewardsButton.onRewardsTaken += OnRewardsTaken;
         
         this.expeditionInProgress = PlayerPrefs.GetInt("ExpeditionInProgress") == 1;
         
@@ -64,6 +66,12 @@ public class MissionTypeChooser : MonoBehaviour
         {
             startExpeditionButton.interactable = true; 
         }
+    }
+
+    private void OnRewardsTaken(object sender, EventArgs e)
+    {
+        if(this.startExpeditionButton != null)
+            this.startExpeditionButton.interactable = true;
     }
 
     private void OnToolsDecreaseChanged(object sender, int e)
@@ -154,6 +162,7 @@ public class MissionTypeChooser : MonoBehaviour
         this.missionText.text = missions[index].missionName;
         this.missionDaysToCompleteText.text = missions[index].daysToComplete.ToString() + " days";
         currentMissionSelected = missions[index];
+        ExpeditionManager.Instance.SetMissionSelected(currentMissionSelected);
         //Set up requirements if needed
         SetUpRequirements();
         //Check if we meet the requirements
@@ -165,16 +174,21 @@ public class MissionTypeChooser : MonoBehaviour
         SetUpBonusesItems();
     }
 
+    
+    
     private void OnBonusItemClicked(object sender, EventBonusItemInfo e)
     {
         if (e.isActivated)
         {
             //Increase reward
             rewardsMultiplier += e.missionBonus.itemsRewardsMultiplier;
+            AddChanceOfSuccess(e.missionBonus.increaseChances);
+            
         }
         else
         {
             rewardsMultiplier -= e.missionBonus.itemsRewardsMultiplier;
+            RemoveChanceOfSuccess(e.missionBonus.increaseChances);
         }
         //Change rewards text
         UpdateRewardsText(rewardsMultiplier);
@@ -198,8 +212,6 @@ public class MissionTypeChooser : MonoBehaviour
        
        
        List<MissionBonusItems> missionBonusItems = currentMissionSelected.bonusItems;
-       
-       
         if (missionBonusItems.Count > 0)
         {
             foreach (var bonusItem in missionBonusItems)
@@ -309,6 +321,7 @@ public class MissionTypeChooser : MonoBehaviour
         currentMissionIndex = (int) Mathf.Clamp(newIndex, 0, this.missions.Count - 1);
         SetUpProperties(currentMissionIndex);
         BlockButtonIfFirstMission(currentMissionIndex);
+        onMissionChanged?.Invoke(this, EventArgs.Empty);
     }
     
     private void SwapMissionToRight()
@@ -317,6 +330,7 @@ public class MissionTypeChooser : MonoBehaviour
         currentMissionIndex = Mathf.Clamp(newIndex, 0, this.missions.Count - 1);
         SetUpProperties(currentMissionIndex);
         BlockButtonIfLastMission(currentMissionIndex);
+        onMissionChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateChanceOfSuccess(float value )
@@ -328,13 +342,12 @@ public class MissionTypeChooser : MonoBehaviour
     public void AddChanceOfSuccess(float value)
     {
         currentChanceOfSuccess += value;
-        chanceOfSuccessText.text = currentChanceOfSuccess.ToString() + " %";
+        chanceOfSuccessText.text = Mathf.Clamp(currentChanceOfSuccess, 0, 100).ToString() + " %";
     }
     public void RemoveChanceOfSuccess(float value )
     {
-        currentChanceOfSuccess -= value;
-        Debug.Log(currentChanceOfSuccess);
-        chanceOfSuccessText.text = currentChanceOfSuccess.ToString() + " %";
+            currentChanceOfSuccess -= value;
+            chanceOfSuccessText.text =Mathf.Clamp(currentChanceOfSuccess, 0, 100).ToString() + " %";
     }
     private void BlockButtonIfFirstMission(int index)
     {

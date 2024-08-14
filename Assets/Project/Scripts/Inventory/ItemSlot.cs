@@ -711,7 +711,15 @@ namespace Inventory
             {
                 if (itemID != 0)
                 {
-                    InventoryManager.Instance.ActivateContextMenuInterface(this);
+                    if(SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
+                    {
+                        TrainInventoryManager.Instance.ActivateContextMenuInterface(this);
+                    }
+                    else
+                    {
+                        InventoryManager.Instance.ActivateContextMenuInterface(this);
+                    }
+                   
                 }
             }
         }

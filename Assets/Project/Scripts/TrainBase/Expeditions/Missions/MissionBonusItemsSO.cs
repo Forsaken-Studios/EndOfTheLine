@@ -7,4 +7,5 @@ public class MissionBonusItemsSO : ScriptableObject
 {
     public Item item;
     public float itemsRewardsMultiplier;
+    public int increaseChances;
 }

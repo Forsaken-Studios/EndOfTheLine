@@ -14,6 +14,7 @@ public abstract class IInventoryManager : MonoBehaviour
     [SerializeField] protected GameObject rightClickInterfacePrefab;
     protected GameObject currentRightClickInterface; 
     protected List<GameObject> inspectListViewList;
+    [SerializeField] private GameObject canvasInventory;
     
     public virtual void Start()
     {
