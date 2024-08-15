@@ -12,6 +12,8 @@ public class ResourcesPanel : MonoBehaviour
    
     void Start()
     {
+        
+        
         //Set Up text
         foodText.text = TrainManager.Instance.resourceFood.ToString();
         materialText.text = TrainManager.Instance.resourceMaterial.ToString();

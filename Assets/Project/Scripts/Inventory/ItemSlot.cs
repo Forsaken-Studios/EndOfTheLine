@@ -718,7 +718,15 @@ namespace Inventory
                 {
                     if(SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
                     {
-                        TrainInventoryManager.Instance.ActivateContextMenuInterface(this);
+                        if (TrainManager.Instance.TrainStatus == TrainStatus.onMarketScreen)
+                        {
+                            SellItem();
+                        }
+                        else
+                        {
+                            TrainInventoryManager.Instance.ActivateContextMenuInterface(this);  
+                        }
+                       
                     }
                     else
                     {
@@ -727,6 +735,15 @@ namespace Inventory
                    
                 }
             }
+        }
+
+        public void SellItem()
+        {
+            int goldEarned = this.GetItemInSlot().itemValue * this.amount;
+            TrainManager.Instance.resourceGold += goldEarned;
+            MarketSystem.Instance.ShowGoldEarnedByItemSold(goldEarned, this);
+            TrainBaseInventory.Instance.DeleteItemFromList(this.GetItemInSlot(), this.amount);
+            this.ClearItemSlot();
         }
 
         private void CheckIfWeNeedToHideHUD()

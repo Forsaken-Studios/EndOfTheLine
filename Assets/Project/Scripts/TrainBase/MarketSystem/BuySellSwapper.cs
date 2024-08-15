@@ -36,7 +36,7 @@ public class BuySellSwapper : MonoBehaviour
     private void SwapToSellPanel()
     {
         this.buyPanel.SetActive(false);
-        //this.sellPanel.SetActive(true);
+        this.sellPanel.SetActive(true);
         TrainInventoryManager.Instance.OpenInventoryStatusToSell();
         this.sellPanelButton.interactable = false;
         this.buyPanelButton.interactable = true;
@@ -44,7 +44,7 @@ public class BuySellSwapper : MonoBehaviour
     private void SwapToBuyPanel()
     {
         this.buyPanel.SetActive(true);
-        //this.sellPanel.SetActive(false);
+        this.sellPanel.SetActive(false);
         TrainInventoryManager.Instance.LoadPlayerInventory();
         this.sellPanelButton.interactable = true;
         this.buyPanelButton.interactable = false;

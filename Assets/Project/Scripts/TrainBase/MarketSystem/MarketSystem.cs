@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Inventory;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +12,7 @@ public class MarketSystem : MonoBehaviour
     private MarketSlot itemSelected;
     
     [SerializeField] private Button buyButton;
-
+    [SerializeField] private GameObject itemSoldTextPrefab;
     [SerializeField] private List<MarketSlot> marketSlots;
     
     private void Awake()
@@ -41,6 +43,17 @@ public class MarketSystem : MonoBehaviour
             slot.onItemClicked -= OnItemClicked;
         }
     }
+    
+    public void ShowGoldEarnedByItemSold(int goldEarned, ItemSlot itemSlot)
+    {
+            if (itemSoldTextPrefab)
+            {
+                GameObject prefab = Instantiate(itemSoldTextPrefab, itemSlot.gameObject.transform.position, Quaternion.identity, 
+                    TrainInventoryManager.Instance.GetInventoryCanvas().transform);
+                prefab.GetComponentInChildren<TextMeshProUGUI>().text = "+" + goldEarned + "$";
+            } 
+    }
+    
     private void SubscribeMarketSlotsEvents()
     {
         foreach (var slot in marketSlots)

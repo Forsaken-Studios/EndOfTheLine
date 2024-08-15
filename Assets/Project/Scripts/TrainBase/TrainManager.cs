@@ -136,9 +136,9 @@ public class TrainManager : MonoBehaviour
         TrainStatus = TrainStatus.onMissionSelector;
         trainPanelsScript = GetComponent<TrainPanels>();
         screensDisplayed = new List<GameObject>();
-        RESOURCES_GOLD = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
-        RESOURCES_MATERIAL = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
-        RESOURCES_FOOD = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME);
+        resourceGold = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
+        resourceMaterial = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
+        resourceFood = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME);
         
         NewDayInGame();
         LoadWagonsUnlockedList();

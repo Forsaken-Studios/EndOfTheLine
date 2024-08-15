@@ -228,4 +228,14 @@ public abstract class IInventoryManager : MonoBehaviour
         {
             this.inspectListViewList.Remove(gameObject);
         }
+
+        public List<ItemSlot> GetItemSlotList()
+        {
+            return itemSlotList;
+        }
+
+        public GameObject GetInventoryCanvas()
+        {
+            return canvasInventory;
+        }
 }
