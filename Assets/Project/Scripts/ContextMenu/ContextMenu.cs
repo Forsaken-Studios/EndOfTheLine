@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
 using Inventory;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
 
 namespace ContextMenu
 {
@@ -53,15 +56,31 @@ namespace ContextMenu
         {
             Debug.Log("INSPECT ITEM");
             Debug.Log("ESTAMOS INSPECCIONANDO: " + item.itemName.ToString());
-            InventoryManager.Instance.TryDestroyContextMenu();
+            Vector2 spawnPosition = Vector2.zero;
+            if (SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
+            {
+                TrainInventoryManager.Instance.TryDestroyContextMenu(); 
+                spawnPosition =
+                    initialPosition + (offsetPosition * TrainInventoryManager.Instance.GetInspectViewList().Count);
+            }
+            else
+            {
+                InventoryManager.Instance.TryDestroyContextMenu();
+                spawnPosition =
+                    initialPosition + (offsetPosition * InventoryManager.Instance.GetInspectViewList().Count);
+            }
+               
             //TODO: When inspecting more elements, we will spawn it, just a bit to the right
-            Vector2 spawnPosition =
-                initialPosition + (offsetPosition * InventoryManager.Instance.GetInspectViewList().Count);
             GameObject inspectItemView = Instantiate(inspectItemPrefab, spawnPosition,
                 Quaternion.identity, GameManager.Instance.GetCanvasParent().transform);
             inspectItemView.GetComponent<InspectItemView>().SetUpInspectView(item);
             //TODO: Add this inspect view to list (escape button spam)
-            InventoryManager.Instance.AddInspectView(inspectItemView);
+            if (SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
+                TrainInventoryManager.Instance.AddInspectView(inspectItemView);
+            else
+                InventoryManager.Instance.AddInspectView(inspectItemView);
+                
+            
         }
 
         private void DiscardItem()

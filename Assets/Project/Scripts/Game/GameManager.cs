@@ -78,9 +78,7 @@ public class GameManager : MonoBehaviour
     {
         //Sell scrap Items && Save items for train base
         //PlayerInventory.Instance.HandleItemsAtEndGame();
-        Dictionary<int, int> idDictionary = SaveManager.Instance.ConvertItemsDictionaryIntoIDDictionary(PlayerInventory.Instance.GetInventoryItems());
-        DataPlayerInventory data = new DataPlayerInventory(idDictionary);
-        SaveManager.Instance.SavePlayerInventoryJson(data);
+        SaveManager.Instance.SavePlayerInventoryJson();
         //Add one more day to game
         
         int currentDay = PlayerPrefs.GetInt("CurrentDay");

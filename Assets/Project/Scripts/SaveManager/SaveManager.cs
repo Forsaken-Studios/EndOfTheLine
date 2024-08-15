@@ -67,9 +67,12 @@ public class SaveManager : MonoBehaviour
     
     #endregion
     #region Save Player Inventory
-    public void SavePlayerInventoryJson(DataPlayerInventory data)
+    public void SavePlayerInventoryJson()
     {
         //Create Folder
+        Dictionary<int, int> idDictionary = SaveManager.Instance.ConvertItemsDictionaryIntoIDDictionary(PlayerInventory.Instance.GetInventoryItems());
+        DataPlayerInventory data = new DataPlayerInventory(idDictionary);
+        
         _dataDirPath = Application.persistentDataPath;
         string fullPath = Path.Combine(_dataDirPath, "inventory", "playerInventory");
         Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
@@ -153,20 +156,16 @@ public class SaveManager : MonoBehaviour
 
     public void EmptyDictionaryIfDisconnectInRaid()
     {
-        DataPlayerInventory idDictionary = new DataPlayerInventory();
-        
-        SaveManager.Instance.SavePlayerInventoryJson(idDictionary);
+        SaveManager.Instance.SavePlayerInventoryJson();
     }
     
     private void SaveInventory()
     {
-        DataPlayerInventory idDictionary = new DataPlayerInventory(
-            SaveManager.Instance.ConvertItemsDictionaryIntoIDDictionary(PlayerInventory.Instance.GetInventoryItems()));
 
         DataBaseInventory baseInventory = new DataBaseInventory(TrainBaseInventory.Instance
             .GetBaseInventoryToSave());
         
-        SaveManager.Instance.SavePlayerInventoryJson(idDictionary);
+        SaveManager.Instance.SavePlayerInventoryJson();
         SaveManager.Instance.SaveBaseInventoryJson(baseInventory);
     }
     #endregion

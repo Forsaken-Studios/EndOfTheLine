@@ -2,14 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Inventory;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class TrainInventoryManager : IInventoryManager
 {
     public static TrainInventoryManager Instance;
-
+    
     private int numberOfTools = -1;
+
+    [SerializeField] private TextMeshProUGUI textSwap;
     private void Awake()
     {
         if (Instance != null)
@@ -33,7 +36,7 @@ public class TrainInventoryManager : IInventoryManager
     
     private void Update()
     {
-        if (TrainManager.Instance.ValidStatusToOpenInventory())
+        if (TrainManager.Instance.ValidStatusToOpenInventory() &&  TrainManager.Instance.TrainStatus != TrainStatus.onMarketScreen)
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
@@ -42,6 +45,39 @@ public class TrainInventoryManager : IInventoryManager
         }
     }
 
+    public void OpenInventoryStatusToSell()
+    {
+        inventoryHUD.SetActive(true);
+        SaveManager.Instance.SavePlayerInventoryJson();
+        foreach (var itemSlot in itemSlotList)
+        {
+            itemSlot.ClearItemSlot();
+        }
+        PlayerInventory.Instance.GetInventoryItems().Clear();
+        textSwap.text = "Items To Sell";
+    }
+
+    public void CloseSellingInventory()
+    {
+        if (PlayerInventory.Instance.GetInventoryItems().Count > 0)
+        {
+            foreach (var itemSlot in itemSlotList)
+            {
+                if (itemSlot.GetItemInSlot() != null)
+                {
+                    if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemSlot.GetItemInSlot(), itemSlot.amount,
+                            out int remainingItems))
+                    {
+                        Debug.Log("RETURNED ITEM: ");
+                        itemSlot.ClearItemSlot();
+                    } 
+                }
+            } 
+        }
+     
+        inventoryHUD.SetActive(false);
+    }
+    
     public int GetNumberOfToolsInInventory()
     {
         if (numberOfTools == -1)
@@ -67,7 +103,7 @@ public class TrainInventoryManager : IInventoryManager
     }
     
 
-    private void LoadPlayerInventory()
+    public void LoadPlayerInventory()
     {
         DataPlayerInventory data = SaveManager.Instance.TryLoadPlayerInventoryInBaseJson();
         Dictionary<Item, int> inventory = new Dictionary<Item, int>();
@@ -132,10 +168,6 @@ public class TrainInventoryManager : IInventoryManager
         }
         return null;
     }
-    
-
-
-
     public void LoadItemsInPlayerInventory(Dictionary<Item, int> items)
     {
         foreach (var itemPair in items)

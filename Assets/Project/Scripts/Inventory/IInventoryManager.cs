@@ -35,7 +35,6 @@ public abstract class IInventoryManager : MonoBehaviour
         {
             SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseInventory);
             TryDestroyContextMenu();
-                
         }
               
         inventoryHUD.SetActive(!inventoryHUD.activeSelf);

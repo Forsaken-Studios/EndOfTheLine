@@ -264,6 +264,7 @@ public class TrainManager : MonoBehaviour
                     //Check if we need to disable some screen before
                     if (screensDisplayed.Count == 0)
                     {
+                        Debug.Log(currentCanvas);
                         currentCanvas.SetActive(false);
                     }
                     else

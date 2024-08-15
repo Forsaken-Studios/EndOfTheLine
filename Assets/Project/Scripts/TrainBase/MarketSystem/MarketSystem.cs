@@ -63,8 +63,7 @@ public class MarketSystem : MonoBehaviour
         UpdateStore();
         SubscribeMarketSlotsEvents();
     }
-
-
+    
     private void UpdateStore()
     {
         System.Object[] allItems = UnityEngine.Resources.LoadAll("Items/UsableItems");
