@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
 
     [SerializeField] private TextMeshProUGUI stationName;
@@ -34,6 +34,7 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
         ShowButton();
     }
     
+    
     public void OnStationClicked()
     {
         //UnClick previous station
@@ -47,10 +48,21 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
         isClicked = true;
     }
 
+    public void SetIfIsClicked(bool aux)
+    {
+        this.isClicked = aux;
+    }
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("CLICK");
+    }
+    
+    
     public void OnPointerExit(PointerEventData eventData)
     {
         if (!isClicked)
         {
+            Debug.Log("EXIT CLICK " + this.stationName.text);
             stationName.gameObject.SetActive(false);
             HideButton();
         }
@@ -62,7 +74,8 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
         tempColor.a = 0f;
         buttonImage.color = tempColor;
     }
-
+    
+    
     private void ShowButton()
     {
         var tempColor = buttonImage.color;
@@ -88,5 +101,7 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
             stationMissions.Add(mission as MissionStatSO);
         }
     }
-    
+
+
+   
 }
