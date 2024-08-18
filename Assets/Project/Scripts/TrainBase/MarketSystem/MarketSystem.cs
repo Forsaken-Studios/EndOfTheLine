@@ -4,6 +4,7 @@ using System.Linq;
 using Inventory;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class MarketSystem : MonoBehaviour
@@ -14,7 +15,7 @@ public class MarketSystem : MonoBehaviour
     [SerializeField] private Button buyButton;
     [SerializeField] private GameObject itemSoldTextPrefab;
     [SerializeField] private List<MarketSlot> marketSlots;
-    
+    [SerializeField] private Sprite emptySprite;
     private void Awake()
     {
         if (Instance != null)
@@ -28,12 +29,12 @@ public class MarketSystem : MonoBehaviour
 
     private void Start()
     {
-        /*TrainManager.Instance.OnDayChanged += UpdateStoreEvent;
+        TrainManager.Instance.OnDayChanged += UpdateStoreEvent;
         buyButton.onClick.AddListener(() => BuyItem());
 
         //TODO: Here we have to put the same store we had before we closed the game
         UpdateStore();
-        SubscribeMarketSlotsEvents();*/
+        SubscribeMarketSlotsEvents();
     }
 
     private void UnsubscribeAllEvents()
@@ -58,7 +59,7 @@ public class MarketSystem : MonoBehaviour
     {
         foreach (var slot in marketSlots)
         {
-            if (slot.GetItem() != null)
+            if (slot.GetItemSO() != null || slot.GetUsableItemSO() != null)
             {
                 slot.onItemClicked += OnItemClicked;
             }
@@ -66,9 +67,9 @@ public class MarketSystem : MonoBehaviour
     }
     private void OnItemClicked(object sender, EventArgs e)
     {
-        //TODO: Da error
         MarketSlot item = sender as MarketSlot;
-        Debug.Log("CLICKED SLOT WITH ITEM: " + item.GetItem().itemName);
+        itemSelected = item;
+        Debug.Log("CLICKED SLOT WITH ITEM: " + item.GetItemSO().itemName);
     }
 
     private void UpdateStoreEvent(object sender, EventArgs e)
@@ -79,7 +80,7 @@ public class MarketSystem : MonoBehaviour
     
     private void UpdateStore()
     {
-        System.Object[] allItems = UnityEngine.Resources.LoadAll("Items/UsableItems");
+        System.Object[] allItems = UnityEngine.Resources.LoadAll("Items/Scrap");
         List<System.Object> itemsToSpawn = allItems.ToList();
         Debug.Log("UPDATING STORE");
         //TODO: Dependiendo de lo que queramos, aparecerán X Objetos, por ahora vamos a poner 3 o 4
@@ -89,9 +90,19 @@ public class MarketSystem : MonoBehaviour
         { 
             //TODO: Cuando pongamos un elemento, debemos de eliminarlo de la lista (Cuando tengamos mas objetos)
             int itemToSpawnIndex = UnityEngine.Random.Range(0, itemsToSpawn.Count);
-            UsableItemSO item = allItems.GetValue(itemToSpawnIndex) as UsableItemSO;
+            Item item = allItems.GetValue(itemToSpawnIndex) as Item;
             marketSlots[i].SetUpProperties(item);
         }
+
+        for (int i = (int) numberOfItemsToBuy; i < marketSlots.Count; i++)
+        {
+            marketSlots[i].GetComponent<Button>().interactable = false;
+        }
+    }
+
+    public Sprite GetEmptySprite()
+    {
+        return emptySprite;
     }
 
     private void OnDestroy()
@@ -104,6 +115,18 @@ public class MarketSystem : MonoBehaviour
         if (itemSelected != null)
         {
             Debug.Log("WE CAN BUY ITEM: " + itemSelected.GetItemName());
+
+            if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemSelected.GetItemSO(), 1,
+                    out int remainingItemsWithoutSpace))
+            {
+                //TODO: SPEND MONEY
+                itemSelected.ClearMarketSlot();
+            }
+            else
+            {
+                Debug.Log("NO SPACE FOR ITEM");
+            }
+            
         }
     }
 

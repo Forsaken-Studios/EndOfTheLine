@@ -97,7 +97,8 @@ namespace Inventory
         public void ClearItemSlot()
         {
             this.itemInSlot = null;
-            this.itemSlotImage.sprite = emptySprite;
+            if(itemSlotImage != null)
+                this.itemSlotImage.sprite = emptySprite;
             this.itemID = 0;
             this.itemSlotAmountText.text = "";
             this.amount = 0; 

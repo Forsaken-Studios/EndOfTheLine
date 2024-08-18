@@ -45,6 +45,7 @@ public class BuySellSwapper : MonoBehaviour
     {
         this.buyPanel.SetActive(true);
         this.sellPanel.SetActive(false);
+        TrainInventoryManager.Instance.CloseSellingInventory();
         TrainInventoryManager.Instance.LoadPlayerInventory();
         this.sellPanelButton.interactable = true;
         this.buyPanelButton.interactable = false;

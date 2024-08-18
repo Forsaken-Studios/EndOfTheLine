@@ -240,7 +240,6 @@ public class TrainBaseInventory : MonoBehaviour
     
     public void AddItemToList(Item item, int amount)
     {
-        Debug.Log("ADDED: " + item + " " + amount);
         if (itemsInBase.ContainsKey(item))
         {
             itemsInBase[item] += amount;
