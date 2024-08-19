@@ -27,7 +27,7 @@ public class SaveManager : MonoBehaviour
  
     #region Save Expedition Rewards
 
-    public void SaveExpeditionRewardJson(DataPlayerInventory data)
+    public void SaveExpeditionRewardJson(ItemsDiccionarySave data)
     {
         //Create Folder
         _dataDirPath = Application.persistentDataPath;
@@ -42,7 +42,7 @@ public class SaveManager : MonoBehaviour
         }
     }
       
-    public DataPlayerInventory TryLoadExpeditionRewardJson()
+    public ItemsDiccionarySave TryLoadExpeditionRewardJson()
     {
         try
         {
@@ -54,7 +54,7 @@ public class SaveManager : MonoBehaviour
             {
                 string jsonFromFile = streamReader.ReadToEnd();
                 Debug.Log("LOADED EXPEDITION REWARD: " + jsonFromFile);
-                return JsonConvert.DeserializeObject<DataPlayerInventory>(jsonFromFile);
+                return JsonConvert.DeserializeObject<ItemsDiccionarySave>(jsonFromFile);
             }
         }
         catch (Exception error)
@@ -71,7 +71,7 @@ public class SaveManager : MonoBehaviour
     {
         //Create Folder
         Dictionary<int, int> idDictionary = SaveManager.Instance.ConvertItemsDictionaryIntoIDDictionary(PlayerInventory.Instance.GetInventoryItems());
-        DataPlayerInventory data = new DataPlayerInventory(idDictionary);
+        ItemsDiccionarySave data = new ItemsDiccionarySave(idDictionary);
         
         _dataDirPath = Application.persistentDataPath;
         string fullPath = Path.Combine(_dataDirPath, "inventory", "playerInventory");
@@ -84,7 +84,7 @@ public class SaveManager : MonoBehaviour
             streamWriter.Write(json);
         }
     }
-    public DataPlayerInventory TryLoadPlayerInventoryInBaseJson()
+    public ItemsDiccionarySave TryLoadPlayerInventoryInBaseJson()
     {
         try
         {
@@ -96,7 +96,7 @@ public class SaveManager : MonoBehaviour
             {
                 string jsonFromFile = streamReader.ReadToEnd();
                 Debug.Log("LOADED PLAYER INVENTORY: " + jsonFromFile);
-                return JsonConvert.DeserializeObject<DataPlayerInventory>(jsonFromFile);
+                return JsonConvert.DeserializeObject<ItemsDiccionarySave>(jsonFromFile);
             }
         }
         catch (Exception error)
@@ -107,6 +107,51 @@ public class SaveManager : MonoBehaviour
         return null;
     }
     #endregion
+    #region Save Store 
+    
+    public void SaveCurrentDayStoreJson()
+    {
+        //Create Folder
+        Dictionary<int, int> idDictionary = SaveManager.Instance.ConvertItemsDictionaryIntoIDDictionary(MarketSystem.Instance.GetItemsInMarket());
+        ItemsDiccionarySave data = new ItemsDiccionarySave(idDictionary);
+        
+        _dataDirPath = Application.persistentDataPath;
+        string fullPath = Path.Combine(_dataDirPath, "market", "store");
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+   
+        string json = JsonConvert.SerializeObject(data);
+        Debug.Log("SAVED: " + json);
+        using (StreamWriter streamWriter = new StreamWriter(fullPath))
+        {
+            streamWriter.Write(json);
+        }
+    }
+    public ItemsDiccionarySave TryLoadCurrentDayStoreJson()
+    {
+        try
+        {
+            _dataDirPath = Application.persistentDataPath;
+            string fullPath = Path.Combine(_dataDirPath, "market", "store");
+            Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+
+            using (StreamReader streamReader = new StreamReader(fullPath))
+            {
+                string jsonFromFile = streamReader.ReadToEnd();
+                Debug.Log("LOADED STORE: " + jsonFromFile);
+                return JsonConvert.DeserializeObject<ItemsDiccionarySave>(jsonFromFile);
+            }
+        }
+        catch (Exception error)
+        {
+            Debug.LogWarning("ERROR: " + error);
+            return null;
+        }
+        return null;
+    }
+    
+    
+    #endregion
+    
     
     #region Save Base Inventory
     public void SaveBaseInventoryJson(DataBaseInventory data)

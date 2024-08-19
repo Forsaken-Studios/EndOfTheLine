@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class DataPlayerInventory
+public class ItemsDiccionarySave
 {
     public Dictionary<int , int> itemsSaved;
 
-    public DataPlayerInventory()
+    public ItemsDiccionarySave()
     {
         itemsSaved = new Dictionary<int, int>();
     }
     
-    public DataPlayerInventory(Dictionary<int, int> items)
+    public ItemsDiccionarySave(Dictionary<int, int> items)
     {
         itemsSaved = items;
     }

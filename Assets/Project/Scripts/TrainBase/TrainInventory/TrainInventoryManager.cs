@@ -74,8 +74,8 @@ public class TrainInventoryManager : IInventoryManager
                 }
             } 
         }
-     
-        inventoryHUD.SetActive(false);
+        if(inventoryHUD != null)
+            inventoryHUD.SetActive(false);
     }
     
     public int GetNumberOfToolsInInventory()
@@ -105,7 +105,7 @@ public class TrainInventoryManager : IInventoryManager
 
     public void LoadPlayerInventory()
     {
-        DataPlayerInventory data = SaveManager.Instance.TryLoadPlayerInventoryInBaseJson();
+        ItemsDiccionarySave data = SaveManager.Instance.TryLoadPlayerInventoryInBaseJson();
         Dictionary<Item, int> inventory = new Dictionary<Item, int>();
         inventory = GetItemsFromID(data.GetInventory());
         PlayerInventory.Instance.SetInventoryDictionary(inventory);

@@ -11,29 +11,49 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
     //TODO: Here we have the item
     private UsableItemSO usableItem;
 
-    private Item itemSO; 
+    private Item itemSO;
+    private int amount; 
     public event EventHandler onItemClicked;
     private Sprite emptySprite;
     [SerializeField] private Image itemSlotImage;
-    
-    public void SetUpProperties(UsableItemSO itemInSlot)
+    private TextMeshProUGUI amountText;
+
+
+    private void OnEnable()
+    {
+        amountText = GetComponentInChildren<TextMeshProUGUI>();
+    }
+
+    public void SetUpProperties(UsableItemSO itemInSlot, int amount)
     {
         usableItem = itemInSlot;
         this.itemSlotImage.sprite = itemInSlot.itemIcon;
+   
+    }
+
+    public void RemoveAmountFromSlot(int amountToRemove)
+    {
+        this.amount -= amountToRemove;
+        this.amountText.text = "x" + amount.ToString();
     }
 
     public void ClearMarketSlot()
     {
         this.itemSlotImage.sprite = MarketSystem.Instance.GetEmptySprite();
         this.itemSO = null;
+        this.amountText.text = "";
+        this.amount = 0;
         this.usableItem = null;
         GetComponent<Button>().interactable = false;
     }
 
-    public void SetUpProperties(Item itemSO)
+    public void SetUpProperties(Item itemSO, int amount)
     {
+        amountText = GetComponentInChildren<TextMeshProUGUI>();
         this.itemSO = itemSO;
         this.itemSlotImage.sprite = itemSO.itemIcon;
+        this.amountText.text = "x" + amount.ToString();
+        this.amount = amount;
     }
     
     public string GetItemName()
@@ -52,10 +72,18 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (itemSO != null || usableItem != null)
+        if (eventData.button == PointerEventData.InputButton.Left)
         {
-            Debug.Log("ITEM CLICKED");
-            onItemClicked?.Invoke(this, EventArgs.Empty); 
+            if (itemSO != null || usableItem != null)
+            {
+                Debug.Log("ITEM CLICKED");
+                onItemClicked?.Invoke(this, EventArgs.Empty); 
+            } 
         }
+    }
+
+    public int GetSlotAmount()
+    {
+        return amount;
     }
 }

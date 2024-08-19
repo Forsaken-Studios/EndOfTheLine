@@ -141,7 +141,7 @@ public class MissionTypeChooser : MonoBehaviour
             int rewardAmount = UnityEngine.Random.Range(reward.minAmount, reward.maxAmount + 1);
             rewardsDictionary.Add(reward.item.itemID, rewardAmount);
         }
-        DataPlayerInventory rewardsSave = new DataPlayerInventory(rewardsDictionary);
+        ItemsDiccionarySave rewardsSave = new ItemsDiccionarySave(rewardsDictionary);
         SaveManager.Instance.SaveExpeditionRewardJson(rewardsSave);
     }
     

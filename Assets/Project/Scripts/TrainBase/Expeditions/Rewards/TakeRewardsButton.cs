@@ -45,7 +45,7 @@ public class TakeRewardsButton : MonoBehaviour
                 int result = PlayerPrefs.GetInt("ExpeditionResult");
                 if (result == 1)
                 {
-                    DataPlayerInventory rewardsData = SaveManager.Instance.TryLoadExpeditionRewardJson();
+                    ItemsDiccionarySave rewardsData = SaveManager.Instance.TryLoadExpeditionRewardJson();
                     Dictionary<Item, int> items = TrainInventoryManager.Instance.GetItemsFromID(rewardsData.GetInventory());
                     Dictionary<int, int> slotUsed = new Dictionary<int, int>();
                     if (TrainBaseInventory.Instance.TryCheckIfThereIsSpaceForAllItems(items, out slotUsed))

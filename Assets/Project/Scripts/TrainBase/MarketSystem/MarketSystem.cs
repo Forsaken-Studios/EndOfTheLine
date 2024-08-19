@@ -11,10 +11,11 @@ public class MarketSystem : MonoBehaviour
 {
     public static MarketSystem Instance;
     private MarketSlot itemSelected;
-    
+    private Dictionary<Item, int> itemsInMarket;
     [SerializeField] private Button buyButton;
     [SerializeField] private GameObject itemSoldTextPrefab;
     [SerializeField] private List<MarketSlot> marketSlots;
+    [SerializeField] private GameObject amountSelector;
     [SerializeField] private Sprite emptySprite;
     private void Awake()
     {
@@ -29,12 +30,15 @@ public class MarketSystem : MonoBehaviour
 
     private void Start()
     {
+        itemsInMarket = new Dictionary<Item, int>();
         TrainManager.Instance.OnDayChanged += UpdateStoreEvent;
         buyButton.onClick.AddListener(() => BuyItem());
 
+        
         //TODO: Here we have to put the same store we had before we closed the game
-        UpdateStore();
-        SubscribeMarketSlotsEvents();
+        LoadCurrentDayStore();
+        /*UpdateStore();
+        SubscribeMarketSlotsEvents();*/
     }
 
     private void UnsubscribeAllEvents()
@@ -43,6 +47,34 @@ public class MarketSystem : MonoBehaviour
         {
             slot.onItemClicked -= OnItemClicked;
         }
+    }
+
+    private void LoadCurrentDayStore()
+    {
+        ItemsDiccionarySave store = SaveManager.Instance.TryLoadCurrentDayStoreJson();
+        if (store != null)
+        {
+            itemsInMarket = TrainInventoryManager.Instance.GetItemsFromID(store.GetInventory());
+            int aux = 0;
+            foreach (var item in itemsInMarket)
+            {
+                Debug.Log("ITEM TO MARKET: " + item.Key.itemName);
+                marketSlots[aux].SetUpProperties(item.Key, item.Value);
+                aux++;
+            }
+        
+            for (int i = (int) itemsInMarket.Count; i < marketSlots.Count; i++)
+            {
+                marketSlots[i].GetComponent<Button>().interactable = false;
+            }
+        }
+        else
+        {
+            buyButton.interactable = false;
+        }
+
+        SubscribeMarketSlotsEvents();
+        Debug.Log(itemsInMarket.Count);
     }
     
     public void ShowGoldEarnedByItemSold(int goldEarned, ItemSlot itemSlot)
@@ -77,27 +109,53 @@ public class MarketSystem : MonoBehaviour
         UpdateStore();
         SubscribeMarketSlotsEvents();
     }
+
+    public void RemoveItemFromList(Item item, int amount)
+    {
+        if (itemsInMarket.ContainsKey(item))
+        {
+            itemsInMarket[item] -= amount;
+            
+            if (itemsInMarket[item] <= 0)
+            {
+                itemsInMarket.Remove(item);
+            }
+        }
+    }
     
     private void UpdateStore()
     {
-        System.Object[] allItems = UnityEngine.Resources.LoadAll("Items/Scrap");
-        List<System.Object> itemsToSpawn = allItems.ToList();
+        itemsInMarket.Clear();
+        Item[] allItems = UnityEngine.Resources.LoadAll<Item>("Items/Scrap");
+        List<Item> itemsToSpawn = allItems.ToList();
+        
+        
         Debug.Log("UPDATING STORE");
         //TODO: Dependiendo de lo que queramos, aparecerán X Objetos, por ahora vamos a poner 3 o 4
         float numberOfItemsToBuy = UnityEngine.Random.Range(3, 4);
 
         for (int i = 0; i < numberOfItemsToBuy; i++)
         { 
-            //TODO: Cuando pongamos un elemento, debemos de eliminarlo de la lista (Cuando tengamos mas objetos)
             int itemToSpawnIndex = UnityEngine.Random.Range(0, itemsToSpawn.Count);
-            Item item = allItems.GetValue(itemToSpawnIndex) as Item;
-            marketSlots[i].SetUpProperties(item);
+            Item item = itemsToSpawn[itemToSpawnIndex];
+            itemsToSpawn.Remove(item);
+            
+            int randomAmount = UnityEngine.Random.Range(1, 3);
+            itemsInMarket.Add(item, randomAmount);
+            marketSlots[i].SetUpProperties(item, randomAmount);
         }
 
         for (int i = (int) numberOfItemsToBuy; i < marketSlots.Count; i++)
         {
             marketSlots[i].GetComponent<Button>().interactable = false;
         }
+        
+        SaveManager.Instance.SaveCurrentDayStoreJson();
+    }
+
+    public Dictionary<Item, int> GetItemsInMarket()
+    {
+        return itemsInMarket;
     }
 
     public Sprite GetEmptySprite()
@@ -109,26 +167,39 @@ public class MarketSystem : MonoBehaviour
     {
         UnsubscribeAllEvents();
     }
-
+    public void ActivateAmountSelector(int maxAmount)
+    {
+        this.amountSelector.SetActive(true);
+        this.amountSelector.GetComponent<BuyAmountSelector>().SetUpProperties(maxAmount, this.itemSelected);
+    }
     private void BuyItem()
     {
         if (itemSelected != null)
         {
             Debug.Log("WE CAN BUY ITEM: " + itemSelected.GetItemName());
-
-            if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemSelected.GetItemSO(), 1,
-                    out int remainingItemsWithoutSpace))
+            if (itemSelected.GetSlotAmount() == 1)
             {
-                //TODO: SPEND MONEY
-                itemSelected.ClearMarketSlot();
+                if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemSelected.GetItemSO(), 1,
+                        out int remainingItemsWithoutSpace))
+                {
+                    //TODO: Spend Money
+                    RemoveItemFromList(itemSelected.GetItemSO(), 1);
+                    itemSelected.ClearMarketSlot();
+                    SaveManager.Instance.SaveCurrentDayStoreJson();
+                }
+                else
+                {
+                    Debug.Log("NO SPACE FOR ITEM");
+                }
             }
             else
             {
-                Debug.Log("NO SPACE FOR ITEM");
+                ActivateAmountSelector(this.itemSelected.GetSlotAmount());
             }
-            
+           
         }
     }
+    
 
 
 
