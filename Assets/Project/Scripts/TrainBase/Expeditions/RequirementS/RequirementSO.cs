@@ -7,4 +7,6 @@ public class RequirementSO : ScriptableObject
 {
     public Item item;
     public int amountNeeded;
+    
+    
 }

@@ -13,8 +13,8 @@ public abstract class IInventoryManager : MonoBehaviour
     protected int nextIndexSlotAvailable = 0;
     [SerializeField] protected GameObject rightClickInterfacePrefab;
     protected GameObject currentRightClickInterface; 
-    protected int MAX_AMOUNT_PER_SLOT = 4;
     protected List<GameObject> inspectListViewList;
+    [SerializeField] private GameObject canvasInventory;
     
     public virtual void Start()
     {
@@ -35,7 +35,6 @@ public abstract class IInventoryManager : MonoBehaviour
         {
             SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseInventory);
             TryDestroyContextMenu();
-                
         }
               
         inventoryHUD.SetActive(!inventoryHUD.activeSelf);
@@ -73,7 +72,7 @@ public abstract class IInventoryManager : MonoBehaviour
                 if (itemSlot.itemID == item.itemID)
                 {
                     int totalAmount = itemSlot.amount + amount;
-                    if (totalAmount <= MAX_AMOUNT_PER_SLOT)
+                    if (totalAmount <= GameManager.Instance.GetMaxAmountPerSlot())
                     {
                         LogManager.Log("FIND EMPTY SLOT", FeatureType.Loot);
                         //ADD ELEMENT TO THIS SLOT
@@ -82,10 +81,10 @@ public abstract class IInventoryManager : MonoBehaviour
                     }
                     else
                     {
-                        if (itemSlot.amount != MAX_AMOUNT_PER_SLOT) //We dont want to check a full slot
+                        if (itemSlot.amount != GameManager.Instance.GetMaxAmountPerSlot()) //We dont want to check a full slot
                         {
                             //We refill one slot and fill other slots until we are completed
-                            int amountToFill = MAX_AMOUNT_PER_SLOT - itemSlot.amount; //Space available
+                            int amountToFill = GameManager.Instance.GetMaxAmountPerSlot() - itemSlot.amount; //Space available
                             int amountRemaining = amount - amountToFill; //Remaining Items
                             itemSlot.AddMoreItemsToSameSlot(amountToFill);
                             if (amountRemaining > 0) //If there are items left to save
@@ -120,10 +119,10 @@ public abstract class IInventoryManager : MonoBehaviour
 
         public virtual bool SetRemainingItemsSlots(int amount, int availableIndex, Item item, out int remainingAmount)
         {
-            if (amount >= MAX_AMOUNT_PER_SLOT)
+            if (amount >= GameManager.Instance.GetMaxAmountPerSlot())
             {
-                itemSlotList[availableIndex].SetItemSlotProperties(item, MAX_AMOUNT_PER_SLOT);
-                int remainingItemsAux = amount - MAX_AMOUNT_PER_SLOT;
+                itemSlotList[availableIndex].SetItemSlotProperties(item, GameManager.Instance.GetMaxAmountPerSlot());
+                int remainingItemsAux = amount - GameManager.Instance.GetMaxAmountPerSlot();
                 int remainingItemsInLoop = 0;
                 while (remainingItemsAux > 0)
                 {
@@ -157,10 +156,10 @@ public abstract class IInventoryManager : MonoBehaviour
             // if > MAX -> itemToFill = MAX | remaining -= MAX
             // if < MAX -> itemToFill = remaining
             remainingItems = totalAmount;
-            if (totalAmount >= MAX_AMOUNT_PER_SLOT)
+            if (totalAmount >= GameManager.Instance.GetMaxAmountPerSlot())
             {
-                remainingItems -= MAX_AMOUNT_PER_SLOT;
-                return MAX_AMOUNT_PER_SLOT;
+                remainingItems -= GameManager.Instance.GetMaxAmountPerSlot();
+                return GameManager.Instance.GetMaxAmountPerSlot();
             }
             else
             {
@@ -183,7 +182,7 @@ public abstract class IInventoryManager : MonoBehaviour
 
         public int GetMaxItemsForSlots()
         {
-            return MAX_AMOUNT_PER_SLOT;
+            return GameManager.Instance.GetMaxAmountPerSlot();
         }
         
         public void ActivateContextMenuInterface(ItemSlot itemSlot)
@@ -228,5 +227,15 @@ public abstract class IInventoryManager : MonoBehaviour
         public void RemoveInspectView(GameObject gameObject)
         {
             this.inspectListViewList.Remove(gameObject);
+        }
+
+        public List<ItemSlot> GetItemSlotList()
+        {
+            return itemSlotList;
+        }
+
+        public GameObject GetInventoryCanvas()
+        {
+            return canvasInventory;
         }
 }

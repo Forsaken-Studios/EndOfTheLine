@@ -19,6 +19,10 @@ public class GameManager : MonoBehaviour
     [Tooltip("We use this reference, to link inspect item to this parent")]
     [SerializeField] private GameObject inspectItemCanvas; 
     
+    
+    private string trainSceneName = "TrainBase";
+    
+    
     [Header("Extraction Properties")] 
     private GameState _gameState;
     public GameState GameState
@@ -27,7 +31,8 @@ public class GameManager : MonoBehaviour
         set { _gameState = value; }
     }
 
-    private int MAX_AMOUNT_PER_SLOT = 4;
+    private int MAX_AMOUNT_PER_SLOT_BASE = 4;
+    private int MAX_AMOUNT_PER_SLOT_GAME = 2;
     
     private void Awake()
     {
@@ -73,9 +78,7 @@ public class GameManager : MonoBehaviour
     {
         //Sell scrap Items && Save items for train base
         //PlayerInventory.Instance.HandleItemsAtEndGame();
-        Dictionary<int, int> idDictionary = SaveManager.Instance.ConvertItemsDictionaryIntoIDDictionary(PlayerInventory.Instance.GetInventoryItems());
-        DataPlayerInventory data = new DataPlayerInventory(idDictionary);
-        SaveManager.Instance.SavePlayerInventoryJson(data);
+        SaveManager.Instance.SavePlayerInventoryJson();
         //Add one more day to game
         
         int currentDay = PlayerPrefs.GetInt("CurrentDay");
@@ -88,12 +91,26 @@ public class GameManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        SaveManager.Instance.SaveGame();
+        if (SceneManager.GetActiveScene().name == "TrainBase" || SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            SaveManager.Instance.SaveGame();
+        }
+        else
+        { 
+            SaveManager.Instance.EmptyDictionaryIfDisconnectInRaid();
+        }
     }
     
     public int GetMaxAmountPerSlot()
     {
-        return MAX_AMOUNT_PER_SLOT;
+        if (SceneManager.GetActiveScene().name == trainSceneName)
+        {
+            return MAX_AMOUNT_PER_SLOT_BASE;
+        }
+        else
+        {
+          return MAX_AMOUNT_PER_SLOT_GAME;  
+        }
     }
 
     private void OnDestroy()
@@ -104,5 +121,10 @@ public class GameManager : MonoBehaviour
     public GameObject GetCanvasParent()
     {
         return inspectItemCanvas;
+    }
+
+    public string GetNameTrainScene()
+    {
+        return trainSceneName;
     }
 }

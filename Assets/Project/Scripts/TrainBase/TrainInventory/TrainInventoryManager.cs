@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Inventory;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,6 +10,9 @@ public class TrainInventoryManager : IInventoryManager
 {
     public static TrainInventoryManager Instance;
     
+    private int numberOfTools = -1;
+
+    [SerializeField] private TextMeshProUGUI textSwap;
     private void Awake()
     {
         if (Instance != null)
@@ -30,11 +34,78 @@ public class TrainInventoryManager : IInventoryManager
         LoadBaseInventory();
     }
     
+    private void Update()
+    {
+        if (TrainManager.Instance.ValidStatusToOpenInventory() &&  TrainManager.Instance.TrainStatus != TrainStatus.onMarketScreen)
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                ReverseInventoryStatus();
+            }
+        }
+    }
+
+    public void OpenInventoryStatusToSell()
+    {
+        inventoryHUD.SetActive(true);
+        SaveManager.Instance.SavePlayerInventoryJson();
+        foreach (var itemSlot in itemSlotList)
+        {
+            itemSlot.ClearItemSlot();
+        }
+        PlayerInventory.Instance.GetInventoryItems().Clear();
+        textSwap.text = "Items To Sell";
+    }
+
+    public void CloseSellingInventory()
+    {
+        if (PlayerInventory.Instance.GetInventoryItems().Count > 0)
+        {
+            foreach (var itemSlot in itemSlotList)
+            {
+                if (itemSlot.GetItemInSlot() != null)
+                {
+                    if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemSlot.GetItemInSlot(), itemSlot.amount,
+                            out int remainingItems))
+                    {
+                        Debug.Log("RETURNED ITEM: ");
+                        itemSlot.ClearItemSlot();
+                    } 
+                }
+            } 
+        }
+        if(inventoryHUD != null)
+            inventoryHUD.SetActive(false);
+    }
+    
+    public int GetNumberOfToolsInInventory()
+    {
+        if (numberOfTools == -1)
+        {
+            numberOfTools = 0;
+            foreach (var itemSlot in itemSlotList)
+            {
+                if (itemSlot.GetItemInSlot() != null)
+                {
+                    if (itemSlot.GetItemInSlot().itemID == 8)
+                    {
+                        numberOfTools += itemSlot.amount;
+                    }
+                }
+               
+            }
+            return numberOfTools;
+        }
+        else
+        {
+            return numberOfTools;
+        }
+    }
     
 
-    private void LoadPlayerInventory()
+    public void LoadPlayerInventory()
     {
-        DataPlayerInventory data = SaveManager.Instance.TryLoadPlayerInventoryInBaseJson();
+        ItemsDiccionarySave data = SaveManager.Instance.TryLoadPlayerInventoryInBaseJson();
         Dictionary<Item, int> inventory = new Dictionary<Item, int>();
         inventory = GetItemsFromID(data.GetInventory());
         PlayerInventory.Instance.SetInventoryDictionary(inventory);
@@ -63,11 +134,14 @@ public class TrainInventoryManager : IInventoryManager
     }
 
 
-    private Dictionary<Item, int> GetItemsFromID(Dictionary<int, int> itemsID)
+    public Dictionary<Item, int> GetItemsFromID(Dictionary<int, int> itemsID)
     {
         Dictionary<Item, int> items = new Dictionary<Item, int>();
         List<Item> itemsList = GetItemList();
-        foreach (var item in itemsID) { items.Add(GetItemFromID(item.Key, itemsList), item.Value); }
+            foreach (var item in itemsID)
+            {
+                items.Add(GetItemFromID(item.Key, itemsList), item.Value);
+            }
         return items;
     }
 
@@ -94,16 +168,6 @@ public class TrainInventoryManager : IInventoryManager
         }
         return null;
     }
-    
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            ReverseInventoryStatus();
-        }
-    }
-
-
     public void LoadItemsInPlayerInventory(Dictionary<Item, int> items)
     {
         foreach (var itemPair in items)

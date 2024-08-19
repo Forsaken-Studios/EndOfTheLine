@@ -9,11 +9,26 @@ public class MissionStatSO : ScriptableObject
     public int id;
     public string missionName;
     public List<Requirements> requirements;
+    public List<MissionRewards> rewards;
+    public List<MissionBonusItems> bonusItems;
     public float basicChanceOfSuccess;
+    public int daysToComplete;
 }
 
 [Serializable]
 public class Requirements
 { 
     public RequirementSO requirement;
+}
+
+[Serializable]
+public class MissionRewards
+{
+    public ExpeditionRewardSO reward;
+}
+
+[Serializable]
+public class MissionBonusItems
+{
+    public MissionBonusItemsSO bonusItems;
 }

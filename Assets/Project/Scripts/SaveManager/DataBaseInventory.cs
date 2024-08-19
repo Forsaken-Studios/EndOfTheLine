@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class DataBaseInventory
 {
+    /// <summary>
+    /// Int - Slot index
+    /// ItemInBaseDataSave - Item in given slot
+    /// </summary>
     public Dictionary<int, ItemInBaseDataSave> baseInventory;
 
     public DataBaseInventory(Dictionary<int, ItemInBaseDataSave> baseInventory)

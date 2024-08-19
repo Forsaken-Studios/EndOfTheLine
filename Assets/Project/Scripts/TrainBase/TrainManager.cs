@@ -47,6 +47,7 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private GameObject lockIcon;
     private GameObject currentCanvas;
 
+
     [Header("Resources In Train")] 
     private int RESOURCES_GOLD; 
     private int RESOURCES_FOOD; 
@@ -135,47 +136,31 @@ public class TrainManager : MonoBehaviour
         TrainStatus = TrainStatus.onMissionSelector;
         trainPanelsScript = GetComponent<TrainPanels>();
         screensDisplayed = new List<GameObject>();
-        RESOURCES_GOLD = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
-        RESOURCES_MATERIAL = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
-        RESOURCES_FOOD = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME);
+        resourceGold = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
+        resourceMaterial = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
+        resourceFood = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME);
         
         NewDayInGame();
         LoadWagonsUnlockedList();
     }
 
+    private bool ValidStatusToMove()
+    {
+        return TrainStatus != TrainStatus.showingSpecialScreen && GameManager.Instance.GameState != GameState.OnInventory; 
+    }
+
+    public bool ValidStatusToOpenInventory()
+    {
+        return TrainStatus != TrainStatus.showingSpecialScreen;
+    }
+
     // Update is called once per frame
     void Update()
     {
-        HandleButtonPressed();
-        if(!canvasActivated && GameManager.Instance.GameState != GameState.OnInventory)
+        if(ValidStatusToOpenInventory() && GameManager.Instance.GameState != GameState.OnInventory)
+            HandleButtonPressed();
+        if(!canvasActivated && ValidStatusToMove())
             HandleMovement();
-
-        //TODO: JUST FOR TESTING 
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            resourceMaterial--;
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            resourceMaterial++;
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            resourceFood--;
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            resourceFood++;
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            resourceGold--;
-        }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            resourceGold++;
-        }
-
     }
 
     private void LoadWagonsUnlockedList()
@@ -279,6 +264,7 @@ public class TrainManager : MonoBehaviour
                     //Check if we need to disable some screen before
                     if (screensDisplayed.Count == 0)
                     {
+                        Debug.Log(currentCanvas);
                         currentCanvas.SetActive(false);
                     }
                     else
@@ -310,6 +296,7 @@ public class TrainManager : MonoBehaviour
             }
         } 
     }
+    
 
 
     public MissionSelector GetMissionSelector()
@@ -359,7 +346,12 @@ public class TrainManager : MonoBehaviour
         {
             currentDayText.text = "DAY: " + currentDayLocal.ToString();
         }
+        
+        //Handle expedition behavior
+        //HandleExpeditionResult(currentDayLocal); -> Now in takeRewardsButton
     }
+
+ 
 
 
     private void UpdateStore()

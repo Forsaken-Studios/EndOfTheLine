@@ -11,7 +11,9 @@ public class ExpeditionManager : MonoBehaviour
      [SerializeField] private Button detailsButton;
      private ExpeditionSO stationToShow;
      private ExpeditionLocation expeditionClicked;
+     private MissionStatSO currentMissionSelected;
      [SerializeField] private GameObject detailsPrefab;
+     private MissionTypeChooser missionChooser;
      private void Awake()
      {
           if (Instance != null)
@@ -31,7 +33,6 @@ public class ExpeditionManager : MonoBehaviour
 
      private void ShowDetails()
      {
-          
           GameObject details = Instantiate(detailsPrefab, Vector2.zero, Quaternion.identity);
           TrainManager.Instance.AddScreenToList(details);
           details.GetComponentInChildren<DetailsView>().SetUpDetailsView(stationToShow);
@@ -39,9 +40,10 @@ public class ExpeditionManager : MonoBehaviour
      
      public void ShowDetailsButton(ExpeditionSO expeditionSO, ExpeditionLocation expeditionLocation)
      {
+          if(this.expeditionClicked != null)
+               this.expeditionClicked .SetIfIsClicked(false);
           this.expeditionClicked = expeditionLocation;
           this.stationToShow = expeditionSO;
-          Debug.Log("EXPEDITION IN: " + expeditionSO.stationName);
           TrainManager.Instance.TrainStatus = TrainStatus.usingWagon;
           detailsButton.gameObject.SetActive(true);
      }
@@ -61,5 +63,25 @@ public class ExpeditionManager : MonoBehaviour
      public ExpeditionSO GetStationSelected()
      {
           return stationToShow;
+     }
+
+     public void SetMissionSelected(MissionStatSO mission)
+     {
+          this.currentMissionSelected = mission;
+     }
+
+     public MissionStatSO GetMission()
+     {
+          return currentMissionSelected;
+     }
+
+     public MissionTypeChooser GetMissionChooser()
+     {
+          return missionChooser;
+     }
+
+     public void SetMissionChooser(MissionTypeChooser mission)
+     {
+          this.missionChooser = mission;
      }
 }

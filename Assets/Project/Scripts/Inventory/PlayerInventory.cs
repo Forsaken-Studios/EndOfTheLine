@@ -17,7 +17,7 @@ namespace Inventory
 
         [SerializeField] private GameObject floatingTextPrefab;
 
- 
+        private int numberOfTools = -1;
 
         private Dictionary<Item, int> inventoryItemDictionary;
         private float currentWeight;
@@ -55,6 +55,13 @@ namespace Inventory
             else
                return TryAddItemInBase(item, amount, out remainingItemsWithoutSpace, showItemsTakenMessage);
         }
+        
+        public bool GetIfItemIsInPlayerInventory(Item item, int amount)
+        {
+            int amountAux = -1;
+            inventoryItemDictionary.TryGetValue(item, out amountAux);
+            return amountAux >= amount;
+        }
 
         public bool TryAddItemInBase(Item item, int amount, out int remainingItemsWithoutSpace,
             bool showItemsTakenMessage)
@@ -82,6 +89,9 @@ namespace Inventory
                 return false;
             }
         }
+        
+    
+        
         public void StashAllItemsInBase()
         {
             Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
