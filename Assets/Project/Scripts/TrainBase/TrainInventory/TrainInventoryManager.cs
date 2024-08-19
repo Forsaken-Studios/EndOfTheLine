@@ -68,7 +68,6 @@ public class TrainInventoryManager : IInventoryManager
                     if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemSlot.GetItemInSlot(), itemSlot.amount,
                             out int remainingItems))
                     {
-                        Debug.Log("RETURNED ITEM: ");
                         itemSlot.ClearItemSlot();
                     } 
                 }
@@ -168,6 +167,19 @@ public class TrainInventoryManager : IInventoryManager
         }
         return null;
     }
+    public Item GetItemFromID(int id)
+    {
+        List<Item> list = GetItemList();
+        foreach (var item in list)
+        {
+            if (item.itemID == id)
+            {
+                return item;
+            }
+        }
+        return null;
+    }
+    
     public void LoadItemsInPlayerInventory(Dictionary<Item, int> items)
     {
         foreach (var itemPair in items)

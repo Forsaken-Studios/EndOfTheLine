@@ -58,7 +58,6 @@ public class MarketSystem : MonoBehaviour
             int aux = 0;
             foreach (var item in itemsInMarket)
             {
-                Debug.Log("ITEM TO MARKET: " + item.Key.itemName);
                 marketSlots[aux].SetUpProperties(item.Key, item.Value);
                 aux++;
             }
@@ -74,7 +73,6 @@ public class MarketSystem : MonoBehaviour
         }
 
         SubscribeMarketSlotsEvents();
-        Debug.Log(itemsInMarket.Count);
     }
     
     public void ShowGoldEarnedByItemSold(int goldEarned, ItemSlot itemSlot)

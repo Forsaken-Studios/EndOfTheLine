@@ -222,7 +222,31 @@ public class TrainBaseInventory : MonoBehaviour
     }
     return true;
     }
-    
+
+    public void DeleteItemsFromItemSlot(Item item, int amount)
+    {
+        int remainingAmount = amount; 
+        foreach (var itemSlot in itemsSlotsList)
+        {
+            if (itemSlot.GetItemInSlot() != null)
+            {
+                if (itemSlot.GetItemInSlot().itemID == item.itemID)
+                {
+                    if (itemSlot.amount > remainingAmount)
+                    {
+                        itemSlot.amount -= amount;
+                        break;
+                    }
+                    else
+                    {
+                        remainingAmount -= itemSlot.amount;
+                        itemSlot.ClearItemSlot();
+                    }
+                } 
+            }
+          
+        }
+    }
 
     
     public bool GetIfItemIsInInventory(Item item, int amount)

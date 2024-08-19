@@ -13,9 +13,14 @@ public class TradeIcon: MonoBehaviour
     [SerializeField] private Sprite greenIcon;
     [SerializeField] private Sprite redIcon;
 
-
+    private Item item;
+    private int amount;
+    
     public void SetUpProperties(Item item, int amount, bool isReward)
     {
+        this.item = item;
+        this.amount = amount;
+        
         if (amount == 1)
             itemAmount.text = "";
         else
@@ -33,7 +38,14 @@ public class TradeIcon: MonoBehaviour
         {
             Destroy(itemRequirementsMeet.gameObject);
         }
-
-
     }
+
+    public void CheckIfWeHaveItems()
+    {
+        if (TrainBaseInventory.Instance.GetIfItemIsInInventory(item, amount))
+            itemRequirementsMeet.sprite = greenIcon;
+        else
+            itemRequirementsMeet.sprite = redIcon;
+    }
+    
 }

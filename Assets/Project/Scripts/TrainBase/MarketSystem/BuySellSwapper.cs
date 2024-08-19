@@ -14,6 +14,7 @@ public class BuySellSwapper : MonoBehaviour
     [SerializeField] private Button sellPanelButton;
     [SerializeField] private Button tradePanelButton;
 
+    private bool isSelling = false;
 
     private void OnEnable()
     {
@@ -22,6 +23,7 @@ public class BuySellSwapper : MonoBehaviour
         this.sellPanelButton.onClick.AddListener(() => SwapToSellPanel());
         this.tradePanelButton.onClick.AddListener(() => SwapToTradePanel());
         this.buyPanel.SetActive(true);
+        isSelling = false;
         this.sellPanel.SetActive(false);
         this.tradePanel.SetActive(false);
         this.sellPanelButton.interactable = true;
@@ -32,8 +34,11 @@ public class BuySellSwapper : MonoBehaviour
     private void OnDisable()
     {
         TrainManager.Instance.TrainStatus = TrainStatus.onMarketRoom;
-        TrainInventoryManager.Instance.CloseSellingInventory();
-        TrainInventoryManager.Instance.LoadPlayerInventory();
+        if (isSelling)
+        {
+            TrainInventoryManager.Instance.CloseSellingInventory();
+            TrainInventoryManager.Instance.LoadPlayerInventory();
+        }
         this.buyPanelButton.onClick.RemoveAllListeners();
         this.sellPanelButton.onClick.RemoveAllListeners();
         this.tradePanelButton.onClick.RemoveAllListeners();
@@ -45,6 +50,7 @@ public class BuySellSwapper : MonoBehaviour
         this.buyPanel.SetActive(false);
         this.tradePanel.SetActive(false);
         this.sellPanel.SetActive(true);
+        isSelling = true;
         TrainInventoryManager.Instance.OpenInventoryStatusToSell();
         this.sellPanelButton.interactable = false;
         this.buyPanelButton.interactable = true;
@@ -52,22 +58,32 @@ public class BuySellSwapper : MonoBehaviour
     } 
     private void SwapToBuyPanel()
     {
+        if (isSelling)
+        {
+            TrainInventoryManager.Instance.CloseSellingInventory();
+            TrainInventoryManager.Instance.LoadPlayerInventory();
+            isSelling = false;
+        }
         this.buyPanel.SetActive(true);  
         this.tradePanel.SetActive(false);
         this.sellPanel.SetActive(false);
-        TrainInventoryManager.Instance.CloseSellingInventory();
-        TrainInventoryManager.Instance.LoadPlayerInventory();
+
         this.sellPanelButton.interactable = true;
         this.tradePanelButton.interactable = true;
         this.buyPanelButton.interactable = false;
     }  
     private void SwapToTradePanel()
     {
+        if (isSelling)
+        {
+            TrainInventoryManager.Instance.CloseSellingInventory();
+            TrainInventoryManager.Instance.LoadPlayerInventory();
+            isSelling = false;
+        }
         this.buyPanel.SetActive(false);
         this.tradePanel.SetActive(true);
         this.sellPanel.SetActive(false);
-        TrainInventoryManager.Instance.CloseSellingInventory();
-        TrainInventoryManager.Instance.LoadPlayerInventory();
+
         this.sellPanelButton.interactable = true;
         this.tradePanelButton.interactable = false;
         this.buyPanelButton.interactable = true;
