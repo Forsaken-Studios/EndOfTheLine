@@ -47,6 +47,7 @@ public class StartTradeButton : MonoBehaviour
                 tradeButton.GetComponentInChildren<TextMeshProUGUI>().text = "START";
                 //Make rest of the buttons true again
                 onTradeEnded?.Invoke(this, EventArgs.Empty);
+                receivingReward = false;
             }
             else
             {
