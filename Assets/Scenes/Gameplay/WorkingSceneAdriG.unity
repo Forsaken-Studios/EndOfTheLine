@@ -76703,6 +76703,62 @@ PrefabInstance:
       propertyPath: m_Name
       value: PLAYER_PARENT
       objectReference: {fileID: 0}
+    - target: {fileID: 2900314267713319315, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2900314267713319315, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_SortingOrder
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Positions.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Positions.Array.data[1].x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Positions.Array.data[1].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Parameters.colorGradient.key1.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].time
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3016358150794074411, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
+      value: 0.049106598
+      objectReference: {fileID: 0}
     - target: {fileID: 6993874265996280656, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
       propertyPath: m_SortingOrder
       value: 1
@@ -76755,6 +76811,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8683316634347632051, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: DASH_RADIUS
+      value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 8683316634347632051, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: DASH_SPRINT
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 8851588572782756266, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: noise
+      value: 
+      objectReference: {fileID: 2104485932}
     - target: {fileID: 8851588572782756266, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
       propertyPath: dashSpeed
       value: 120
@@ -76762,6 +76830,10 @@ PrefabInstance:
     - target: {fileID: 8851588572782756266, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
       propertyPath: moveSpeed
       value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 8851588572782756266, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+      propertyPath: dashDuration
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -79707,6 +79779,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2104485932 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8683316634347632051, guid: 9030115e268507e43a6bdba723b72aac, type: 3}
+  m_PrefabInstance: {fileID: 1712173740}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee63c8de1f44be044ac1b4ae2dc0f11c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2113261481
 GameObject:
   m_ObjectHideFlags: 0

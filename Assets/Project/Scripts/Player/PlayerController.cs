@@ -8,7 +8,7 @@ namespace Player
 
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private float moveSpeed; 
+        private float moveSpeed; 
         private float speedX, speedY; 
         [Header("Properties")]
         private Rigidbody2D _rb;
@@ -25,6 +25,10 @@ namespace Player
         
         [Header("Inputs")] 
         private KeyCode dashInput = KeyCode.LeftControl;
+
+
+        [Header("Noise Circle")] 
+        [SerializeField] private NoiseCircle noise;
          
         // Start is called before the first frame update
         void Start()
@@ -64,6 +68,7 @@ namespace Player
             {
                 return;
             }
+            Debug.Log(moveSpeed);
             _rb.MovePosition(_rb.position + new Vector2(speedX, speedY) * moveSpeed * Time.fixedDeltaTime);
         }
 
@@ -74,6 +79,7 @@ namespace Player
 
             if (speedX != 0 || speedY != 0)
             {
+                HandleSprintInput();
                 HandleDashInputs();
                 _animator.SetBool("running", true);
             }
@@ -83,6 +89,20 @@ namespace Player
            // _animator.SetInteger("SpeedInt", (int)speedX);
         }
 
+        private void HandleSprintInput()
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                moveSpeed = 26;
+                noise.UpdateColliderOnSprint();
+            }
+            else
+            {
+                moveSpeed = 18;
+                noise.ResetColliderRadius();
+            }
+        }
+        
         private void HandleDashInputs()
         {
             if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetStamina() >= DASH_STAMINA_COST)
@@ -96,12 +116,13 @@ namespace Player
         {
             PlayerOverheating.Instance.DecreaseStamina(DASH_STAMINA_COST);
             PlayerOverheating.Instance.SetCanRecoveryEnergy(false);
+            noise.UpdateColliderOnDash();
             canDash = false;
             isDashing = true;
             _rb.velocity = new Vector2(speedX * dashSpeed, speedY * dashSpeed / 2);
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
-
+            noise.ResetColliderRadius();
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
 
