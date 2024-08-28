@@ -9,6 +9,10 @@ public class TestAbility : Ability
 
     public override void Activate(GameObject parent)
     {
-        Debug.Log("ABILITY " +this.name + "ACTIVATED");
+        Debug.Log("ABILITY " +this.name + " ACTIVATED");
+    }
+    public override void BeginCooldown(GameObject parent)
+    {
+        Debug.Log("ABILITY " +this.name + " cooldown [Animation, or something if needed]");
     }
 }

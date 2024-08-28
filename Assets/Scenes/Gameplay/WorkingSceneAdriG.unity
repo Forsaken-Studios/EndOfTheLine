@@ -75527,7 +75527,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.087
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -76162,6 +76162,7 @@ GameObject:
   - component: {fileID: 1583109941}
   - component: {fileID: 1583109940}
   - component: {fileID: 1583109942}
+  - component: {fileID: 1583109943}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -76210,6 +76211,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40cd5df4e210a8f45a01fb692df87f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1583109943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583109939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 740fa4c838f4cea45b88791b38bccd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activateWorldNoises: 1
+  minTimeRange: 10
+  maxTimeRange: 20
+  worldNoiseDurationMin: 5
+  worldNoiseDurationMax: 9
+  worldNoiseUIPrefab: {fileID: 3238432934247994483, guid: ddad2a03711ef8b45ade617797b1b9fb, type: 3}
 --- !u!1 &1587115141
 GameObject:
   m_ObjectHideFlags: 0

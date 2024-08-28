@@ -8,6 +8,6 @@ public class TestAbility2 : Ability
 
     public override void Activate(GameObject parent)
     {
-        Debug.Log("ABILITY " +this.name + "ACTIVATED");
+        Debug.Log("ABILITY " +this.name + " ACTIVATED");
     }
 }
