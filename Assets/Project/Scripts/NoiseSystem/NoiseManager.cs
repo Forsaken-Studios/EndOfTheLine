@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Player;
 using UnityEngine;
 
 public class NoiseManager : MonoBehaviour
@@ -55,12 +56,15 @@ public class NoiseManager : MonoBehaviour
             SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_Start);
             //Activate screen shake?
             
+            //Reduce noise radius
+            PlayerController.Instance.GetNoiseScript().UpdateColliderOnWorldNoise();
             worldNoiseActivated = true;
             yield return new WaitForSeconds(worldNoiseDuration);
             
             worldNoiseActivated = false; 
             SoundManager.Instance.StopSound();
             Destroy(worldNoiseUIPrefab);
+            PlayerController.Instance.GetNoiseScript().ResetColliderRadiusOfWorldNoise();
             SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_End);
             yield return new WaitForSeconds(timeToWaitBetweenNoise);
         }   

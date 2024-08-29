@@ -13,18 +13,20 @@ public class NoiseCircle : MonoBehaviour
     private float normalRadius = 27;
 
     [Header("RADIUS")]
-    [SerializeField] private float DASH_RADIUS;
-    [SerializeField] private float DASH_SPRINT;
-    
+    [SerializeField] private float RADIUS_DASH = 34;
+    [SerializeField] private float RADIUS_SPRINT = 31;
+    [SerializeField] private float RADIUS_WORLDNOISE_REDUCER = 0.3f;
+    [SerializeField] private bool worldNoiseIsActivated;
     void Start()
     { 
         circleCollider = GetComponent<CircleCollider2D>();
         UpdateColliderRadius(27);
     }
 
+
     private void Update()
     {
-       
+        Debug.Log(currentRadius);
     }
 
     void OnDrawGizmos()
@@ -52,23 +54,34 @@ public class NoiseCircle : MonoBehaviour
     }
     public void UpdateColliderRadius(float radius)
     {
-        this.circleCollider.radius = radius;
-        currentRadius = radius;
+        this.circleCollider.radius = worldNoiseIsActivated ? radius * RADIUS_WORLDNOISE_REDUCER : radius;
+        currentRadius = worldNoiseIsActivated ? radius * RADIUS_WORLDNOISE_REDUCER : radius;
     }
 
     public void UpdateColliderOnDash()
     {
-        UpdateColliderRadius(DASH_RADIUS);
+        UpdateColliderRadius(RADIUS_DASH);
     }
 
+    public void UpdateColliderOnWorldNoise()
+    {
+        worldNoiseIsActivated = true;
+        UpdateColliderRadius(currentRadius);
+    }
+    
     public void UpdateColliderOnSprint()
     {
-        UpdateColliderRadius(DASH_SPRINT);
+        UpdateColliderRadius(RADIUS_SPRINT);
     }
 
     public void ResetColliderRadius()
     {
-        this.circleCollider.radius = normalRadius;
-        currentRadius = normalRadius;
+        this.circleCollider.radius = worldNoiseIsActivated ? normalRadius * RADIUS_WORLDNOISE_REDUCER : normalRadius;
+        currentRadius = worldNoiseIsActivated ? normalRadius * RADIUS_WORLDNOISE_REDUCER : normalRadius;
+    }  
+    public void ResetColliderRadiusOfWorldNoise()
+    {
+        worldNoiseIsActivated = false;
+        ResetColliderRadius();
     }
 }

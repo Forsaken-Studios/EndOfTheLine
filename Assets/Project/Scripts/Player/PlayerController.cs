@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,9 @@ namespace Player
 
     public class PlayerController : MonoBehaviour
     {
+
+        public static PlayerController Instance;
+        
         private float moveSpeed; 
         private float speedX, speedY; 
         [Header("Properties")]
@@ -29,7 +33,17 @@ namespace Player
 
         [Header("Noise Circle")] 
         [SerializeField] private NoiseCircle noise;
-         
+
+        private void Awake()
+        {
+            if (Instance != null)
+            {
+                Debug.LogWarning("[PlayerController.cs] : There is already a PlayerController Instance");
+                Destroy(this);
+            }
+            Instance = this;
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -68,7 +82,6 @@ namespace Player
             {
                 return;
             }
-            Debug.Log(moveSpeed);
             _rb.MovePosition(_rb.position + new Vector2(speedX, speedY) * moveSpeed * Time.fixedDeltaTime);
         }
 
@@ -134,6 +147,11 @@ namespace Player
         public void SetIfPlayerCanMove(bool aux)
         {
             this.playerCanMove = aux;
+        }
+
+        public NoiseCircle GetNoiseScript()
+        {
+            return noise;
         }
     }
 }
