@@ -79,14 +79,22 @@ public class LooteableObjectSelectorUI : MonoBehaviour
 
     private string SwapNames(string originalName)
     {
+        if (originalName.Contains("LooteableObject[ToolBox]"))
+        {
+            originalName = "Tool Box";
+        }
+        
         switch (originalName)
         {
             case "TemporalBox(Clone)":
                 return "Temporal Crate";
                 break;
-            case "LooteableObject[ToolBox]":
+            case "Tool Box":
                 return "Tool Box"; 
-                break; 
+                break;  
+            case "Crate":
+                return "Crate"; 
+                break;  
         }
 
         return "Undefined"; 

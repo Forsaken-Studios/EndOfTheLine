@@ -1008,6 +1008,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
   m_PrefabInstance: {fileID: 388195156}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &398022379
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7512406211256044260, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_Name
+      value: Crate
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 223
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1084.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
 --- !u!1 &430718336
 GameObject:
   m_ObjectHideFlags: 0
@@ -34216,7 +34273,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1437372468086054429, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
       propertyPath: m_Name
-      value: LooteableObject[ToolBox] (3)
+      value: LooteableObject[ToolBox]
       objectReference: {fileID: 0}
     - target: {fileID: 2472250987447768814, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -35068,7 +35125,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1437372468086054429, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
       propertyPath: m_Name
-      value: LooteableObject[ToolBox] (2)
+      value: LooteableObject[ToolBox]
       objectReference: {fileID: 0}
     - target: {fileID: 2472250987447768814, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -75785,7 +75842,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1437372468086054429, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
       propertyPath: m_Name
-      value: LooteableObject[ToolBox] (1)
+      value: LooteableObject[ToolBox]
       objectReference: {fileID: 0}
     - target: {fileID: 2472250987447768814, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -79190,7 +79247,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1437372468086054429, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
       propertyPath: m_Name
-      value: LooteableObject[ToolBox] (4)
+      value: LooteableObject[ToolBox] 2
       objectReference: {fileID: 0}
     - target: {fileID: 2472250987447768814, guid: fe2482d24fecfbf4bbb3a83ba3035ae2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -80392,3 +80449,4 @@ SceneRoots:
   - {fileID: 790256238}
   - {fileID: 6988442008296249346}
   - {fileID: 796235727}
+  - {fileID: 398022379}
