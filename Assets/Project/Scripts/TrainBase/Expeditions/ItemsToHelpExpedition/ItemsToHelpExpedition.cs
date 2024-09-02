@@ -25,17 +25,22 @@ public class ItemsToHelpExpedition : MonoBehaviour
         
         leftArrowButton.onClick.AddListener(() => SwapMissionToLeft());
         rightArrowButton.onClick.AddListener(() => SwapMissionToRight());
-        
+
         Debug.Log(NewExpeditionManager.Instance);
-        if (maxNumberOfTools == 0 || NewExpeditionManager.Instance.GetMission() != null)
+        if (maxNumberOfTools == 0)
         {
-            if (NewExpeditionManager.Instance.GetMission().basicChanceOfSuccess == 100)
+            leftArrowButton.interactable = false;
+            rightArrowButton.interactable = false;
+        }
+        if (NewExpeditionManager.Instance.GetMission() != null)
+        {
+            if(NewExpeditionManager.Instance.GetMission().basicChanceOfSuccess == 100)
             {
                 leftArrowButton.interactable = false;
                 rightArrowButton.interactable = false;
-            }
-
+            }  
         }
+        
     }
 
     private void OnDisable()

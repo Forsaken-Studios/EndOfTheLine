@@ -13,10 +13,15 @@ MonoBehaviour:
   m_Name: EXP2_Mission_1
   m_EditorClassIdentifier: 
   id: 4
-  missionName: Cazar Gitanos
+  missionName: Search for tools
   requirements:
-  - requirement: {fileID: 11400000, guid: e851661bea253f5409604a1f22c25a35, type: 2}
-  rewards: []
-  bonusItems: []
+  - requirement: {fileID: 11400000, guid: cbe71e25629c9d340aade9c008bec659, type: 2}
+  - requirement: {fileID: 11400000, guid: d733acf1985216b468837fa476ad47b9, type: 2}
+  rewards:
+  - reward: {fileID: 11400000, guid: 08f9ee94da3616b47b1acdee2c88890f, type: 2}
+  - reward: {fileID: 11400000, guid: 5e51671720f1ab44da7624b3ff066e18, type: 2}
+  - reward: {fileID: 11400000, guid: 3d15de50d4a5eea46bd9e9ffb272e5bb, type: 2}
+  bonusItems:
+  - bonusItems: {fileID: 11400000, guid: a30ce2821e68dd24380c57e7968605f5, type: 2}
   basicChanceOfSuccess: 42
   daysToComplete: 1
