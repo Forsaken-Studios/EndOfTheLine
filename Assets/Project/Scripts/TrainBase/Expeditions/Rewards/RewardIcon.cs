@@ -10,18 +10,27 @@ public class RewardIcon : MonoBehaviour
     [SerializeField] private TextMeshProUGUI amountText;
 
     private ExpeditionRewardSO expeditionReward;
-    public void SetUpProperties(ExpeditionRewardSO rewardSO)
+    public void SetUpProperties(ExpeditionRewardSO rewardSO, bool showAmount)
     {
         this.expeditionReward = rewardSO;
         this.itemImage.sprite = rewardSO.item.itemIcon;
-        if (rewardSO.minAmount == rewardSO.maxAmount)
+
+        if (showAmount)
         {
-            this.amountText.text = rewardSO.minAmount.ToString();
+            if (rewardSO.minAmount == rewardSO.maxAmount)
+            {
+                this.amountText.text = rewardSO.minAmount.ToString();
+            }
+            else
+            {
+                this.amountText.text = rewardSO.minAmount.ToString() + "-" + rewardSO.maxAmount.ToString();
+            }   
         }
         else
         {
-            this.amountText.text = rewardSO.minAmount.ToString() + "-" + rewardSO.maxAmount.ToString();
+            amountText.gameObject.SetActive(false);
         }
+        
     }
 
     public void WriteNewRewards(float multiplier)

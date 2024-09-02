@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Inventory;
@@ -6,13 +5,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MissionTypeChooser : MonoBehaviour
+public class ExpeditionDetailsPreview : MonoBehaviour
 {
-    [Header("Mission Type")]
-    [SerializeField] private Button leftArrowButton;
-    [SerializeField] private Button rightArrowButton;
-    [SerializeField] private TextMeshProUGUI missionText;
-    [SerializeField] private TextMeshProUGUI missionDaysToCompleteText;
+
     [Header("Expedition Properties Text")]
     [SerializeField] private TextMeshProUGUI chanceOfSuccessText;
     private float rewardsMultiplier = 1;
@@ -31,25 +26,23 @@ public class MissionTypeChooser : MonoBehaviour
     [SerializeField] private GameObject bonusesItemsGrid;
     private List<GameObject> listOfBonusesItems;
     private float currentChanceOfSuccess;
-    private int currentMissionIndex = 0;
-    private List<MissionStatSO> missions;
     private MissionStatSO currentMissionSelected;
+    private MissionPanel missionPanel;
     [Header("Start Expedition Bonus")]
     [SerializeField] private Button startExpeditionButton;
     private bool canStartExpedition = true;
     private bool expeditionInProgress = false;
-
-    public static event EventHandler onMissionChanged;
-
-    private void OnEnable()
+    
+    public void SetUpProperties(MissionStatSO mission, MissionPanel missionPanel)
     {
         //PlayerPrefs.SetInt("ExpeditionInProgress", 0);
-        ExpeditionManager.Instance.SetMissionChooser(this);
+        this.currentMissionSelected = mission;
+        this.missionPanel = missionPanel;
+        ClearExpedition();
         InitializeList();
         InitializeButtons();
-        SetUpProperties(0);
-        this.leftArrowButton.interactable = false;
-        UpdateChanceOfSuccess(missions[currentMissionIndex].basicChanceOfSuccess);
+        SetUpProperties();
+        UpdateChanceOfSuccess(currentMissionSelected.basicChanceOfSuccess);
         //Event
         BonusItems.onButtonClicked += OnBonusItemClicked;
         ItemsToHelpExpedition.onToolsIncreaseChanged += OnToolsIncreaseChanged;
@@ -60,7 +53,6 @@ public class MissionTypeChooser : MonoBehaviour
         if (expeditionInProgress)
         {
             startExpeditionButton.interactable = false;
-            Debug.Log("EE");
         }
         else
         {
@@ -68,23 +60,67 @@ public class MissionTypeChooser : MonoBehaviour
         }
     }
 
-    public void ResetStartExpeditionButton()
-    {
-        if(this.startExpeditionButton != null)
-            this.startExpeditionButton.interactable = true;
+    private void ClearExpedition()
+    {        
+        if (listOfRewards != null)
+        {
+            ClearList(listOfRewards);   
+            listOfRewardsSO.Clear();
+        }
+
+        if (listOfRequirements != null)
+        {
+            ClearList(listOfRequirements);   
+            listOfRequirementsSO.Clear();
+        }
+
+        if (listOfBonusesItems != null)
+        {
+            ClearList(listOfBonusesItems);
+        }
     }
     
-    private void OnToolsDecreaseChanged(object sender, int e)
+    private void OnDisable()
     {
-       RemoveChanceOfSuccess(e);
+        startExpeditionButton.onClick.RemoveAllListeners();
+        BonusItems.onButtonClicked -= OnBonusItemClicked;
+        ItemsToHelpExpedition.onToolsIncreaseChanged -= OnToolsIncreaseChanged;
+        ItemsToHelpExpedition.onToolsDecreaseChanged -= OnToolsDecreaseChanged;
     }
 
-    private void OnToolsIncreaseChanged(object sender, int e)
+        
+    private void OnBonusItemClicked(object sender, EventBonusItemInfo e)
     {
-        AddChanceOfSuccess(e);
+        if (e.isActivated)
+        {
+            //Increase reward
+            rewardsMultiplier += e.missionBonus.itemsRewardsMultiplier;
+            AddChanceOfSuccess(e.missionBonus.increaseChances);
+            
+        }
+        else
+        {
+            rewardsMultiplier -= e.missionBonus.itemsRewardsMultiplier;
+            RemoveChanceOfSuccess(e.missionBonus.increaseChances);
+        }
+        //Change rewards text
+        UpdateRewardsText(rewardsMultiplier);
     }
-
-
+    
+    private void SetUpProperties()
+    {
+        UpdateChanceOfSuccess(currentMissionSelected.basicChanceOfSuccess);
+        //Set up requirements if needed
+        SetUpRequirements();
+        //Check if we meet the requirements
+        if(!expeditionInProgress)
+            CheckIfWeMeetUpRequirements();
+        //Change rewards
+        ChangeRewardsGrid();
+        //Set Up bonuses items if needed
+        SetUpBonusesItems();
+    }
+    
     private void InitializeList()
     {
         listOfRequirements = new List<GameObject>();
@@ -92,18 +128,13 @@ public class MissionTypeChooser : MonoBehaviour
         listOfRewards = new List<GameObject>();
         listOfBonusesItems = new List<GameObject>();
         listOfRequirementsSO = new List<RequirementSO>();
-        missions = new List<MissionStatSO>();
-        missions = ExpeditionManager.Instance.GetExpeditionClicked().GetMissions();
     }
 
     private void InitializeButtons()
     {
         startExpeditionButton.onClick.AddListener(() => StartExpedition());
-        leftArrowButton.onClick.AddListener(() => SwapMissionToLeft());
-        rightArrowButton.onClick.AddListener(() => SwapMissionToRight());
     }
-
-
+    
     private void StartExpedition()
     {
         float randomValue = UnityEngine.Random.Range(0, 101);
@@ -127,10 +158,14 @@ public class MissionTypeChooser : MonoBehaviour
             // -1 => Failure
         }
 
+        PlayerPrefs.SetInt("ExpeditionID", currentMissionSelected.id);
         int endingDay = PlayerPrefs.GetInt("CurrentDay") + currentMissionSelected.daysToComplete;
         PlayerPrefs.SetInt("ExpeditionEndDay", endingDay);
+        NewExpeditionManager.Instance.SetCurrentMissionPanelInProgress(missionPanel);
+        missionPanel.SetUpExpeditionTextToInProgress();
     }
-
+    
+    
     private void SaveRewardsInJson()
     {
         Dictionary<int, int> rewardsDictionary = new Dictionary<int, int>();
@@ -144,64 +179,39 @@ public class MissionTypeChooser : MonoBehaviour
         ItemsDiccionarySave rewardsSave = new ItemsDiccionarySave(rewardsDictionary);
         SaveManager.Instance.SaveExpeditionRewardJson(rewardsSave);
     }
-    
-    private void OnDisable()
-    {
-        leftArrowButton.onClick.RemoveAllListeners();
-        startExpeditionButton.onClick.RemoveAllListeners();
-        rightArrowButton.onClick.RemoveAllListeners();
-        BonusItems.onButtonClicked -= OnBonusItemClicked;
-        ItemsToHelpExpedition.onToolsIncreaseChanged -= OnToolsIncreaseChanged;
-        ItemsToHelpExpedition.onToolsDecreaseChanged -= OnToolsDecreaseChanged;
-    }
-    
-    private void SetUpProperties(int index)
-    {
-        UpdateChanceOfSuccess(missions[index].basicChanceOfSuccess);
-       // Debug.Log(missions.Count);
-        this.missionText.text = missions[index].missionName;
-        this.missionDaysToCompleteText.text = missions[index].daysToComplete.ToString() + " days";
-        currentMissionSelected = missions[index];
-        ExpeditionManager.Instance.SetMissionSelected(currentMissionSelected);
-        //Set up requirements if needed
-        SetUpRequirements();
-        //Check if we meet the requirements
-        if(!expeditionInProgress)
-            CheckIfWeMeetUpRequirements();
-        //Change rewards
-        ChangeRewardsGrid();
-        //Set Up bonuses items if needed
-        SetUpBonusesItems();
-    }
-
-    
-    
-    private void OnBonusItemClicked(object sender, EventBonusItemInfo e)
-    {
-        if (e.isActivated)
-        {
-            //Increase reward
-            rewardsMultiplier += e.missionBonus.itemsRewardsMultiplier;
-            AddChanceOfSuccess(e.missionBonus.increaseChances);
-            
-        }
-        else
-        {
-            rewardsMultiplier -= e.missionBonus.itemsRewardsMultiplier;
-            RemoveChanceOfSuccess(e.missionBonus.increaseChances);
-        }
-        //Change rewards text
-        UpdateRewardsText(rewardsMultiplier);
-    }
-
-    private void UpdateRewardsText(float multiplier)
+     private void UpdateRewardsText(float multiplier)
     {
         foreach (var reward  in listOfRewards)
         {
             reward.GetComponent<RewardIcon>().WriteNewRewards(multiplier);
         }
     }
+    private void OnToolsDecreaseChanged(object sender, int e)
+    {
+        RemoveChanceOfSuccess(e);
+    }
 
+    private void OnToolsIncreaseChanged(object sender, int e)
+    {
+        AddChanceOfSuccess(e);
+    }
+
+    private void UpdateChanceOfSuccess(float value )
+    {
+        currentChanceOfSuccess = value;
+        chanceOfSuccessText.text = value.ToString() + " %";
+    }
+    
+    public void AddChanceOfSuccess(float value)
+    {
+        currentChanceOfSuccess += value;
+        chanceOfSuccessText.text = Mathf.Clamp(currentChanceOfSuccess, 0, 100).ToString() + " %";
+    }
+    public void RemoveChanceOfSuccess(float value )
+    {
+        currentChanceOfSuccess -= value;
+        chanceOfSuccessText.text =Mathf.Clamp(currentChanceOfSuccess, 0, 100).ToString() + " %";
+    }
     private void SetUpBonusesItems()
     {
         ClearList(listOfBonusesItems);   
@@ -241,7 +251,7 @@ public class MissionTypeChooser : MonoBehaviour
                 GameObject rewardGameObject = Instantiate(rewardsPrefab, Vector2.zero, Quaternion.identity, rewardsGrid.transform);
                 listOfRewards.Add(rewardGameObject);
                 listOfRewardsSO.Add(reward.reward);
-                rewardGameObject.GetComponent<RewardIcon>().SetUpProperties(reward.reward); 
+                rewardGameObject.GetComponent<RewardIcon>().SetUpProperties(reward.reward, true); 
             }
         }
     }
@@ -314,55 +324,6 @@ public class MissionTypeChooser : MonoBehaviour
         list.Clear();
  
     }
-    
-    private void SwapMissionToLeft()
-    {
-        int newIndex = currentMissionIndex - 1;
-        currentMissionIndex = (int) Mathf.Clamp(newIndex, 0, this.missions.Count - 1);
-        SetUpProperties(currentMissionIndex);
-        BlockButtonIfFirstMission(currentMissionIndex);
-        onMissionChanged?.Invoke(this, EventArgs.Empty);
-    }
-    
-    private void SwapMissionToRight()
-    {
-        int newIndex = currentMissionIndex + 1;
-        currentMissionIndex = Mathf.Clamp(newIndex, 0, this.missions.Count - 1);
-        SetUpProperties(currentMissionIndex);
-        BlockButtonIfLastMission(currentMissionIndex);
-        onMissionChanged?.Invoke(this, EventArgs.Empty);
-    }
 
-    private void UpdateChanceOfSuccess(float value )
-    {
-        currentChanceOfSuccess = value;
-        chanceOfSuccessText.text = value.ToString() + " %";
-    }
-    
-    public void AddChanceOfSuccess(float value)
-    {
-        currentChanceOfSuccess += value;
-        chanceOfSuccessText.text = Mathf.Clamp(currentChanceOfSuccess, 0, 100).ToString() + " %";
-    }
-    public void RemoveChanceOfSuccess(float value )
-    {
-            currentChanceOfSuccess -= value;
-            chanceOfSuccessText.text =Mathf.Clamp(currentChanceOfSuccess, 0, 100).ToString() + " %";
-    }
-    private void BlockButtonIfFirstMission(int index)
-    {
-        if (index == 0)
-            this.leftArrowButton.interactable = false;
-        
-        if (index < missions.Count - 1)
-            this.rightArrowButton.interactable = true;
-    }
-    private void BlockButtonIfLastMission(int index)
-    {
-        if (index > 0)
-            this.leftArrowButton.interactable = true;
-        
-        if (index == missions.Count - 1)
-            this.rightArrowButton.interactable = false;
-    }
+
 }

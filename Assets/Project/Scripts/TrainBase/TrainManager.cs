@@ -210,7 +210,7 @@ public class TrainManager : MonoBehaviour
     {
             if (movingToLeft)
             {
-                LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
+                //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
                 currentIndex++;
                 UpdateRoomInfo();
                 trainPanelsScript.HideTrainRoom(currentIndex - 1);
@@ -218,7 +218,7 @@ public class TrainManager : MonoBehaviour
             }
             else
             {
-                LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
+                //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
                 currentIndex--;
                 trainPanelsScript.HideTrainRoom(currentIndex + 1);
                 trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]); 
@@ -264,7 +264,6 @@ public class TrainManager : MonoBehaviour
                     //Check if we need to disable some screen before
                     if (screensDisplayed.Count == 0)
                     {
-                        Debug.Log(currentCanvas);
                         currentCanvas.SetActive(false);
                     }
                     else
@@ -335,7 +334,6 @@ public class TrainManager : MonoBehaviour
         int currentDayLocal = PlayerPrefs.GetInt("CurrentDay");
         if (currentDayLocal != previousDay)
         {
-            Debug.Log("DAY UPDATED: " + currentDayLocal);
             PlayerPrefs.SetInt("PreviousDay", currentDayLocal);
             this.currentDay = currentDayLocal;
             currentDayText.text = "DAY: " + currentDayLocal.ToString();

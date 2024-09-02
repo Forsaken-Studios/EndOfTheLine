@@ -127,8 +127,6 @@ public class MarketSystem : MonoBehaviour
         Item[] allItems = UnityEngine.Resources.LoadAll<Item>("Items/Scrap");
         List<Item> itemsToSpawn = allItems.ToList();
         
-        
-        Debug.Log("UPDATING STORE");
         //TODO: Dependiendo de lo que queramos, aparecerán X Objetos, por ahora vamos a poner 3 o 4
         float numberOfItemsToBuy = UnityEngine.Random.Range(3, 4);
 
