@@ -58,9 +58,12 @@ public class LooteableObjectSelector : MonoBehaviour
     
     private void ShowItemSelector()
     {
+        if(lootSelectorGameObject)
+            Destroy(lootSelectorGameObject);
         lootSelectorGameObject = Instantiate(lootSelectorPrefab,
-            looteableObjectInRange[0].gameObject.transform.position, Quaternion.identity);
+        looteableObjectInRange[0].gameObject.transform.position, Quaternion.identity);
         looteableObjectSelectorUI = lootSelectorGameObject.GetComponent<LooteableObjectSelectorUI>();
+        
     } 
     private void HideItemSelector()
     {
