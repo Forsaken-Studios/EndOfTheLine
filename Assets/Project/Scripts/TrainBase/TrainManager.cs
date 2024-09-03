@@ -47,6 +47,7 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private GameObject lockIcon;
     private GameObject currentCanvas;
 
+    [SerializeField] private TraderPanel tradePanel;
 
     [Header("Resources In Train")] 
     private int RESOURCES_GOLD; 
@@ -334,9 +335,11 @@ public class TrainManager : MonoBehaviour
         int currentDayLocal = PlayerPrefs.GetInt("CurrentDay");
         if (currentDayLocal != previousDay)
         {
+            tradePanel.HandleTrade();
             PlayerPrefs.SetInt("PreviousDay", currentDayLocal);
             this.currentDay = currentDayLocal;
             currentDayText.text = "DAY: " + currentDayLocal.ToString();
+            OnDayChanged?.Invoke(this, EventArgs.Empty);
             //Update store
             UpdateStore();
         }

@@ -26,7 +26,7 @@ public class NoiseCircle : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(currentRadius);
+
     }
 
     void OnDrawGizmos()

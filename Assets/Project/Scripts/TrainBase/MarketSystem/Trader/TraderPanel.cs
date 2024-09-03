@@ -26,8 +26,10 @@ public class TraderPanel : MonoBehaviour
         SetUpPanel();
         StartTradeButton.onTradeStarted += OnTradeStarted;
         StartTradeButton.onTradeEnded += OnTradeEnded;
+        HandleTrade();
     }
 
+  
     private void OnEnable()
     {
         if (iconList != null)
@@ -45,6 +47,29 @@ public class TraderPanel : MonoBehaviour
         StartTradeButton.onTradeStarted -= OnTradeStarted;
         StartTradeButton.onTradeEnded -= OnTradeEnded;
     }
+    
+    public void HandleTrade()
+    {
+        Debug.Log("ON DAY CHANGED TRADER");
+        string resourcesPath = "Trades";
+        List<ItemTradeSO> itemTrades =
+            UnityEngine.Resources.LoadAll<ItemTradeSO>(resourcesPath).ToList();
+
+        if (buttonList != null)
+        {
+            foreach (var button in buttonList)
+            {
+                button.interactable = true;
+            }
+        
+            foreach (var item in itemTrades)
+            {
+                PlayerPrefs.SetInt("TradeID_" + item.id, 0);
+            }
+        }
+        
+    }
+
     
     private void OnTradeStarted(object sender, ItemTradeSO e)
     {
@@ -75,6 +100,25 @@ public class TraderPanel : MonoBehaviour
             button.interactable = true;
         }
     }
+
+    private List<ItemTradeSO> RandomTrades(List<ItemTradeSO> list)
+    {
+        int randomAmount = UnityEngine.Random.Range(3, 5);
+
+        List<ItemTradeSO> items = new List<ItemTradeSO>();
+        
+        while (items.Count < randomAmount)
+        {
+            int randomItem = UnityEngine.Random.Range(0, list.Count);
+            if (!items.Contains(list[randomItem]))
+            {
+                items.Add(list[randomItem]);
+            }
+        }
+
+
+        return items;
+    }
     
     private void SetUpPanel()
     {
@@ -82,25 +126,32 @@ public class TraderPanel : MonoBehaviour
         List<ItemTradeSO> itemTrades =
                  UnityEngine.Resources.LoadAll<ItemTradeSO>(resourcesPath).ToList();
 
-        int id = 0;
-        foreach (var trade in itemTrades)
+
+        List<ItemTradeSO> randomTrades = RandomTrades(itemTrades);
+    
+        for (int i = 0; i < randomTrades.Count; i++)
         {
             GameObject tradeGameObject = Instantiate(itemTradePrefab, Vector2.zero, Quaternion.identity,
                 itemTradeGridParent.transform);
-            tradeGameObject.GetComponentInChildren<TextMeshProUGUI>().text = trade.daysToComplete.ToString() + " days";
+            tradeGameObject.GetComponentInChildren<TextMeshProUGUI>().text = randomTrades[i].daysToComplete.ToString() + " days";
          
             //Set up trade
-            SetUpUniqueTradeRequirements(trade, tradeGameObject);
-            SetUpTradeRewards(trade, tradeGameObject);
+            SetUpUniqueTradeRequirements(randomTrades[i], tradeGameObject);
+            SetUpTradeRewards(randomTrades[i], tradeGameObject);
 
             //Set Up Buttons 
             Button button = tradeGameObject.GetComponentInChildren<Button>();
             buttonList.Add(button);
-            button.GetComponent<StartTradeButton>().SetUpProperties(trade, id);
-            HandleTradeButtonInProgress(id, button);
-            id++;
+            button.GetComponent<StartTradeButton>().SetUpProperties(randomTrades[i], i);
+            int idTrade = PlayerPrefs.GetInt("TradeID_" + randomTrades[i].id);
+
+            if (idTrade != 0)
+            {
+                button.interactable = false;
+            }
             button.gameObject.transform.SetAsLastSibling();
         }
+       
     }
 
     private void HandleTradeButtonInProgress(int id, Button button)

@@ -9,7 +9,7 @@ public class ItemTradeSO : ScriptableObject
 
     public List<Requirements> requirements;
     public TradeItem itemReceived;
-
+    public int id;
     public int daysToComplete;
 }
 [Serializable]
