@@ -54,10 +54,6 @@ public class ExpeditionDetailsPreview : MonoBehaviour
         {
             startExpeditionButton.interactable = false;
         }
-        else
-        {
-            startExpeditionButton.interactable = true; 
-        }
     }
 
     private void ClearExpedition()
@@ -139,30 +135,34 @@ public class ExpeditionDetailsPreview : MonoBehaviour
     {
         float randomValue = UnityEngine.Random.Range(0, 101);
 
-        if (randomValue < currentChanceOfSuccess)
+        if (CheckIfWeMeetUpRequirements())
         {
-            Debug.Log("SUCCESS");
-            PlayerPrefs.SetInt("ExpeditionResult", 1);
-            PlayerPrefs.SetInt("ExpeditionInProgress", 1);
-            startExpeditionButton.interactable = false;
-            //Success expedition
-            SaveRewardsInJson();
-        }
-        else
-        {
-            //Failure expedition
-            PlayerPrefs.SetInt("ExpeditionResult", -1);
-            PlayerPrefs.SetInt("ExpeditionInProgress", 1);
-            startExpeditionButton.interactable = false;
-            Debug.Log("FAILURE");
-            // -1 => Failure
-        }
+            if (randomValue < currentChanceOfSuccess)
+            {
+                Debug.Log("SUCCESS");
+                PlayerPrefs.SetInt("ExpeditionResult", 1);
+                PlayerPrefs.SetInt("ExpeditionInProgress", 1);
+                startExpeditionButton.interactable = false;
+                //Success expedition
+                SaveRewardsInJson();
+            }
+            else
+            {
+                //Failure expedition
+                PlayerPrefs.SetInt("ExpeditionResult", -1);
+                PlayerPrefs.SetInt("ExpeditionInProgress", 1);
+                startExpeditionButton.interactable = false;
+                Debug.Log("FAILURE");
+                // -1 => Failure
+            }
 
-        PlayerPrefs.SetInt("ExpeditionID", currentMissionSelected.id);
-        int endingDay = PlayerPrefs.GetInt("CurrentDay") + currentMissionSelected.daysToComplete;
-        PlayerPrefs.SetInt("ExpeditionEndDay", endingDay);
-        NewExpeditionManager.Instance.SetCurrentMissionPanelInProgress(missionPanel);
-        missionPanel.SetUpExpeditionTextToInProgress();
+            PlayerPrefs.SetInt("ExpeditionID", currentMissionSelected.id);
+            int endingDay = PlayerPrefs.GetInt("CurrentDay") + currentMissionSelected.daysToComplete;
+            PlayerPrefs.SetInt("ExpeditionEndDay", endingDay);
+            NewExpeditionManager.Instance.SetCurrentMissionPanelInProgress(missionPanel);
+            missionPanel.SetUpExpeditionTextToInProgress();
+        }
+  
     }
     
     
@@ -256,7 +256,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
         }
     }
 
-    private void CheckIfWeMeetUpRequirements()
+    private bool CheckIfWeMeetUpRequirements()
     {
         if (listOfRequirementsSO.Count > 0)
         {
@@ -266,16 +266,22 @@ public class ExpeditionDetailsPreview : MonoBehaviour
                 if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
                     PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
                 {
+                    Debug.Log("WE HAVE ITEM");
                     startExpeditionButton.interactable = true;
                 }
                 else
                 { 
+                    Debug.Log("WE DONT HAVE ITEM");
                     startExpeditionButton.interactable = false;
+                    return false;
                     break; 
                 }
             }   
         }else
             startExpeditionButton.interactable = true;
+
+
+        return true;
     }
 
     private bool GetIfWeHaveItem(Item item, int amount)

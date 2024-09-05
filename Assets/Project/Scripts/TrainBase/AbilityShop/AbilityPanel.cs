@@ -28,7 +28,7 @@ public class AbilityPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     private void ShowAbilityDetails()
     {
-        AbilityShop.Instance.ShowAbilityDetails(this.ability);   
+        AbilityShop.Instance.ShowAbilityDetails(this.ability, unlocked, this);   
     }
 
     public void OnPointerEnter(PointerEventData eventData)

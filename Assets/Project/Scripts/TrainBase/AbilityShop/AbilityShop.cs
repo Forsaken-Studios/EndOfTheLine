@@ -13,6 +13,8 @@ public class AbilityShop : MonoBehaviour
     [SerializeField] private GameObject abilityPanelPrefab;
     private GameObject abilityGrid;
     private List<GameObject> abilitiesPanelList;
+    private AbilityPanel currentabilityPanelSelected;
+    private Ability currentAbilitySelected;
     [Header("Ability Details")]
     [SerializeField] private GameObject detailsView;
     [SerializeField] private TextMeshProUGUI abilityName;
@@ -21,6 +23,7 @@ public class AbilityShop : MonoBehaviour
     [SerializeField] private Image abilityIcon;
     [SerializeField] private TextMeshProUGUI abilityGoldCost;
     [SerializeField] private TextMeshProUGUI abilityMaterialCost;
+    [SerializeField] private Button buyAbilityButton;
 
     private void Awake()
     {
@@ -40,8 +43,10 @@ public class AbilityShop : MonoBehaviour
         detailsView.SetActive(false);
     }
 
-    public void ShowAbilityDetails(Ability ability)
-    {
+    public void ShowAbilityDetails(Ability ability, bool isUnlocked, AbilityPanel abilityPanel)
+    { 
+        currentAbilitySelected = ability; 
+        currentabilityPanelSelected = abilityPanel;
        detailsView.SetActive(true);
        abilityName.text = ability.name;
        abilityDescription.text = ability.description;
@@ -49,10 +54,26 @@ public class AbilityShop : MonoBehaviour
        abilityCooldown.text = ability.cooldownTime.ToString();
        abilityGoldCost.text = ability.goldNeededToUnlock.ToString();
        abilityMaterialCost.text = ability.materialNeededToUnlock.ToString();
-       
-
+       buyAbilityButton.gameObject.SetActive(!isUnlocked);
+       if (!isUnlocked)
+       {
+           buyAbilityButton.onClick.AddListener(() => BuyAbilityButton());
+       }
     }
 
+
+    private void BuyAbilityButton()
+    {
+        //if(has resources){} 
+        /*
+         *
+         *   if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
+                    PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
+         */
+        PlayerPrefs.SetInt("AbilityUnlocked_" + currentAbilitySelected.abilityID, 1);
+        buyAbilityButton.gameObject.SetActive(false);
+    }
+    
     private void OnDisable()
     {
         detailsView.SetActive(false);
