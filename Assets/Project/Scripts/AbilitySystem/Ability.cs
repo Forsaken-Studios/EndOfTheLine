@@ -6,6 +6,10 @@ public class Ability : ScriptableObject
 {
 
     public new string name;
+    [TextAreaAttribute(10, 10)]
+    public new string description;
+    public Sprite abilityIcon;
+    public int abilityID;
     public float cooldownTime;
     public float activeTime;
 
