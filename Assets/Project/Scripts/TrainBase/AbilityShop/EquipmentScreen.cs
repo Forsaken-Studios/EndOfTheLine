@@ -20,7 +20,7 @@ public class EquipmentScreen : MonoBehaviour
     private Ability abilityInSlot2;
     private void OnEnable()
     {
-        PlayerPrefs.SetInt("AbilityIDEquipped_1", 11);
+        PlayerPrefs.SetInt("AbilityIDEquipped_1", 0);
         abilitiesPanelList = new List<GameObject>();
         abilitiesEquipped = new List<Ability>(2);
         SetUpAbilitiesUnlocked(); 

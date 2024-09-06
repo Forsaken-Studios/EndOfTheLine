@@ -2,9 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class EquipmentSlot : MonoBehaviour
+public class EquipmentSlot : MonoBehaviour, IDropHandler
 {
 
     [SerializeField] private int slotID;
@@ -22,5 +23,21 @@ public class EquipmentSlot : MonoBehaviour
     {
         this.abilityIcon.sprite = emptySprite;
         this.abilityText.text = "";
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        GameObject dropped = eventData.pointerDrag;
+        DraggableAbilityIcon draggableAbilityIcon = dropped.GetComponent<DraggableAbilityIcon>();
+        Ability ability = draggableAbilityIcon.GetAbility();
+   
+        int abilityEquipped2 = PlayerPrefs.GetInt("AbilityIDEquipped_2");
+        ///
+        /// First number - Ability ID
+        /// Second number - Slot saved
+        /// 
+        int playerPrefSave = int.Parse(ability.abilityID.ToString() + slotID.ToString());
+        PlayerPrefs.SetInt("AbilityIDEquipped_" + slotID, playerPrefSave);
+        this.UpdateSlot(ability);
     }
 }

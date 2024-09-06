@@ -49,4 +49,11 @@ public class AbilityIconEquipment : MonoBehaviour, IPointerEnterHandler, IPointe
     {
         blackPanel.SetActive(false);
     }
+
+
+    public Ability GetAbility()
+    {
+        return ability;
+    }
+
 }
