@@ -240,7 +240,7 @@ public class TrainManager : MonoBehaviour
                 currentCanvas = missionSelectorCanvas;
                 break; 
             case 1:
-                TrainStatus = TrainStatus.onControlRoom;
+                TrainStatus = TrainStatus.onMechanicRoom;
                 currentCanvas = controlRoomCanvas;
                 break; 
             case 2:

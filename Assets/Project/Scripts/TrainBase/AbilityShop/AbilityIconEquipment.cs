@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AbilityPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class AbilityIconEquipment : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    
+        
     [SerializeField] private Image abilityIcon;
     [SerializeField] private GameObject blackPanel;
     private bool unlocked;
@@ -21,15 +21,9 @@ public class AbilityPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         unlocked = abilityStatus == 1;
         this.abilityIcon.sprite = ability.abilityIcon;
         blackPanel.SetActive(abilityStatus == 0);
-        
-        button.onClick.AddListener(() => ShowAbilityDetails());
-    }
 
-
-    private void ShowAbilityDetails()
-    {
-        AbilityShop.Instance.ShowAbilityDetails(this.ability, unlocked, this);   
     }
+    
 
     public void OnPointerEnter(PointerEventData eventData)
     {

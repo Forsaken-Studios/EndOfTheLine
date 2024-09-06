@@ -46,6 +46,8 @@ public class AbilityShop : MonoBehaviour
     public void ShowAbilityDetails(Ability ability, bool isUnlocked, AbilityPanel abilityPanel)
     { 
         currentAbilitySelected = ability; 
+        if(currentabilityPanelSelected != null)
+            currentabilityPanelSelected.HideBlackPanel();
         currentabilityPanelSelected = abilityPanel;
        detailsView.SetActive(true);
        abilityName.text = ability.name;

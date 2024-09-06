@@ -1,11 +1,12 @@
 public enum TrainStatus
 {
-    onControlRoom, 
+    onMechanicRoom, 
     onMissionSelector, 
     onMarketRoom, 
     onExpeditionRoom, 
     usingWagon,
     onMarketScreen,
     showingSpecialScreen,
+    onMechanicScreen,
     //TODO: To complete
 }
