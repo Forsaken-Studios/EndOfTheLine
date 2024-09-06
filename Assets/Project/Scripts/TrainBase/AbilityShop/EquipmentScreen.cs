@@ -5,8 +5,8 @@ using System.Linq;
 using UnityEngine;
 
 public class EquipmentScreen : MonoBehaviour
-{ 
-    
+{
+    public static EquipmentScreen Instance;
     
     [SerializeField] private GameObject abilityPanelPrefab;
     private GameObject abilityGrid;
@@ -18,9 +18,20 @@ public class EquipmentScreen : MonoBehaviour
 
     private Ability abilityInSlot1;
     private Ability abilityInSlot2;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(this);
+        }
+
+        Instance = this;
+    }
+
     private void OnEnable()
     {
-        PlayerPrefs.SetInt("AbilityIDEquipped_1", 0);
+        //PlayerPrefs.SetInt("AbilityIDEquipped_1", 0);
         abilitiesPanelList = new List<GameObject>();
         abilitiesEquipped = new List<Ability>(2);
         SetUpAbilitiesUnlocked(); 
@@ -95,5 +106,26 @@ public class EquipmentScreen : MonoBehaviour
             else
                 abilityInSlot2 = ability;
         }
+    }
+
+
+    public bool CheckIfAbilityIsAlreadyEquipped(int abilityID, int slotUsed)
+    {
+        if (slotUsed == 1)
+        {
+            if (abilityInSlot2 != null)
+            {
+                return abilityInSlot2.abilityID == abilityID;
+            }
+        }
+        else
+        {
+            if (abilityInSlot1 != null)
+            {
+                return abilityInSlot1.abilityID == abilityID;
+            }
+        }
+
+        return false;
     }
 }
