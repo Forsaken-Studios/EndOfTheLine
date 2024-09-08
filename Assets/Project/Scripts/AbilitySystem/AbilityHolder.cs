@@ -15,7 +15,8 @@ public class AbilityHolder : MonoBehaviour
     private Vector2 positionToThrowAbility = Vector2.zero;
     [Header("UI")]
     [SerializeField] private AbilityUI abilityUI;
-    
+
+    private GameObject currentGameObjectCreated;
     
     enum AbilityState
     {
@@ -95,7 +96,7 @@ public class AbilityHolder : MonoBehaviour
                 if (Input.GetKeyDown(key))
                 {
                     //Activate
-                    ability.Activating(gameObject, positionToThrowAbility);
+                    ability.Activating(gameObject, positionToThrowAbility, out currentGameObjectCreated);
                     state = AbilityState.activating;
                 }
                 break;
@@ -112,6 +113,7 @@ public class AbilityHolder : MonoBehaviour
                 }
                 else
                 {
+                    Destroy(currentGameObjectCreated);
                     abilityUI.StartCooldown();
                     ability.BeginCooldown(gameObject);
                     state = AbilityState.cooldown;

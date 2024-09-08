@@ -11,10 +11,11 @@ public class SmokeGrenadeMovement : MonoBehaviour
     private Rigidbody2D rigidbody2D;
     private AbilityHolder holder;
     private bool keepMovingGrenade = true;
-
+    [SerializeField] private GameObject smokeCollider;
     private void OnEnable()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
+        smokeCollider.SetActive(false);
     }
 
     private void Update()
@@ -25,6 +26,7 @@ public class SmokeGrenadeMovement : MonoBehaviour
                 rigidbody2D.velocity.magnitude <= 5f)
             {
                 //Stop
+                smokeCollider.SetActive(true);
                 Debug.Log("STOP GRENADE");
                 //rigidbody2D.MovePosition(this.gameObject.transform.position);
                 rigidbody2D.drag = 2000f;

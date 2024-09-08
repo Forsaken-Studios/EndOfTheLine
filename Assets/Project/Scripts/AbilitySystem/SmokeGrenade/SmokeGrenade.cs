@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Ability/Smoke Grenade", order = 1)]
 public class SmokeGrenade : Ability
 {
-    public float force = 15f;
+    public float force = 35f;
     public float smokeRadius = 14f;
     [SerializeField] private GameObject smokeGrenadeCanvasPrefab;
     [SerializeField] private GameObject smokeGrenadePrefab;
@@ -13,16 +13,18 @@ public class SmokeGrenade : Ability
     private Vector2 offset = new Vector2(2, 4);
     private AbilityHolder holder;
 
-    public override void Activating(GameObject parent, Vector2 position)
+
+    public override void Activating(GameObject parent, Vector2 position, out GameObject gm)
     {
         //instantiate smoke grenade and push it to place
         Destroy(canvasObject);
         Vector2 dir = (position - (Vector2) parent.transform.position).normalized;
         Vector2 playerPosition = (Vector2) parent.transform.position;
         Vector2 spawnPosition = (playerPosition + offset);
-        GameObject smokeGrenade = Instantiate(smokeGrenadePrefab, spawnPosition, Quaternion.identity);
+        GameObject smokeGrenade = Instantiate(smokeGrenadePrefab, playerPosition, Quaternion.identity);
         Rigidbody2D rb = smokeGrenade.GetComponentInChildren<Rigidbody2D>();
-        rb.AddForce(dir * 15f, ForceMode2D.Impulse); 
+        rb.AddForce(dir * force, ForceMode2D.Impulse);
+        gm = smokeGrenade;
         smokeGrenade.GetComponentInChildren<SmokeGrenadeMovement>().SetUpProperties(position, holder);
     }
     public override void Activate(GameObject parent, Vector2 position)
@@ -32,7 +34,7 @@ public class SmokeGrenade : Ability
     public override void PrepareAbility(GameObject parent, AbilityHolder abilityHolder)
     {
         canvasObject = Instantiate(smokeGrenadeCanvasPrefab, parent.transform.position, Quaternion.identity);
-        canvasObject.GetComponentInChildren<SmokeGrenadeCanvas>().SetHolder(abilityHolder);
+        canvasObject.GetComponentInChildren<SmokeGrenadeCanvas>().SetHolder(abilityHolder, parent);
         holder = abilityHolder;
 
     }
