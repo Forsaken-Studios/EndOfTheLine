@@ -18,9 +18,7 @@ public class LooteableObjectSelectorUI : MonoBehaviour
 
     private void LateUpdate()
     {
-        Debug.Log(optionsAvailable.Count);
         EventSystem.current.SetSelectedGameObject(optionsAvailable[currentIndex].gameObject);
-        Debug.Log(currentIndex);
         if (Input.GetAxis("Mouse ScrollWheel") < 0)
         {
             IncreaseIndex();
@@ -46,7 +44,6 @@ public class LooteableObjectSelectorUI : MonoBehaviour
     }    
     private void DecreaseIndex()
     {
-        Debug.Log("DECREASE");
         //currentIndex = currentIndex < 0 ? 0 : currentIndex--;
         currentIndex--;
         if (currentIndex < 0)
@@ -56,7 +53,6 @@ public class LooteableObjectSelectorUI : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("ENABLE");
         optionsAvailable = new List<Button>();
         SetUpProperties();
         this.transform.position = LooteableObjectSelector.Instance.GetLootList()[0].transform.position;
@@ -72,21 +68,28 @@ public class LooteableObjectSelectorUI : MonoBehaviour
             GameObject option = Instantiate(optionPrefab, this.transform.position, Quaternion.identity, gridLayoutParent.gameObject.transform);
             Button optionButton = option.GetComponent<Button>();
             optionsAvailable.Add(optionButton);
-            Debug.Log("ADDED: "  +optionsAvailable.Count );
             option.GetComponentInChildren<TextMeshProUGUI>().text = SwapNames(auxList[i].name);
         }
     }
 
     private string SwapNames(string originalName)
     {
+        if (originalName.Contains("LooteableObject[ToolBox]"))
+        {
+            originalName = "Tool Box";
+        }
+        
         switch (originalName)
         {
             case "TemporalBox(Clone)":
                 return "Temporal Crate";
                 break;
-            case "LooteableObject[ToolBox]":
+            case "Tool Box":
                 return "Tool Box"; 
-                break; 
+                break;  
+            case "Crate":
+                return "Crate"; 
+                break;  
         }
 
         return "Undefined"; 

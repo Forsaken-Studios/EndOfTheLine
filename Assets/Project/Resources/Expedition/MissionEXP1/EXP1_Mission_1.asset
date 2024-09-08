@@ -12,14 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b63c69974941344eb2f14d8af92b302, type: 3}
   m_Name: EXP1_Mission_1
   m_EditorClassIdentifier: 
-  id: 0
-  missionName: Recover food
+  id: 1
+  missionName: Collect water
   requirements:
   - requirement: {fileID: 11400000, guid: e851661bea253f5409604a1f22c25a35, type: 2}
-  - requirement: {fileID: 11400000, guid: 1cac395975b54bc40a2dc6b7561a98d3, type: 2}
   rewards:
   - reward: {fileID: 11400000, guid: d471540e014843a49adcd5ab3ed87f7e, type: 2}
-  - reward: {fileID: 11400000, guid: cbe91a96dccf04c468a5643ba2674b62, type: 2}
   bonusItems:
   - bonusItems: {fileID: 11400000, guid: 0ef50d6f6fdf6754e92d0d2c7b5515b4, type: 2}
   basicChanceOfSuccess: 80

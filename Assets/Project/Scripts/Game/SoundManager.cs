@@ -52,6 +52,12 @@ public class SoundManager : MonoBehaviour
         LoadAllSounds();
     }
 
+    
+    /// <summary>
+    /// Para cargar sonidos, lo que hay que hacer, es,
+    /// 1. Comprobar que el sonido está metido en un de los diccionarios de abajo.
+    /// 2. Ir a SoundAction, y meter dentro del enum, el nombre (identico) del sonido.
+    /// </summary>
     private void LoadAllSounds()
     {
        //LoadSpecificSounds("Sounds/Inventory", inventoryAudioClips);
@@ -59,6 +65,7 @@ public class SoundManager : MonoBehaviour
        LoadSpecificSoundsInDictionary("Sounds/Inventory");
        LoadSpecificSoundsInDictionary("Sounds/Gas Zone");
        LoadSpecificSoundsInDictionary("Sounds/Movement");
+       LoadSpecificSoundsInDictionary("Sounds/WorldNoise");
     }
 
     private void LoadSpecificSounds(string path, List<Sound> soundList)
@@ -108,6 +115,7 @@ public class SoundManager : MonoBehaviour
     }
     
     /// <summary>
+    /// Not used 
     /// Coming from https://johnleonardfrench.com/how-to-fade-audio-in-unity-i-tested-every-method-this-ones-the-best/#first_method
     /// Check if it is needed or not, if we want to just desactivate the audio, or fade the audio
     /// </summary>

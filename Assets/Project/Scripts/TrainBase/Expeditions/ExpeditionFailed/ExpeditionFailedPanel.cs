@@ -13,15 +13,14 @@ public class ExpeditionFailedPanel : MonoBehaviour
         continueButton = GetComponentInChildren<Button>();
         continueButton.onClick.AddListener(() => ContinueButtonBehavior());
     }
-
-
     
     private void ContinueButtonBehavior()
     {
         TrainManager.Instance.TrainStatus = TrainStatus.onExpeditionRoom;
         PlayerPrefs.SetInt("ExpeditionInProgress", 0);
         PlayerPrefs.SetInt("ExpeditionEndDay", 0);
-        ExpeditionManager.Instance.GetMissionChooser().ResetStartExpeditionButton();
+        NewExpeditionManager.Instance.UpdateMissionPanelStatusToDisable();
+        NewExpeditionManager.Instance.ResetDetailsView();
         Destroy(this.transform.parent.gameObject);
     }
 }

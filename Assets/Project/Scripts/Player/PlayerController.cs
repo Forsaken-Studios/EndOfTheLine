@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,10 @@ namespace Player
 
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private float moveSpeed; 
+
+        public static PlayerController Instance;
+        
+        private float moveSpeed; 
         private float speedX, speedY; 
         [Header("Properties")]
         private Rigidbody2D _rb;
@@ -25,7 +29,21 @@ namespace Player
         
         [Header("Inputs")] 
         private KeyCode dashInput = KeyCode.LeftControl;
-         
+
+
+        [Header("Noise Circle")] 
+        [SerializeField] private NoiseCircle noise;
+
+        private void Awake()
+        {
+            if (Instance != null)
+            {
+                Debug.LogWarning("[PlayerController.cs] : There is already a PlayerController Instance");
+                Destroy(this);
+            }
+            Instance = this;
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -74,6 +92,7 @@ namespace Player
 
             if (speedX != 0 || speedY != 0)
             {
+                HandleSprintInput();
                 HandleDashInputs();
                 _animator.SetBool("running", true);
             }
@@ -83,9 +102,23 @@ namespace Player
            // _animator.SetInteger("SpeedInt", (int)speedX);
         }
 
+        private void HandleSprintInput()
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                moveSpeed = 26;
+                noise.UpdateColliderOnSprint();
+            }
+            else
+            {
+                moveSpeed = 18;
+                noise.ResetColliderRadius();
+            }
+        }
+        
         private void HandleDashInputs()
         {
-            if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetStamina() >= DASH_STAMINA_COST)
+            if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetEnergy() >= DASH_STAMINA_COST)
             {
                 StartCoroutine(Dash());
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Movement_Dash);
@@ -94,14 +127,15 @@ namespace Player
 
         private IEnumerator Dash()
         {
-            PlayerOverheating.Instance.DecreaseStamina(DASH_STAMINA_COST);
+            PlayerOverheating.Instance.DecreaseEnergy(DASH_STAMINA_COST);
             PlayerOverheating.Instance.SetCanRecoveryEnergy(false);
+            noise.UpdateColliderOnDash();
             canDash = false;
             isDashing = true;
             _rb.velocity = new Vector2(speedX * dashSpeed, speedY * dashSpeed / 2);
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
-
+            noise.ResetColliderRadius();
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
 
@@ -113,6 +147,11 @@ namespace Player
         public void SetIfPlayerCanMove(bool aux)
         {
             this.playerCanMove = aux;
+        }
+
+        public NoiseCircle GetNoiseScript()
+        {
+            return noise;
         }
     }
 }

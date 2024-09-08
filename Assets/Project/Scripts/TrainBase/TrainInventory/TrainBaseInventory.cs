@@ -153,7 +153,6 @@ public class TrainBaseInventory : MonoBehaviour
     
     foreach (var item in items)
     {
-
         foreach (var itemSlot in itemsSlotsList)
         {
             if (itemSlot.itemID == item.Key.itemID)
@@ -171,7 +170,7 @@ public class TrainBaseInventory : MonoBehaviour
                     {
                         slotsUsed.Add(itemsSlotsList.IndexOf(itemSlot), item.Value);
                     }
-
+                    break;
                 }
                 else
                 {
@@ -198,11 +197,16 @@ public class TrainBaseInventory : MonoBehaviour
                                 itemsSlotsList[availableIndex]
                                     .SetItemSlotProperties(item.Key, amountRemaining); 
                                 slotsUsed.Add(availableIndex, amountRemaining);
+                                break;
                             }
                             else
                             {
                                 return false;
                             }
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                 }
@@ -222,7 +226,31 @@ public class TrainBaseInventory : MonoBehaviour
     }
     return true;
     }
-    
+
+    public void DeleteItemsFromItemSlot(Item item, int amount)
+    {
+        int remainingAmount = amount; 
+        foreach (var itemSlot in itemsSlotsList)
+        {
+            if (itemSlot.GetItemInSlot() != null)
+            {
+                if (itemSlot.GetItemInSlot().itemID == item.itemID)
+                {
+                    if (itemSlot.amount > remainingAmount)
+                    {
+                        itemSlot.amount -= amount;
+                        break;
+                    }
+                    else
+                    {
+                        remainingAmount -= itemSlot.amount;
+                        itemSlot.ClearItemSlot();
+                    }
+                } 
+            }
+          
+        }
+    }
 
     
     public bool GetIfItemIsInInventory(Item item, int amount)

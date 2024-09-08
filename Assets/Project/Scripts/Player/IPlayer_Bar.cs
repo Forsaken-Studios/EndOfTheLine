@@ -1,34 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public abstract class IPlayer_Bar : MonoBehaviour
 {
-    [SerializeField] protected Image staminaBar;
+    [FormerlySerializedAs("staminaBar")] [SerializeField] protected Image statusBar;
 
     protected int MAX_STAMINA;
-    [SerializeField] protected float stamina;
+    [FormerlySerializedAs("stamina")] [SerializeField] protected float energy;
 
     [SerializeField] private bool canRecoverEnergy;
 
+    [FormerlySerializedAs("recoveryStaminaSpeed")]
     [Header("Stamina properties")] 
-    [SerializeField] private float recoveryStaminaSpeed = 5f;
-    [SerializeField] private float recoveryStaminaTime = 0.2f;
-    [SerializeField] private float recoveryStaminaTimeLerp = 0.2f;
+    [SerializeField] private float recoveryEnergySpeed = 5f;
+    [FormerlySerializedAs("recoveryStaminaTime")] [SerializeField] private float recoveryEnergyTime = 0.2f;
+    [FormerlySerializedAs("recoveryStaminaTimeLerp")] [SerializeField] private float recoveryEnergyTimeLerp = 0.2f;
 
+    [HideInInspector]
     [Header("Gas Zone Properties")] [SerializeField]
     private float valueStaminaDecrease = 5;
-
+    [HideInInspector]
     [Header("Bar Lerp Speed")]
     [SerializeField] private float barLerpSpeed;
     
-    private void Start()
+    public virtual void Start()
     {
-        staminaBar.fillAmount = 1.0f;
+        statusBar.fillAmount = 1.0f;
         MAX_STAMINA = 100;
-        stamina = MAX_STAMINA;
-        StartCoroutine(IncreaseStaminaOnTime());
+        energy = MAX_STAMINA;
+        StartCoroutine(IncreaseEnergyOnTime());
     }
 
     // Update is called once per frame
@@ -36,78 +39,78 @@ public abstract class IPlayer_Bar : MonoBehaviour
     {
         if (GameManager.Instance.GameState == GameState.OnGame)
         {
-            if ((stamina / 100) != staminaBar.fillAmount)
+            if ((energy / 100) != statusBar.fillAmount)
             {
-                this.staminaBar.fillAmount = Mathf.Lerp(this.staminaBar.fillAmount, GetStamina() / 100,
-                    recoveryStaminaTimeLerp);
-                if (this.staminaBar.fillAmount >= 0.98)
+                this.statusBar.fillAmount = Mathf.Lerp(this.statusBar.fillAmount, GetEnergy() / 100,
+                    recoveryEnergyTimeLerp);
+                if (this.statusBar.fillAmount >= 0.98)
                 {
-                    this.staminaBar.fillAmount = 1;
+                    this.statusBar.fillAmount = 1;
                 }
             }
         }
     }
     
-    protected IEnumerator IncreaseStaminaOnTime()
+    protected IEnumerator IncreaseEnergyOnTime()
     {
         //canRecoverEnergy = false;
         while (true)
         {
-            if (stamina != MAX_STAMINA && canRecoverEnergy)
+            if (energy != MAX_STAMINA && canRecoverEnergy)
             {
-                IncreaseStamina(recoveryStaminaSpeed);
-                yield return new WaitForSeconds(recoveryStaminaTime);
+                IncreaseEnergy(recoveryEnergySpeed);
+                yield return new WaitForSeconds(recoveryEnergyTime);
             }
 
             yield return null;
         }
     }
 
-    protected IEnumerator DecreaseStaminaOverTime()
+    protected IEnumerator DecreaseEnergyOverTime()
     {
         //canRecoverEnergy = false;
         while (true)
         {
-            if (stamina >= 0.01)
+            if (energy >= 0.01)
             {
-                DecreaseStamina(valueStaminaDecrease);
-                yield return new WaitForSeconds(recoveryStaminaTime);
+                DecreaseEnergy(valueStaminaDecrease);
+                yield return new WaitForSeconds(recoveryEnergyTime);
             }
 
             yield return null;
         }
     }    
     
-    public void ActivateStaminaDecreasing()
+    public void ActivateEnergyDecreasing()
     {
         StopAllCoroutines();
         //StopCoroutine(IncreaseStaminaOnTime());
-        StartCoroutine(DecreaseStaminaOverTime());
+        StartCoroutine(DecreaseEnergyOverTime());
     }
 
-    public void DesactivateStaminaDecreasing()
+    public void DesactivateEnergyDecreasing()
     {
         StopAllCoroutines();
         //StopCoroutine(DecreaseStaminaOverTime());
-        StartCoroutine(IncreaseStaminaOnTime());
+        StartCoroutine(IncreaseEnergyOnTime());
         canRecoverEnergy = true;
     }
     
-    public void IncreaseStamina(float energyAmount)
+    public void IncreaseEnergy(float energyAmount)
     {
-        SetStamina(energyAmount + GetStamina());
+        SetEnergy(energyAmount + GetEnergy());
     }
 
-    public void DecreaseStamina(float energyAmount)
+    public void DecreaseEnergy(float energyAmount)
     {
-        SetStamina(GetStamina() - energyAmount);
+        SetEnergy(GetEnergy() - energyAmount);
     }
-    public float GetStamina()
+    public float GetEnergy()
     {
-        return stamina;
+        return energy;
     }
 
-    public abstract void SetStamina(float newStamina);
+    public abstract void SetEnergy(float newStamina);
     
 
     public void SetCanRecoveryEnergy(bool aux)

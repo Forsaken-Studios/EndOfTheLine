@@ -1,0 +1,87 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.PlayerLoop;
+
+public class NoiseCircle : MonoBehaviour
+{
+
+    private CircleCollider2D circleCollider;
+
+    private float currentRadius;
+    private float normalRadius = 27;
+
+    [Header("RADIUS")]
+    [SerializeField] private float RADIUS_DASH = 34;
+    [SerializeField] private float RADIUS_SPRINT = 31;
+    [SerializeField] private float RADIUS_WORLDNOISE_REDUCER = 0.3f;
+    [SerializeField] private bool worldNoiseIsActivated;
+    void Start()
+    { 
+        circleCollider = GetComponent<CircleCollider2D>();
+        UpdateColliderRadius(27);
+    }
+
+
+    private void Update()
+    {
+
+    }
+
+    void OnDrawGizmos()
+    {
+            /*Matrix4x4 oldMatrix = Gizmos.matrix;
+            Gizmos.color = new Color(0.2f, 0.2f, 0.2f, 0.5f); //this is gray, could be anything
+            Gizmos.matrix = Matrix4x4.TRS(this.transform.position, this.transform.rotation, new Vector3(1, 1, 1));
+            Gizmos.DrawSphere(Vector3.zero, currentRadius);
+            Gizmos.matrix = oldMatrix;*/
+            float corners = 25; // How many corners the circle should have
+            float size = currentRadius; // How wide the circle should be
+            Vector3 origin = transform.position; // Where the circle will be drawn around
+            Vector3 startRotation = transform.right * size; // Where the first point of the circle starts
+            Vector3 lastPosition = origin + startRotation;
+            float angle = 0;
+            while (angle <= 360)
+            {
+                angle += 360 / corners;
+                Vector3 nextPosition = origin + (Quaternion.Euler(0, 0, angle) * startRotation);
+                Gizmos.DrawLine(lastPosition, nextPosition);
+                Gizmos.DrawSphere(nextPosition, 1);
+
+                lastPosition = nextPosition;
+            }     
+    }
+    public void UpdateColliderRadius(float radius)
+    {
+        this.circleCollider.radius = worldNoiseIsActivated ? radius * RADIUS_WORLDNOISE_REDUCER : radius;
+        currentRadius = worldNoiseIsActivated ? radius * RADIUS_WORLDNOISE_REDUCER : radius;
+    }
+
+    public void UpdateColliderOnDash()
+    {
+        UpdateColliderRadius(RADIUS_DASH);
+    }
+
+    public void UpdateColliderOnWorldNoise()
+    {
+        worldNoiseIsActivated = true;
+        UpdateColliderRadius(currentRadius);
+    }
+    
+    public void UpdateColliderOnSprint()
+    {
+        UpdateColliderRadius(RADIUS_SPRINT);
+    }
+
+    public void ResetColliderRadius()
+    {
+        this.circleCollider.radius = worldNoiseIsActivated ? normalRadius * RADIUS_WORLDNOISE_REDUCER : normalRadius;
+        currentRadius = worldNoiseIsActivated ? normalRadius * RADIUS_WORLDNOISE_REDUCER : normalRadius;
+    }  
+    public void ResetColliderRadiusOfWorldNoise()
+    {
+        worldNoiseIsActivated = false;
+        ResetColliderRadius();
+    }
+}
