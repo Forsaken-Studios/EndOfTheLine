@@ -31,12 +31,12 @@ public class SmokeGrenade : Ability
     {
         //Instantiate smoke
     }
-    public override void PrepareAbility(GameObject parent, AbilityHolder abilityHolder)
+    public override void PrepareAbility(GameObject parent, AbilityHolder abilityHolder, out GameObject currentCanvas)
     {
         canvasObject = Instantiate(smokeGrenadeCanvasPrefab, parent.transform.position, Quaternion.identity);
         canvasObject.GetComponentInChildren<SmokeGrenadeCanvas>().SetHolder(abilityHolder, parent);
         holder = abilityHolder;
-
+        currentCanvas = canvasObject;
     }
     public override void BeginCooldown(GameObject parent)
     {

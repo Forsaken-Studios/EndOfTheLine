@@ -17,6 +17,7 @@ public class AbilityHolder : MonoBehaviour
     [SerializeField] private AbilityUI abilityUI;
 
     private GameObject currentGameObjectCreated;
+    private GameObject currentCanvasCreated;
     
     enum AbilityState
     {
@@ -85,9 +86,9 @@ public class AbilityHolder : MonoBehaviour
         switch (state)
         {
             case AbilityState.ready:
-                if (Input.GetKeyDown(key))
+                if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost))
                 {
-                    ability.PrepareAbility(gameObject, this);
+                    ability.PrepareAbility(gameObject, this, out currentCanvasCreated);
                     state = AbilityState.preparing;
                 }
                 break;  
@@ -96,8 +97,14 @@ public class AbilityHolder : MonoBehaviour
                 if (Input.GetKeyDown(key))
                 {
                     //Activate
+                    OverheatManager.Instance.IncreaseEnergy(ability.overheatCost);
                     ability.Activating(gameObject, positionToThrowAbility, out currentGameObjectCreated);
                     state = AbilityState.activating;
+                }else if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    //Destroy canvas
+                    state = AbilityState.ready;
+                    Destroy(currentCanvasCreated);
                 }
                 break;
             case AbilityState.activating:

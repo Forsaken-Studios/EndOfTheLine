@@ -27,14 +27,14 @@ namespace Player
         
        
         override 
-        public void SetStamina(float newStamina)
+        public void SetEnergy(float newStamina)
         {
-            this.stamina = Mathf.Clamp(newStamina, 0, MAX_STAMINA);
-            if (this.stamina == 0)
+            this.energy = Mathf.Clamp(newStamina, 0, MAX_STAMINA);
+            if (this.energy == 0)
             {
                 //Game Over
                 this.gameObject.GetComponent<PlayerController>().SetIfPlayerCanMove(false);
-                this.staminaBar.fillAmount = 0;
+                this.statusBar.fillAmount = 0;
                 GameManager.Instance.EndGame();
             }
             // SetEnergyBar(GetEnergy());

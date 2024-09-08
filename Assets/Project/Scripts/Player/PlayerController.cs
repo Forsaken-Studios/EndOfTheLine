@@ -118,7 +118,7 @@ namespace Player
         
         private void HandleDashInputs()
         {
-            if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetStamina() >= DASH_STAMINA_COST)
+            if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetEnergy() >= DASH_STAMINA_COST)
             {
                 StartCoroutine(Dash());
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Movement_Dash);
@@ -127,7 +127,7 @@ namespace Player
 
         private IEnumerator Dash()
         {
-            PlayerOverheating.Instance.DecreaseStamina(DASH_STAMINA_COST);
+            PlayerOverheating.Instance.DecreaseEnergy(DASH_STAMINA_COST);
             PlayerOverheating.Instance.SetCanRecoveryEnergy(false);
             noise.UpdateColliderOnDash();
             canDash = false;

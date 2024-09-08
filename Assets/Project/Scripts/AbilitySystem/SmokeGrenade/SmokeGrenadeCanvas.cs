@@ -29,7 +29,6 @@ public class SmokeGrenadeCanvas : MonoBehaviour
 
             if (playerToCursor.magnitude > radius)
             {
-                Debug.Log(playerToCursor.magnitude);
                 //Normalize it to get the direction
                 Vector2 dir = playerToCursor.normalized;
                 //Multiply direction buy your desired radius
@@ -44,9 +43,8 @@ public class SmokeGrenadeCanvas : MonoBehaviour
                 positionImage.rectTransform.position = GetPosition(); 
                 holder.UpdatePositionToThrowAbility(GetPosition());
             }
-
             
-            /*
+        /*
              Square
             Vector2 position = new Vector2();
             minX = parent.transform.position.x - radiusX;
@@ -57,8 +55,7 @@ public class SmokeGrenadeCanvas : MonoBehaviour
             position.x = Mathf.Clamp(GetPosition().x, minX, maxX);
             position.y = Mathf.Clamp(GetPosition().y, minY, maxY);
             Debug.Log(position);*/
-            
-
+        
     }
 
 

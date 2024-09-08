@@ -12,6 +12,7 @@ public class Ability : ScriptableObject
     public int abilityID;
     public float cooldownTime;
     public float activeTime;
+    public float overheatCost;
 
 
     public int goldNeededToUnlock;
@@ -23,6 +24,9 @@ public class Ability : ScriptableObject
         gameObject = null;
     }
 
-    public virtual void PrepareAbility(GameObject parent, AbilityHolder abilityHolder){}
+    public virtual void PrepareAbility(GameObject parent, AbilityHolder abilityHolder, out GameObject gameObject)
+    {
+        gameObject = null;
+    }
     public virtual void BeginCooldown(GameObject parent){}
 }
