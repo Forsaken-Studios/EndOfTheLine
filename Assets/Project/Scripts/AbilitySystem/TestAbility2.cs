@@ -6,7 +6,7 @@ using UnityEngine;
 public class TestAbility2 : Ability
 {
 
-    public override void Activate(GameObject parent)
+    public override void Activate(GameObject parent, Vector2 position)
     {
         Debug.Log("ABILITY " +this.name + " ACTIVATED");
     }

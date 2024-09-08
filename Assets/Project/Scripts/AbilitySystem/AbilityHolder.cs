@@ -1,22 +1,84 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using Utils.CustomLogs;
 
 public class AbilityHolder : MonoBehaviour
 {
+    [SerializeField] private int abilityHolderID;
     public Ability ability;
     protected float cooldownTime;
     protected float activeTime;
-
+    private Vector2 positionToThrowAbility = Vector2.zero;
+    [Header("UI")]
+    [SerializeField] private AbilityUI abilityUI;
+    
+    
     enum AbilityState
     {
-        ready, active, cooldown
+        ready, preparing, activating, active, cooldown
     }
 
     private AbilityState state = AbilityState.ready;
 
-    public KeyCode key; 
-    
+    public KeyCode key;
+
+    private void Start()
+    {
+        LoadAbilityEquipped();
+    }
+
+    private void LoadAbilityEquipped()
+    {
+        int abilityEquipped1 = PlayerPrefs.GetInt("AbilityIDEquipped_" + abilityHolderID.ToString());
+        int abilityEquippedInSlot1 = abilityEquipped1 / 10;
+        int ability1Slot = abilityEquipped1 % 10;
+
+        Debug.Log("COLOCANDO HABILIDAD DE SLOT" + ability1Slot);
+        int abilityIDtoEquip = 0;
+        
+        if (ability1Slot == 1)
+        {
+            //Ability 1 is in slot 1
+            abilityIDtoEquip = abilityEquippedInSlot1;
+        }
+        else
+        {
+            //Ability 2 is in slot 2
+            int abilityEquipped2 = PlayerPrefs.GetInt("AbilityIDEquipped_2");
+            abilityIDtoEquip = abilityEquipped1 / 10;
+        }
+        
+        //Get ability from ID
+        Ability ability = FindAbilityID(abilityIDtoEquip);
+        this.ability = ability;
+        //Load image to ability icon
+        abilityUI.SetUpProperties(ability);
+    }
+
+    private Ability FindAbilityID(int id)
+    {
+        List<Ability> abilityList = UnityEngine.Resources.LoadAll<Ability>("Abilities").ToList();
+
+        foreach (var ability in abilityList)
+        {
+            if (ability.abilityID == id)
+            {
+                return ability;
+            }
+        }
+
+        return null;
+    }
+
+    public void UpdatePositionToThrowAbility(Vector2 position)
+    {
+        this.positionToThrowAbility = position;
+    }
+
     void Update()
     {
         switch (state)
@@ -24,25 +86,40 @@ public class AbilityHolder : MonoBehaviour
             case AbilityState.ready:
                 if (Input.GetKeyDown(key))
                 {
-                    //Activate
-                    ability.Activate(gameObject);
-                    state = AbilityState.active;
-                    activeTime = ability.activeTime;
+                    ability.PrepareAbility(gameObject, this);
+                    state = AbilityState.preparing;
                 }
-                break;   
+                break;  
+            case AbilityState.preparing:
+                LogManager.Log("PREPARING ABILITY [" + ability.name + "]", FeatureType.Player);
+                if (Input.GetKeyDown(key))
+                {
+                    //Activate
+                    ability.Activating(gameObject, positionToThrowAbility);
+                    state = AbilityState.activating;
+                }
+                break;
+            case AbilityState.activating:
+                ability.Activate(gameObject, positionToThrowAbility);
+                state = AbilityState.active;
+                activeTime = ability.activeTime;
+                break;
             case AbilityState.active:
+                LogManager.Log("ABILITY ACTIVATED [" + ability.name + "]", FeatureType.Player);
                 if (activeTime > 0)
                 {
                     activeTime -= Time.deltaTime;
                 }
                 else
                 {
+                    abilityUI.StartCooldown();
                     ability.BeginCooldown(gameObject);
                     state = AbilityState.cooldown;
                     cooldownTime = ability.cooldownTime;
                 }
                 break; 
             case AbilityState.cooldown:
+                LogManager.Log("ABILITY ON COOLDOWN [" + ability.name + "]", FeatureType.Player);
                 if (cooldownTime > 0)
                 {
                     cooldownTime -= Time.deltaTime;
@@ -53,9 +130,10 @@ public class AbilityHolder : MonoBehaviour
                 }
                 break; 
         }
-        
-        
-        
-      
+    }
+
+    public void ActiveAbility()
+    {
+        this.state = AbilityState.active;
     }
 }

@@ -7,7 +7,7 @@ public class TestAbility : Ability
 {
     public float test;
 
-    public override void Activate(GameObject parent)
+    public override void Activate(GameObject parent, Vector2 position)
     {
         Debug.Log("ABILITY " +this.name + " ACTIVATED");
     }
