@@ -18,9 +18,9 @@ public class Ability : ScriptableObject
 
     public int goldNeededToUnlock;
     public int materialNeededToUnlock;
-    public virtual void Activate(GameObject parent, Vector2 position) {}
+    public virtual void Activate(GameObject parent, Vector2 position,  Vector2 endPosition) {}
 
-    public virtual void Activating(GameObject parent, Vector2 position, out GameObject gameObject)
+    public virtual void Activating(GameObject parent, Vector2 position, Vector2 endPosition,  out GameObject gameObject)
     {
         gameObject = null;
     }

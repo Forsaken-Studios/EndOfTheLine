@@ -6,20 +6,24 @@ public class WallAbility : Ability
 {
 
     [SerializeField] private GameObject wallCanvasPrefab;
-
+    [SerializeField] private GameObject wallPlacerPrefab;
     private GameObject canvasObject;
     private AbilityHolder holder;
-    
-    public override void Activating(GameObject parent, Vector2 position, out GameObject gm)
+    private GameObject wallSquare;
+    public override void Activating(GameObject parent, Vector2 position, Vector2 endPosition, out GameObject gm)
     {
         Destroy(canvasObject);
-        gm = null;
+        //Instantiate placer in walls
+        GameObject placers = Instantiate(wallPlacerPrefab, Vector2.zero, Quaternion.identity);
+        placers.GetComponent<WallPlacers>().SetLocations(position, endPosition, out wallSquare);
+        gm = placers;
     }
     
     
-    public override void Activate(GameObject parent, Vector2 position)
+    public override void Activate(GameObject parent, Vector2 position, Vector2 endPosition)
     {
         //Instantiate wall
+        wallSquare.SetActive(true);
     }
     
     public override void PrepareAbility(GameObject parent, AbilityHolder abilityHolder, out GameObject currentCanvas)

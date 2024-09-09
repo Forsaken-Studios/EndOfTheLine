@@ -21,7 +21,7 @@ public class AbilityHolder : MonoBehaviour
     private GameObject currentCanvasCreated;
     private bool needToReactivate;
 
-    private bool canThrowAbility = false;
+    private bool canThrowAbility = true;
     enum AbilityState
     {
         ready, preparing, activating, active, cooldown
@@ -106,7 +106,7 @@ public class AbilityHolder : MonoBehaviour
                         if (needToReactivate)
                         {
                             LogManager.Log("WAITING [" + ability.name + "]", FeatureType.Player);
-                            ActivatingAbility();
+                            ActivateAbility();
                         }
                         else
                         {
@@ -114,6 +114,7 @@ public class AbilityHolder : MonoBehaviour
                             {
                                 LogManager.Log("PLACING [" + ability.name + "]", FeatureType.Player);
                                 needToReactivate = true;
+                                ActivatingAbility();
                                 //Colocar objeto en el sitio
                             }
                         }
@@ -125,9 +126,16 @@ public class AbilityHolder : MonoBehaviour
                 }
                 break;
             case AbilityState.activating:
-                ability.Activate(gameObject, positionToThrowAbility);
-                state = AbilityState.active;
-                activeTime = ability.activeTime;
+                //To activate ability, we will need to call ActivateAbility();
+                if(!ability.needToBeReactivated)
+                    ActivateAbility();
+                else
+                {
+                    if (Input.GetKeyDown(key))
+                    {
+                        ActivateAbility();
+                    }
+                }
                 break;
             case AbilityState.active:
                 LogManager.Log("ABILITY ACTIVATED [" + ability.name + "]", FeatureType.Player);
@@ -158,13 +166,20 @@ public class AbilityHolder : MonoBehaviour
         }
     }
 
+    public void ActivateAbility()
+    {
+        ability.Activate(gameObject, positionToThrowAbility, positionToThrowAbility2);
+        state = AbilityState.active;
+        activeTime = ability.activeTime;
+    }
+    
     private void ActivatingAbility()
     {
         if (Input.GetKeyDown(key))
         {
             //Activate
             OverheatManager.Instance.IncreaseEnergy(ability.overheatCost);
-            ability.Activating(gameObject, positionToThrowAbility, out currentGameObjectCreated);
+            ability.Activating(gameObject, positionToThrowAbility, positionToThrowAbility2, out currentGameObjectCreated);
             state = AbilityState.activating;
         }else if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -178,11 +193,7 @@ public class AbilityHolder : MonoBehaviour
     {
         this.canThrowAbility = aux;
     }
-
-    public void ActiveAbility()
-    {
-        this.state = AbilityState.active;
-    }
+    
 
   
 }

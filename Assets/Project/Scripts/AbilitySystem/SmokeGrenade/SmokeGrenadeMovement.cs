@@ -30,7 +30,7 @@ public class SmokeGrenadeMovement : MonoBehaviour
                 Debug.Log("STOP GRENADE");
                 //rigidbody2D.MovePosition(this.gameObject.transform.position);
                 rigidbody2D.drag = 2000f;
-                holder.ActiveAbility();
+                holder.ActivateAbility();
                 keepMovingGrenade = false;
             }
         }
