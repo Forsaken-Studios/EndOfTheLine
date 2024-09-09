@@ -13,13 +13,15 @@ public class AbilityHolder : MonoBehaviour
     protected float cooldownTime;
     protected float activeTime;
     private Vector2 positionToThrowAbility = Vector2.zero;
+    private Vector2 positionToThrowAbility2 = Vector2.zero;
     [Header("UI")]
     [SerializeField] private AbilityUI abilityUI;
-
-
+    
     private GameObject currentGameObjectCreated;
     private GameObject currentCanvasCreated;
     private bool needToReactivate;
+
+    private bool canThrowAbility = false;
     enum AbilityState
     {
         ready, preparing, activating, active, cooldown
@@ -77,9 +79,10 @@ public class AbilityHolder : MonoBehaviour
         return null;
     }
 
-    public void UpdatePositionToThrowAbility(Vector2 position)
+    public void UpdatePositionToThrowAbility(Vector2 position, Vector2 position2)
     {
         this.positionToThrowAbility = position;
+        this.positionToThrowAbility2 = position2;
     }
 
     void Update()
@@ -94,32 +97,32 @@ public class AbilityHolder : MonoBehaviour
                 }
                 break;  
             case AbilityState.preparing:
-                LogManager.Log("PREPARING ABILITY [" + ability.name + "]", FeatureType.Player);
-                if (ability.needToBeReactivated)
+                if (canThrowAbility)
                 {
-                    // needToReactivate == true -> Ya la hemos colocado y está a la espera
-                    if (needToReactivate)
+                    //LogManager.Log("PREPARING ABILITY [" + ability.name + "]", FeatureType.Player);
+                    if (ability.needToBeReactivated)
                     {
-                        LogManager.Log("WAITING [" + ability.name + "]", FeatureType.Player);
-                        ActivatingAbility();
+                        // needToReactivate == true -> Ya la hemos colocado y está a la espera
+                        if (needToReactivate)
+                        {
+                            LogManager.Log("WAITING [" + ability.name + "]", FeatureType.Player);
+                            ActivatingAbility();
+                        }
+                        else
+                        {
+                            if (Input.GetKeyDown(key))
+                            {
+                                LogManager.Log("PLACING [" + ability.name + "]", FeatureType.Player);
+                                needToReactivate = true;
+                                //Colocar objeto en el sitio
+                            }
+                        }
                     }
                     else
                     {
-                        if (Input.GetKeyDown(key))
-                        {
-                            LogManager.Log("PLACING [" + ability.name + "]", FeatureType.Player);
-                            needToReactivate = true;
-                            //Colocar objeto en el sitio
-                        }
-                        
+                        ActivatingAbility();
                     }
                 }
-                else
-                {
-                    ActivatingAbility();
-                }
-                
-                
                 break;
             case AbilityState.activating:
                 ability.Activate(gameObject, positionToThrowAbility);
@@ -169,6 +172,11 @@ public class AbilityHolder : MonoBehaviour
             state = AbilityState.ready;
             Destroy(currentCanvasCreated);
         }
+    }
+
+    public void SetIfCanThrowAbility(bool aux)
+    {
+        this.canThrowAbility = aux;
     }
 
     public void ActiveAbility()

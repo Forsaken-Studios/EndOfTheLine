@@ -20,10 +20,7 @@ public class WallCanvas : MonoBehaviour
     private float minDistance = 40;
     private void Update()
     {
-        
         closestWall =  GameManager.Instance.GetWallCollider().ClosestPoint(GetPosition());
-
-
         if (GameManager.Instance.GetFloorCollider().OverlapPoint(GetPosition()))
         {
             if (Vector2.Distance(closestWall, GetPosition()) < minDistance)
@@ -33,41 +30,28 @@ public class WallCanvas : MonoBehaviour
                 if (escalar < 0)
                 {
                     positionImage.rectTransform.position = closestWall;
-                    holder.UpdatePositionToThrowAbility(closestWall);
-                    
-      
                     Vector2 directionInFront = -(GetPosition() - closestWall).normalized;
-                    Debug.Log(directionInFront);
-                    Vector2 closestWallFinder = closestWall;
-                    
-                    if (directionInFront.x < 0)
-                    {
-                        closestWallFinder += new Vector2(0, -5);
-                    }
-                    else
-                    {
-                        closestWallFinder += new Vector2(0, 5);
-                    }
-                    
-                    
-                    RaycastHit2D hitInFront = Physics2D.Raycast(closestWallFinder, directionInFront, 2000f,wallLayerMask);
+                    RaycastHit2D hitInFront = Physics2D.Raycast(closestWall, -directionInFront, 2000f,wallLayerMask);
                     oppositeWall = hitInFront.point;
                     if (hitInFront.collider != null && hitInFront.collider.gameObject.tag == "Wall")
                     {
-                        Debug.Log("Pared enfrente detectada: " + hitInFront.point);
-                        Debug.Log("WALL: " + closestWall);
-                        Debug.DrawLine(closestWall, hitInFront.point, Color.blue); // Línea azul para depurar
                         oppositeWallImage.rectTransform.position = hitInFront.point;
+                        holder.UpdatePositionToThrowAbility(closestWall, hitInFront.point);
+                        holder.SetIfCanThrowAbility(true);
                     }
-                    
                     oppositeWallImage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    holder.SetIfCanThrowAbility(false);
                 }
             }
             else
             {
+                holder.SetIfCanThrowAbility(false);
                 oppositeWallImage.gameObject.SetActive(false);
                 positionImage.rectTransform.position = GetPosition();
-                holder.UpdatePositionToThrowAbility(GetPosition());
+                holder.UpdatePositionToThrowAbility(GetPosition(), Vector2.zero); 
             }  
         }
     }

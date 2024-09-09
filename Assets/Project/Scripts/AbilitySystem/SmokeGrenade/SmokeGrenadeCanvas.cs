@@ -36,12 +36,12 @@ public class SmokeGrenadeCanvas : MonoBehaviour
                 //Add the cursor vector to the player position to get the final position
                 Vector2 finalPos = (Vector2) parent.transform.position + cursorVector;
                 positionImage.rectTransform.position = finalPos; 
-                holder.UpdatePositionToThrowAbility(finalPos);
+                holder.UpdatePositionToThrowAbility(finalPos, Vector2.zero);
             }
             else
             {
                 positionImage.rectTransform.position = GetPosition(); 
-                holder.UpdatePositionToThrowAbility(GetPosition());
+                holder.UpdatePositionToThrowAbility(GetPosition(), Vector2.zero);
             }
             
         /*
