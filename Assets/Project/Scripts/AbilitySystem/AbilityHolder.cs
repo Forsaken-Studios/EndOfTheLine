@@ -16,9 +16,10 @@ public class AbilityHolder : MonoBehaviour
     [Header("UI")]
     [SerializeField] private AbilityUI abilityUI;
 
+
     private GameObject currentGameObjectCreated;
     private GameObject currentCanvasCreated;
-    
+    private bool needToReactivate;
     enum AbilityState
     {
         ready, preparing, activating, active, cooldown
@@ -94,18 +95,31 @@ public class AbilityHolder : MonoBehaviour
                 break;  
             case AbilityState.preparing:
                 LogManager.Log("PREPARING ABILITY [" + ability.name + "]", FeatureType.Player);
-                if (Input.GetKeyDown(key))
+                if (ability.needToBeReactivated)
                 {
-                    //Activate
-                    OverheatManager.Instance.IncreaseEnergy(ability.overheatCost);
-                    ability.Activating(gameObject, positionToThrowAbility, out currentGameObjectCreated);
-                    state = AbilityState.activating;
-                }else if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    //Destroy canvas
-                    state = AbilityState.ready;
-                    Destroy(currentCanvasCreated);
+                    // needToReactivate == true -> Ya la hemos colocado y está a la espera
+                    if (needToReactivate)
+                    {
+                        LogManager.Log("WAITING [" + ability.name + "]", FeatureType.Player);
+                        ActivatingAbility();
+                    }
+                    else
+                    {
+                        if (Input.GetKeyDown(key))
+                        {
+                            LogManager.Log("PLACING [" + ability.name + "]", FeatureType.Player);
+                            needToReactivate = true;
+                            //Colocar objeto en el sitio
+                        }
+                        
+                    }
                 }
+                else
+                {
+                    ActivatingAbility();
+                }
+                
+                
                 break;
             case AbilityState.activating:
                 ability.Activate(gameObject, positionToThrowAbility);
@@ -141,8 +155,26 @@ public class AbilityHolder : MonoBehaviour
         }
     }
 
+    private void ActivatingAbility()
+    {
+        if (Input.GetKeyDown(key))
+        {
+            //Activate
+            OverheatManager.Instance.IncreaseEnergy(ability.overheatCost);
+            ability.Activating(gameObject, positionToThrowAbility, out currentGameObjectCreated);
+            state = AbilityState.activating;
+        }else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            //Destroy canvas
+            state = AbilityState.ready;
+            Destroy(currentCanvasCreated);
+        }
+    }
+
     public void ActiveAbility()
     {
         this.state = AbilityState.active;
     }
+
+  
 }

@@ -21,7 +21,8 @@ public class GameManager : MonoBehaviour
     
     
     private string trainSceneName = "TrainBase";
-    
+    [SerializeField] private Collider2D wallCollider;
+    [SerializeField] private Collider2D floorCollider;
     
     [Header("Extraction Properties")] 
     private GameState _gameState;
@@ -126,5 +127,14 @@ public class GameManager : MonoBehaviour
     public string GetNameTrainScene()
     {
         return trainSceneName;
+    }
+    
+    public Collider2D GetWallCollider()
+    {
+        return wallCollider;
+    } 
+    public Collider2D GetFloorCollider()
+    {
+        return floorCollider;
     }
 }

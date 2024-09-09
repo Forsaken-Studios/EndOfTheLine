@@ -13,6 +13,7 @@ public class Ability : ScriptableObject
     public float cooldownTime;
     public float activeTime;
     public float overheatCost;
+    public bool needToBeReactivated;
 
 
     public int goldNeededToUnlock;
