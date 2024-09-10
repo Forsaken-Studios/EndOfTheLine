@@ -16,7 +16,8 @@ public class AbilityHolder : MonoBehaviour
     private Vector2 positionToThrowAbility2 = Vector2.zero;
     [Header("UI")]
     [SerializeField] private AbilityUI abilityUI;
-    
+
+    private bool isPreparingAbility = false;
     private GameObject currentGameObjectCreated;
     private GameObject currentCanvasCreated;
     private bool needToReactivate;
@@ -34,6 +35,16 @@ public class AbilityHolder : MonoBehaviour
     private void Start()
     {
         LoadAbilityEquipped();
+    }
+
+    public void TryToCancelAbility()
+    {
+        Debug.Log("ID: " + abilityHolderID);
+        if (state == AbilityState.preparing)
+        {
+            Destroy(currentCanvasCreated);
+            this.state = AbilityState.ready;
+        }
     }
 
     private void LoadAbilityEquipped()
@@ -93,7 +104,10 @@ public class AbilityHolder : MonoBehaviour
                 if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost))
                 {
                     ability.PrepareAbility(gameObject, this, out currentCanvasCreated);
+                    OverheatManager.Instance.SetHolderToPrepareAbility(abilityHolderID);
+                    isPreparingAbility = true;
                     state = AbilityState.preparing;
+                    
                 }
                 break;  
             case AbilityState.preparing:
@@ -166,6 +180,21 @@ public class AbilityHolder : MonoBehaviour
         }
     }
 
+    private void CancelOtherAbility()
+    {
+        if (abilityHolderID == 1)
+        {
+            Debug.Log("CANCELING ID: 2");
+            OverheatManager.Instance.GetHolder2().TryToCancelAbility();
+        }
+        else
+        {
+            Debug.Log("CANCELING ID: 1");
+            OverheatManager.Instance.GetHolder1().TryToCancelAbility();
+        }
+    }
+
+    
     public void ActivateAbility()
     {
         ability.Activate(gameObject, positionToThrowAbility, positionToThrowAbility2);
