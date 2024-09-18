@@ -23,6 +23,10 @@ public class GameManager : MonoBehaviour
     private string trainSceneName = "TrainBase";
     [SerializeField] private Collider2D wallCollider;
     [SerializeField] private Collider2D floorCollider;
+
+    private bool holder1Activated = false;
+    private bool holder2Activated = false;
+    
     
     [Header("Extraction Properties")] 
     private GameState _gameState;
@@ -98,7 +102,7 @@ public class GameManager : MonoBehaviour
         }
         else
         { 
-            SaveManager.Instance.EmptyDictionaryIfDisconnectInRaid();
+            //SaveManager.Instance.EmptyDictionaryIfDisconnectInRaid();
         }
     }
     
@@ -136,5 +140,26 @@ public class GameManager : MonoBehaviour
     public Collider2D GetFloorCollider()
     {
         return floorCollider;
+    }
+    
+    public void SetHolder(int id, bool aux)
+    {
+        if (id == 1)
+        {
+            this.holder1Activated = aux;
+        }
+        else
+        {
+            this.holder2Activated = aux;
+        }
+    }
+    
+    public bool GetHolder1Status()
+    {
+        return holder1Activated;
+    }
+    public bool GetHolder2Status()
+    {
+        return holder2Activated;
     }
 }

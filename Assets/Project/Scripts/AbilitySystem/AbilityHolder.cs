@@ -106,8 +106,8 @@ public class AbilityHolder : MonoBehaviour
                     ability.PrepareAbility(gameObject, this, out currentCanvasCreated);
                     OverheatManager.Instance.SetHolderToPrepareAbility(abilityHolderID);
                     isPreparingAbility = true;
+                    GameManager.Instance.SetHolder(abilityHolderID, true);
                     state = AbilityState.preparing;
-                    
                 }
                 break;  
             case AbilityState.preparing:
@@ -128,8 +128,14 @@ public class AbilityHolder : MonoBehaviour
                             {
                                 LogManager.Log("PLACING [" + ability.name + "]", FeatureType.Player);
                                 needToReactivate = true;
+                                GameManager.Instance.SetHolder(abilityHolderID, false);
                                 ActivatingAbility();
                                 //Colocar objeto en el sitio
+                            }else if (Input.GetKeyDown(KeyCode.Escape))
+                            {
+                                GameManager.Instance.SetHolder(abilityHolderID, false);
+                                state = AbilityState.ready;
+                                Destroy(currentCanvasCreated);
                             }
                         }
                     }
@@ -209,10 +215,12 @@ public class AbilityHolder : MonoBehaviour
             //Activate
             OverheatManager.Instance.IncreaseEnergy(ability.overheatCost);
             ability.Activating(gameObject, positionToThrowAbility, positionToThrowAbility2, out currentGameObjectCreated);
+            GameManager.Instance.SetHolder(abilityHolderID, false);
             state = AbilityState.activating;
         }else if (Input.GetKeyDown(KeyCode.Escape))
         {
             //Destroy canvas
+            GameManager.Instance.SetHolder(abilityHolderID, false);
             state = AbilityState.ready;
             Destroy(currentCanvasCreated);
         }
