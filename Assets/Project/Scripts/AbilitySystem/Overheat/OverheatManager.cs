@@ -7,6 +7,12 @@ using UnityEngine.UI;
 public class OverheatManager : IPlayer_Bar
 {
     public static OverheatManager Instance;
+
+    [SerializeField] private AbilityHolder holder1;
+    [SerializeField] private AbilityHolder holder2;
+
+    private bool holder1IsPreparing = false;
+    private bool holder2IsPreparing = false;
     
     private void Awake()
     {
@@ -15,7 +21,6 @@ public class OverheatManager : IPlayer_Bar
             Debug.Log("[OverheatManager] : There is already a overheat manager");
             Destroy(this);
         }
-
         Instance = this;
     }
      
@@ -42,6 +47,31 @@ public class OverheatManager : IPlayer_Bar
     {
         return energy + cost <= MAX_STAMINA;
     }
-
     
+    public AbilityHolder GetHolder1()
+    {
+        return holder1;
+    }
+
+    public void SetHolderToPrepareAbility(int holder)
+    {
+        if (holder == 1)
+        {
+            holder1IsPreparing = true;
+            holder2.TryToCancelAbility();
+            holder2IsPreparing = false;
+        }
+        else
+        {
+            holder2IsPreparing = true;
+            holder1.TryToCancelAbility();
+            holder1IsPreparing = false;
+        }
+    }
+    
+
+    public AbilityHolder GetHolder2()
+    {
+        return holder2;
+    }
 }

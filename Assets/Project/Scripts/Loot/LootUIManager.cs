@@ -11,7 +11,8 @@ using Utils.CustomLogs;
 public class LootUIManager : MonoBehaviour
 {
     public static LootUIManager Instance;
-    
+
+    [SerializeField] private KeyCode lootAllKey;
     
     [SerializeField] private GameObject lootUIPanel;
     private List<ItemSlot> itemsSlotsList;
@@ -44,7 +45,7 @@ public class LootUIManager : MonoBehaviour
         if (lootUIPanel.activeSelf)
         {
             //Check if we want to take all items pressing E Button
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(lootAllKey))
             {
                 LootAllItemsInCrate();
             }

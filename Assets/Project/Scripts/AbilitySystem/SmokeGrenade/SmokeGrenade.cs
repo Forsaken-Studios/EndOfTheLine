@@ -14,7 +14,7 @@ public class SmokeGrenade : Ability
     private AbilityHolder holder;
 
 
-    public override void Activating(GameObject parent, Vector2 position, out GameObject gm)
+    public override void Activating(GameObject parent, Vector2 position, Vector2 endPosition,  out GameObject gm)
     {
         //instantiate smoke grenade and push it to place
         Destroy(canvasObject);
@@ -27,9 +27,11 @@ public class SmokeGrenade : Ability
         gm = smokeGrenade;
         smokeGrenade.GetComponentInChildren<SmokeGrenadeMovement>().SetUpProperties(position, holder);
     }
-    public override void Activate(GameObject parent, Vector2 position)
+    public override void Activate(GameObject parent, Vector2 position, Vector2 endPosition)
     {
         //Instantiate smoke
+        
+        Debug.Log("SMOKE SMOKE SMOKE");
     }
     public override void PrepareAbility(GameObject parent, AbilityHolder abilityHolder, out GameObject currentCanvas)
     {

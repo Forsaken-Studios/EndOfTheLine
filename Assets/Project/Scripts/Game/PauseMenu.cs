@@ -30,6 +30,12 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
     }
 
+    private bool AbilitiesNotActivated()
+    {
+        Debug.Log(!GameManager.Instance.GetHolder1Status() && !GameManager.Instance.GetHolder2Status());
+        return !GameManager.Instance.GetHolder1Status() && !GameManager.Instance.GetHolder2Status();
+    }
+    
     private void Update()
      {
          if (Input.GetKeyDown(KeyCode.Escape))
@@ -37,7 +43,10 @@ public class PauseMenu : MonoBehaviour
              if (InventoryManager.Instance.GetInspectViewList().Count == 0 
                  && !LoreManager.Instance.GetIfPlayerIsReadingLore())
              {
-                    PauseGame();
+                 if (AbilitiesNotActivated())
+                 {
+                     PauseGame();
+                 }
              }
              else
              {
