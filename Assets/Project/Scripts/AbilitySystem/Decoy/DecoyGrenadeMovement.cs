@@ -1,12 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class SmokeGrenadeMovement : MonoBehaviour
+public class DecoyGrenadeMovement : MonoBehaviour
 {
-
-
     private Vector2 endPosition;
     private Rigidbody2D rigidbody2D;
     private AbilityHolder holder;
@@ -26,15 +24,22 @@ public class SmokeGrenadeMovement : MonoBehaviour
                 rigidbody2D.velocity.magnitude <= 5f)
             {
                 //Stop
-                smokeCollider.SetActive(true);
+                
                 Debug.Log("STOP GRENADE");
                 //rigidbody2D.MovePosition(this.gameObject.transform.position);
                 rigidbody2D.drag = 2000f;
-                holder.ActivateAbility();
                 keepMovingGrenade = false;
             }
         }
     }
+
+    public void ActivateNoiseCircle()
+    {
+        if(smokeCollider != null)
+            smokeCollider.SetActive(true);
+    }
+
+
     
     public void SetUpProperties(Vector2 endPosition, AbilityHolder abilityHolder)
     {
