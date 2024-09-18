@@ -12,6 +12,9 @@ namespace Player
 
         public static PlayerController Instance;
         
+        public float walkSpeed = 18f;
+        public float runSpeed = 26f;
+        
         private float moveSpeed; 
         private float speedX, speedY; 
         [Header("Properties")]
@@ -97,7 +100,11 @@ namespace Player
                 _animator.SetBool("running", true);
             }
             else
+            {
+                moveSpeed = 0;
                 _animator.SetBool("running", false);
+            }
+                
             
            // _animator.SetInteger("SpeedInt", (int)speedX);
         }
@@ -106,12 +113,12 @@ namespace Player
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                moveSpeed = 26;
+                moveSpeed = runSpeed;
                 noise.UpdateColliderOnSprint();
             }
             else
             {
-                moveSpeed = 18;
+                moveSpeed = walkSpeed;
                 noise.ResetColliderRadius();
             }
         }
@@ -147,6 +154,21 @@ namespace Player
         public void SetIfPlayerCanMove(bool aux)
         {
             this.playerCanMove = aux;
+        }
+
+        public float GetMoveSpeed()
+        {
+            return moveSpeed;
+        }
+        
+        public float GetWalkSpeed()
+        {
+            return walkSpeed;
+        }
+        
+        public float GetRunSpeed()
+        {
+            return runSpeed;
         }
 
         public NoiseCircle GetNoiseScript()
