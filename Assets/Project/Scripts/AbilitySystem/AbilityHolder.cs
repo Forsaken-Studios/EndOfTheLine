@@ -207,6 +207,7 @@ public class AbilityHolder : MonoBehaviour
         ability.Activate(gameObject, positionToThrowAbility, positionToThrowAbility2);
         state = AbilityState.active;
         activeTime = ability.activeTime;
+        needToReactivate = false;
     }
     
     private void ActivatingAbility()

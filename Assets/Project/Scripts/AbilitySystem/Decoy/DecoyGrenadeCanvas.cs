@@ -10,14 +10,14 @@ public class DecoyGrenadeCanvas : MonoBehaviour
     [SerializeField] private Image positionImage;
 
     private GameObject parent;
-    private float radius = 30;
-    private float radiusX = 30;
-    private float radiusY = 20;
+    private float radius = 4;
+    private float radiusX = 4;
+    private float radiusY = 4;
     
-    private float minX = -50;
-    private float maxX = -50;
-    private float minY = -50;
-    private float maxY = -50;
+    private float minX = -4;
+    private float maxX = -4;
+    private float minY = -4;
+    private float maxY = -4;
     
     private void Update()
     {
