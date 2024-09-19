@@ -111,8 +111,8 @@ public class NewExpeditionManager : MonoBehaviour
      
      public void UpdateMissionPanelStatusToDisable()
      {
-         if (this.missionPanelInProgress != null)
-             this.missionPanelInProgress.HideExpeditionProgress();
+         if (this.missionPanelInProgress != null){
+             this.missionPanelInProgress.HideExpeditionProgress();}
 
      }
 

@@ -133,7 +133,7 @@ public class TraderPanel : MonoBehaviour
         {
             GameObject tradeGameObject = Instantiate(itemTradePrefab, Vector2.zero, Quaternion.identity,
                 itemTradeGridParent.transform);
-            tradeGameObject.GetComponentInChildren<TextMeshProUGUI>().text = randomTrades[i].daysToComplete.ToString() + " days";
+            //tradeGameObject.GetComponentInChildren<TextMeshProUGUI>().text = randomTrades[i].daysToComplete.ToString() + " days";
          
             //Set up trade
             SetUpUniqueTradeRequirements(randomTrades[i], tradeGameObject);

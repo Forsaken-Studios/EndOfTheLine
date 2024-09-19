@@ -10,8 +10,8 @@ public class NoiseCircle : MonoBehaviour
     private CircleCollider2D circleCollider;
 
     private float currentRadius;
-    private float normalRadius = 27;
-
+    [SerializeField] private float walkRadius = 15;
+    private float radiusDecay = 25;
     [Header("RADIUS")]
     [SerializeField] private float RADIUS_DASH = 34;
     [SerializeField] private float RADIUS_SPRINT = 31;
@@ -29,13 +29,13 @@ public class NoiseCircle : MonoBehaviour
 
     }
 
-    void OnDrawGizmos()
+   /* void OnDrawGizmos()
     {
             /*Matrix4x4 oldMatrix = Gizmos.matrix;
             Gizmos.color = new Color(0.2f, 0.2f, 0.2f, 0.5f); //this is gray, could be anything
             Gizmos.matrix = Matrix4x4.TRS(this.transform.position, this.transform.rotation, new Vector3(1, 1, 1));
             Gizmos.DrawSphere(Vector3.zero, currentRadius);
-            Gizmos.matrix = oldMatrix;*/
+            Gizmos.matrix = oldMatrix;
             float corners = 25; // How many corners the circle should have
             float size = currentRadius; // How wide the circle should be
             Vector3 origin = transform.position; // Where the circle will be drawn around
@@ -51,13 +51,19 @@ public class NoiseCircle : MonoBehaviour
 
                 lastPosition = nextPosition;
             }     
-    }
+    }*/
     public void UpdateColliderRadius(float radius)
     {
         this.circleCollider.radius = worldNoiseIsActivated ? radius * RADIUS_WORLDNOISE_REDUCER : radius;
         currentRadius = worldNoiseIsActivated ? radius * RADIUS_WORLDNOISE_REDUCER : radius;
     }
-
+    
+    float expDecay(float current, float goal, float decay, float dT)
+    {
+        //Advanced LERP function
+        return goal + (current - goal)* Mathf.Exp(-decay * dT);
+    }
+    
     public void UpdateColliderOnDash()
     {
         UpdateColliderRadius(RADIUS_DASH);
@@ -76,8 +82,8 @@ public class NoiseCircle : MonoBehaviour
 
     public void ResetColliderRadius()
     {
-        this.circleCollider.radius = worldNoiseIsActivated ? normalRadius * RADIUS_WORLDNOISE_REDUCER : normalRadius;
-        currentRadius = worldNoiseIsActivated ? normalRadius * RADIUS_WORLDNOISE_REDUCER : normalRadius;
+        this.circleCollider.radius = worldNoiseIsActivated ? walkRadius * RADIUS_WORLDNOISE_REDUCER : walkRadius;
+        currentRadius = worldNoiseIsActivated ? walkRadius * RADIUS_WORLDNOISE_REDUCER : walkRadius;
     }  
     public void ResetColliderRadiusOfWorldNoise()
     {

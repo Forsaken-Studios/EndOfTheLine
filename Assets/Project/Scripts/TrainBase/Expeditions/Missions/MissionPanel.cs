@@ -11,6 +11,9 @@ public class MissionPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI missionDuration;
     [SerializeField] private GameObject inProgressText;
     private MissionStatSO mission;
+
+    [SerializeField] private GameObject timeRemainingPanel;
+    [SerializeField] private Image imageFiller;
     
     [SerializeField] private GameObject rewardsGrid;
     [SerializeField] private GameObject rewardPrefab;
@@ -25,10 +28,15 @@ public class MissionPanel : MonoBehaviour
         if (expeditionInProgressID == this.mission.id)
         {
             inProgressText.SetActive(true);
+            timeRemainingPanel.SetActive(true);
+
+            HandleProgressBar();
+
         }
         else
         {
             inProgressText.SetActive(false);
+            timeRemainingPanel.SetActive(false);
         }
         
         this.gameObject.GetComponent<Button>().onClick.AddListener(() => HandleClickInExpeditionPanel());
@@ -42,16 +50,33 @@ public class MissionPanel : MonoBehaviour
         }
     }
 
+    private void HandleProgressBar()
+    {
+        float currentDayLocal = PlayerPrefs.GetInt("CurrentDay");
+        float endingDay = PlayerPrefs.GetInt("ExpeditionEndDay");
+        float remainingDays = (endingDay - currentDayLocal) / mission.daysToComplete;
+        if (remainingDays < 0)
+        {
+            imageFiller.fillAmount = 1;
+        }
+        else
+        {
+            imageFiller.fillAmount = 1 - remainingDays;
+        }
+    }
+
     public void SetUpExpeditionTextToInProgress()
     {
         inProgressText.SetActive(true);
         inProgressText.GetComponentInChildren<TextMeshProUGUI>().text = "-InProgress-";
+        HandleProgressBar();
     }
 
 
     public void HideExpeditionProgress()
     {
         inProgressText.SetActive(false);
+        timeRemainingPanel.SetActive(false);
     }
 
     public void SetUpExpeditionTextToCompleted()
