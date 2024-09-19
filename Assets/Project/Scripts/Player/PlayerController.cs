@@ -12,10 +12,14 @@ namespace Player
 
         public static PlayerController Instance;
         
+        
+ 
         [SerializeField] private float walkSpeed = 18f;
+
+        [SerializeField] private float currentSpeedValue = 5f;
         [SerializeField] private float runSpeed = 26f;
         
-        private float moveSpeed; 
+        [SerializeField] private float moveSpeed; 
         private float speedX, speedY; 
         [Header("Properties")]
         private Rigidbody2D _rb;
@@ -39,11 +43,14 @@ namespace Player
         
         [Header("Inputs")] 
         private KeyCode dashInput = KeyCode.LeftControl;
-
-
+        
         [Header("Noise Circle")] 
         [SerializeField] private NoiseCircle noise;
 
+        [Header("Player Speed Bar")] 
+        [SerializeField] private PlayerSpeedBarUI playerSpeedBar;
+        [SerializeField] private float speedModifier = 0.5f;
+        
         private void Awake()
         {
             if (Instance != null)
@@ -59,12 +66,15 @@ namespace Player
         {
             _rb = GetComponent<Rigidbody2D>();
             _animator = GetComponentInChildren<Animator>();
+            playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
+            currentSpeedValue = walkSpeed;
         }
 
         private void Update()
         {
             CalculateNoiseRadius();
-           
+            playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
+            HandleMouseWheelSpeed();
             if (GameManager.Instance.GameState == GameState.OnGame && playerCanMove)
             {
                 if (isDashing)
@@ -95,6 +105,25 @@ namespace Player
             _rb.MovePosition(_rb.position + new Vector2(speedX, speedY) * moveSpeed * Time.fixedDeltaTime);
         }
 
+        private void HandleMouseWheelSpeed()
+        {
+            if (Input.mouseScrollDelta.y > 0f)
+            {
+                if (currentSpeedValue < runSpeed)
+                {
+                    currentSpeedValue += 0.5f;
+                    moveSpeed += 0.5f;
+                }
+            }else if (Input.mouseScrollDelta.y < 0f)
+            {
+                if (currentSpeedValue > walkSpeed)
+                {
+                    currentSpeedValue -= 0.5f;
+                    moveSpeed -= 0.5f;
+                }
+            }
+        }
+        
         private void HandleMovementInputs()
         {
             speedX = Input.GetAxisRaw("Horizontal");
@@ -121,10 +150,12 @@ namespace Player
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 moveSpeed = runSpeed;
+                playerSpeedBar.UpdateImage((moveSpeed / walkSpeed) - 1);
             }
             else
             {
-                moveSpeed = walkSpeed;
+                moveSpeed = currentSpeedValue;
+                playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
             }
         }
         
