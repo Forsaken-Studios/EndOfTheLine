@@ -121,12 +121,10 @@ namespace Player
             if (Input.GetKey(KeyCode.LeftShift))
             {
                 moveSpeed = runSpeed;
-                noise.UpdateColliderOnSprint();
             }
             else
             {
                 moveSpeed = walkSpeed;
-                noise.ResetColliderRadius();
             }
         }
         
@@ -143,20 +141,17 @@ namespace Player
         {
             PlayerOverheating.Instance.DecreaseEnergy(DASH_STAMINA_COST);
             PlayerOverheating.Instance.SetCanRecoveryEnergy(false);
-            noise.UpdateColliderOnDash();
             canDash = false;
             isDashing = true;
             _rb.velocity = new Vector2(speedX * dashSpeed, speedY * dashSpeed / 2);
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
-            noise.ResetColliderRadius();
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
 
             yield return new WaitForSeconds(2f);
             PlayerOverheating.Instance.SetCanRecoveryEnergy(true);
         }
-
         private float CalculateNoiseRadius()
         {
             if (moveSpeed >= runSpeed)

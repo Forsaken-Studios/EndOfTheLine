@@ -64,7 +64,7 @@ public class NoiseManager : MonoBehaviour
             worldNoiseActivated = false; 
             SoundManager.Instance.StopSound();
             Destroy(worldNoiseUIPrefab);
-            PlayerController.Instance.GetNoiseScript().ResetColliderRadiusOfWorldNoise();
+            PlayerController.Instance.GetNoiseScript().ResetColliderOnWorldNoise();
             SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_End);
             yield return new WaitForSeconds(timeToWaitBetweenNoise);
         }   

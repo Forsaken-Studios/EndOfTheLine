@@ -23,6 +23,7 @@ namespace Loot
         [SerializeField] private bool needToSpawnXObject;
         [SerializeField] private List<string> itemsToSpawn;
         private bool isLooting = false;
+        [SerializeField] private float verticalOffset = 0.5f;
         private bool isTemporalBox = false; 
         /// <summary>
         /// When we need to spawn X Items 100%
@@ -248,7 +249,7 @@ namespace Loot
         public void ActivateKeyHotkeyImage()
         {
             currentHotkeyGameObject = Instantiate(LootUIManager.Instance.GetHotkeyPrefab(),
-                new Vector2(this.transform.position.x, this.transform.position.y + 1), Quaternion.identity); 
+                new Vector2(this.transform.position.x, this.transform.position.y + verticalOffset), Quaternion.identity); 
             _isLooteable = true;
         }
 

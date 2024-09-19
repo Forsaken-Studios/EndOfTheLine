@@ -10,7 +10,7 @@ public class WallPlacers : MonoBehaviour
     [SerializeField] private GameObject secondPlacer;
 
     [SerializeField] private GameObject wall;
-    private float width = 2f;
+    [SerializeField] private float width = 1f;
     public void SetLocations(Vector2 location1, Vector2 location2, out GameObject wallSquare)
     {
         firstPlacer.transform.position = location1;

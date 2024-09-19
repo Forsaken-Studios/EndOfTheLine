@@ -72,6 +72,7 @@ public class AbilityHolder : MonoBehaviour
         Ability ability = FindAbilityID(abilityIDtoEquip);
         this.ability = ability;
         //Load image to ability icon
+        Debug.Log(ability);
         abilityUI.SetUpProperties(ability);
     }
 
