@@ -12,8 +12,8 @@ namespace Player
 
         public static PlayerController Instance;
         
-        public float walkSpeed = 18f;
-        public float runSpeed = 26f;
+        [SerializeField] private float walkSpeed = 18f;
+        [SerializeField] private float runSpeed = 26f;
         
         private float moveSpeed; 
         private float speedX, speedY; 
@@ -29,6 +29,13 @@ namespace Player
         private bool playerCanMove = true;
         private bool canDash = true;
         private float DASH_STAMINA_COST = 40;
+
+        [Header("Noise Radius Properties")] 
+        [SerializeField] private float walkRadius = 1f;
+        [SerializeField] private float runRadius = 2f;
+        private float currentRadius;
+        [Range(1f, 25f)]
+        [SerializeField] private float radiusDecay = 16f;
         
         [Header("Inputs")] 
         private KeyCode dashInput = KeyCode.LeftControl;
@@ -56,8 +63,8 @@ namespace Player
 
         private void Update()
         {
-            
-            //LogManager.Log("GAME STATUS: " + GameManager.Instance.GameState.ToString(), FeatureType.General);
+            CalculateNoiseRadius();
+           
             if (GameManager.Instance.GameState == GameState.OnGame && playerCanMove)
             {
                 if (isDashing)
@@ -150,7 +157,33 @@ namespace Player
             PlayerOverheating.Instance.SetCanRecoveryEnergy(true);
         }
 
+        private float CalculateNoiseRadius()
+        {
+            if (moveSpeed >= runSpeed)
+            {
+                currentRadius = expDecay(currentRadius, runRadius, radiusDecay, Time.deltaTime);
+            }else if (moveSpeed < walkSpeed)
+            {
+                currentRadius = expDecay(currentRadius, 0, radiusDecay, Time.deltaTime);
+            }
+            else
+            {
+                float speedParam = (moveSpeed - walkSpeed) / (runSpeed - walkSpeed);
 
+                float goalRadius = walkRadius + speedParam * (runRadius - walkRadius);
+                
+                currentRadius = expDecay(currentRadius, goalRadius, radiusDecay, Time.deltaTime);
+            }
+            
+            return currentRadius;
+        }
+
+        float expDecay(float current, float goal, float decay, float dT)
+        {
+            //Advanced LERP function
+            return goal + (current - goal)* Mathf.Exp(-decay * dT);
+        }
+        
         public void SetIfPlayerCanMove(bool aux)
         {
             this.playerCanMove = aux;
@@ -175,6 +208,12 @@ namespace Player
         {
             return noise;
         }
+
+        public float GetCurrentRadius()
+        {
+            return currentRadius;
+        }
+        
     }
 }
 

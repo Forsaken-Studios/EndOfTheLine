@@ -9,22 +9,16 @@ namespace Player
     public class NoiseCircleShader : MonoBehaviour
     {
         public bool breathing = false;
-        public float frequency = 10f;
+        public float frequency = 1f;
         
-        public bool simSteps = false;
-        public float stepDist = 0.5f;
+        public bool simSteps = true;
+        public float stepDist = 2.5f;
         private float stepDistCounter;
         [Range(0.01f, 5f)]
-        public float stepDecay = 2.5f;
+        public float stepDecay = 1.5f;
         
-        
-        
-        [Range(1f, 25f)]
-        public float radiusDecay = 16f;
         public GameObject player;
         
-        public float runRadius = 2f;
-        public float walkRadius = 0.5f;
         private float currentRadius;
         
         private Material mat;
@@ -32,15 +26,13 @@ namespace Player
         private float stepAlpha=1.0f;
         
         private float playerMoveSpeed;
-        private float playerWalkSpeed;
-        private float playerRunSpeed;
 
 
         // Start is called before the first frame update
         void Start()
         {
             mat = GetComponent<Renderer>().material;
-            currentRadius = walkRadius;
+            currentRadius = 0;
             stepDistCounter = stepDist;
         }
 
@@ -48,31 +40,11 @@ namespace Player
         void Update()
         {
             playerMoveSpeed = player.GetComponent<PlayerController>().GetMoveSpeed();
-            playerWalkSpeed = player.GetComponent<PlayerController>().GetWalkSpeed();
-            playerRunSpeed = player.GetComponent<PlayerController>().GetRunSpeed();
-            
+            currentRadius = player.GetComponent<PlayerController>().GetCurrentRadius();
             
             Vector3 position = player.transform.position;
             mat.SetVector("_Center", position);
-
-            if (playerMoveSpeed >= playerRunSpeed)
-            {
-                currentRadius = expDecay(currentRadius, runRadius, radiusDecay, Time.deltaTime);
-            }else if (playerMoveSpeed < playerWalkSpeed)
-            {
-                currentRadius = expDecay(currentRadius, 0, radiusDecay, Time.deltaTime);
-                
-            }
-            else
-            {
-                float speedParam = (playerMoveSpeed - playerWalkSpeed) / (playerRunSpeed - playerWalkSpeed);
-
-                float goalRadius = walkRadius + speedParam * (runRadius - walkRadius);
-                
-                currentRadius = expDecay(currentRadius, goalRadius, radiusDecay, Time.deltaTime);
-            }
             mat.SetFloat("_Radius", currentRadius);
-            
             
             if (breathing)
             {
