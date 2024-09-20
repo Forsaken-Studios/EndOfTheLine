@@ -43,8 +43,8 @@ namespace Player
             currentRadius = player.GetComponent<PlayerController>().GetCurrentRadius();
             
             Vector3 position = player.transform.position;
-            mat.SetVector("_Center", position);
-            mat.SetFloat("_Radius", currentRadius);
+            mat.SetVector("_NCCenter", position);
+            mat.SetFloat("_NCRadius", currentRadius);
             
             if (breathing)
             {
@@ -72,7 +72,7 @@ namespace Player
                 stepAlpha = 1;
             }
 
-            mat.SetFloat("_Alpha", pulseAlpha*stepAlpha);
+            mat.SetFloat("_NCAlpha", pulseAlpha*stepAlpha);
 
         }
 
