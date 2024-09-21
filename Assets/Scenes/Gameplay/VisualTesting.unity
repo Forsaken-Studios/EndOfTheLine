@@ -1771,6 +1771,7 @@ GameObject:
   - component: {fileID: 456892930}
   - component: {fileID: 456892929}
   - component: {fileID: 456892928}
+  - component: {fileID: 456892931}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1852,6 +1853,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &456892931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456892927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 326415002787ea842b9d3933f98f382e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 801568201}
 --- !u!1001 &464203165
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4611,46 +4625,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1814533395466829187, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3219711383272395771, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: abilityUI
       value: 
       objectReference: {fileID: 1436461297}
-    - target: {fileID: 3219711383272395771, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3794863736478708675, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 3878746648933132990, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3878746648933132990, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: statusBar
       value: 
       objectReference: {fileID: 701997125}
     - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: runSpeed
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: walkSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: playerSpeedBar
       value: 
       objectReference: {fileID: 369797894}
-    - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: statusBar
       value: 
@@ -4659,21 +4649,13 @@ PrefabInstance:
       propertyPath: abilityUI
       value: 
       objectReference: {fileID: 283948750}
-    - target: {fileID: 5970675836886858743, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6353131176420574158, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 801568188}
     - target: {fileID: 8238964837576844618, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16
+      value: 15.5
       objectReference: {fileID: 0}
     - target: {fileID: 8238964837576844618, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2
+      value: -2.5
       objectReference: {fileID: 0}
     - target: {fileID: 8238964837576844618, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4707,10 +4689,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8257176522720542377, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4719,6 +4697,11 @@ PrefabInstance:
 --- !u!1 &801568188 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3794863736478708675, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+  m_PrefabInstance: {fileID: 801568187}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &801568201 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8238964837576844618, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
   m_PrefabInstance: {fileID: 801568187}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &881671002
@@ -14970,6 +14953,7 @@ GameObject:
   - component: {fileID: 1362404032}
   - component: {fileID: 1362404031}
   - component: {fileID: 1362404033}
+  - component: {fileID: 1362404034}
   m_Layer: 0
   m_Name: Floor FX
   m_TagString: Untagged
@@ -17131,6 +17115,29 @@ MonoBehaviour:
   stepDist: 2.5
   stepDecay: 1.5
   player: {fileID: 801568188}
+--- !u!114 &1362404034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1362404029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b10ddf6432d960d499eeeeda221edc84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activated: 0
+  grenadeLocation: {fileID: 1520314839}
+  smokeRadius: 2
+  smokeDuration: 4
+  smokeSpawnDecay: 2.5
+  smokeFadeDecay: 12
+  smokeVortexEffectEnabled: 1
+  smokeVortexEffect: 1.5
+  smokeRotationEffectEnabled: 0
+  smokeRotationEffectRevertEnabled: 0
+  smokeRotationEffect: 1.5
 --- !u!1 &1372429557
 GameObject:
   m_ObjectHideFlags: 0
@@ -19573,6 +19580,37 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &1520314839
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1520314840}
+  m_Layer: 0
+  m_Name: GrenadeSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1520314840
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520314839}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 18, y: -2.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1552007216
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22068,3 +22106,4 @@ SceneRoots:
   - {fileID: 1904724662}
   - {fileID: 453304370}
   - {fileID: 801568187}
+  - {fileID: 1520314840}

@@ -20,6 +20,11 @@ Shader "Unlit/FloorFXShader"
         _SGCenter ("Smoke Origin", Vector) = (0, 0, 0, 0)
         _SGRadius ("Smoke Radius",Range(0, 20)) = 2
         _SGAlpha ("Smoke Alpha",Range(0,1)) = 0
+        [Space(10)]
+        
+        [Header(Merge Settings)]
+        [Space(10)]
+        _Prio ("Merge Priority",Range(0,1)) = 0
         
         
         
@@ -71,7 +76,7 @@ Shader "Unlit/FloorFXShader"
             float  _SGRadius;
             float  _SGAlpha;
             
-            
+            float _Prio;
 
             v2f vert (appdata v)
             {
@@ -87,15 +92,14 @@ Shader "Unlit/FloorFXShader"
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col;
+                fixed4 nadeCol;
                 
                 float2 playerPos = _NCCenter.xy ;
                 float distToPlayer = distance(playerPos, i.worldPos);
                 
                 float2 grenadePos = _SGCenter.xy ;
                 float distToNade = distance(grenadePos, i.worldPos);
-                
-                
-                
+                                
                 /*
                 if(dist > _Radius && dist < (_Radius + _Border))
                 {
@@ -105,6 +109,7 @@ Shader "Unlit/FloorFXShader"
                 */
                 
                 col.a = 0;
+                nadeCol.a = 0;
 
 
                 //Noise Circle Calculation
@@ -142,14 +147,19 @@ Shader "Unlit/FloorFXShader"
                     
                     //Smoke Grenade Painting
 
-                    col = tex2D(_SmokeTex, nadeBackCart/*i.worldPos * _SmokeTex_ST.xy + _SmokeTex_ST.zw*/) * _SGColor;
+                    nadeCol = tex2D(_SmokeTex, nadeBackCart/*i.worldPos * _SmokeTex_ST.xy + _SmokeTex_ST.zw*/) * _SGColor;
                     fixed4 alphaMask = tex2D(_SGMaskTex, nadeCart/2* _SGMaskTex_ST.xy/_SGRadius + 0.5);
-                    col.a *= alphaMask.a;
-                    col.a *= _SGAlpha;
+                    nadeCol.a *= alphaMask.a;
+                    nadeCol.a *= _SGAlpha;
                     
                 }
 
-
+                //Merge Aproximations
+                
+                if(nadeCol.a > col.a && col.a <= _Prio)
+                {
+                    col = nadeCol;
+                }
                 
                 
                 
