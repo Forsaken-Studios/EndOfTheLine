@@ -7,10 +7,13 @@ using UnityEngine.UI;
 
 public class DetectionUI : MonoBehaviour
 {
-    [SerializeField] private Image _detectionBarImage;
-    [SerializeField] private Image _iconAlertState;
-    [SerializeField] private Sprite _questionSprite;
-    [SerializeField] private Sprite _detectedSprite;
+    [Header("Bar progress")]
+    [SerializeField] private Image _alertMeter;
+    [SerializeField] private Gradient _colorGradient;
+    [SerializeField] private float _detection;
+    [SerializeField] private float _maxDetection;
+
+    [Header("External elements")]
     [SerializeField] private Transform _bodyTransform;
 
     private Vector3 previousPosition;
@@ -32,9 +35,12 @@ public class DetectionUI : MonoBehaviour
         previousPosition = _bodyTransform.position;
     }
 
-    public void UpdateDetectionBar(float detectionLevel, bool isPlayerDetected)
+    public void UpdateDetectionBar(float quantity)
     {
-        _detectionBarImage.fillAmount = detectionLevel;
-        _iconAlertState.sprite = isPlayerDetected ? _detectedSprite : _questionSprite;
+        _detection = Mathf.Clamp(quantity, 0, _maxDetection);
+        _alertMeter.fillAmount = quantity;
+
+        //Debug.Log(colorGradient.Evaluate(alertMeter.fillAmount));
+        _alertMeter.color = _colorGradient.Evaluate(_alertMeter.fillAmount);
     }
 }

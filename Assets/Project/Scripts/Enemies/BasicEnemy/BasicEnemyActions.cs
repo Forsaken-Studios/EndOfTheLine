@@ -19,7 +19,6 @@ public class BasicEnemyActions : MonoBehaviour
 
     private bool _isRotating = true;
     private Transform _player;
-    private bool _isChasing = false;
     private Vector3 _positionChased;
     private NavMeshAgent _agent;
     private Vector3 _initialPositionSelf;
@@ -30,6 +29,7 @@ public class BasicEnemyActions : MonoBehaviour
     void Start()
     {
         _initialPositionSelf = transform.position;
+        _positionChased = _initialPositionSelf;
 
         isAtPlayerLastSeenPosition = false;
         isAtInitialPosition = true;
@@ -50,11 +50,9 @@ public class BasicEnemyActions : MonoBehaviour
         CheckIsAtInitialPosition();
         CheckIsAtPlayerLastSeenPosition();
 
-        if (_isChasing)
-        {
-            _agent.SetDestination(_positionChased);
-        }
-        else if (_isRotating)
+        _agent.SetDestination(_positionChased);
+
+        if (_isRotating)
         {
             transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
         }
@@ -67,7 +65,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void FixXYAxis()
     {
-        if(_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
+        if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
         {
             // Dirección hacia el objetivo
             Vector3 direction = _player.position - transform.position;
@@ -103,10 +101,11 @@ public class BasicEnemyActions : MonoBehaviour
         if (distanceToPlayer < _killPlayerDistance)
         {
             Vector3 directionToPlayer = (_player.position - transform.position).normalized;
-            float angleToPlayer = Vector3.Angle(transform.forward, directionToPlayer);
+            float angleToPlayer = Vector3.Angle(transform.right, directionToPlayer);
 
             if (angleToPlayer < _basicEnemyDetection.GetFOVAngle() / 2)
             {
+                Debug.Log("Jugador muerto");
                 GameManager.Instance.EndGame();
             }
         }
@@ -115,20 +114,20 @@ public class BasicEnemyActions : MonoBehaviour
     public void ChasePlayerLastSeenPosition()
     {
         StopRotating();
-        _isChasing = true;
+        _agent.isStopped = false;
         _positionChased = _basicEnemyDetection.playerLastSeenPosition;
     }
 
     public void ChaseInitialPosition()
     {
         StopRotating();
-        _isChasing = true;
+        _agent.isStopped = false;
         _positionChased = _initialPositionSelf;
     }
 
-    private void StopChasing()
+    public void StopChasing()
     {
-        _isChasing = false;
+        _agent.isStopped = true;
     }
 
     public void StopRotating()
@@ -144,7 +143,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void CheckIsAtInitialPosition()
     {
-        if (Vector3.Distance(transform.position, _initialPositionSelf) < 0.5f)
+        if (Vector3.Distance(transform.position, _initialPositionSelf) < 3f)
         {
             isAtInitialPosition = true;
         }
@@ -156,10 +155,10 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void CheckIsAtPlayerLastSeenPosition()
     {
-        if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) < 0.5f)
+        if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) < 3f)
         {
             isAtPlayerLastSeenPosition = true;
-            EnemiesEvents.OnIsAtPlayerLastSeenPosition?.Invoke();
+            EnemyEvents.OnIsAtPlayerLastSeenPosition?.Invoke();
         }
         else
         {
@@ -178,6 +177,15 @@ public class BasicEnemyActions : MonoBehaviour
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, _basicEnemyDetection.GetMaxDistanceToNearEnemyPartner());
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Door"))
+        {
+            DoorUI doorUI = collision.gameObject.GetComponent<DoorUI>();
+            doorUI.OpenDoorAI();
         }
     }
 }
