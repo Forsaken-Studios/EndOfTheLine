@@ -4,23 +4,22 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class AbilityPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class UpgradeSlotPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    
     [SerializeField] private Image abilityIcon;
     [SerializeField] private GameObject blackPanel;
     private bool unlocked;
     private Button button;
     private bool isSelected = false;
+
+    private UpgradesSO upgrade;
     
-    private Ability ability;
-    
-    public void SetUpProperties(Ability ability, int abilityStatus)
+    public void SetUpProperties(UpgradesSO upgrade, int abilityStatus)
     {
         button = GetComponentInChildren<Button>();
-        this.ability = ability;
+        this.upgrade = upgrade;
         unlocked = abilityStatus == 1;
-        this.abilityIcon.sprite = ability.abilityIcon;
+        this.abilityIcon.sprite = upgrade.upgradeIcon;
         blackPanel.SetActive(abilityStatus == 0);
         
         button.onClick.AddListener(() => ShowAbilityDetails());
@@ -28,10 +27,10 @@ public class AbilityPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
 
     private void ShowAbilityDetails()
-    {     
+    {
         isSelected = true;
         button.GetComponent<Image>().color = Color.blue;
-        AbilityShop.Instance.ShowAbilityDetails(this.ability, unlocked, this);   
+        UpgradeShop.Instance.ShowAbilityDetails(this.upgrade, unlocked, this);   
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -57,8 +56,8 @@ public class AbilityPanel : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     public void HideBlackPanel()
     {
         blackPanel.SetActive(false);
-    }  
-    
+    }
+
     public void ShowBlackPanel()
     {
         if (!unlocked)

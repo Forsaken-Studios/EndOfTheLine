@@ -12,6 +12,7 @@ public class Item : ScriptableObject
     public int itemValue;
     public float itemWeight;
     public string itemName;
+    public float itemSpawnChance;
     public string itemDescription;
     public int itemID;
 }
