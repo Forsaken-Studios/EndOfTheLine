@@ -28,7 +28,6 @@ public class SmokeGrenadeShader : MonoBehaviour
     [SerializeField] private float smokeVortexEffect = 1.5f;
     
     [SerializeField] private bool smokeRotationEffectEnabled = false;
-    [SerializeField] private bool smokeRotationEffectRevertEnabled = false;
     [SerializeField] private float smokeRotationEffect = 1.5f;
     
     
@@ -49,6 +48,16 @@ public class SmokeGrenadeShader : MonoBehaviour
         Vector3 position = grenadeLocation.transform.position;
         mat.SetVector("_SGCenter", position);
         mat.SetFloat("_SGRadius", currentRadius);
+        if (smokeRotationEffectEnabled)
+        {
+            mat.SetFloat("_SGRotation", 1f);
+            mat.SetFloat("_SGSpeedX", smokeRotationEffect);
+        }
+        else
+        {
+            mat.SetFloat("_SGRotation", 0f);
+        }
+        
         
         if (activated)
         {
@@ -58,10 +67,6 @@ public class SmokeGrenadeShader : MonoBehaviour
                 if (smokeVortexEffectEnabled)
                 {
                     currentOffset.y = expDecay(currentOffset.y, smokeVortexEffect, smokeFadeDecay, Time.deltaTime);
-                }
-                if (smokeRotationEffectRevertEnabled)
-                {
-                    currentOffset.x = expDecay(currentOffset.x, initialOffset.x, smokeFadeDecay, Time.deltaTime);
                 }
                 
                 
@@ -79,11 +84,6 @@ public class SmokeGrenadeShader : MonoBehaviour
                 if (smokeVortexEffectEnabled)
                 {
                     currentOffset.y = expDecay(currentOffset.y, 0, smokeSpawnDecay, Time.deltaTime);
-                }
-
-                if (smokeRotationEffectEnabled)
-                {
-                    currentOffset.x = expDecay(currentOffset.x, initialOffset.x + smokeRotationEffect, smokeFadeDecay, Time.deltaTime);
                 }
                 
                 if (timer <= 0)

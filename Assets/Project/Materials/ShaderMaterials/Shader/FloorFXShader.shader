@@ -20,6 +20,10 @@ Shader "Unlit/FloorFXShader"
         _SGCenter ("Smoke Origin", Vector) = (0, 0, 0, 0)
         _SGRadius ("Smoke Radius",Range(0, 20)) = 2
         _SGAlpha ("Smoke Alpha",Range(0,1)) = 0
+        [Toggle] _SGRotation ("Smoke Rotating", Float) = 0
+        _SGSpeedX ("Rotation Speed", float) = 0
+        
+        
         [Space(10)]
         
         [Header(Merge Settings)]
@@ -75,6 +79,8 @@ Shader "Unlit/FloorFXShader"
             float4 _SGCenter;
             float  _SGRadius;
             float  _SGAlpha;
+            float _SGRotation;
+            float _SGSpeedX;
             
             float _Prio;
 
@@ -138,6 +144,7 @@ Shader "Unlit/FloorFXShader"
                     nadeUV.y = length(nadeCart);
 
                     nadeUV = nadeUV * _SmokeTex_ST.xy + _SmokeTex_ST.zw;
+                    nadeUV.x += _Time.y * _SGSpeedX * _SGRotation;
 
                     float2 nadeBackCart;
                     sincos(nadeUV.x * UNITY_TWO_PI, nadeBackCart.y, nadeBackCart.x);
