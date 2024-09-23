@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils.CustomLogs;
 
 namespace Player
@@ -14,10 +15,10 @@ namespace Player
  
         [SerializeField] private float walkSpeed = 5f;
         [SerializeField] private float runSpeed = 10f;
-        private float moveSpeed; 
+        [SerializeField] private float speedModifier = 0.5f;
         
-        //Necessary in Inspector (?)
-        [SerializeField] private float currentSpeedValue = 5f;
+        private float moveSpeed;
+        private float currentSpeedValue;
         
         private float speedX, speedY; 
         [Header("Properties")]
@@ -28,7 +29,7 @@ namespace Player
         [SerializeField] private float dashSpeed = 10f;
         [SerializeField] private float dashDuration = 1f;
         [SerializeField] private float dashCooldown;
-        [SerializeField] private float DASH_STAMINA_COST = 40; //Naming consistency (?)
+        [SerializeField] private float dashStaminaCost = 40;
         private bool isDashing = false;
         private bool playerCanMove = true;
         private bool canDash = true;
@@ -49,7 +50,6 @@ namespace Player
 
         [Header("Player Speed Bar")] 
         [SerializeField] private PlayerSpeedBarUI playerSpeedBar;
-        [SerializeField] private float speedModifier = 0.5f; //Not used (?)
         
         private void Awake()
         {
@@ -66,8 +66,8 @@ namespace Player
         {
             _rb = GetComponent<Rigidbody2D>();
             _animator = GetComponentInChildren<Animator>();
+            currentSpeedValue = walkSpeed;
             playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
-            currentSpeedValue = walkSpeed; //Order to hide var from Inspector (?)
         }
 
         private void Update()
@@ -111,15 +111,15 @@ namespace Player
             {
                 if (currentSpeedValue < runSpeed)
                 {
-                    currentSpeedValue += 0.5f;
-                    moveSpeed += 0.5f;
+                    currentSpeedValue += speedModifier;
+                    moveSpeed += speedModifier;
                 }
             }else if (Input.mouseScrollDelta.y < 0f)
             {
                 if (currentSpeedValue > walkSpeed)
                 {
-                    currentSpeedValue -= 0.5f;
-                    moveSpeed -= 0.5f;
+                    currentSpeedValue -= speedModifier;
+                    moveSpeed -= speedModifier;
                 }
             }
         }
@@ -161,7 +161,7 @@ namespace Player
         
         private void HandleDashInputs()
         {
-            if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetEnergy() >= DASH_STAMINA_COST)
+            if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetEnergy() >= dashStaminaCost)
             {
                 StartCoroutine(Dash());
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Movement_Dash);
@@ -170,7 +170,7 @@ namespace Player
 
         private IEnumerator Dash()
         {
-            PlayerOverheating.Instance.DecreaseEnergy(DASH_STAMINA_COST);
+            PlayerOverheating.Instance.DecreaseEnergy(dashStaminaCost);
             PlayerOverheating.Instance.SetCanRecoveryEnergy(false);
             canDash = false;
             isDashing = true;
@@ -205,9 +205,9 @@ namespace Player
             return currentRadius;
         }
 
+        //Advanced LERP function
         private float ExpDecay(float current, float goal, float decay, float dT)
         {
-            //Advanced LERP function
             return goal + (current - goal)* Mathf.Exp(-decay * dT);
         }
         
