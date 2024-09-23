@@ -3,48 +3,59 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using static Player.PlayerController;
 
 namespace Player
 {
     public class NoiseCircleShader : MonoBehaviour
     {
+        //Breathing Effect
         public bool breathing = false;
         public float frequency = 1f;
         
+        //Simulate Steps
         public bool simSteps = true;
         public float stepDist = 2.5f;
         private float stepDistCounter;
         [Range(0.01f, 5f)]
         public float stepDecay = 1.5f;
         
-        public GameObject player;
-        
+        //Player Data From Player Singleton
+        private PlayerController playerInstance;
+        private GameObject player;
+        private float playerMoveSpeed;
         private float currentRadius;
         
+        //Material Controls
         private Material mat;
         private float pulseAlpha=1.0f;
         private float stepAlpha=1.0f;
         
-        private float playerMoveSpeed;
-
-
-        // Start is called before the first frame update
         void Start()
         {
             mat = GetComponent<Renderer>().material;
             currentRadius = 0;
             stepDistCounter = stepDist;
+
+            if (PlayerControllerInstance != null)
+            {
+                playerInstance = PlayerControllerInstance;
+                player = playerInstance.gameObject;
+            }
+            else
+            {
+                Debug.LogWarning("[NoiseCircleShader.cs] : There is no PlayerController Instance in the Scene");
+            }
         }
 
-        // Update is called once per frame
         void Update()
         {
-            playerMoveSpeed = player.GetComponent<PlayerController>().GetMoveSpeed();
-            currentRadius = player.GetComponent<PlayerController>().GetCurrentRadius();
-            
             Vector3 position = player.transform.position;
-            mat.SetVector("_Center", position);
-            mat.SetFloat("_Radius", currentRadius);
+            playerMoveSpeed = playerInstance.GetMoveSpeed();
+            currentRadius   = playerInstance.GetCurrentRadius();
+            
+            mat.SetVector("_NCCenter", position);
+            mat.SetFloat("_NCRadius", currentRadius);
             
             if (breathing)
             {
@@ -64,7 +75,6 @@ namespace Player
                 {
                     stepDistCounter += stepDist;
                     stepAlpha = 1;
-                    //mat.SetFloat("_Alpha", stepAlpha);
                 }
             }
             else
@@ -72,13 +82,13 @@ namespace Player
                 stepAlpha = 1;
             }
 
-            mat.SetFloat("_Alpha", pulseAlpha*stepAlpha);
+            mat.SetFloat("_NCAlpha", pulseAlpha*stepAlpha);
 
         }
 
+        //Advanced LERP function
         float expDecay(float current, float goal, float decay, float dT)
         {
-            //Advanced LERP function
             return goal + (current - goal)* Mathf.Exp(-decay * dT);
         }
         

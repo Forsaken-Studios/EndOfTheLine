@@ -1,15 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Player.PlayerController;
 
 public class FollowCharacter : MonoBehaviour
 {
 
-    [SerializeField] private Transform playerTransform;
+    private Transform playerTransform;
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (PlayerControllerInstance != null)
+        {
+            playerTransform = PlayerControllerInstance.gameObject.transform;
+        }
+        else
+        {
+            Debug.LogWarning("[NoiseCircleShader.cs] : There is no PlayerController Instance in the Scene");
+        }
     }
 
     // Update is called once per frame

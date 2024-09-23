@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static CameraSingleton;
 
 public class SmokeParalax : MonoBehaviour
 {
     
     private Material mat;
     private Vector2 startOffset;
-    public GameObject cam;
+    private GameObject cam;
+    private CameraSingleton mainCamInstance;
     public float paralaxFactor=1;
+    
     
     
     
@@ -18,6 +21,16 @@ public class SmokeParalax : MonoBehaviour
         mat = GetComponent<Renderer>().material;
 
         startOffset = mat.GetTextureOffset("_SmokeTex");
+        
+        if (CameraSingletonInstance != null)
+        {
+            mainCamInstance = CameraSingletonInstance;
+            cam = mainCamInstance.gameObject;
+        }
+        else
+        {
+            Debug.LogWarning("[NoiseCircleShader.cs] : There is no PlayerController Instance in the Scene");
+        }
         
     }
 

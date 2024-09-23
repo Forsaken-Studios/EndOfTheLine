@@ -11,15 +11,14 @@ namespace Player
     {
 
         public static PlayerController Instance;
-        
-        
  
-        [SerializeField] private float walkSpeed = 18f;
-
-        [SerializeField] private float currentSpeedValue = 5f;
-        [SerializeField] private float runSpeed = 26f;
+        [SerializeField] private float walkSpeed = 5f;
+        [SerializeField] private float runSpeed = 10f;
+        private float moveSpeed; 
         
-        [SerializeField] private float moveSpeed; 
+        //Necessary in Inspector (?)
+        [SerializeField] private float currentSpeedValue = 5f;
+        
         private float speedX, speedY; 
         [Header("Properties")]
         private Rigidbody2D _rb;
@@ -29,10 +28,11 @@ namespace Player
         [SerializeField] private float dashSpeed = 10f;
         [SerializeField] private float dashDuration = 1f;
         [SerializeField] private float dashCooldown;
+        [SerializeField] private float DASH_STAMINA_COST = 40; //Naming consistency (?)
         private bool isDashing = false;
         private bool playerCanMove = true;
         private bool canDash = true;
-        private float DASH_STAMINA_COST = 40;
+        
 
         [Header("Noise Radius Properties")] 
         [SerializeField] private float walkRadius = 1f;
@@ -49,7 +49,7 @@ namespace Player
 
         [Header("Player Speed Bar")] 
         [SerializeField] private PlayerSpeedBarUI playerSpeedBar;
-        [SerializeField] private float speedModifier = 0.5f;
+        [SerializeField] private float speedModifier = 0.5f; //Not used (?)
         
         private void Awake()
         {
@@ -67,7 +67,7 @@ namespace Player
             _rb = GetComponent<Rigidbody2D>();
             _animator = GetComponentInChildren<Animator>();
             playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
-            currentSpeedValue = walkSpeed;
+            currentSpeedValue = walkSpeed; //Order to hide var from Inspector (?)
         }
 
         private void Update()
@@ -102,7 +102,7 @@ namespace Player
             {
                 return;
             }
-            _rb.MovePosition(_rb.position + new Vector2(speedX, speedY) * moveSpeed * Time.fixedDeltaTime);
+            _rb.MovePosition(_rb.position + new Vector2(speedX, speedY) * (moveSpeed * Time.fixedDeltaTime));
         }
 
         private void HandleMouseWheelSpeed()
@@ -183,14 +183,15 @@ namespace Player
             yield return new WaitForSeconds(2f);
             PlayerOverheating.Instance.SetCanRecoveryEnergy(true);
         }
+        
         private float CalculateNoiseRadius()
         {
             if (moveSpeed >= runSpeed)
             {
-                currentRadius = expDecay(currentRadius, runRadius, radiusDecay, Time.deltaTime);
+                currentRadius = ExpDecay(currentRadius, runRadius, radiusDecay, Time.deltaTime);
             }else if (moveSpeed < walkSpeed)
             {
-                currentRadius = expDecay(currentRadius, 0, radiusDecay, Time.deltaTime);
+                currentRadius = ExpDecay(currentRadius, 0, radiusDecay, Time.deltaTime);
             }
             else
             {
@@ -198,13 +199,13 @@ namespace Player
 
                 float goalRadius = walkRadius + speedParam * (runRadius - walkRadius);
                 
-                currentRadius = expDecay(currentRadius, goalRadius, radiusDecay, Time.deltaTime);
+                currentRadius = ExpDecay(currentRadius, goalRadius, radiusDecay, Time.deltaTime);
             }
             
             return currentRadius;
         }
 
-        float expDecay(float current, float goal, float decay, float dT)
+        private float ExpDecay(float current, float goal, float decay, float dT)
         {
             //Advanced LERP function
             return goal + (current - goal)* Mathf.Exp(-decay * dT);
@@ -229,16 +230,25 @@ namespace Player
         {
             return runSpeed;
         }
-
-        public NoiseCircle GetNoiseScript()
-        {
-            return noise;
-        }
-
+        
         public float GetCurrentRadius()
         {
             return currentRadius;
         }
+        
+        public NoiseCircle GetNoiseScript()
+        {
+            return noise;
+        }
+        
+        public static PlayerController PlayerControllerInstance
+        {
+            get
+            {
+                return Instance;
+            }
+        }
+        
         
     }
 }

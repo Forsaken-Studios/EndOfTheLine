@@ -68,7 +68,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3794863736478708675}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 16, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -101,12 +101,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b602001b94399d43b9296b73b52836c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 18
-  runSpeed: 26
-  dashSpeed: 120
+  walkSpeed: 5
+  runSpeed: 10
+  currentSpeedValue: 5
+  dashSpeed: 10
   dashDuration: 0.5
   dashCooldown: 0
+  DASH_STAMINA_COST: 40
+  walkRadius: 1
+  runRadius: 2
+  radiusDecay: 16
   noise: {fileID: 6353131176420574158}
+  playerSpeedBar: {fileID: 0}
+  speedModifier: 0.5
 --- !u!114 &5313576150165581887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,7 +121,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3794863736478708675}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22338e5a1e05dcd4c887f8cf042c97b9, type: 3}
   m_Name: 
@@ -134,7 +141,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3794863736478708675}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ad00f49f2de93cc43862594c9bd8cf16, type: 3}
   m_Name: 
@@ -154,7 +161,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3794863736478708675}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e0a7543aea3c8d841bf8690b61e563c1, type: 3}
   m_Name: 
@@ -167,7 +174,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3794863736478708675}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c0c2893c46aab44481ad9b8675ac791, type: 3}
   m_Name: 
@@ -179,7 +186,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3794863736478708675}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2fea712117b1ea478999d244b0169d3, type: 3}
   m_Name: 
@@ -195,7 +202,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3794863736478708675}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2fea712117b1ea478999d244b0169d3, type: 3}
   m_Name: 
@@ -265,7 +272,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.6
+  m_Radius: 0.45
 --- !u!212 &6204760089672027890
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -384,11 +391,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee63c8de1f44be044ac1b4ae2dc0f11c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkRadius: 15
-  RADIUS_DASH: 34
-  RADIUS_SPRINT: 31
-  RADIUS_WORLDNOISE_REDUCER: 0.3
   worldNoiseIsActivated: 0
+  player: {fileID: 3794863736478708675}
 --- !u!58 &8129459125278943864
 CircleCollider2D:
   m_ObjectHideFlags: 0
