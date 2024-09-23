@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class SmokeGrenadeShader : MonoBehaviour
 {
-    [SerializeField] private bool activated = false;
+    private bool activated = false;
     private bool finished = false;
-    [SerializeField] private GameObject grenadeLocation;
+    private Vector2 grenadeLocation;
 
-    [SerializeField] private float smokeRadius = 2f;
+    private float smokeRadius = 2f;
     private float currentRadius;
-    [SerializeField] private float smokeDuration = 4f;
+    private float smokeDuration = 4f;
     [Range(0.01f, 25f)]
     [SerializeField] private float smokeSpawnDecay = 2.5f;
     [Range(0.01f, 25f)]
@@ -40,12 +40,17 @@ public class SmokeGrenadeShader : MonoBehaviour
         currentRadius = smokeRadius;
         initialOffset = mat.GetTextureOffset("_SmokeTex");
         currentOffset = initialOffset;
+        smokeRadius = AbilityManager.Instance.GetSmokeGrenadeRadius();
+        smokeDuration = AbilityManager.Instance.GetSmokeGrenadeProperties().activeTime;
+        grenadeLocation = AbilityManager.Instance.GetSmokePosition();
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 position = grenadeLocation.transform.position;
+        Vector2 position = grenadeLocation;
         mat.SetVector("_SGCenter", position);
         mat.SetFloat("_SGRadius", currentRadius);
         if (smokeRotationEffectEnabled)
@@ -57,10 +62,12 @@ public class SmokeGrenadeShader : MonoBehaviour
         {
             mat.SetFloat("_SGRotation", 0f);
         }
-        
+
+        activated = AbilityManager.Instance.GetActivatedSmoke();
         
         if (activated)
         {
+            grenadeLocation = AbilityManager.Instance.GetSmokePosition();
             if (finished)
             {
                 grenadeAlpha = expDecay(grenadeAlpha, 0, smokeFadeDecay, Time.deltaTime);
@@ -72,7 +79,7 @@ public class SmokeGrenadeShader : MonoBehaviour
                 
                 if (grenadeAlpha < 0.05f)
                 {
-                    activated = false;
+                    AbilityManager.Instance.SetActivatedSmoke(false);
                     finished = false;
                     currentOffset = initialOffset;
                 }
