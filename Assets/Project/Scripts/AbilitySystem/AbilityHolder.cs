@@ -99,7 +99,6 @@ public class AbilityHolder : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(state);
         switch (state)
         {
             case AbilityState.ready:
