@@ -14526,7 +14526,6 @@ MonoBehaviour:
   simSteps: 1
   stepDist: 2.5
   stepDecay: 1.5
-  player: {fileID: 0}
 --- !u!114 &1204555827561457712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14542,13 +14541,13 @@ MonoBehaviour:
   activated: 0
   grenadeLocation: {fileID: 0}
   smokeRadius: 2
-  smokeDuration: 4
-  smokeSpawnDecay: 2.5
+  smokeDuration: 3
+  smokeSpawnDecay: 2
   smokeFadeDecay: 12
-  smokeVortexEffectEnabled: 0
+  smokeVortexEffectEnabled: 1
   smokeVortexEffect: 1.5
   smokeRotationEffectEnabled: 0
-  smokeRotationEffect: 1.5
+  smokeRotationEffect: 0.1
 --- !u!1 &7806689954695716217
 GameObject:
   m_ObjectHideFlags: 0
