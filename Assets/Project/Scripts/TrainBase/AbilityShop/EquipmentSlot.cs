@@ -30,11 +30,9 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler
         GameObject dropped = eventData.pointerDrag;
         DraggableAbilityIcon draggableAbilityIcon = dropped.GetComponent<DraggableAbilityIcon>();
         Ability ability = draggableAbilityIcon.GetAbility();
-
-
-        if (!EquipmentScreen.Instance.CheckIfAbilityIsAlreadyEquipped(ability.abilityID, this.slotID))
+        Debug.Log("INTENTO " + ability.name + " [ID: + " + ability.abilityID + "] en slot " + slotID);
+        if (!EquipmentScreen.Instance.CheckIfAbilityIsAlreadyEquipped(ability, this.slotID))
         {
-            int abilityEquipped2 = PlayerPrefs.GetInt("AbilityIDEquipped_2");
             // First number - Ability ID
             // Second number - Slot saved
             int playerPrefSave = int.Parse(ability.abilityID.ToString() + slotID.ToString());

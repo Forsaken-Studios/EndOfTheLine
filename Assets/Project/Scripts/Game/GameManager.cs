@@ -5,6 +5,7 @@ using Extraction;
 using Inventory;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -12,12 +13,15 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
     
+    [FormerlySerializedAs("blackFadendGamePanel")]
+    [FormerlySerializedAs("blackFade")]
     [Header("End game")]
-    [SerializeField] private GameObject blackFade;
+    [SerializeField] private GameObject blackFadeEndGamePanel;
 
+    [FormerlySerializedAs("inspectItemCanvas")]
     [Header("Canvas Helper")]
     [Tooltip("We use this reference, to link inspect item to this parent")]
-    [SerializeField] private GameObject inspectItemCanvas; 
+    [SerializeField] private GameObject CanvasMenus; 
     
     
     private string trainSceneName = "TrainBase";
@@ -52,15 +56,15 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         GameState = GameState.OnGame;
-        blackFade.SetActive(false);
+        blackFadeEndGamePanel.SetActive(false);
     }
     
     private IEnumerator EndGameCorroutine()
     {
         while (true)
         {
-            blackFade.SetActive(true);
-            blackFade.GetComponent<Animator>().SetTrigger("ending");
+            blackFadeEndGamePanel.SetActive(true);
+            blackFadeEndGamePanel.GetComponent<Animator>().SetTrigger("ending");
 
             yield return new WaitForSeconds(3f);
             SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
@@ -125,7 +129,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject GetCanvasParent()
     {
-        return inspectItemCanvas;
+        return CanvasMenus;
     }
 
     public string GetNameTrainScene()

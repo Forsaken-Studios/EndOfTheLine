@@ -29,6 +29,12 @@ public class EquipmentScreen : MonoBehaviour
         Instance = this;
     }
 
+    private void Update()
+    {
+        Debug.Log("SLOT 1: " + abilityInSlot1.name);
+        Debug.Log("SLOT 2: " + abilityInSlot2.name);
+    }
+
     private void OnEnable()
     {
         //PlayerPrefs.SetInt("AbilityIDEquipped_1", 0);
@@ -109,20 +115,30 @@ public class EquipmentScreen : MonoBehaviour
     }
 
 
-    public bool CheckIfAbilityIsAlreadyEquipped(int abilityID, int slotUsed)
+    public bool CheckIfAbilityIsAlreadyEquipped(Ability ability, int slotUsed)
     {
+
+        
         if (slotUsed == 1)
         {
             if (abilityInSlot2 != null)
             {
-                return abilityInSlot2.abilityID == abilityID;
+                if (abilityInSlot2.abilityID == ability.abilityID)
+                    return true;
+                
+                this.abilityInSlot1 = ability;
+                return false;
             }
         }
         else
         {
             if (abilityInSlot1 != null)
             {
-                return abilityInSlot1.abilityID == abilityID;
+                if (abilityInSlot1.abilityID == ability.abilityID)
+                    return true;
+                
+                this.abilityInSlot2 = ability;
+                return false;
             }
         }
 

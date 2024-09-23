@@ -17,11 +17,14 @@ namespace Inventory
         public static InventoryManager Instance;
 
         [Header("Inventory Panels")]
-        [SerializeField] private GameObject inventoryHUDPanel;
         [SerializeField] private TextMeshProUGUI weightText;
-        [SerializeField] private TextMeshProUGUI inventoryText;
         [SerializeField] private GameObject looteableObjectPrefab;
 
+        [Header("Expanded Inventory Passive")]
+        [SerializeField] private bool expandedInventory;
+        [SerializeField] private bool expandedInventory2;
+        [SerializeField] private bool expandedInventory3;
+        [SerializeField]private List<ItemSlot> expandedItemSlotsList;
         
         private void Awake()
         {
@@ -36,9 +39,33 @@ namespace Inventory
         }
         
         public override void Start()
-        {
+        { 
+            //Lo pongo para que haya diferentes mejoras
+            if (expandedInventory)
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    itemSlotList.Add(expandedItemSlotsList[i]);
+                    expandedItemSlotsList[i].HideBlackPanel();
+                }
+            }
+            if (expandedInventory2)
+            {
+                for (int i = 3; i < 6; i++)
+                {
+                    itemSlotList.Add(expandedItemSlotsList[i]);
+                    expandedItemSlotsList[i].HideBlackPanel();
+                }
+            }
+            if (expandedInventory3)
+            {
+                for (int i = 6; i <= 10; i++)
+                {
+                    itemSlotList.Add(expandedItemSlotsList[i]);
+                    expandedItemSlotsList[i].HideBlackPanel();
+                }
+            }
             base.Start();
-            inventoryHUDPanel.SetActive(false);
         }
 
         void Update()
@@ -57,26 +84,17 @@ namespace Inventory
         public void ReverseInventoryStatus()
         {
             base.ReverseInventoryStatus();
-            inventoryHUDPanel.SetActive(!inventoryHUDPanel.activeSelf);
         }
         public void ActivateInventory()
         {
             base.ActivateInventory();
-            inventoryHUDPanel.SetActive(true);
         }
         public void DesactivateInventory()
         {
             base.DesactivateInventory();
-            inventoryHUDPanel.SetActive(false);
         }
         public void ChangeText(Dictionary<Item, int> inventoryItems)
         {
-            inventoryText.text = "";
-            foreach (var item in inventoryItems)
-            {
-                inventoryText.text += item.Key.name + "  x" + item.Value + "\n";
-            }
-
             weightText.text = PlayerInventory.Instance.GetCurrentWeight().ToString("F2") + " / " +
                               PlayerInventory.Instance.GetMaxWeight() + " KG";
         }

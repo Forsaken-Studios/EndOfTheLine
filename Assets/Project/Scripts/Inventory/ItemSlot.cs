@@ -24,7 +24,8 @@ namespace Inventory
         [SerializeField] private Image itemSlotImage;
         private TextMeshProUGUI itemSlotAmountText;
         private int ItemID;
-        
+
+        [SerializeField] private GameObject blackPanel;
         private bool canThrowItemAway;
         private Item itemInSlot;
         public int itemID
@@ -770,6 +771,14 @@ namespace Inventory
             }
         }
 
+        public void ShowBlackPanel()
+        {
+            blackPanel.SetActive(true);
+        }
+        public void HideBlackPanel()
+        {
+            blackPanel.SetActive(false);
+        }
         public void OnPointerExit(PointerEventData eventData)
         {
             if (this.itemID != 0)
