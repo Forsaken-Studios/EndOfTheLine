@@ -5,8 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Ability/Smoke Grenade", order = 1)]
 public class SmokeGrenade : Ability
 {
-    public float force = 35f;
-    public float smokeRadius = 14f;
+
     [SerializeField] private GameObject smokeGrenadeCanvasPrefab;
     [SerializeField] private GameObject smokeGrenadePrefab;
     private GameObject canvasObject;
@@ -23,14 +22,13 @@ public class SmokeGrenade : Ability
         Vector2 spawnPosition = (playerPosition + offset);
         GameObject smokeGrenade = Instantiate(smokeGrenadePrefab, playerPosition, Quaternion.identity);
         Rigidbody2D rb = smokeGrenade.GetComponentInChildren<Rigidbody2D>();
-        rb.AddForce(dir * force, ForceMode2D.Impulse);
+        rb.AddForce(dir * AbilityManager.Instance.GetGrenadeForce(), ForceMode2D.Impulse);
         gm = smokeGrenade;
         smokeGrenade.GetComponentInChildren<SmokeGrenadeMovement>().SetUpProperties(position, holder);
     }
     public override void Activate(GameObject parent, Vector2 position, Vector2 endPosition)
     {
         //Instantiate smoke
-        
         Debug.Log("SMOKE SMOKE SMOKE");
     }
     public override void PrepareAbility(GameObject parent, AbilityHolder abilityHolder, out GameObject currentCanvas)

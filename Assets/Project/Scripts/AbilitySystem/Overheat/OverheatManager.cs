@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class OverheatManager : IPlayer_Bar
 {
     public static OverheatManager Instance;
-
+    
     [SerializeField] private AbilityHolder holder1;
     [SerializeField] private AbilityHolder holder2;
 

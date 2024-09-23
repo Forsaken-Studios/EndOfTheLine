@@ -26,7 +26,7 @@ public class SmokeGrenadeCanvas : MonoBehaviour
             //Circle
             //Get Vector from the player to cursor
             Vector2 playerToCursor = GetPosition() -  (Vector2) parent.transform.position ;
-
+            
             if (playerToCursor.magnitude > radius)
             {
                 //Normalize it to get the direction
