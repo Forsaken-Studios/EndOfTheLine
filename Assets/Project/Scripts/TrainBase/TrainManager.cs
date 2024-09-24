@@ -52,7 +52,7 @@ public class TrainManager : MonoBehaviour
     [Header("Resources In Train")] 
     private int RESOURCES_AIR_FILTER; 
 
-    private string RESOURCES_AIR_FILTER_NAME = "Resources_AirFilter"; 
+    private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter"; 
 
     
     [Header("Buy Wagon UI Prefab")] 

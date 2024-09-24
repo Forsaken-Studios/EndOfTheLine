@@ -26,9 +26,10 @@ namespace Inventory
         private int MAX_STACK_PER_SLOT = 4;
 
         [Header("Player Prefs")] 
-        private string RESOURCES_AIR_FILTER_NAME = "Resources_Gold"; 
+        private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter";
 
-   
+        private int gasFilterID = 12;
+
 
 
         private void Awake()
@@ -53,6 +54,22 @@ namespace Inventory
                 return TryAddItemInGame(item, amount, out remainingItemsWithoutSpace, showItemsTakenMessage);
             else
                return TryAddItemInBase(item, amount, out remainingItemsWithoutSpace, showItemsTakenMessage);
+        }
+
+        public void RemoveCoinFromInventory()
+        {
+            Item gasFilter = null;
+            foreach (var item in inventoryItemDictionary)
+            {
+                if (item.Key.itemID == gasFilterID)
+                {
+                     gasFilter = item.Key;
+                }
+            }
+            if (gasFilter != null)
+            {
+                inventoryItemDictionary.Remove(gasFilter);
+            }
         }
         
         public bool GetIfItemIsInPlayerInventory(Item item, int amount)
@@ -185,13 +202,11 @@ namespace Inventory
                 {
                     //Get Air Filters
                     case ItemType.Scrap:
-                        if (item.Key.itemID == 12)
+                        if (item.Key.itemID == gasFilterID)
                         {
                             currentAirFilter += item.Value * item.Key.itemValue;
+                            Debug.Log("AÑADIMOS AIR FILTER: " + currentAirFilter);
                         }
-                        break;
-
-                    default:
                         break;
                 }
             }

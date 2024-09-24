@@ -22,6 +22,7 @@ namespace Loot
         {
             this.minNumber = minNumber;
             this.maxNumber = maxNumber;
+            
         }
     }
     
@@ -42,6 +43,7 @@ namespace Loot
         /// </summary>
         private List<Item> itemsNeededToSpawn;
         [SerializeField] private int maxSlotsInCrate;
+        private List<ItemInterval> intervalList;
         
         private bool _isLooteable = false;
         public bool IsLooteable
@@ -54,7 +56,7 @@ namespace Loot
         {
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsNeededToSpawn = new List<Item>();
-            
+            intervalList = new List<ItemInterval>();
             //En el futuro, hay que ver esto, porque no podemos hacer spawn en el start, habrá que modificar las opciones antes
             StartSpawingObjects(itemsToSpawn);
         }
@@ -160,7 +162,7 @@ namespace Loot
             }
             else
             {
-                int randomSlotAmount = UnityEngine.Random.Range(0, maxSlotsInCrate - 2);
+                int randomSlotAmount = UnityEngine.Random.Range(1, maxSlotsInCrate - 1);
                 PrepareLoot(randomSlotAmount);
             }
         }
@@ -178,13 +180,14 @@ namespace Loot
 
         private void PrepareLoot(int remainingSlotsInCrate)
         {
-            Debug.Log( this + " METEMOS " + remainingSlotsInCrate + " OBJETOS");
             List<Item> allItems = UnityEngine.Resources.LoadAll<Item>("Items/Scrap").ToList();
-            List<Item> itemsIDToSpawn = new List<Item>();
+            List<Item> remainingItems = allItems;
             float intervalAcount = 0;
             foreach (var item in allItems)
             {
-                itemsIntervalSpawn.Add(item, new ItemInterval(intervalAcount, intervalAcount + item.itemSpawnChance));
+                ItemInterval itemInverval = new ItemInterval(intervalAcount, intervalAcount + item.itemSpawnChance);
+                itemsIntervalSpawn.Add(item, itemInverval);
+                intervalList.Add(itemInverval);
                 intervalAcount += item.itemSpawnChance + 1;
             }
             int itemsToLoot = 1;
@@ -194,7 +197,7 @@ namespace Loot
             for (int i = 0; i < itemsToLoot; i++)
             {
                 int value = (int) Random.Range(0, intervalAcount);
-                Debug.Log("SPAWNING: VALUE " + value);
+                
                 foreach (var item in itemsIntervalSpawn)
                 {
                     if (item.Value.minNumber <= value && item.Value.maxNumber >= value)
@@ -208,11 +211,34 @@ namespace Loot
                         {
                             itemsInLootableObject.Add(item.Key, randomQuantity);
                         }
+                        intervalAcount = GenerateNewIntervalCount(item.Key, remainingItems);
                         break;
                     }
                 }
+            
             }
         }
+
+        private int GenerateNewIntervalCount(Item itemToDelete, List<Item> remainingItems)
+        {
+            int intervalAcount = 0;
+            itemsIntervalSpawn.Clear();
+            foreach (var item in remainingItems)
+            {
+                if (item != itemToDelete)
+                {
+                    ItemInterval itemInverval = new ItemInterval(intervalAcount, intervalAcount + item.itemSpawnChance);
+                    itemsIntervalSpawn.Add(item, itemInverval);
+                    intervalList.Add(itemInverval);
+                    intervalAcount += (int) item.itemSpawnChance + 1;  
+                }
+            }
+
+            remainingItems.Remove(itemToDelete);
+            return intervalAcount;
+        }
+        
+
 
 
         public void LootAllItems()

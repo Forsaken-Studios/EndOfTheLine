@@ -9,8 +9,11 @@ using Utils.CustomLogs;
 public class AbilityHolder : MonoBehaviour
 {
     [SerializeField] private int abilityHolderID;
-    [HideInInspector]
-    public Ability ability;
+    
+    [Header("Test")]
+    [SerializeField] private bool testAbility;
+     public Ability ability;
+     
     protected float cooldownTime;
     protected float activeTime;
     private Vector2 positionToThrowAbility = Vector2.zero;
@@ -35,7 +38,14 @@ public class AbilityHolder : MonoBehaviour
 
     private void Start()
     {
-        LoadAbilityEquipped();
+        if (testAbility)
+        {
+            abilityUI.SetUpProperties(ability);
+        }
+        else
+        {
+            LoadAbilityEquipped();
+        }
     }
 
     public void TryToCancelAbility()
@@ -100,11 +110,13 @@ public class AbilityHolder : MonoBehaviour
 
     void Update()
     {
-        switch (state)
+
+        if (GameManager.Instance.GameState == GameState.OnGame)
+        {
+              switch (state)
         {
             case AbilityState.ready:
-                if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost)
-                    && GameManager.Instance.GameState == GameState.OnGame)
+                if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost))
                 {
                     ability.PrepareAbility(gameObject, this, out currentCanvasCreated);
                     OverheatManager.Instance.SetHolderToPrepareAbility(abilityHolderID);
@@ -187,6 +199,8 @@ public class AbilityHolder : MonoBehaviour
                 }
                 break; 
         }
+        }
+      
     }
 
     private void CancelOtherAbility()
