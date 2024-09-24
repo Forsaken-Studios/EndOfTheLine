@@ -103,7 +103,8 @@ public class AbilityHolder : MonoBehaviour
         switch (state)
         {
             case AbilityState.ready:
-                if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost))
+                if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost)
+                    && GameManager.Instance.GameState == GameState.OnGame)
                 {
                     ability.PrepareAbility(gameObject, this, out currentCanvasCreated);
                     OverheatManager.Instance.SetHolderToPrepareAbility(abilityHolderID);

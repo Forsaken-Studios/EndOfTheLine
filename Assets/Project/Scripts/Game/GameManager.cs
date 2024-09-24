@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         //Sell scrap Items && Save items for train base
-        //PlayerInventory.Instance.HandleItemsAtEndGame();
+        PlayerInventory.Instance.HandleItemsAtEndGame();
         SaveManager.Instance.SavePlayerInventoryJson();
         //Add one more day to game
         

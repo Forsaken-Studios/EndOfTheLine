@@ -26,9 +26,8 @@ namespace Inventory
         private int MAX_STACK_PER_SLOT = 4;
 
         [Header("Player Prefs")] 
-        private string RESOURCES_GOLD_NAME = "Resources_Gold"; 
-        private string RESOURCES_FOOD_NAME = "Resources_Food"; 
-        private string RESOURCES_MATERIAL_NAME = "Resources_Material"; 
+        private string RESOURCES_AIR_FILTER_NAME = "Resources_Gold"; 
+
    
 
 
@@ -178,35 +177,26 @@ namespace Inventory
 
         public void HandleItemsAtEndGame()
         {
-            int currentGold = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
-            int currentMaterialAmount = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
-            int currentFoodAmount = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME); 
+            int currentAirFilter = PlayerPrefs.GetInt(RESOURCES_AIR_FILTER_NAME);
+
             foreach (var item in inventoryItemDictionary)
             {
                 switch (item.Key.ItemType)
                 {
-                    //Sell
+                    //Get Air Filters
                     case ItemType.Scrap:
-                        currentGold += item.Value * item.Key.itemValue;
-                        Debug.Log("CURRENT GOLD: x" + currentGold);
+                        if (item.Key.itemID == 12)
+                        {
+                            currentAirFilter += item.Value * item.Key.itemValue;
+                        }
                         break;
-                    //Save Material
-                    case ItemType.Resources_Material:
-                        currentMaterialAmount += item.Value;
-                        Debug.Log("WE ADDED MATERIAL: x" + item.Value);
-                        break;
-                    //Save Food
-                    case ItemType.Resources_Food:
-                        currentFoodAmount += item.Value;
-                        break;
+
                     default:
                         break;
                 }
             }
-            
-            PlayerPrefs.SetInt(RESOURCES_GOLD_NAME, currentGold);
-            PlayerPrefs.SetInt(RESOURCES_MATERIAL_NAME, currentMaterialAmount);
-            PlayerPrefs.SetInt(RESOURCES_FOOD_NAME, currentFoodAmount);
+            PlayerPrefs.SetInt(RESOURCES_AIR_FILTER_NAME, currentAirFilter);
+
         }
         
         public void ShowFullListItemTaken(Dictionary<Item, int> itemList)

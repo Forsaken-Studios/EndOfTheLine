@@ -15,9 +15,36 @@ public abstract class IInventoryManager : MonoBehaviour
     protected GameObject currentRightClickInterface; 
     protected List<GameObject> inspectListViewList;
     [SerializeField] private GameObject canvasInventory;
-    
+    [SerializeField]private List<ItemSlot> expandedItemSlotsList;
+
     public virtual void Start()
     {
+        Debug.Log("UP: " + PlayerPrefs.GetInt("UpgradeUnlocked_1"));
+        //Lo pongo para que haya diferentes mejoras
+        if (PlayerPrefs.GetInt("UpgradeUnlocked_1") == 1)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                itemSlotList.Add(expandedItemSlotsList[i]);
+                expandedItemSlotsList[i].HideBlackPanel();
+            }
+        }
+        if (PlayerPrefs.GetInt("UpgradeUnlocked_3") == 1)
+        {
+            for (int i = 3; i < 6; i++)
+            {
+                itemSlotList.Add(expandedItemSlotsList[i]);
+                expandedItemSlotsList[i].HideBlackPanel();
+            }
+        }
+        if (PlayerPrefs.GetInt("UpgradeUnlocked_4") == 1)
+        {
+            for (int i = 6; i <= 10; i++)
+            {
+                itemSlotList.Add(expandedItemSlotsList[i]);
+                expandedItemSlotsList[i].HideBlackPanel();
+            }
+        }
         inspectListViewList = new List<GameObject>();
         inventoryHUD.SetActive(false);
     }

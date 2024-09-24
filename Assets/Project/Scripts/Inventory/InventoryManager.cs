@@ -24,8 +24,7 @@ namespace Inventory
         [SerializeField] private bool expandedInventory;
         [SerializeField] private bool expandedInventory2;
         [SerializeField] private bool expandedInventory3;
-        [SerializeField]private List<ItemSlot> expandedItemSlotsList;
-        
+
         private void Awake()
         {
             if (Instance != null)
@@ -40,32 +39,6 @@ namespace Inventory
         
         public override void Start()
         {
-            Debug.Log("UP: " + PlayerPrefs.GetInt("UpgradeUnlocked_1"));
-            //Lo pongo para que haya diferentes mejoras
-            if (PlayerPrefs.GetInt("UpgradeUnlocked_1") == 1)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    itemSlotList.Add(expandedItemSlotsList[i]);
-                    expandedItemSlotsList[i].HideBlackPanel();
-                }
-            }
-            if (PlayerPrefs.GetInt("UpgradeUnlocked_3") == 1)
-            {
-                for (int i = 3; i < 6; i++)
-                {
-                    itemSlotList.Add(expandedItemSlotsList[i]);
-                    expandedItemSlotsList[i].HideBlackPanel();
-                }
-            }
-            if (PlayerPrefs.GetInt("UpgradeUnlocked_4") == 1)
-            {
-                for (int i = 6; i <= 10; i++)
-                {
-                    itemSlotList.Add(expandedItemSlotsList[i]);
-                    expandedItemSlotsList[i].HideBlackPanel();
-                }
-            }
             base.Start();
         }
 
