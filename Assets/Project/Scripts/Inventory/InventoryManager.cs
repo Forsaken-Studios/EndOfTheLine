@@ -39,9 +39,10 @@ namespace Inventory
         }
         
         public override void Start()
-        { 
+        {
+            Debug.Log("UP: " + PlayerPrefs.GetInt("UpgradeUnlocked_1"));
             //Lo pongo para que haya diferentes mejoras
-            if (expandedInventory)
+            if (PlayerPrefs.GetInt("UpgradeUnlocked_1") == 1)
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -49,7 +50,7 @@ namespace Inventory
                     expandedItemSlotsList[i].HideBlackPanel();
                 }
             }
-            if (expandedInventory2)
+            if (PlayerPrefs.GetInt("UpgradeUnlocked_3") == 1)
             {
                 for (int i = 3; i < 6; i++)
                 {
@@ -57,7 +58,7 @@ namespace Inventory
                     expandedItemSlotsList[i].HideBlackPanel();
                 }
             }
-            if (expandedInventory3)
+            if (PlayerPrefs.GetInt("UpgradeUnlocked_4") == 1)
             {
                 for (int i = 6; i <= 10; i++)
                 {

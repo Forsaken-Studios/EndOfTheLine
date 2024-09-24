@@ -9,6 +9,7 @@ using Utils.CustomLogs;
 public class AbilityHolder : MonoBehaviour
 {
     [SerializeField] private int abilityHolderID;
+    [HideInInspector]
     public Ability ability;
     protected float cooldownTime;
     protected float activeTime;
