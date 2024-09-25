@@ -19,12 +19,7 @@ namespace Inventory
         [Header("Inventory Panels")]
         [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private GameObject looteableObjectPrefab;
-
-        [Header("Expanded Inventory Passive")]
-        [SerializeField] private bool expandedInventory;
-        [SerializeField] private bool expandedInventory2;
-        [SerializeField] private bool expandedInventory3;
-
+        
         private void Awake()
         {
             if (Instance != null)

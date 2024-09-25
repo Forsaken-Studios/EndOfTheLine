@@ -25,7 +25,7 @@ public class TryingToRaidWithResources : MonoBehaviour
         PlayerInventory.Instance.StashAllItemsInBase();
         SaveManager.Instance.SaveGame();
         //Aqui ya tendríamos que hacer la generación o lo que sea, por ahora iniciamos test level
-        SceneManager.LoadSceneAsync("Scenes/Gameplay/WorkingSceneAdriG");
+        SceneManager.LoadSceneAsync("1");
     }
 
     private void CancelRaid()
