@@ -52,14 +52,26 @@ namespace Inventory
         /// </summary>
         public void ReverseInventoryStatus()
         {
+            if (!inventoryHUD.activeSelf)
+            {
+                Debug.Log("DJE");
+                CameraSingleton.CameraSingletonInstance.ZoomCameraOnInventory();
+            }
+            else
+            {
+                CameraSingleton.CameraSingletonInstance.UnZoomToNormalPosition();
+            }
+
             base.ReverseInventoryStatus();
         }
         public void ActivateInventory()
         {
+            CameraSingleton.CameraSingletonInstance.ZoomCameraOnInventory();
             base.ActivateInventory();
         }
         public void DesactivateInventory()
         {
+            CameraSingleton.CameraSingletonInstance.UnZoomToNormalPosition();
             base.DesactivateInventory();
         }
         public void ChangeText(Dictionary<Item, int> inventoryItems)

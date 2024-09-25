@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,12 @@ using UnityEngine;
 public class CameraSingleton : MonoBehaviour
 {
     private static CameraSingleton Instance;
+
+    [SerializeField] private float inventoryZoomValue = 2; 
+    [SerializeField] private float normalZoomValue = 5;
+
+    [SerializeField] private bool zoomIn;
+    [SerializeField] private bool zoomOut;
     
     void Awake()
     {
@@ -22,5 +29,38 @@ public class CameraSingleton : MonoBehaviour
         {
             return Instance;
         }
+    }
+
+    private void Update()
+    {
+        if (zoomIn)
+        {
+            float currentValue = this.GetComponent<Camera>().orthographicSize;
+            this.GetComponent<Camera>().orthographicSize = Mathf.Lerp(currentValue, inventoryZoomValue, 0.02f);
+            if (currentValue == inventoryZoomValue)
+            {
+                zoomIn = false;
+            }
+        }else if (zoomOut)
+        {
+            float currentValue = this.GetComponent<Camera>().orthographicSize;
+            this.GetComponent<Camera>().orthographicSize = Mathf.Lerp(currentValue, normalZoomValue, 0.02f);
+            if (currentValue == normalZoomValue)
+            {
+                zoomOut = false;
+            }
+        }
+    }
+
+    public void ZoomCameraOnInventory()
+    {
+        zoomOut = false;
+        zoomIn = true;
+    }
+    
+    public void UnZoomToNormalPosition()
+    {
+        zoomIn = false;
+        zoomOut = true;
     }
 }
