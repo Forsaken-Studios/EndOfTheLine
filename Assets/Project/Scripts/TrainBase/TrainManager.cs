@@ -52,9 +52,8 @@ public class TrainManager : MonoBehaviour
     [Header("Resources In Train")] 
     private int RESOURCES_AIR_FILTER; 
 
-    private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter"; 
-
-    
+    private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter";
+    private bool isMoving = false;
     [Header("Buy Wagon UI Prefab")] 
     [SerializeField] private GameObject buyWagonPrefab;
     private bool isShowingWagonBuyUI = false;
@@ -174,28 +173,57 @@ public class TrainManager : MonoBehaviour
         }
     }
 
-    private void MoveTrain(bool movingToLeft)
+    public void MoveTrain(bool movingToLeft)
     {
             if (movingToLeft)
             {
-                //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
-                currentIndex++;
-                UpdateRoomInfo();
-                trainPanelsScript.HideTrainRoom(currentIndex - 1);
-                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                    //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
+                    currentIndex++;
+                    UpdateRoomInfo();
+                    trainPanelsScript.HideTrainRoom(currentIndex - 1);
+                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                
             }
             else
             {
-                //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
-                currentIndex--;
-                trainPanelsScript.HideTrainRoom(currentIndex + 1);
-                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]); 
+                    //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
+                    currentIndex--;
+                    trainPanelsScript.HideTrainRoom(currentIndex + 1);
+                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+            }
+            UpdateRoomInfo();
+            train.MoveTrain(currentIndex);  
+    }
+    public void MoveTrainOnClick(bool movingToLeft)
+    {
+        if (!isShowingWagonBuyUI)
+        {        
+            if (movingToLeft)
+            {
+                if (TrainStatus != TrainStatus.onExpeditionRoom)
+                {
+                    //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
+                    currentIndex++;
+                    UpdateRoomInfo();
+                    trainPanelsScript.HideTrainRoom(currentIndex - 1);
+                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                }
+            }
+            else
+            {
+                if (TrainStatus != TrainStatus.onMissionSelector)
+                {
+                    //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
+                    currentIndex--;
+                    trainPanelsScript.HideTrainRoom(currentIndex + 1);
+                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                }
             }
             
             UpdateRoomInfo();
             train.MoveTrain(currentIndex);  
+        }
     }
-
     
     private void UpdateRoomInfo()
     {

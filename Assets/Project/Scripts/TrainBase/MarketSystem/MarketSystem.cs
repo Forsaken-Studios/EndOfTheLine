@@ -124,11 +124,11 @@ public class MarketSystem : MonoBehaviour
     private void UpdateStore()
     {
         itemsInMarket.Clear();
-        Item[] allItems = UnityEngine.Resources.LoadAll<Item>("Items/Scrap");
+        Item[] allItems = UnityEngine.Resources.LoadAll<Item>("Items/Market");
         List<Item> itemsToSpawn = allItems.ToList();
         
         //TODO: Dependiendo de lo que queramos, aparecerán X Objetos, por ahora vamos a poner 3 o 4
-        float numberOfItemsToBuy = UnityEngine.Random.Range(3, 4);
+        float numberOfItemsToBuy = UnityEngine.Random.Range(2 ,3);
 
         for (int i = 0; i < numberOfItemsToBuy; i++)
         { 
@@ -136,9 +136,8 @@ public class MarketSystem : MonoBehaviour
             Item item = itemsToSpawn[itemToSpawnIndex];
             itemsToSpawn.Remove(item);
             
-            int randomAmount = UnityEngine.Random.Range(1, 3);
-            itemsInMarket.Add(item, randomAmount);
-            marketSlots[i].SetUpProperties(item, randomAmount);
+            itemsInMarket.Add(item, 1);
+            marketSlots[i].SetUpProperties(item, 1);
         }
 
         for (int i = (int) numberOfItemsToBuy; i < marketSlots.Count; i++)

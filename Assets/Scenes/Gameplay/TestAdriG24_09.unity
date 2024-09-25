@@ -353,33 +353,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2162835138503930875, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2261253897652961998, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -944
-      objectReference: {fileID: 0}
-    - target: {fileID: 5008989433505519281, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -755
-      objectReference: {fileID: 0}
-    - target: {fileID: 5008989433505519281, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -351
-      objectReference: {fileID: 0}
     - target: {fileID: 5137646165596677547, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
       propertyPath: m_Name
       value: Canvas-Menus (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 6886493867361775576, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -675
-      objectReference: {fileID: 0}
-    - target: {fileID: 7750262002915612663, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -449
       objectReference: {fileID: 0}
     - target: {fileID: 8755133958033455184, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
       propertyPath: m_Pivot.x
@@ -1138,6 +1114,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryZoomValue: 2
   normalZoomValue: 5
+  zoomIn: 0
+  zoomOut: 0
 --- !u!114 &456892933
 MonoBehaviour:
   m_ObjectHideFlags: 0
