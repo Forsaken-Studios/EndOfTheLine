@@ -25975,6 +25975,8 @@ GameObject:
   - component: {fileID: 1811747315}
   - component: {fileID: 1811747314}
   - component: {fileID: 1811747313}
+  - component: {fileID: 1811747318}
+  - component: {fileID: 1811747317}
   m_Layer: 0
   m_Name: MapTesting
   m_TagString: Untagged
@@ -26069,6 +26071,35 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1426018991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1811747317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811747312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f67db2db7d7ca45864135b965ea3c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1811747318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811747312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54c72a8d55068af418adb0f380150ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartStation: 10
+  EndStation: 12
+  runPathfinding: 0
+  indicatorDecay: 12
+  indicatorThreshhold: 0.005
 --- !u!1 &1829886201
 GameObject:
   m_ObjectHideFlags: 0
