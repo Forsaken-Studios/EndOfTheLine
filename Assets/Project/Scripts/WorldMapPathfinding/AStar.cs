@@ -14,11 +14,14 @@ public class AStar : MonoBehaviour
     private MapNode StartLocation { get; set;}
     private MapNode EndLocation { get; set;}
     private Map map;
+    private List<MapNode> path;
     
     private Material mat;
 
     private Vector2 currentCursorLocation = new Vector2(77.5f, 111.5f);
     private int currentPathIndex = 0;
+
+    //public float indicatorSpeed = 5f;
     
     [Range(0.01f, 25f)]
     [SerializeField] private float indicatorDecay = 12f;
@@ -31,6 +34,7 @@ public class AStar : MonoBehaviour
     {
         mat = GetComponent<Renderer>().material;
         map = Map.MapInstance;
+        path = new List<MapNode>();
     }
 
     public void ResetMap()
@@ -121,10 +125,18 @@ public class AStar : MonoBehaviour
         return goal + (current - goal)* Mathf.Exp(-decay * dT);
     }
     
+    float expDecay(float current, float goal, float decay, float dT)
+    {
+        //Advanced LERP function
+        return goal + (current - goal)* Mathf.Exp(-decay * dT);
+    }
+    
     // Update is called once per frame
     void Update()
     {
-        List<MapNode> path = new List<MapNode>();
+        
+        mat.SetVector("_IndicatorCenter", currentCursorLocation);
+        
         if (runPathfinding)
         {
             ResetMap(); //This also sets Start and Endpoint
@@ -142,32 +154,25 @@ public class AStar : MonoBehaviour
             runPathfinding = false;
         }
         
-        mat.SetVector("_IndicatorCenter", currentCursorLocation);
-        /*
+        
+        
+        
+        
         if (loadNewPath)
         {
-            currentCursorLocation.x = expDecay(currentCursorLocation.x, path[currentPathIndex].Location.x,
-                indicatorDecay, Time.deltaTime);
-            currentCursorLocation.y = expDecay(currentCursorLocation.y, path[currentPathIndex].Location.y,
-                indicatorDecay, Time.deltaTime);
-
+            currentCursorLocation = expDecay(currentCursorLocation, path[currentPathIndex].Location,
+                    indicatorDecay, Time.deltaTime);
+            
             
             if (Vector2.Distance(currentCursorLocation, path[currentPathIndex].Location) < indicatorThreshhold)
             {
                 currentCursorLocation = path[currentPathIndex].Location;
-                
-                if (currentPathIndex >= path.Count-1)
+                currentPathIndex++;
+                if (currentPathIndex >= path.Count)
                 {
                     loadNewPath = false;
                 }
-                else
-                {
-                    currentPathIndex++;
-                }
-                
             }
-            
-
-        }*/
+        }
     }
 }
