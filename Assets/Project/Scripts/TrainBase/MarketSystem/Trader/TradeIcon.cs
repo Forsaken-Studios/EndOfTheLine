@@ -39,6 +39,8 @@ public class TradeIcon: MonoBehaviour
             Destroy(itemRequirementsMeet.gameObject);
         }
     }
+    
+    
 
     public void CheckIfWeHaveItems()
     {

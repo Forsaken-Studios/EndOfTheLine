@@ -108,6 +108,7 @@ public class TrainManager : MonoBehaviour
         resourceAirFilter = PlayerPrefs.GetInt(RESOURCES_AIR_FILTER_NAME);
         
         NewDayInGame();
+       //PlayerPrefs.SetInt("Wagon " + 3,0);
         LoadWagonsUnlockedList();
     }
 
@@ -304,7 +305,7 @@ public class TrainManager : MonoBehaviour
         StopAllCoroutines();
     }
 
-    public bool TryToBuyWagon(int airFilterNeeded, int materialNeeded, int goldNeeded)
+    public bool TryToBuyWagon(int airFilterNeeded, int material1Needed, int material2Needed)
     {
         //TODO: Ver que materiales ponemos aqui
         if (airFilterNeeded <= resourceAirFilter)
@@ -321,6 +322,11 @@ public class TrainManager : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public void SetIsShowingWagonBuyUI(bool aux)
+    {
+        isShowingWagonBuyUI = aux;
     }
 
     private void NewDayInGame()
