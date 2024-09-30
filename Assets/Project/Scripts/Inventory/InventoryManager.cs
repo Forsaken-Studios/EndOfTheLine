@@ -19,12 +19,6 @@ namespace Inventory
         [Header("Inventory Panels")]
         [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private GameObject looteableObjectPrefab;
-
-        [Header("Expanded Inventory Passive")]
-        [SerializeField] private bool expandedInventory;
-        [SerializeField] private bool expandedInventory2;
-        [SerializeField] private bool expandedInventory3;
-        [SerializeField]private List<ItemSlot> expandedItemSlotsList;
         
         private void Awake()
         {
@@ -39,32 +33,7 @@ namespace Inventory
         }
         
         public override void Start()
-        { 
-            //Lo pongo para que haya diferentes mejoras
-            if (expandedInventory)
-            {
-                for (int i = 0; i < 3; i++)
-                {
-                    itemSlotList.Add(expandedItemSlotsList[i]);
-                    expandedItemSlotsList[i].HideBlackPanel();
-                }
-            }
-            if (expandedInventory2)
-            {
-                for (int i = 3; i < 6; i++)
-                {
-                    itemSlotList.Add(expandedItemSlotsList[i]);
-                    expandedItemSlotsList[i].HideBlackPanel();
-                }
-            }
-            if (expandedInventory3)
-            {
-                for (int i = 6; i <= 10; i++)
-                {
-                    itemSlotList.Add(expandedItemSlotsList[i]);
-                    expandedItemSlotsList[i].HideBlackPanel();
-                }
-            }
+        {
             base.Start();
         }
 
@@ -83,14 +52,26 @@ namespace Inventory
         /// </summary>
         public void ReverseInventoryStatus()
         {
+            if (!inventoryHUD.activeSelf)
+            {
+                Debug.Log("DJE");
+                CameraSingleton.CameraSingletonInstance.ZoomCameraOnInventory();
+            }
+            else
+            {
+                CameraSingleton.CameraSingletonInstance.UnZoomToNormalPosition();
+            }
+
             base.ReverseInventoryStatus();
         }
         public void ActivateInventory()
         {
+            CameraSingleton.CameraSingletonInstance.ZoomCameraOnInventory();
             base.ActivateInventory();
         }
         public void DesactivateInventory()
         {
+            CameraSingleton.CameraSingletonInstance.UnZoomToNormalPosition();
             base.DesactivateInventory();
         }
         public void ChangeText(Dictionary<Item, int> inventoryItems)

@@ -52,7 +52,7 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
         amountText = GetComponentInChildren<TextMeshProUGUI>();
         this.itemSO = itemSO;
         this.itemSlotImage.sprite = itemSO.itemIcon;
-        this.amountText.text = "x" + amount.ToString();
+        this.amountText.text = "";
         this.amount = amount;
     }
     

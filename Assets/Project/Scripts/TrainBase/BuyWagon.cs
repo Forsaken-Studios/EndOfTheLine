@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class BuyWagon : MonoBehaviour
 {
-    [SerializeField] private GameObject foodResource;
-    [SerializeField] private GameObject materialResource;
-    [SerializeField] private GameObject goldResource;
+    [FormerlySerializedAs("foodResource")] [SerializeField] private GameObject material1Resource;
+    [FormerlySerializedAs("materialResource")] [SerializeField] private GameObject material2Resource;
+    [FormerlySerializedAs("goldResource")] [SerializeField] private GameObject airFilterResource;
 
     private TextMeshProUGUI foodText;
     private TextMeshProUGUI materialText;
@@ -18,18 +19,18 @@ public class BuyWagon : MonoBehaviour
     [SerializeField] private Button restoreButton;
     [SerializeField] private Button cancelButton;
 
-    private int goldValue;
-    private int materialValue;
-    private int foodValue;
+    private int airFilterValue;
+    private int material1Value;
+    private int material2Value;
     
     private void OnEnable()
     {
         restoreButton.onClick.AddListener(() => TryToRestoreWagon());
         cancelButton.onClick.AddListener(() => CancelBuy());
         
-        foodText = foodResource.GetComponentInChildren<TextMeshProUGUI>(true);
-        materialText = materialResource.GetComponentInChildren<TextMeshProUGUI>(true);
-        goldText = goldResource.GetComponentInChildren<TextMeshProUGUI>(true);
+        foodText = material1Resource.GetComponentInChildren<TextMeshProUGUI>(true);
+        materialText = material2Resource.GetComponentInChildren<TextMeshProUGUI>(true);
+        goldText = airFilterResource.GetComponentInChildren<TextMeshProUGUI>(true);
     }
 
     private void OnDisable()
@@ -38,38 +39,37 @@ public class BuyWagon : MonoBehaviour
         cancelButton.onClick.RemoveAllListeners();
     }
 
-    public void SetUpProperties(int foodValue, int materialValue, int goldValue)
+    public void SetUpProperties(int material1Value, int material2Value, int airFilterValue)
     {
-        if (foodValue != 0)
+        if (material1Value != 0)
         {
-            Debug.Log(this.foodText);
-            Debug.Log("VALUE: " + foodValue);
-            this.foodResource.SetActive(true);
-            this.foodText.text = foodValue.ToString();
-            this.foodValue = foodValue;
+            this.material1Resource.SetActive(true);
+            this.foodText.text = material1Value.ToString();
+            this.material2Value = material1Value;
         }
-        if (materialValue != 0)
+        if (material2Value != 0)
         {
-            this.materialResource.SetActive(true);
-            this.materialText.text = materialValue.ToString();
-            this.materialValue = materialValue;
+            this.material2Resource.SetActive(true);
+            this.materialText.text = material2Value.ToString();
+            this.material1Value = material2Value;
         }
-        if (goldValue != 0)
+        if (airFilterValue != 0)
         {
-            this.goldValue = goldValue; 
-            this.goldResource.SetActive(true);
-            this.goldText.text = goldValue.ToString();
+            this.airFilterValue = airFilterValue; 
+            this.airFilterResource.SetActive(true);
+            this.goldText.text = airFilterValue.ToString();
         }
     }
 
     private void CancelBuy()
     {
         Destroy(this.gameObject);
+        TrainManager.Instance.SetIsShowingWagonBuyUI(false);
     }
 
     private void TryToRestoreWagon()
     {
-        if (TrainManager.Instance.TryToBuyWagon(foodValue, materialValue, goldValue))
+        if (TrainManager.Instance.TryToBuyWagon(airFilterValue, material1Value, material2Value))
         {
             //Buy Wagon
             Destroy(this.gameObject);

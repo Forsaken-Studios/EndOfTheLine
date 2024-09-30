@@ -50,14 +50,10 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private TraderPanel tradePanel;
 
     [Header("Resources In Train")] 
-    private int RESOURCES_GOLD; 
-    private int RESOURCES_FOOD; 
-    private int RESOURCES_MATERIAL; 
+    private int RESOURCES_AIR_FILTER; 
 
-    private string RESOURCES_GOLD_NAME = "Resources_Gold"; 
-    private string RESOURCES_FOOD_NAME = "Resources_Food"; 
-    private string RESOURCES_MATERIAL_NAME = "Resources_Material";
-    
+    private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter";
+    private bool isMoving = false;
     [Header("Buy Wagon UI Prefab")] 
     [SerializeField] private GameObject buyWagonPrefab;
     private bool isShowingWagonBuyUI = false;
@@ -70,50 +66,22 @@ public class TrainManager : MonoBehaviour
     public delegate void OnVariableChangeDelegate(int newVal, int resourceType);
     public event OnVariableChangeDelegate OnVariableChange;
     public event EventHandler OnDayChanged;
-    public int resourceGold
+
+    public int resourceAirFilter
     {
-        get { return RESOURCES_GOLD; }
+        get { return RESOURCES_AIR_FILTER; }
         set
         {
-            RESOURCES_GOLD = value;
+            RESOURCES_AIR_FILTER = value;
             if (OnVariableChange != null)
             {
-                OnVariableChange(RESOURCES_GOLD, 2);
-                PlayerPrefs.SetInt(RESOURCES_GOLD_NAME, RESOURCES_GOLD);
-            }
-        }
-    }   
-    public int resourceFood
-    {
-        get { return RESOURCES_FOOD; }
-        set
-        {
-            RESOURCES_FOOD = value;
-            if (OnVariableChange != null)
-            {
-                OnVariableChange(RESOURCES_FOOD, 0);
-                PlayerPrefs.SetInt(RESOURCES_FOOD_NAME, RESOURCES_FOOD);
+                OnVariableChange(RESOURCES_AIR_FILTER, 0);
+                PlayerPrefs.SetInt(RESOURCES_AIR_FILTER_NAME, RESOURCES_AIR_FILTER);
             }
             
             
         }
     }    
-    public int resourceMaterial
-    {
-        get { return RESOURCES_MATERIAL; }
-        set
-        {
-            RESOURCES_MATERIAL = value;
-            if (OnVariableChange != null)
-            {
-                PlayerPrefs.SetInt(RESOURCES_MATERIAL_NAME, RESOURCES_MATERIAL);
-                OnVariableChange(RESOURCES_MATERIAL, 1);
-            }
-     
-
-        }
-    }
-    
     private bool canvasActivated
     {
         get { return currentCanvas.activeSelf;  }
@@ -137,11 +105,10 @@ public class TrainManager : MonoBehaviour
         TrainStatus = TrainStatus.onMissionSelector;
         trainPanelsScript = GetComponent<TrainPanels>();
         screensDisplayed = new List<GameObject>();
-        resourceGold = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
-        resourceMaterial = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
-        resourceFood = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME);
+        resourceAirFilter = PlayerPrefs.GetInt(RESOURCES_AIR_FILTER_NAME);
         
         NewDayInGame();
+       //PlayerPrefs.SetInt("Wagon " + 3,0);
         LoadWagonsUnlockedList();
     }
 
@@ -207,28 +174,57 @@ public class TrainManager : MonoBehaviour
         }
     }
 
-    private void MoveTrain(bool movingToLeft)
+    public void MoveTrain(bool movingToLeft)
     {
             if (movingToLeft)
             {
-                //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
-                currentIndex++;
-                UpdateRoomInfo();
-                trainPanelsScript.HideTrainRoom(currentIndex - 1);
-                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                    //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
+                    currentIndex++;
+                    UpdateRoomInfo();
+                    trainPanelsScript.HideTrainRoom(currentIndex - 1);
+                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                
             }
             else
             {
-                //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
-                currentIndex--;
-                trainPanelsScript.HideTrainRoom(currentIndex + 1);
-                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]); 
+                    //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
+                    currentIndex--;
+                    trainPanelsScript.HideTrainRoom(currentIndex + 1);
+                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+            }
+            UpdateRoomInfo();
+            train.MoveTrain(currentIndex);  
+    }
+    public void MoveTrainOnClick(bool movingToLeft)
+    {
+        if (!isShowingWagonBuyUI)
+        {        
+            if (movingToLeft)
+            {
+                if (TrainStatus != TrainStatus.onExpeditionRoom)
+                {
+                    //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
+                    currentIndex++;
+                    UpdateRoomInfo();
+                    trainPanelsScript.HideTrainRoom(currentIndex - 1);
+                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                }
+            }
+            else
+            {
+                if (TrainStatus != TrainStatus.onMissionSelector)
+                {
+                    //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
+                    currentIndex--;
+                    trainPanelsScript.HideTrainRoom(currentIndex + 1);
+                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                }
             }
             
             UpdateRoomInfo();
             train.MoveTrain(currentIndex);  
+        }
     }
-
     
     private void UpdateRoomInfo()
     {
@@ -309,13 +305,12 @@ public class TrainManager : MonoBehaviour
         StopAllCoroutines();
     }
 
-    public bool TryToBuyWagon(int foodNeeded, int materialNeeded, int goldNeeded)
+    public bool TryToBuyWagon(int airFilterNeeded, int material1Needed, int material2Needed)
     {
-        if (foodNeeded <= resourceFood && materialNeeded <= resourceMaterial && goldNeeded <= resourceGold)
+        //TODO: Ver que materiales ponemos aqui
+        if (airFilterNeeded <= resourceAirFilter)
         {
-            resourceFood -= foodNeeded;
-            resourceMaterial -= materialNeeded;
-            resourceGold -= goldNeeded;
+            resourceAirFilter -= airFilterNeeded;
             unlockedWagonsList[currentIndex] = true;
             trainPanelsScript.UnlockTrain(currentIndex);
             PlayerPrefs.SetInt("Wagon " + (currentIndex + 1), 1);
@@ -327,6 +322,11 @@ public class TrainManager : MonoBehaviour
         {
             return false;
         }
+    }
+
+    public void SetIsShowingWagonBuyUI(bool aux)
+    {
+        isShowingWagonBuyUI = aux;
     }
 
     private void NewDayInGame()

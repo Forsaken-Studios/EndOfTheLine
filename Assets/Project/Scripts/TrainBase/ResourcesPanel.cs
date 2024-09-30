@@ -6,18 +6,13 @@ using UnityEngine;
 public class ResourcesPanel : MonoBehaviour
 {
 
-    [SerializeField] private TextMeshProUGUI foodText;
-    [SerializeField] private TextMeshProUGUI materialText;
-    [SerializeField] private TextMeshProUGUI goldText;
+    [SerializeField] private TextMeshProUGUI airFilterText;
    
     void Start()
     {
         
-        
         //Set Up text
-        foodText.text = TrainManager.Instance.resourceFood.ToString();
-        materialText.text = TrainManager.Instance.resourceMaterial.ToString();
-        goldText.text = TrainManager.Instance.resourceGold.ToString();
+        airFilterText.text = TrainManager.Instance.resourceAirFilter.ToString();
 
         TrainManager.Instance.OnVariableChange += VariableChanged;
     }
@@ -35,14 +30,8 @@ public class ResourcesPanel : MonoBehaviour
         switch (index)
         {
             case 0:
-                foodText.text = newVal.ToString();
+                airFilterText.text = newVal.ToString();
                 break; 
-            case 1:
-                materialText.text = newVal.ToString();
-                break; 
-            case 2:
-                goldText.text = newVal.ToString();
-                break;
         }
     }
 

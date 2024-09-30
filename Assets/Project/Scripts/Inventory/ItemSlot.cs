@@ -742,7 +742,7 @@ namespace Inventory
         public void SellItem()
         {
             int goldEarned = this.GetItemInSlot().itemValue * this.amount;
-            TrainManager.Instance.resourceGold += goldEarned;
+            TrainManager.Instance.resourceAirFilter += goldEarned;
             MarketSystem.Instance.ShowGoldEarnedByItemSold(goldEarned, this);
             PlayerInventory.Instance.RemovingItem(this.GetItemInSlot(), this.amount);
             this.ClearItemSlot();

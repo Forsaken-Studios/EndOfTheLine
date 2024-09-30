@@ -15,9 +15,21 @@ public abstract class IInventoryManager : MonoBehaviour
     protected GameObject currentRightClickInterface; 
     protected List<GameObject> inspectListViewList;
     [SerializeField] private GameObject canvasInventory;
-    
+    [SerializeField]private List<ItemSlot> expanded1ItemSlotsList;
+    [SerializeField]private List<ItemSlot> expanded2ItemSlotsList;
+    [SerializeField]private List<ItemSlot> expanded3ItemSlotsList;
+
+    [Header("Expanded Inventory Passive")]
+    [SerializeField] private GameObject expandedInventory;
+    [SerializeField] private GameObject expandedInventory2;
+    [SerializeField] private GameObject expandedInventory3;
+
+
+
     public virtual void Start()
     {
+        HandleExpandedInventories();
+
         inspectListViewList = new List<GameObject>();
         inventoryHUD.SetActive(false);
     }
@@ -52,8 +64,50 @@ public abstract class IInventoryManager : MonoBehaviour
         GameManager.Instance.GameState = GameState.OnGame;
         inventoryHUD.SetActive(false);
         TryDestroyContextMenu();
-    }   
+    }
 
+    private void HandleExpandedInventories()
+    {
+        //Lo pongo para que haya diferentes mejoras
+        if (PlayerPrefs.GetInt("UpgradeUnlocked_1") == 1)
+        {
+            
+            expandedInventory.transform.parent = inventoryHUD.transform;
+            for (int i = 0; i < 3; i++)
+            {
+                itemSlotList.Add(expanded1ItemSlotsList[i]);
+               
+            }
+        }
+        else
+        {
+            expandedInventory3.SetActive(false);
+        }
+        if (PlayerPrefs.GetInt("UpgradeUnlocked_3") == 1)
+        {
+            expandedInventory2.transform.parent = inventoryHUD.transform;
+            for (int i = 3; i < 6; i++)
+            {
+                itemSlotList.Add(expanded2ItemSlotsList[i]);
+            }
+        }
+        else
+        {
+            expandedInventory3.SetActive(false);
+        }
+        if (PlayerPrefs.GetInt("UpgradeUnlocked_4") == 1)
+        {
+            expandedInventory3.transform.parent = inventoryHUD.transform;
+            for (int i = 6; i <= 10; i++)
+            {
+                itemSlotList.Add(expanded2ItemSlotsList[i]);
+            }
+        }
+        else
+        {
+            expandedInventory3.SetActive(false);
+        }
+    }
 
         
         /// <summary>

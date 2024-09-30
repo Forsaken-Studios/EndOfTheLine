@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Item", order = 1)]
@@ -16,5 +17,6 @@ public class Item : ScriptableObject
     public string itemDescription;
     public int itemID;
 }
+
 
 

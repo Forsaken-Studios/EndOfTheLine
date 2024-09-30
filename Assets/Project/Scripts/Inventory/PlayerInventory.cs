@@ -26,10 +26,10 @@ namespace Inventory
         private int MAX_STACK_PER_SLOT = 4;
 
         [Header("Player Prefs")] 
-        private string RESOURCES_GOLD_NAME = "Resources_Gold"; 
-        private string RESOURCES_FOOD_NAME = "Resources_Food"; 
-        private string RESOURCES_MATERIAL_NAME = "Resources_Material"; 
-   
+        private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter";
+
+        private int gasFilterID = 12;
+
 
 
         private void Awake()
@@ -54,6 +54,22 @@ namespace Inventory
                 return TryAddItemInGame(item, amount, out remainingItemsWithoutSpace, showItemsTakenMessage);
             else
                return TryAddItemInBase(item, amount, out remainingItemsWithoutSpace, showItemsTakenMessage);
+        }
+
+        public void RemoveCoinFromInventory()
+        {
+            Item gasFilter = null;
+            foreach (var item in inventoryItemDictionary)
+            {
+                if (item.Key.itemID == gasFilterID)
+                {
+                     gasFilter = item.Key;
+                }
+            }
+            if (gasFilter != null)
+            {
+                inventoryItemDictionary.Remove(gasFilter);
+            }
         }
         
         public bool GetIfItemIsInPlayerInventory(Item item, int amount)
@@ -178,35 +194,24 @@ namespace Inventory
 
         public void HandleItemsAtEndGame()
         {
-            int currentGold = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
-            int currentMaterialAmount = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
-            int currentFoodAmount = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME); 
+            int currentAirFilter = PlayerPrefs.GetInt(RESOURCES_AIR_FILTER_NAME);
+
             foreach (var item in inventoryItemDictionary)
             {
                 switch (item.Key.ItemType)
                 {
-                    //Sell
+                    //Get Air Filters
                     case ItemType.Scrap:
-                        currentGold += item.Value * item.Key.itemValue;
-                        Debug.Log("CURRENT GOLD: x" + currentGold);
-                        break;
-                    //Save Material
-                    case ItemType.Resources_Material:
-                        currentMaterialAmount += item.Value;
-                        Debug.Log("WE ADDED MATERIAL: x" + item.Value);
-                        break;
-                    //Save Food
-                    case ItemType.Resources_Food:
-                        currentFoodAmount += item.Value;
-                        break;
-                    default:
+                        if (item.Key.itemID == gasFilterID)
+                        {
+                            currentAirFilter += item.Value * item.Key.itemValue;
+                            Debug.Log("AÑADIMOS AIR FILTER: " + currentAirFilter);
+                        }
                         break;
                 }
             }
-            
-            PlayerPrefs.SetInt(RESOURCES_GOLD_NAME, currentGold);
-            PlayerPrefs.SetInt(RESOURCES_MATERIAL_NAME, currentMaterialAmount);
-            PlayerPrefs.SetInt(RESOURCES_FOOD_NAME, currentFoodAmount);
+            PlayerPrefs.SetInt(RESOURCES_AIR_FILTER_NAME, currentAirFilter);
+
         }
         
         public void ShowFullListItemTaken(Dictionary<Item, int> itemList)

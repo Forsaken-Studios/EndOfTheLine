@@ -40,8 +40,8 @@ public class GameManager : MonoBehaviour
         set { _gameState = value; }
     }
 
-    private int MAX_AMOUNT_PER_SLOT_BASE = 4;
-    private int MAX_AMOUNT_PER_SLOT_GAME = 2;
+    [SerializeField] private int MAX_AMOUNT_PER_SLOT_BASE = 4;
+    [SerializeField] private int MAX_AMOUNT_PER_SLOT_GAME = 3;
     
     private void Awake()
     {
@@ -86,7 +86,8 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         //Sell scrap Items && Save items for train base
-        //PlayerInventory.Instance.HandleItemsAtEndGame();
+        PlayerInventory.Instance.HandleItemsAtEndGame();
+        PlayerInventory.Instance.RemoveCoinFromInventory();
         SaveManager.Instance.SavePlayerInventoryJson();
         //Add one more day to game
         

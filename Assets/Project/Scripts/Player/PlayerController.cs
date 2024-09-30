@@ -72,27 +72,32 @@ namespace Player
 
         private void Update()
         {
-            CalculateNoiseRadius();
-            playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
-            HandleMouseWheelSpeed();
-            if (GameManager.Instance.GameState == GameState.OnGame && playerCanMove)
+            if (GameManager.Instance.GameState == GameState.OnGame)
             {
-                if (isDashing)
+                CalculateNoiseRadius();
+                playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
+                HandleMouseWheelSpeed();
+                if (GameManager.Instance.GameState == GameState.OnGame && playerCanMove)
                 {
-                    PlayerStamina.Instance.SetCanRecoveryEnergy(false);
-                    return;
+                    if (isDashing)
+                    {
+                        PlayerStamina.Instance.SetCanRecoveryEnergy(false);
+                        return;
+                    }
+
+                    HandleMovementInputs();
                 }
-                HandleMovementInputs();
-            }
-            else
-            {
-                if (GameManager.Instance.GameState == GameState.OnInventory || 
-                    GameManager.Instance.GameState == GameState.onLoreView)
+                else
                 {
-                    _animator.SetBool("running", false);
+                    if (GameManager.Instance.GameState == GameState.OnInventory ||
+                        GameManager.Instance.GameState == GameState.onLoreView)
+                    {
+                        _animator.SetBool("running", false);
+                    }
+
+                    speedX = 0;
+                    speedY = 0;
                 }
-                speedX = 0;
-                speedY = 0; 
             }
         }
 
