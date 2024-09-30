@@ -20,12 +20,16 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private int _exitSize = 2;
 
     [SerializeField] private List<Room> _testRooms;
+    [SerializeField] private List<Room> _testRoomsPrefabs;
+    private Dictionary<Vector3, GameObject> _roomsToInsert;
+    private List<GameObject> _roomsInserted;
 
 
     [HideInInspector] public Vector3 startingGridPosition = Vector3.zero;
-    private Cell[,] _grid;
+    private Cell[,] _grid; // [row, col]
     [SerializeField] private int _maxRoomsInserted = 4;
     [SerializeField] private int _radius = 5;
+    [SerializeField] private bool _isTotallyGizmos = true;
 
     private System.Random _rnd;
 
@@ -70,46 +74,57 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
+        _roomsInserted = new List<GameObject>();
+        _roomsToInsert = new Dictionary<Vector3, GameObject>();
         BuildMap();
     }
 
     private void BuildMap()
     {
+        if (_roomsInserted != null && _roomsInserted.Count > 0)
+        {
+            foreach (GameObject room in _roomsInserted)
+            {
+                Destroy(room);
+            }
+        }
+
         _rnd = new System.Random();
-
-        CalculateGridInitialPosition();
-
         InitializeGrid();
 
         PlacingStart();
         PlacingExit();
 
-        bool mapCreated = false;
-        while (mapCreated == false)
+        if (_isTotallyGizmos == true)
         {
-            mapCreated = PlacingRooms();
+            bool mapCreated = false;
+            int tries = 5;
+            while (mapCreated == false && tries > 0)
+            {
+                mapCreated = PlacingRooms();
+                tries--;
+            }
         }
-
+        else
+        {
+            bool mapCreated = false;
+            int tries = 5;
+            while (mapCreated == false && tries > 0)
+            {
+                mapCreated = PlacingRoomsPrefabs();
+                tries--;
+            }
+        }
     }
 
     #region Gizmos Initialization
 
-    private void CalculateGridInitialPosition()
-    {
-        float startingGridPosition_X = -((_gridSize.y - 1) / 2f) * cellSize;
-        float startingGridPosition_Y = -((_gridSize.x - 1) / 2f) * cellSize;
-
-        startingGridPosition = new Vector3(startingGridPosition_X, startingGridPosition_Y, 0);
-    }
-
     private void OnDrawGizmos()
     {
-        if (_gridSize == Vector2Int.zero || cellSize == 0 || startingGridPosition == Vector3.zero)
+        if (_gridSize == Vector2Int.zero || cellSize == 0 || _grid == null)
         {
             return;
         }
-
-        Vector3 _currentGridPosition = Vector3.zero;
 
         foreach (var cell in GetGridPositions())
         {
@@ -157,13 +172,22 @@ public class MapGenerator : MonoBehaviour
                 break;
         }
 
-        float margin = 1f; // Ajusta este valor según lo necesites
+        // Margen entre celda y celda.
+        float margin = 1f;
 
-        // Defining all 4 vertex.
-        Vector3 topLeft = cellToDraw.Position3D + new Vector3(-(cellSize / 2 - margin), cellSize / 2 - margin, 0);
-        Vector3 topRight = cellToDraw.Position3D + new Vector3(cellSize / 2 - margin, cellSize / 2 - margin, 0);
-        Vector3 bottomRight = cellToDraw.Position3D + new Vector3(cellSize / 2 - margin, -cellSize / 2 + margin, 0);
-        Vector3 bottomLeft = cellToDraw.Position3D + new Vector3(-(cellSize / 2 - margin), -cellSize / 2 + margin, 0);
+        // Defining all 4 vertex. Empezando desde el centro de la celda
+        //Vector3 topLeft = cellToDraw.Position3D + new Vector3(-(cellSize / 2 - margin), cellSize / 2 - margin, 0);
+        //Vector3 topRight = cellToDraw.Position3D + new Vector3(cellSize / 2 - margin, cellSize / 2 - margin, 0);
+        //Vector3 bottomRight = cellToDraw.Position3D + new Vector3(cellSize / 2 - margin, -cellSize / 2 + margin, 0);
+        //Vector3 bottomLeft = cellToDraw.Position3D + new Vector3(-(cellSize / 2 - margin), -cellSize / 2 + margin, 0);
+
+        // Defining all 4 vertex. Empezando desde la esquina inferior izquieda de la celda.
+        Vector3 topLeft = cellToDraw.Position3D + new Vector3(+margin, cellSize - margin, 0);
+        Vector3 topRight = cellToDraw.Position3D + new Vector3(cellSize - margin, cellSize - margin, 0);
+        Vector3 bottomRight = cellToDraw.Position3D + new Vector3(cellSize - margin, +margin, 0);
+        Vector3 bottomLeft = cellToDraw.Position3D + new Vector3(+margin, +margin, 0);
+
+
 
         // Draw square lines.
         Gizmos.DrawLine(topLeft, topRight); // Up
@@ -330,6 +354,43 @@ public class MapGenerator : MonoBehaviour
             }
             else
             {
+                _grid = modifiedGrid;
+                return true;
+            }
+        }
+
+    }
+
+    private bool PlacingRoomsPrefabs()
+    {
+        // Intentar crear caminos a todas las habitaciones requeridas.
+        Cell[,] copiedGrid = AuxiliarMapGenerator.CopyGrid(_grid);
+        Cell[,] modifiedGrid = TryToInsertRoomsPrefabs(copiedGrid);
+
+        if (modifiedGrid == null)
+        {
+            Debug.LogWarning("FINAL MAP GENERATION -Retrying to create map-.");
+            return false;
+        }
+        else
+        {
+            copiedGrid = modifiedGrid;
+
+            // Intentar llevar el resto de salidas al final.
+            modifiedGrid = TryToReachFinal(copiedGrid);
+            if (modifiedGrid == null)
+            {
+                Debug.LogWarning("FINAL MAP GENERATION -Retrying to create map-.");
+                _roomsToInsert.Clear();
+                return false;
+            }
+            else
+            {
+                foreach(KeyValuePair<Vector3, GameObject> entry in _roomsToInsert)
+                {
+                    _roomsInserted.Add(Instantiate(entry.Value, entry.Key, Quaternion.identity));
+                }
+                _roomsToInsert.Clear();
                 _grid = modifiedGrid;
                 return true;
             }
@@ -549,6 +610,79 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
+            return null;
+        }
+    }
+
+    private Cell[,] TryToInsertRoomsPrefabs(Cell[,] grid)
+    {
+        int roomsInserted = 0;
+        int numberRoom = 0;
+
+        foreach (Room room in _testRoomsPrefabs)
+        {
+
+            room.InitializeRoom();
+
+            int insertionTry = 15;
+
+            while (insertionTry > 0)
+            {
+                Debug.Log($"GetPosStartEnd(): Intento número {insertionTry} en habitación {numberRoom}");
+                List<Cell> endCellList = new List<Cell>();
+
+                int initialRow = _rnd.Next(0, grid.GetLength(0));
+                int initialCol = _rnd.Next(0, grid.GetLength(1));
+
+                List<Vector2Int> possibleEndCell = room.GetPosStartEnd();
+                foreach (Vector2Int element in possibleEndCell)
+                {
+                    if (element.y + initialRow < 0 || element.y + initialRow >= grid.GetLength(0) ||
+                        element.x + initialCol < 0 || element.x + initialCol >= grid.GetLength(1))
+                    {
+                        break;
+                    }
+
+                    endCellList.Add(grid[element.y + initialRow, element.x + initialCol]);
+                    Debug.Log($"GetPosStartEnd(): grid[{element.y + initialRow}, {element.x + initialCol}]");
+                }
+
+                // Intentar insertar la habitación y obtener el grid modificado
+                Vector3 positonToInstantiate = grid[initialRow, initialCol].Position3D + room.centerPosition;
+                Cell[,] modifiedGrid = AuxiliarMapGenerator.InsertRoom(grid, room.selfGrid, initialRow, initialCol, endCellList);
+
+                if (modifiedGrid != null)
+                {
+                    Debug.Log($"Nombre: {room.gameObject.name}");
+                    _roomsToInsert.Add(positonToInstantiate, room.gameObject);
+                    grid = modifiedGrid; // Actualizar grid con el grid modificado
+                    roomsInserted++;
+                    break;
+                }
+                else
+                {
+                    insertionTry--;
+                }
+
+            }
+
+            if (roomsInserted == _maxRoomsInserted)
+            {
+                break;
+            }
+
+            numberRoom++;
+        }
+
+        Debug.Log($"MAP GENERATION -Final grid updated- with {roomsInserted} rooms inserted.");
+
+        if (roomsInserted == _maxRoomsInserted)
+        {
+            return grid;
+        }
+        else
+        {
+            _roomsToInsert.Clear();
             return null;
         }
     }

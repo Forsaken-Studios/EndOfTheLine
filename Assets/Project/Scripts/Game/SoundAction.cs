@@ -8,6 +8,7 @@ public enum SoundAction
     Inventory_CloseCrate,
     GasZone_Geiger, 
     Movement_Dash,
-    
+    WorldNoise_Start,
+    WorldNoise_End,
 }
 

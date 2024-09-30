@@ -9,6 +9,7 @@ public class Room : MonoBehaviour
 {
     public Vector2Int _roomSize; // Room size in cells. x = col, y = row
     private BoolMatrix _shape; // Occupation matrix (true = ocuppied, false = not ocuppied).
+    [HideInInspector] public Vector3 centerPosition;
     private BoolMatrix _entrances; // Entrances matrix (true = entrance, false = not entrance).
     private Dictionary<Vector2Int, DirectionFlag> _entrancesDirections; // Stores directions of each entrance. [Col, Row]????
 
@@ -28,9 +29,35 @@ public class Room : MonoBehaviour
         _entrances = _roomData.GetEntrances();
         _entrancesDirections = _roomData.entrancesDirections;
 
+        CalculateCenterPosition();
         CreateSelfGrid();
     }
 
+    private void CalculateCenterPosition()
+    {
+        float centerPosition_x = 0;
+        float centerPosition_y = 0;
+
+        if(_shape.Rows % 2 == 0)
+        {
+            centerPosition_x = MapGenerator.Instance.cellSize * _shape.Rows/2 - MapGenerator.Instance.cellSize / 2;
+        }
+        else
+        {
+            centerPosition_x = MapGenerator.Instance.cellSize * _shape.Rows / 2;
+        }
+
+        if (_shape.Cols % 2 == 0)
+        {
+            centerPosition_y = MapGenerator.Instance.cellSize * _shape.Cols / 2 - MapGenerator.Instance.cellSize / 2;
+        }
+        else
+        {
+            centerPosition_y = MapGenerator.Instance.cellSize * _shape.Cols / 2;
+        }
+
+        centerPosition = new Vector3(centerPosition_x, centerPosition_y, centerPosition.z);
+    }
 
     private void CreateSelfGrid()
     {

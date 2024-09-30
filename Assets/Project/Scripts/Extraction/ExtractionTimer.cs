@@ -17,6 +17,7 @@ namespace Extraction
         private float currentTime = 10f;
         private Animator _animator;
 
+        private bool isEnding = false;
         private void Start()
         {
             currentTime = timeToExtract;
@@ -29,7 +30,12 @@ namespace Extraction
                 if (ExtractionManager.Instance.GetIfExtractionArrived())
                 {
                     //End game
-                    GameManager.Instance.EndGame();
+                    if (!isEnding)
+                    {
+                        GameManager.Instance.EndGame();
+                        isEnding = true;
+                    }
+                    
                 }
                 StopAllCoroutines();
             }

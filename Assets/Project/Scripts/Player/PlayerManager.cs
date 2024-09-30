@@ -22,13 +22,13 @@ namespace Player
         public void PlayerEnteredGasZone()
         {
             isPlayerInGasZone = true;
-            this.playerStamina.ActivateStaminaDecreasing();
+            this.playerStamina.ActivateEnergyDecreasing();
         }
 
         public void PlayerExitedGasZone()
         {
             isPlayerInGasZone = false;
-            this.playerStamina.DesactivateStaminaDecreasing();
+            this.playerStamina.DesactivateEnergyDecreasing();
         }
         
         #region Getters Setters

@@ -18,8 +18,8 @@ public class PlayerOverheating : IPlayer_Bar
         Instance = this;
     }
 
-    public override void SetStamina(float newStamina)
+    public override void SetEnergy(float newStamina)
     {
-        this.stamina = Mathf.Clamp(newStamina, 0, MAX_STAMINA);
+        this.energy = Mathf.Clamp(newStamina, 0, MAX_STAMINA);
     }
 }

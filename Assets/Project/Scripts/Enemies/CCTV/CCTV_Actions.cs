@@ -27,8 +27,8 @@ public class CCTV_Actions : MonoBehaviour
         _maxAngle = _currentAngle + (_angle / 2);
         _minAngle = _currentAngle - (_angle / 2);
 
-        Debug.Log("Max Angle: " + _maxAngle);
-        Debug.Log("Min Angle: " + _minAngle);
+        //Debug.Log("Max Angle: " + _maxAngle);
+        //Debug.Log("Min Angle: " + _minAngle);
 
         _timer = timeToForget;
     }

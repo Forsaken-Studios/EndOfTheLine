@@ -13,8 +13,18 @@ using Random = UnityEngine.Random;
 
 namespace Loot
 {
+    public class ItemInterval
+    {
+        public float minNumber;
+        public float maxNumber;
 
-
+        public ItemInterval(float minNumber, float maxNumber)
+        {
+            this.minNumber = minNumber;
+            this.maxNumber = maxNumber;
+        }
+    }
+    
     public class LooteableObject : MonoBehaviour
     {
         private GameObject currentHotkeyGameObject;
@@ -23,6 +33,9 @@ namespace Loot
         [SerializeField] private bool needToSpawnXObject;
         [SerializeField] private List<string> itemsToSpawn;
         private bool isLooting = false;
+        [SerializeField] private float verticalOffset = 0.5f;
+
+        private Dictionary<Item, ItemInterval> itemsIntervalSpawn;
         private bool isTemporalBox = false; 
         /// <summary>
         /// When we need to spawn X Items 100%
@@ -41,6 +54,7 @@ namespace Loot
         {
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsNeededToSpawn = new List<Item>();
+            
             //En el futuro, hay que ver esto, porque no podemos hacer spawn en el start, habrá que modificar las opciones antes
             StartSpawingObjects(itemsToSpawn);
         }
@@ -50,20 +64,24 @@ namespace Loot
             {
                 if (Input.GetKeyDown(KeyCode.F))
                 {
-                    if (LooteableObjectSelector.Instance.GetIfSelectorIsActive() &&
-                        LooteableObjectSelector.Instance.GetIfIndexIsThisLooteableObject(this))
+                    if (InventoryManager.Instance.GetInspectViewList().Count == 0)
                     {
-                        //CUIDADO QUE ESTÁ AL REVES, PILLA EL NOMBRE DEL OTRO
-                        Debug.Log(this.name);
-                        HandleInventory();
-                    }
+                        if (LooteableObjectSelector.Instance.GetIfSelectorIsActive() &&
+                            LooteableObjectSelector.Instance.GetIfIndexIsThisLooteableObject(this))
+                        {
+                            //CUIDADO QUE ESTÁ AL REVES, PILLA EL NOMBRE DEL OTRO
+                            Debug.Log(this.name);
+                            HandleInventory();
+                        }
                     
                     
-                    if(!LooteableObjectSelector.Instance.GetIfSelectorIsActive())
-                    {
-                        //No scroll selector
-                        HandleInventory();
+                        if(!LooteableObjectSelector.Instance.GetIfSelectorIsActive())
+                        {
+                            //No scroll selector
+                            HandleInventory();
+                        } 
                     }
+                  
                 }
             }
         }
@@ -109,6 +127,7 @@ namespace Loot
         
         public void StartSpawingObjects(List<string> testList)
         {
+            itemsIntervalSpawn = new Dictionary<Item, ItemInterval>();
             if (needToSpawnXObject)
             {
                 InitializeLootObject(testList);  
@@ -141,7 +160,8 @@ namespace Loot
             }
             else
             {
-                PrepareLoot(maxSlotsInCrate);
+                int randomSlotAmount = UnityEngine.Random.Range(0, maxSlotsInCrate - 2);
+                PrepareLoot(randomSlotAmount);
             }
         }
 
@@ -158,21 +178,39 @@ namespace Loot
 
         private void PrepareLoot(int remainingSlotsInCrate)
         {
-            Object[] allItems = UnityEngine.Resources.LoadAll("Items/Scrap");
-            List<Object> allItemsList = allItems.ToList();
+            Debug.Log( this + " METEMOS " + remainingSlotsInCrate + " OBJETOS");
+            List<Item> allItems = UnityEngine.Resources.LoadAll<Item>("Items/Scrap").ToList();
+            List<Item> itemsIDToSpawn = new List<Item>();
+            float intervalAcount = 0;
+            foreach (var item in allItems)
+            {
+                itemsIntervalSpawn.Add(item, new ItemInterval(intervalAcount, intervalAcount + item.itemSpawnChance));
+                intervalAcount += item.itemSpawnChance + 1;
+            }
             int itemsToLoot = 1;
             if (!onlyOneItemInBag)
-                itemsToLoot = Random.Range(1, remainingSlotsInCrate);
-                //itemsToLoot = Random.Range(2, 3); NO PANEL
+                itemsToLoot = remainingSlotsInCrate;
+
             for (int i = 0; i < itemsToLoot; i++)
             {
-                int randomItemIndex = Random.Range(0, allItemsList.Count);
-                int randomQuantity = Random.Range(1, 4);
-                Item itemSO = allItemsList[randomItemIndex] as Item;
-                itemsInLootableObject.Add(itemSO, randomQuantity);
-                //WE MODIFIE THE UI
-                //looteableObjectUI.AddItemToCrate(itemSO, randomQuantity);
-                allItemsList.RemoveAt(randomItemIndex);
+                int value = (int) Random.Range(0, intervalAcount);
+                Debug.Log("SPAWNING: VALUE " + value);
+                foreach (var item in itemsIntervalSpawn)
+                {
+                    if (item.Value.minNumber <= value && item.Value.maxNumber >= value)
+                    {
+                        int randomQuantity = Random.Range(1, 4);
+                        if (itemsInLootableObject.ContainsKey(item.Key))
+                        {
+                            itemsInLootableObject[item.Key] += randomQuantity;
+                        }
+                        else
+                        {
+                            itemsInLootableObject.Add(item.Key, randomQuantity);
+                        }
+                        break;
+                    }
+                }
             }
         }
 
@@ -244,7 +282,7 @@ namespace Loot
         public void ActivateKeyHotkeyImage()
         {
             currentHotkeyGameObject = Instantiate(LootUIManager.Instance.GetHotkeyPrefab(),
-                new Vector2(this.transform.position.x, this.transform.position.y + 1), Quaternion.identity); 
+                new Vector2(this.transform.position.x, this.transform.position.y + verticalOffset), Quaternion.identity); 
             _isLooteable = true;
         }
 

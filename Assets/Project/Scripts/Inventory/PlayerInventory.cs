@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils.CustomLogs;
 
 namespace Inventory
@@ -15,10 +17,7 @@ namespace Inventory
 
         [SerializeField] private GameObject floatingTextPrefab;
 
-        [Tooltip(
-            "Variable to link with the script that help us to write on top of the character what item did he take")]
-        [SerializeField]
-        private TakeItemText takeItemScript;
+        private int numberOfTools = -1;
 
         private Dictionary<Item, int> inventoryItemDictionary;
         private float currentWeight;
@@ -26,6 +25,10 @@ namespace Inventory
         private int MAX_INVENTORY_SLOTS = 10;
         private int MAX_STACK_PER_SLOT = 4;
 
+        [Header("Player Prefs")] 
+        private string RESOURCES_GOLD_NAME = "Resources_Gold"; 
+        private string RESOURCES_FOOD_NAME = "Resources_Food"; 
+        private string RESOURCES_MATERIAL_NAME = "Resources_Material"; 
    
 
 
@@ -45,21 +48,29 @@ namespace Inventory
             inventoryItemDictionary = new Dictionary<Item, int>();
         }
 
-
-        void Update()
+        public bool TryAddItem(Item item, int amount, out int remainingItemsWithoutSpace, bool showItemsTakenMessage)
+        {  
+            if (SceneManager.GetActiveScene().name != "TrainBase")
+                return TryAddItemInGame(item, amount, out remainingItemsWithoutSpace, showItemsTakenMessage);
+            else
+               return TryAddItemInBase(item, amount, out remainingItemsWithoutSpace, showItemsTakenMessage);
+        }
+        
+        public bool GetIfItemIsInPlayerInventory(Item item, int amount)
         {
-
+            int amountAux = -1;
+            inventoryItemDictionary.TryGetValue(item, out amountAux);
+            return amountAux >= amount;
         }
 
-  
-        public bool TryAddItem(Item item, int amount, out int remainingItemsWithoutSpace, bool showItemsTakenMessage)
+        public bool TryAddItemInBase(Item item, int amount, out int remainingItemsWithoutSpace,
+            bool showItemsTakenMessage)
         {
-            if (InventoryManager.Instance.TryAddInventoryToItemSlot(item, amount, out remainingItemsWithoutSpace))
+            if (TrainInventoryManager.Instance.TryAddInventoryToItemSlot(item, amount, out remainingItemsWithoutSpace))
             {
                 if (inventoryItemDictionary.ContainsKey(item))
                 {
                     inventoryItemDictionary[item] += amount;
-                
                 }
                 else
                 {
@@ -67,7 +78,62 @@ namespace Inventory
                 }  
                 AddWeight(item.itemWeight * amount);
                 if(showItemsTakenMessage)
-                     ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
+                    ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
+                if (remainingItemsWithoutSpace > 0)
+                    return false;
+                else
+                    return true; 
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+    
+        
+        public void StashAllItemsInBase()
+        {
+            Dictionary<Item, int> recoverItems = new Dictionary<Item, int>();
+            Dictionary<Item, int> itemsTaken = new Dictionary<Item, int>();
+            foreach (var item in inventoryItemDictionary)
+            {
+                int remainingItems = 0;
+                if (!TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(item.Key, item.Value, 
+                        out remainingItems))
+                {
+                    //If we cant find a place, we add it to recover items
+                    //We will need to check if we take X amount of the stack
+                    recoverItems.Add(item.Key, remainingItems);
+                }
+                else
+                {
+                    itemsTaken.Add(item.Key, item.Value);
+                }
+            } 
+            //We cant clear, we need to check if we dont take an item because we dont have space in inventory
+            this.inventoryItemDictionary.Clear();
+            foreach (var items in recoverItems)
+            {
+                inventoryItemDictionary.Add(items.Key, items.Value);
+            }
+        }
+        public bool TryAddItemInGame(Item item, int amount, out int remainingItemsWithoutSpace,
+            bool showItemsTakenMessage)
+        {
+            if (InventoryManager.Instance.TryAddInventoryToItemSlot(item, amount, out remainingItemsWithoutSpace))
+            {
+                if (inventoryItemDictionary.ContainsKey(item))
+                {
+                    inventoryItemDictionary[item] += amount;
+                }
+                else
+                {
+                    inventoryItemDictionary.Add(item, amount);
+                }  
+                AddWeight(item.itemWeight * amount);
+                if(showItemsTakenMessage)
+                    ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
                 InventoryManager.Instance.ChangeText(inventoryItemDictionary);
                 if (remainingItemsWithoutSpace > 0)
                     return false;
@@ -93,7 +159,8 @@ namespace Inventory
             AddWeight(item.itemWeight * amount);
             if(showMessage){}
                 ShowItemTaken(item.itemName, amount);
-            InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+            if (SceneManager.GetActiveScene().name != "TrainBase")
+                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             return true; 
         }
 
@@ -107,8 +174,41 @@ namespace Inventory
                     prefab.GetComponentInChildren<TextMeshProUGUI>().text = "x" + amount + " " + name;
                 } 
             }
-           
         }
+
+        public void HandleItemsAtEndGame()
+        {
+            int currentGold = PlayerPrefs.GetInt(RESOURCES_GOLD_NAME);
+            int currentMaterialAmount = PlayerPrefs.GetInt(RESOURCES_MATERIAL_NAME); 
+            int currentFoodAmount = PlayerPrefs.GetInt(RESOURCES_FOOD_NAME); 
+            foreach (var item in inventoryItemDictionary)
+            {
+                switch (item.Key.ItemType)
+                {
+                    //Sell
+                    case ItemType.Scrap:
+                        currentGold += item.Value * item.Key.itemValue;
+                        Debug.Log("CURRENT GOLD: x" + currentGold);
+                        break;
+                    //Save Material
+                    case ItemType.Resources_Material:
+                        currentMaterialAmount += item.Value;
+                        Debug.Log("WE ADDED MATERIAL: x" + item.Value);
+                        break;
+                    //Save Food
+                    case ItemType.Resources_Food:
+                        currentFoodAmount += item.Value;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            PlayerPrefs.SetInt(RESOURCES_GOLD_NAME, currentGold);
+            PlayerPrefs.SetInt(RESOURCES_MATERIAL_NAME, currentMaterialAmount);
+            PlayerPrefs.SetInt(RESOURCES_FOOD_NAME, currentFoodAmount);
+        }
+        
         public void ShowFullListItemTaken(Dictionary<Item, int> itemList)
         {
             string fullItemList = "";
@@ -140,7 +240,8 @@ namespace Inventory
                 }
                 
                 DecreaseWeight(item.itemWeight * itemSlotAmount);
-                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+                if(InventoryManager.Instance != null)
+                    InventoryManager.Instance.ChangeText(inventoryItemDictionary);
             }
         }
 
@@ -179,5 +280,11 @@ namespace Inventory
         {
             return MAX_WEIGHT;
         }
+
+        public void SetInventoryDictionary(Dictionary<Item, int> inventory)
+        {
+            this.inventoryItemDictionary = inventory;
+        }
+        
     }
 }

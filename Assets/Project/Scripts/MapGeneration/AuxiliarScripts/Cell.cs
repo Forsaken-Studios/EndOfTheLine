@@ -9,7 +9,7 @@ public class Cell
     public DirectionFlag EntranceDirection { get; private set; }
     public int Row { get; private set; }
     public int Col { get; private set; }
-    public Vector3 Position3D { get; private set; }
+    public Vector3 Position3D { get; private set; } // x = column, y = row
     public CellState State { get; private set; }
     public List<Cell> Parents { get; private set; }
     public Cell TemporalParent { get;  set; }

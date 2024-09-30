@@ -25,7 +25,8 @@ namespace Inventory
         public void OnBeginDrag(PointerEventData eventData)
         {
 
-            InventoryManager.Instance.TryDestroyContextMenu();
+            if(InventoryManager.Instance != null)
+                InventoryManager.Instance.TryDestroyContextMenu();
             if (Input.GetKey(KeyCode.LeftControl))
             {
                 isSplitting = true; 
@@ -48,7 +49,9 @@ namespace Inventory
         /// <param name="eventData"></param>
         public void OnDrag(PointerEventData eventData)
         {
-            if (Input.GetKey(KeyCode.LeftControl))
+            ItemSlot itemSlotMoving = parentBeforeDrag.GetComponentInParent<ItemSlot>();
+            
+            if (Input.GetKey(KeyCode.LeftControl) && itemSlotMoving.amount > 1)
             {
                 isSplitting = true; 
             }
@@ -95,7 +98,5 @@ namespace Inventory
             return isSplitting;
         }
         
-    
-  
     }
 }

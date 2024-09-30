@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 874728bca5e5f154ab86565fa479a78f, type: 3}
+  m_Name: TR4
+  m_EditorClassIdentifier: 
+  requirements:
+  - requirement: {fileID: 11400000, guid: 54388fabe9b43e6498e74c34fcbc41f8, type: 2}
+  - requirement: {fileID: 11400000, guid: 89dd145d1aaabcd45b4746baa7a2558c, type: 2}
+  - requirement: {fileID: 11400000, guid: f003a199f3185a94ebf8f5da706f18a6, type: 2}
+  itemReceived:
+    item: {fileID: 11400000, guid: b5c3427548495f24da1dcf373e834b70, type: 2}
+    amountReceived: 1
+  id: 3
+  daysToComplete: 1

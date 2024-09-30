@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Inventory;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -29,13 +30,40 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
     }
 
+    private bool AbilitiesNotActivated()
+    {
+        Debug.Log(!GameManager.Instance.GetHolder1Status() && !GameManager.Instance.GetHolder2Status());
+        return !GameManager.Instance.GetHolder1Status() && !GameManager.Instance.GetHolder2Status();
+    }
+    
     private void Update()
      {
          if (Input.GetKeyDown(KeyCode.Escape))
          {
-             pauseMenuGameObject.SetActive(!pauseMenuGameObject.activeSelf);
-             GameManager.Instance.GameState = pauseMenuGameObject.activeSelf ? GameState.OnPause : GameState.OnGame;
-             Time.timeScale = pauseMenuGameObject.activeSelf ? 0f: 1f;
+             if (InventoryManager.Instance.GetInspectViewList().Count == 0 
+                 && !LoreManager.Instance.GetIfPlayerIsReadingLore())
+             {
+                 if (AbilitiesNotActivated())
+                 {
+                     PauseGame();
+                 }
+             }
+             else
+             {
+                 if (LoreManager.Instance.GetIfPlayerIsReadingLore())
+                 {
+                     GameManager.Instance.GameState = GameState.OnGame;
+                     LoreManager.Instance.SetIfPlayerIsReadingLore(false);
+                     LoreManager.Instance.DestroyCurrentExpandedView(); 
+                     LoreManager.Instance.SetCurrentLoreView(null);
+                 }else
+                 {
+                     List<GameObject> inspectList = InventoryManager.Instance.GetInspectViewList();
+                     GameObject mostRecentInspectView = inspectList[inspectList.Count - 1];
+                     Destroy(mostRecentInspectView);
+                     InventoryManager.Instance.RemoveInspectView(mostRecentInspectView);
+                 }
+             }
          }
      }
      
@@ -44,6 +72,13 @@ public class PauseMenu : MonoBehaviour
         pauseMenuGameObject.SetActive(false);
         GameManager.Instance.GameState = GameState.OnGame;
         Time.timeScale = 1f;
+    }
+
+    private void PauseGame()
+    {
+        pauseMenuGameObject.SetActive(!pauseMenuGameObject.activeSelf);
+        GameManager.Instance.GameState = pauseMenuGameObject.activeSelf ? GameState.OnPause : GameState.OnGame;
+        Time.timeScale = pauseMenuGameObject.activeSelf ? 0f: 1f;
     }
 
     private void QuitGame()

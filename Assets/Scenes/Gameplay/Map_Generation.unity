@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridSize: {x: 15, y: 10}
-  cellSize: 5
+  cellSize: 8
   _startSize: 3
   _exitSize: 3
   _testRooms:
@@ -165,9 +165,19 @@ MonoBehaviour:
   - {fileID: 7377993764336805890, guid: 694320fbe66d15a4ca331dbf06e406a4, type: 3}
   - {fileID: 2016369782691687916, guid: d1b6fab9efdfe7f4590ac154b4e580a0, type: 3}
   - {fileID: 5740216070990721247, guid: dcc220d4079c8024b8475a810c0d7895, type: 3}
+  _testRoomsPrefabs:
+  - {fileID: 4208692258376782247, guid: 5b388023abe8c1e44b4838d71f6d6785, type: 3}
+  - {fileID: 4208692258376782247, guid: 5b388023abe8c1e44b4838d71f6d6785, type: 3}
+  - {fileID: 4208692258376782247, guid: 5b388023abe8c1e44b4838d71f6d6785, type: 3}
+  - {fileID: 4208692258376782247, guid: 5b388023abe8c1e44b4838d71f6d6785, type: 3}
+  - {fileID: 4208692258376782247, guid: 5b388023abe8c1e44b4838d71f6d6785, type: 3}
+  - {fileID: 4208692258376782247, guid: 5b388023abe8c1e44b4838d71f6d6785, type: 3}
+  - {fileID: 4208692258376782247, guid: 5b388023abe8c1e44b4838d71f6d6785, type: 3}
+  - {fileID: 4208692258376782247, guid: 5b388023abe8c1e44b4838d71f6d6785, type: 3}
   startingGridPosition: {x: 0, y: 0, z: 0}
-  _maxRoomsInserted: 3
+  _maxRoomsInserted: 4
   _radius: 5
+  _isTotallyGizmos: 1
 --- !u!4 &117816291
 Transform:
   m_ObjectHideFlags: 0
@@ -616,7 +626,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -721, y: -405}
+  m_AnchoredPosition: {x: 776, y: -405}
   m_SizeDelta: {x: 250, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1903327661
