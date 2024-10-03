@@ -17,6 +17,10 @@ public class AbilityManager : MonoBehaviour
     [SerializeField] private float smokeGrenadeForce = 35f;
     [SerializeField] private float smokeRadius = 14f;
     private Vector2 smokePosition;
+    
+    [Header("Wall Ability Properties")]
+    [SerializeField] private float wallWidth = 0.5f;
+    [SerializeField] private float maxWallDistance = 6f;
 
     private bool activatedSmoke;
     
@@ -72,6 +76,16 @@ public class AbilityManager : MonoBehaviour
     public void SetActivatedSmoke(bool activatedSmoke)
     {
         this.activatedSmoke = activatedSmoke;
+    }
+
+    public float GetWallWidth()
+    {
+        return wallWidth;
+    }
+
+    public float GetMaxWallDistance()
+    {
+        return maxWallDistance;
     }
 
 }

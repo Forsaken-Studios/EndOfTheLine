@@ -35,25 +35,28 @@ public class WallCanvas : MonoBehaviour
                     Vector2 directionInFront = -(GetPosition() - closestWall).normalized;
                     RaycastHit2D hitInFront = Physics2D.Raycast(closestWall, -directionInFront, 2000f,wallLayerMask);
                     oppositeWall = hitInFront.point;
-                    if (hitInFront.collider != null && hitInFront.collider.gameObject.tag == "Wall")
-                    {
-                        if (Vector2.Distance(hitInFront.point, closestWall) < minDistanceBetweenWires)
+                    //if (Vector2.Distance(hitInFront.point, closestWall) <= 2)
+                    //{
+                        if (hitInFront.collider != null && hitInFront.collider.gameObject.tag == "Wall")
                         {
-                            oppositeWallImage.rectTransform.position = hitInFront.point;
-                            holder.UpdatePositionToThrowAbility(closestWall, hitInFront.point);
-                            oppositeWallImage.gameObject.SetActive(true);
-                            positionImage.gameObject.SetActive(true);
-                            holder.SetIfCanThrowAbility(true); 
-                        }
-                        else
-                        {
-                            holder.SetIfCanThrowAbility(false);
-                            oppositeWallImage.gameObject.SetActive(false);
-                            positionImage.gameObject.SetActive(false);
-                        }
+                            if (Vector2.Distance(hitInFront.point, closestWall) < minDistanceBetweenWires)
+                            {
+                                oppositeWallImage.rectTransform.position = hitInFront.point;
+                                holder.UpdatePositionToThrowAbility(closestWall, hitInFront.point);
+                                oppositeWallImage.gameObject.SetActive(true);
+                                positionImage.gameObject.SetActive(true);
+                                holder.SetIfCanThrowAbility(true); 
+                            }
+                            else
+                            {
+                                holder.SetIfCanThrowAbility(false);
+                                oppositeWallImage.gameObject.SetActive(false);
+                                positionImage.gameObject.SetActive(false);
+                            }
 
-                    }
-                    oppositeWallImage.gameObject.SetActive(true);
+                        }
+                        oppositeWallImage.gameObject.SetActive(true);
+                    //}
                 }
                 else
                 {

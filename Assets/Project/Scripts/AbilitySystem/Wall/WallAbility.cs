@@ -18,8 +18,6 @@ public class WallAbility : Ability
         placers.GetComponent<WallPlacers>().SetLocations(position, endPosition, out wallSquare);
         gm = placers;
     }
-    
-    
     public override void Activate(GameObject parent, Vector2 position, Vector2 endPosition)
     {
         //Instantiate wall
