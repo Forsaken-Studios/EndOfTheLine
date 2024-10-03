@@ -26,7 +26,7 @@ public class AbilityHolder : MonoBehaviour
     private GameObject currentCanvasCreated;
     private bool needToReactivate;
 
-    private bool canThrowAbility = true;
+    [SerializeField] private bool canThrowAbility = true;
     enum AbilityState
     {
         ready, preparing, activating, active, cooldown
@@ -139,7 +139,7 @@ public class AbilityHolder : MonoBehaviour
                         }
                         else
                         {
-                            if (Input.GetKeyDown(key))
+                            if (Input.GetKeyDown(key) && canThrowAbility)
                             {
                                 LogManager.Log("PLACING [" + ability.name + "]", FeatureType.Player);
                                 needToReactivate = true;

@@ -103,7 +103,7 @@ public class TraderPanel : MonoBehaviour
 
     private List<ItemTradeSO> RandomTrades(List<ItemTradeSO> list)
     {
-        int randomAmount = UnityEngine.Random.Range(3, 5);
+        int randomAmount = UnityEngine.Random.Range(2, 3);
 
         List<ItemTradeSO> items = new List<ItemTradeSO>();
         

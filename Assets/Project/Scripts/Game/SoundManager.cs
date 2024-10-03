@@ -141,9 +141,12 @@ public class SoundManager : MonoBehaviour
     }
     public void StopSound()
     {
-  
         //StartCoroutine(StartFade(sfxSource, 0.5f, 0f));
-        sfxSource.Stop();
+        if (sfxSource != null)
+        {
+            sfxSource.Stop();
+        }
+       
     }
     
 }

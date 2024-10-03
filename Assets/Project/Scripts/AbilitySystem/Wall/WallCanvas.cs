@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Player;
 using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
 using UnityEngine.AI;
@@ -14,6 +15,9 @@ public class WallCanvas : MonoBehaviour
     [SerializeField] private Image oppositeWallImage;
     [SerializeField] private LayerMask wallLayerMask;
 
+    [SerializeField] private Sprite greenSprite;
+    [SerializeField] private Sprite redSprite;
+    
     private Vector2 oppositeWall;
     private Vector2 closestWall;
     private GameObject parent;
@@ -24,65 +28,82 @@ public class WallCanvas : MonoBehaviour
         closestWall =  GameManager.Instance.GetWallCollider().ClosestPoint(GetPosition());
         if (GameManager.Instance.GetFloorCollider().OverlapPoint(GetPosition()))
         {
-            if (Vector2.Distance(closestWall, GetPosition()) < minDistance)
+            Vector2 rayDirection = (closestWall - GetPosition()).normalized;
+            float escalar = Vector2.Dot(rayDirection, ((Vector2)parent.transform.position - closestWall));
+            positionImage.rectTransform.position = closestWall;
+            Vector2 directionInFront = -(GetPosition() - closestWall).normalized;
+            RaycastHit2D hitInFront = Physics2D.Raycast(closestWall, -directionInFront, 2000f,wallLayerMask);
+            oppositeWall = hitInFront.point;
+            if (hitInFront.collider != null && hitInFront.collider.gameObject.tag == "Wall")
             {
-                Vector2 rayDirection = (closestWall - GetPosition()).normalized;
-                float escalar = Vector2.Dot(rayDirection, ((Vector2)parent.transform.position - closestWall));
                 if (escalar < 0)
                 {
-                    
-                    positionImage.rectTransform.position = closestWall;
-                    Vector2 directionInFront = -(GetPosition() - closestWall).normalized;
-                    RaycastHit2D hitInFront = Physics2D.Raycast(closestWall, -directionInFront, 2000f,wallLayerMask);
-                    oppositeWall = hitInFront.point;
-                    //if (Vector2.Distance(hitInFront.point, closestWall) <= 2)
-                    //{
-                        if (hitInFront.collider != null && hitInFront.collider.gameObject.tag == "Wall")
+                    if (Vector2.Distance(hitInFront.point, closestWall) < AbilityManager.Instance.GetMaxWallDistance())
+                    {
+                        Vector2 dir = (GetPosition() - (Vector2) PlayerController.Instance.gameObject.transform.position).normalized;
+                        float distance = Vector2.Distance(GetPosition(),(Vector2)PlayerController.Instance.gameObject.transform.position);
+                        //escalar 2.0
+                        RaycastHit2D raycastToMousePosition = Physics2D.Raycast(PlayerController.Instance.gameObject.transform.position, dir, distance,wallLayerMask);
+                        if (raycastToMousePosition.collider != null)
                         {
-                            if (Vector2.Distance(hitInFront.point, closestWall) < minDistanceBetweenWires)
-                            {
-                                oppositeWallImage.rectTransform.position = hitInFront.point;
-                                holder.UpdatePositionToThrowAbility(closestWall, hitInFront.point);
-                                oppositeWallImage.gameObject.SetActive(true);
-                                positionImage.gameObject.SetActive(true);
-                                holder.SetIfCanThrowAbility(true); 
-                            }
-                            else
-                            {
-                                holder.SetIfCanThrowAbility(false);
-                                oppositeWallImage.gameObject.SetActive(false);
-                                positionImage.gameObject.SetActive(false);
-                            }
-
+                            //Not visible Position
+                            PositionNotValidButShowPositon(hitInFront);
                         }
-                        oppositeWallImage.gameObject.SetActive(true);
-                    //}
-                }
-                else
+                        else
+                        {
+                            //Valid Position
+                            holder.SetIfCanThrowAbility(true); 
+                            oppositeWallImage.rectTransform.position = hitInFront.point;
+                            holder.UpdatePositionToThrowAbility(closestWall, hitInFront.point);
+                            positionImage.sprite = greenSprite;
+                            oppositeWallImage.sprite = greenSprite;
+                        
+                        }
+                    }
+                    else
+                    {
+                        //InValid Position
+                        PositionNotValidButShowPositon(hitInFront);
+                    }
+                } else
                 {
-                    holder.SetIfCanThrowAbility(false);
-                    oppositeWallImage.gameObject.SetActive(false);
-                    positionImage.gameObject.SetActive(false);
+                    //Not visible Position
+                    PositionNotValidButShowPositon(hitInFront);
                 }
+                
             }
             else
             {
+                //InValid Position
                 holder.SetIfCanThrowAbility(false);
-                oppositeWallImage.gameObject.SetActive(false);
-                positionImage.rectTransform.position = GetPosition();
-                holder.UpdatePositionToThrowAbility(GetPosition(), Vector2.zero); 
-            }  
+                NotValidPosition();
+            }
         }
     }
-    
-    void OnDrawGizmos()
+
+    private void NotValidPosition()
     {
-     
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(closestWall, 2f);
-            Gizmos.DrawSphere(oppositeWall, 2f);
-            Gizmos.DrawLine(closestWall, oppositeWall);
-        
+        positionImage.sprite = redSprite;
+        oppositeWallImage.sprite = redSprite; 
+        oppositeWallImage.gameObject.SetActive(true);
+        positionImage.gameObject.SetActive(true);
+    }
+
+    private void PositionNotValidButShowPositon(RaycastHit2D hitInFront)
+    {
+        holder.SetIfCanThrowAbility(false);
+        oppositeWallImage.rectTransform.position = hitInFront.point;
+        NotValidPosition();
+    }
+    
+   void OnDrawGizmos()
+    {
+    
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(closestWall, 0.5f);
+        Gizmos.DrawSphere(oppositeWall, 0.5f);
+        Gizmos.DrawLine(PlayerController.Instance.gameObject.transform.position, GetPosition());
+    
     }
     
     public void SetHolder(AbilityHolder holder, GameObject parent)
