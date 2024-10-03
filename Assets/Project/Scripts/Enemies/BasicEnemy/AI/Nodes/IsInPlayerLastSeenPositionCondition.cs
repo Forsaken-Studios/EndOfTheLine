@@ -16,7 +16,6 @@ public class IsInPlayerLastSeenPositionCondition : Node
     {
         if (_enemyActions.isAtPlayerLastSeenPosition == true)
         {
-            Debug.Log("is in player last seen position");
             return NodeState.SUCCESS;
         }
 

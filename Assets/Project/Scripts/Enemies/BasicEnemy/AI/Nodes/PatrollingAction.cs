@@ -14,7 +14,8 @@ public class PatrollingAction : Node
 
     public override NodeState Evaluate()
     {
-        _enemyActions.RotateInPlace();
+        Debug.Log("-IA-: Patrolling action");
+        _enemyActions.Patrol();
         return NodeState.SUCCESS;
     }
 }
