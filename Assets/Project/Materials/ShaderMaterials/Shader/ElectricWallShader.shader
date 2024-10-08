@@ -50,7 +50,7 @@ Shader "Unlit/ElectricWallShader"
                 float2 endPoint= (_SpawnPoints.z, _SpawnPoints.w);
 
                 float wallLength = distance(startPoint,endPoint);
-                float2 lengthOffset = _ElecTex_ST;
+                float2 lengthOffset = _ElecTex_ST.xy;
                 lengthOffset.y *= wallLength; //Parametrize Texture indepentend to length-scalling
                 o.uv = v.uv* lengthOffset +_ElecTex_ST.zw;//TRANSFORM_TEX(v.uv, _ElecTex);
                 return o;
