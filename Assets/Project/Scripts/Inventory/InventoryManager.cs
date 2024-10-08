@@ -41,12 +41,19 @@ namespace Inventory
         {
             if (Input.GetKeyDown(KeyCode.I))
             {
+                CancelAbilities();
                 ReverseInventoryStatus();
                 if(LootUIManager.Instance.GetIfCrateIsOpened())
                     LootUIManager.Instance.DesactivateLootUIPanel();
             }
         }
 
+        private void CancelAbilities()
+        {
+            AbilityManager.Instance.Holder1.TryToCancelAbility();
+            AbilityManager.Instance.Holder2.TryToCancelAbility();
+        }
+        
         /// <summary>
         /// If inventory is opened, we close it, if it is the other way, we open it
         /// </summary>

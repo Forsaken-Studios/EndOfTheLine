@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Extraction;
 using Inventory;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -25,8 +27,8 @@ public class GameManager : MonoBehaviour
     
     
     private string trainSceneName = "TrainBase";
-    [SerializeField] private Collider2D wallCollider;
-    [SerializeField] private Collider2D floorCollider;
+    [SerializeField]private Collider2D wallCollider; 
+    [SerializeField]private Collider2D floorCollider;
 
     private bool holder1Activated = false;
     private bool holder2Activated = false;
@@ -52,7 +54,6 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
     }
-    
     void Start()
     {
         GameState = GameState.OnGame;

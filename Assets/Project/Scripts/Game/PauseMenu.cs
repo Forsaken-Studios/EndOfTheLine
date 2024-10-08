@@ -32,7 +32,6 @@ public class PauseMenu : MonoBehaviour
 
     private bool AbilitiesNotActivated()
     {
-        Debug.Log(!GameManager.Instance.GetHolder1Status() && !GameManager.Instance.GetHolder2Status());
         return !GameManager.Instance.GetHolder1Status() && !GameManager.Instance.GetHolder2Status();
     }
     

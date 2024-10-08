@@ -58,7 +58,8 @@ namespace Loot
             itemsNeededToSpawn = new List<Item>();
             intervalList = new List<ItemInterval>();
             //En el futuro, hay que ver esto, porque no podemos hacer spawn en el start, habrá que modificar las opciones antes
-            StartSpawingObjects(itemsToSpawn);
+            LootManager.Instance.AddLooteableObjectToList(this);
+         
         }
         private void Update()
         {
@@ -66,6 +67,8 @@ namespace Loot
             {
                 if (Input.GetKeyDown(KeyCode.F))
                 {
+                    AbilityManager.Instance.Holder1.TryToCancelAbility();
+                    AbilityManager.Instance.Holder2.TryToCancelAbility();
                     if (InventoryManager.Instance.GetInspectViewList().Count == 0)
                     {
                         if (LooteableObjectSelector.Instance.GetIfSelectorIsActive() &&
@@ -127,12 +130,12 @@ namespace Loot
             return itemsInLootableObject.Count == 0;
         }
         
-        public void StartSpawingObjects(List<string> testList)
+        public void StartSpawingObjects()
         {
             itemsIntervalSpawn = new Dictionary<Item, ItemInterval>();
             if (needToSpawnXObject)
             {
-                InitializeLootObject(testList);  
+                InitializeLootObject(itemsToSpawn);  
             }
             else
             {
@@ -145,10 +148,13 @@ namespace Loot
             if (itemsList != null)
             {
                 PrepareItemsNeededToSpawn(itemsList);
-
                 if (!onlyOneItemInBag)
                 {
                     int remainingItems = maxSlotsInCrate - itemsList.Count;
+                    if (remainingItems >= 2)
+                    {
+                        remainingItems = UnityEngine.Random.Range(1, 3);
+                    }
                     if (remainingItems > 0)
                     {
                         PrepareLoot(remainingItems); 
@@ -162,8 +168,7 @@ namespace Loot
             }
             else
             {
-                int randomSlotAmount = UnityEngine.Random.Range(1, maxSlotsInCrate - 1);
-                PrepareLoot(randomSlotAmount);
+                PrepareLoot(LootManager.Instance.GetRandomAmount());
             }
         }
 
@@ -193,6 +198,8 @@ namespace Loot
             int itemsToLoot = 1;
             if (!onlyOneItemInBag)
                 itemsToLoot = remainingSlotsInCrate;
+            
+            Debug.Log(itemsToLoot);
 
             for (int i = 0; i < itemsToLoot; i++)
             {
@@ -319,6 +326,11 @@ namespace Loot
             _isLooteable = false;
         }
 
-
+        public void SetIfNeedToSpawnXObject(List<string> itemsToSpawn)
+        {
+            this.itemsToSpawn = itemsToSpawn;
+            needToSpawnXObject = true;
+        }
+        
     }
 }

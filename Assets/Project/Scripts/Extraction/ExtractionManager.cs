@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Extraction
 {
@@ -10,9 +11,9 @@ namespace Extraction
         public static ExtractionManager Instance;
 
         [Tooltip("GameObject with the text to make the animation")] [SerializeField]
-        private GameObject extractionGameObject;
+        private GameObject currentTimeLeftToExtractGameObject;
 
-        [SerializeField] private GameObject extractionArriveGameObject;
+        [SerializeField] private GameObject ExtractionTimeLeftToArrive;
         private Animator extractionAnimator;
         private bool playerInExtractionPoint = false;
 
@@ -31,7 +32,7 @@ namespace Extraction
 
         void Start()
         {
-            extractionAnimator = extractionGameObject.GetComponent<Animator>();
+            extractionAnimator = currentTimeLeftToExtractGameObject.GetComponent<Animator>();
         }
 
         private void Update()
@@ -46,7 +47,7 @@ namespace Extraction
 
         public void StartExtractionArriveCountdown()
         {
-            extractionArriveGameObject.SetActive(true);
+            ExtractionTimeLeftToArrive.SetActive(true);
         }
 
 
@@ -55,7 +56,7 @@ namespace Extraction
             if (extractionArrived)
             {
                 SetPlayerInExtractionPoint(true);
-                extractionGameObject.SetActive(true);
+                currentTimeLeftToExtractGameObject.SetActive(true);
             }
         }
 
@@ -65,7 +66,7 @@ namespace Extraction
             {
                 if (extractionArrived)
                 {
-                    extractionGameObject.SetActive(false);
+                    currentTimeLeftToExtractGameObject.SetActive(false);
                     playerInExtractionPoint = false;
                 }
             }

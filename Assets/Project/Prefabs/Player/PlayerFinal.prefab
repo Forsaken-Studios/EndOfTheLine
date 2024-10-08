@@ -103,17 +103,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 5
   runSpeed: 10
-  currentSpeedValue: 5
+  speedModifier: 0.5
   dashSpeed: 10
   dashDuration: 0.5
   dashCooldown: 0
-  DASH_STAMINA_COST: 40
+  dashStaminaCost: 40
   walkRadius: 1
   runRadius: 2
   radiusDecay: 16
   noise: {fileID: 6353131176420574158}
   playerSpeedBar: {fileID: 0}
-  speedModifier: 0.5
 --- !u!114 &5313576150165581887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,8 +191,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilityHolderID: 1
-  ability: {fileID: 11400000, guid: 332120aa077ac5845b689eedac1d1149, type: 2}
+  testAbility: 0
+  ability: {fileID: 11400000, guid: eccb020b6bcb2f9429291c56e679e8e2, type: 2}
   abilityUI: {fileID: 0}
+  canThrowAbility: 1
   key: 113
 --- !u!114 &5970675836886858743
 MonoBehaviour:
@@ -208,8 +209,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilityHolderID: 2
-  ability: {fileID: 11400000, guid: ef953417354838748a29cec1539176a3, type: 2}
+  testAbility: 0
+  ability: {fileID: 0}
   abilityUI: {fileID: 0}
+  canThrowAbility: 1
   key: 101
 --- !u!50 &9178930243344657456
 Rigidbody2D:
@@ -333,7 +336,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3794863736478708675}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 0}
   m_CullingMode: 0

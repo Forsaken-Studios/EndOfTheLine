@@ -22,6 +22,19 @@ public class AbilityManager : MonoBehaviour
     [SerializeField] private float wallWidth = 0.5f;
     [SerializeField] private float maxWallDistance = 6f;
 
+    [Header("Player Abilities Holder")]
+    [SerializeField] private AbilityHolder _holder1;
+    [SerializeField] private AbilityHolder _holder2;
+
+    public AbilityHolder Holder1
+    {
+        get { return _holder1; }
+    }
+    public AbilityHolder Holder2
+    {
+        get { return _holder2; }
+    }
+    
     private bool activatedSmoke;
     
     private void Awake()

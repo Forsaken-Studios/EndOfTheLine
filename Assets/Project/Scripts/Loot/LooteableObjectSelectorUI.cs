@@ -81,7 +81,7 @@ public class LooteableObjectSelectorUI : MonoBehaviour
         
         switch (originalName)
         {
-            case "TemporalBox(Clone)":
+            case "TemporalBoxPrefab(Clone)":
                 return "Temporal Crate";
                 break;
             case "Tool Box":
