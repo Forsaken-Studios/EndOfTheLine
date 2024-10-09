@@ -46,8 +46,8 @@ Shader "Unlit/ElectricWallShader"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                float2 startPoint = (_SpawnPoints.x, _SpawnPoints.y);
-                float2 endPoint= (_SpawnPoints.z, _SpawnPoints.w);
+                float2 startPoint = float2(_SpawnPoints.x, _SpawnPoints.y);
+                float2 endPoint   = float2(_SpawnPoints.z, _SpawnPoints.w);
 
                 float wallLength = distance(startPoint,endPoint);
                 float2 lengthOffset = _ElecTex_ST.xy;
