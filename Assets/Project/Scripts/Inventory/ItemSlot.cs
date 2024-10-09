@@ -210,7 +210,6 @@ namespace Inventory
                         {
                             LogManager.Log("MOVING FROM INVENTORY TO INVENTORY (STACKING)", FeatureType.Loot);
                             //Moving from inventory to inventory 
-                            //TODO: Check when working 
                             DraggingItemToOtherItem(draggableItem, amountToMove); 
                         }
                     }
