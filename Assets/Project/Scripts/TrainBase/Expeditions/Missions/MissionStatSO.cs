@@ -13,6 +13,7 @@ public class MissionStatSO : ScriptableObject
     public List<MissionBonusItems> bonusItems;
     public float basicChanceOfSuccess;
     public int daysToComplete;
+    [Range(1, 23)]
     public int expeditionMapID;
 }
 

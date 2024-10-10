@@ -39,7 +39,7 @@ public class StartTradeButton : MonoBehaviour
                     foreach (var requirement in itemTrade.requirements)
                     {
                         TrainBaseInventory.Instance.DeleteItemFromList(requirement.requirement.item, requirement.requirement.amountNeeded);
-                        TrainBaseInventory.Instance.DeleteItemsFromItemSlot(requirement.requirement.item, requirement.requirement.amountNeeded);
+                        TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(requirement.requirement.item, requirement.requirement.amountNeeded);
                     }
                     tradeButton.interactable = false;
                     tradeButton.GetComponentInChildren<TextMeshProUGUI>().text = "NO STOCK";

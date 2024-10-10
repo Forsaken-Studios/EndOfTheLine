@@ -227,7 +227,7 @@ public class TrainBaseInventory : MonoBehaviour
     return true;
     }
 
-    public void DeleteItemsFromItemSlot(Item item, int amount)
+    public void FindAndDeleteItemsFromItemSlot(Item item, int amount)
     {
         int remainingAmount = amount; 
         foreach (var itemSlot in itemsSlotsList)

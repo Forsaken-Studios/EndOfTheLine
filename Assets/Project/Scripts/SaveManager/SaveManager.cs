@@ -206,12 +206,19 @@ public class SaveManager : MonoBehaviour
     
     private void SaveInventory()
     {
+        try
+        {
+            DataBaseInventory baseInventory = new DataBaseInventory(TrainBaseInventory.Instance
+                .GetBaseInventoryToSave());
 
-        DataBaseInventory baseInventory = new DataBaseInventory(TrainBaseInventory.Instance
-            .GetBaseInventoryToSave());
-        
-        SaveManager.Instance.SavePlayerInventoryJson();
-        SaveManager.Instance.SaveBaseInventoryJson(baseInventory);
+            SaveManager.Instance.SavePlayerInventoryJson();
+            SaveManager.Instance.SaveBaseInventoryJson(baseInventory);
+        }
+        catch (Exception err)
+        {
+            Debug.LogError("THERE WAS AN ERROR WHILE SAVING INVENTORY");
+        }
+
     }
     #endregion
     
@@ -220,7 +227,15 @@ public class SaveManager : MonoBehaviour
         Dictionary<int, int> idDictionary = new Dictionary<int, int>();
         foreach (var itemPair in items)
         {
-            idDictionary.Add(itemPair.Key.itemID, itemPair.Value);
+            if (idDictionary.ContainsKey(itemPair.Key.itemID))
+            {
+                idDictionary[itemPair.Key.itemID] += itemPair.Value;
+            }
+            else
+            {
+                idDictionary.Add(itemPair.Key.itemID, itemPair.Value);
+            }
+  
         }
         return idDictionary;
 

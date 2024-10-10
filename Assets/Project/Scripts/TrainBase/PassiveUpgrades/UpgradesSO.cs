@@ -10,7 +10,9 @@ public class UpgradesSO : ScriptableObject
     public new string description;
     public Sprite upgradeIcon;
     public int upgradeID;
-    public float material1Cost;
-    public float material2Cost;
-    public float material3Cost;
+    public int airFilterCost;
+    public Item redMineralItem;
+    public int redMineralCost;
+    public Item purpleMineralItem;
+    public int purpleMineralCost;
 }

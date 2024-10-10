@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Inventory;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -17,10 +18,10 @@ public class UpgradeShop : MonoBehaviour
     [Header("Ability Details")]
     [SerializeField] private GameObject detailsView;
     [FormerlySerializedAs("abilityName")] [SerializeField] private TextMeshProUGUI upgradeName;
-    [FormerlySerializedAs("abilityDescription")] [SerializeField] private TextMeshProUGUI upgradeDescription;
-    [SerializeField] private TextMeshProUGUI upgradeMaterial3CostText;
-    [SerializeField] private TextMeshProUGUI upgradeMaterial1CostText;
-    [SerializeField] private TextMeshProUGUI upgradeMaterial2CostText;
+    [FormerlySerializedAs("abilityDescription")] [SerializeField] private TextMeshProUGUI upgradeDescription; 
+    [SerializeField] private TextMeshProUGUI purpleMineralUpgradeMaterialText;
+    [SerializeField] private TextMeshProUGUI airFilterUpgradeMaterialText;
+    [SerializeField] private TextMeshProUGUI redMineralUpgradeMaterialText;
     [FormerlySerializedAs("buyAbilityButton")] [SerializeField] private Button buyUpgradeButton;
 
     private void Awake()
@@ -55,9 +56,9 @@ public class UpgradeShop : MonoBehaviour
         detailsView.SetActive(true);
         upgradeName.text = upgrade.name;
         upgradeDescription.text = upgrade.description;
-        upgradeMaterial3CostText.text = upgrade.material3Cost.ToString();
-        upgradeMaterial1CostText.text = upgrade.material1Cost.ToString();
-        upgradeMaterial2CostText.text = upgrade.material2Cost.ToString();
+        purpleMineralUpgradeMaterialText.text = upgrade.purpleMineralCost.ToString();
+        airFilterUpgradeMaterialText.text = upgrade.airFilterCost.ToString();
+        redMineralUpgradeMaterialText.text = upgrade.redMineralCost.ToString();
         buyUpgradeButton.gameObject.SetActive(!isUnlocked);
         if (!isUnlocked)
         {
@@ -68,14 +69,33 @@ public class UpgradeShop : MonoBehaviour
 
     private void BuyUpgradeButton()
     {
-        //if(has resources){} 
-        /*
-         *
-         *   if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
-                    PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
-         */
-        PlayerPrefs.SetInt("UpgradeUnlocked_" + currentUpgradeSelected.upgradeID, 1);
-        buyUpgradeButton.gameObject.SetActive(false);
+        if (TrainManager.Instance.resourceAirFilter >= currentUpgradeSelected.airFilterCost)
+        {
+            bool haveRedMineral =
+                TrainBaseInventory.Instance.GetIfItemIsInInventory(currentUpgradeSelected.redMineralItem,
+                    currentUpgradeSelected.redMineralCost);
+            bool havePurpleMineral =
+                TrainBaseInventory.Instance.GetIfItemIsInInventory(currentUpgradeSelected.purpleMineralItem,
+                    currentUpgradeSelected.purpleMineralCost);
+            if (haveRedMineral && havePurpleMineral)
+            {
+                TrainManager.Instance.resourceAirFilter -= currentUpgradeSelected.airFilterCost;
+                TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(currentUpgradeSelected.redMineralItem, currentUpgradeSelected.redMineralCost);
+                TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(currentUpgradeSelected.purpleMineralItem, currentUpgradeSelected.purpleMineralCost);
+                PlayerPrefs.SetInt("UpgradeUnlocked_" + currentUpgradeSelected.upgradeID, 1);
+                currentUpgradePanelSelected.SetIsUnlocked(true);
+                buyUpgradeButton.gameObject.SetActive(false); 
+                currentUpgradePanelSelected.HideBlackPanel();
+            }
+            else
+            {
+               buyUpgradeButton.gameObject.GetComponent<Animator>().SetTrigger("Shake"); 
+            }
+        }
+        else
+        {
+                buyUpgradeButton.gameObject.GetComponent<Animator>().SetTrigger("Shake"); 
+        }
     }
     
     private void OnDisable()

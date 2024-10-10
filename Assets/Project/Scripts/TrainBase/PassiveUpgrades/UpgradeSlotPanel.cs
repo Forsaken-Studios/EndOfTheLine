@@ -75,4 +75,9 @@ public class UpgradeSlotPanel : MonoBehaviour, IPointerEnterHandler, IPointerExi
     {
         this.isSelected = aux;
     }
+
+    public void SetIsUnlocked(bool aux)
+    {
+        this.unlocked = aux;
+    }
 }

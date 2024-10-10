@@ -92,7 +92,10 @@ public abstract class IPlayer_Bar : MonoBehaviour
     {
         StopAllCoroutines();
         //StopCoroutine(DecreaseStaminaOverTime());
-        StartCoroutine(IncreaseEnergyOnTime());
+        if (gameObject.activeSelf)
+        {
+            StartCoroutine(IncreaseEnergyOnTime());  
+        }
         canRecoverEnergy = true;
     }
     
