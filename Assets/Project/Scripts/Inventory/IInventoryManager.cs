@@ -14,7 +14,7 @@ public abstract class IInventoryManager : MonoBehaviour
     [SerializeField] protected GameObject rightClickInterfacePrefab;
     protected GameObject currentRightClickInterface; 
     protected List<GameObject> inspectListViewList;
-    [SerializeField] private GameObject canvasInventory;
+
     [SerializeField]private List<ItemSlot> expanded1ItemSlotsList;
     [SerializeField]private List<ItemSlot> expanded2ItemSlotsList;
     [SerializeField]private List<ItemSlot> expanded3ItemSlotsList;
@@ -288,8 +288,4 @@ public abstract class IInventoryManager : MonoBehaviour
             return itemSlotList;
         }
 
-        public GameObject GetInventoryCanvas()
-        {
-            return canvasInventory;
-        }
 }

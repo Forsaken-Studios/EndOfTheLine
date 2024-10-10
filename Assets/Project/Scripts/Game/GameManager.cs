@@ -15,20 +15,18 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance;
     
-    [FormerlySerializedAs("blackFadendGamePanel")]
-    [FormerlySerializedAs("blackFade")]
     [Header("End game")]
-    [SerializeField] private GameObject blackFadeEndGamePanel;
+    private GameObject blackFadeEndGamePanel;
 
     [FormerlySerializedAs("inspectItemCanvas")]
     [Header("Canvas Helper")]
     [Tooltip("We use this reference, to link inspect item to this parent")]
     [SerializeField] private GameObject CanvasMenus; 
     
-    
     private string trainSceneName = "TrainBase";
-    [SerializeField]private Collider2D wallCollider; 
-    [SerializeField]private Collider2D floorCollider;
+    [SerializeField] private GameObject gridMain;
+    private Collider2D wallCollider; 
+    private Collider2D floorCollider;
 
     private bool holder1Activated = false;
     private bool holder2Activated = false;
@@ -56,10 +54,22 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        GetReferences();
         GameState = GameState.OnGame;
-        blackFadeEndGamePanel.SetActive(false);
+        
     }
-    
+
+    private void GetReferences()
+    {
+        if (SceneManager.GetActiveScene().name != trainSceneName)
+        {
+            wallCollider = gridMain.transform.Find("Walls").GetComponent<Collider2D>();
+            floorCollider = gridMain.transform.Find("Floor").GetComponent<Collider2D>();
+            blackFadeEndGamePanel = CanvasMenus.gameObject.transform.Find("Black Fade End Game Panel").gameObject;
+            blackFadeEndGamePanel.SetActive(false);
+        }
+    }
+
     private IEnumerator EndGameCorroutine()
     {
         while (true)
@@ -167,5 +177,10 @@ public class GameManager : MonoBehaviour
     public bool GetHolder2Status()
     {
         return holder2Activated;
+    }
+
+    public GameObject GetMenuCanvas()
+    {
+        return CanvasMenus;
     }
 }

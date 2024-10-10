@@ -6,21 +6,55 @@ using Inventory;
 using Loot;
 using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils.CustomLogs;
+
+public enum LootSpriteType
+{
+    Looted, NotLooted, Empty
+}
+
+public enum LootSpriteContainer
+{
+    Crate, Chest
+}
+
 
 public class LootUIManager : MonoBehaviour
 {
     public static LootUIManager Instance;
 
     [SerializeField] private KeyCode lootAllKey;
+    [SerializeField] private GameObject canvasInventory; 
+    private GameObject lootUIPanel;
+    private GameObject splittingView;
     
-    [SerializeField] private GameObject lootUIPanel;
+    
     private List<ItemSlot> itemsSlotsList;
     private LooteableObject currentCrateLooting;
     private bool getIfCrateIsOpened;
     private float distanceNeededToClosePanel = 2f;
-    [SerializeField] private GameObject splittingView;
     [SerializeField] private GameObject hotkeyPrefab;
+
+    [FormerlySerializedAs("CRATE_NO_ITEMS_SPRITE")]
+    [Header("Sprites Properties")] 
+    [SerializeField] private Sprite CRATE_EMPTY_SPRITE;
+    public Sprite CrateEmptySprite { get { return CRATE_EMPTY_SPRITE; } }
+    [SerializeField] private Sprite CRATE_LOOTED_SPRITE; 
+    public Sprite CrateLootedSprite { get { return CRATE_LOOTED_SPRITE; } }
+    [HideInInspector]
+    [SerializeField] private Sprite CRATE_NOT_LOOTED_ITEMS_SPRITE;
+    public Sprite CrateNotLootedItemsSprite { get { return CRATE_NOT_LOOTED_ITEMS_SPRITE; } }
+    
+    [Space(10)]
+    [SerializeField] private Sprite CHEST_EMPTY_SPRITE;
+    public Sprite ChestEmptySprite { get { return CHEST_EMPTY_SPRITE; } }
+    [SerializeField] private Sprite CHEST_LOOTED_SPRITE;
+    public Sprite ChestLootedSprite { get { return CHEST_LOOTED_SPRITE; } }
+    [HideInInspector]
+    [SerializeField] private Sprite CHEST_NOT_LOOTED_SPRITE; 
+    public Sprite ChestNotLootedSprite { get { return CHEST_NOT_LOOTED_SPRITE; } }
+    
     private void Awake()
     {
         if (Instance != null)
@@ -31,6 +65,7 @@ public class LootUIManager : MonoBehaviour
         }
 
         Instance = this;
+        GetReferences();
     }
 
     private void Start()
@@ -38,6 +73,13 @@ public class LootUIManager : MonoBehaviour
         itemsSlotsList = new List<ItemSlot>();
         itemsSlotsList = lootUIPanel.GetComponentsInChildren<ItemSlot>().ToList();
         lootUIPanel.SetActive(false);
+     
+    }
+
+    private void GetReferences()
+    {
+        lootUIPanel = canvasInventory.transform.Find("Loot UI Panel").gameObject;
+        splittingView = canvasInventory.transform.Find("Splitting View").gameObject;
     }
 
     private void Update()
@@ -88,8 +130,59 @@ public class LootUIManager : MonoBehaviour
             itemSlot.ClearItemSlot();
         } 
     }
-    
-    
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="status">1 - Full items (not looted) | 1 - Mid items | 3 - No items</param>
+    /// <returns></returns>
+    public Sprite GetLootSprite(LootSpriteContainer id, LootSpriteType status)
+    {
+        switch (id)
+        {
+            case LootSpriteContainer.Crate:
+                return GetCrateSprite(status);
+                break;
+            case LootSpriteContainer.Chest:
+                return GetChestSprite(status);
+                break;
+        }
+
+        return CHEST_NOT_LOOTED_SPRITE;
+    }
+    /// <param name="status">1 - Full items (not looted) | 1 - Mid items | 3 - No items</param>
+    private Sprite GetChestSprite(LootSpriteType status)
+    {
+        switch (status)
+        {
+            case LootSpriteType.NotLooted:
+                return CHEST_NOT_LOOTED_SPRITE;
+            case LootSpriteType.Looted:
+                return CHEST_LOOTED_SPRITE;
+            case LootSpriteType.Empty:
+                return CHEST_EMPTY_SPRITE;
+        }
+
+        return CHEST_NOT_LOOTED_SPRITE;
+    }
+
+    private Sprite GetCrateSprite(LootSpriteType status)
+    {
+        switch (status)
+        {
+            case LootSpriteType.NotLooted:
+                return CRATE_NOT_LOOTED_ITEMS_SPRITE;
+            case LootSpriteType.Looted:
+                return CRATE_LOOTED_SPRITE;
+            case LootSpriteType.Empty:
+                return CRATE_EMPTY_SPRITE;
+        }
+
+        return CRATE_NOT_LOOTED_ITEMS_SPRITE;
+    }
+
+
     public void ActivateLootUIPanel()
     {
         SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenCrate);

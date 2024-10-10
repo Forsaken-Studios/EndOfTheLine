@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AStar : MonoBehaviour
 {
@@ -32,7 +33,8 @@ public class AStar : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mat = GetComponent<Renderer>().material;
+        //mat = GetComponent<Renderer>().material;
+        mat = GetComponent<Image>().material;
         map = Map.MapInstance;
         path = new List<MapNode>();
     }
@@ -153,11 +155,6 @@ public class AStar : MonoBehaviour
             }
             runPathfinding = false;
         }
-        
-        
-        
-        
-        
         if (loadNewPath)
         {
             currentCursorLocation = expDecay(currentCursorLocation, path[currentPathIndex].Location,
@@ -174,5 +171,23 @@ public class AStar : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void SetCoordinates(int start, int finish)
+    {
+        if (start > 0 && start <= 23 && finish > 0 && finish <= 23 && start != finish) 
+        {
+            StartStation = start;
+            EndStation = finish;
+        }
+        else
+        {
+            Debug.LogError("[AStar.cs] : VALUES NOT VALID");
+        }
+    }
+
+    public void RunPath()
+    {
+        runPathfinding = true;
     }
 }

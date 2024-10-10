@@ -10,10 +10,10 @@ namespace Extraction
     {
         public static ExtractionManager Instance;
 
-        [Tooltip("GameObject with the text to make the animation")] [SerializeField]
+        [Tooltip("GameObject with the text to make the animation")]
         private GameObject currentTimeLeftToExtractGameObject;
 
-        [SerializeField] private GameObject ExtractionTimeLeftToArrive;
+        private GameObject extractionTimeLeftToArrive;
         private Animator extractionAnimator;
         private bool playerInExtractionPoint = false;
 
@@ -28,10 +28,21 @@ namespace Extraction
             }
 
             Instance = this;
+       
         }
 
-        void Start()
+        private void Start()
         {
+            GetReferences();
+        }
+
+        private void GetReferences()
+        {
+            Debug.LogWarning(GameManager.Instance.GetMenuCanvas());
+            currentTimeLeftToExtractGameObject =
+                GameManager.Instance.GetMenuCanvas().transform.Find("Extraction/CurrentTimeLeftToExtractGameObject").gameObject;
+            extractionTimeLeftToArrive =
+                GameManager.Instance.GetMenuCanvas().transform.Find("Extraction/ExtractionTimeLeftToArrive").gameObject;
             extractionAnimator = currentTimeLeftToExtractGameObject.GetComponent<Animator>();
         }
 
@@ -47,7 +58,7 @@ namespace Extraction
 
         public void StartExtractionArriveCountdown()
         {
-            ExtractionTimeLeftToArrive.SetActive(true);
+            extractionTimeLeftToArrive.SetActive(true);
         }
 
 

@@ -13,7 +13,6 @@ namespace Inventory
 
     public class InventoryManager : IInventoryManager
     {
-
         public static InventoryManager Instance;
 
         [Header("Inventory Panels")]
@@ -29,7 +28,6 @@ namespace Inventory
                 return;
             }
             Instance = this;
-
         }
         
         public override void Start()

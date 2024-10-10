@@ -6,6 +6,7 @@ using Inventory;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Internal;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utils.CustomLogs;
 using Object = System.Object;
@@ -28,8 +29,11 @@ namespace Loot
     
     public class LooteableObject : MonoBehaviour
     {
+        [SerializeField] private LootSpriteContainer chestType;
+        private SpriteRenderer chestSprite;
         private GameObject currentHotkeyGameObject;
         private Dictionary<Item, int> itemsInLootableObject;
+        private bool chestOpened = false;
         [SerializeField] private bool onlyOneItemInBag;
         [SerializeField] private bool needToSpawnXObject;
         [SerializeField] private List<string> itemsToSpawn;
@@ -54,6 +58,7 @@ namespace Loot
 
         private void Awake()
         {
+            chestSprite = GetComponent<SpriteRenderer>();
             itemsInLootableObject = new Dictionary<Item, int>();
             itemsNeededToSpawn = new List<Item>();
             intervalList = new List<ItemInterval>();
@@ -98,17 +103,29 @@ namespace Loot
             {
                 LootUIManager.Instance.DesactivateLootUIPanel();
                 InventoryManager.Instance.DesactivateInventory();
-                //looteableObjectUI.DesactivateLooteablePanel(); 
+                SetSpriteToEmptyCrate();
             }
             else
             {
                 //We load objects to this panel
+                HandleCrateSprite();
                 LootUIManager.Instance.SetPropertiesAndLoadPanel(this, itemsInLootableObject);
                 InventoryManager.Instance.ActivateInventory();
-                //looteableObjectUI.ActivateLooteablePanel();
             }
         }
-        
+
+        private void HandleCrateSprite()
+        {
+            if (itemsInLootableObject.Count > 0)
+            {
+                this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Looted);
+            }
+            else
+            {
+                this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Empty);
+            }
+        }
+
         public void ClearLooteableObject()
         {
             itemsInLootableObject = new Dictionary<Item, int>();
@@ -273,7 +290,11 @@ namespace Loot
             {
                 itemsInLootableObject.Add(items.Key, items.Value);
             }
-            
+
+            if (recoverItems.Count == 0)
+            {
+                this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Empty);
+            }
             //Text to indicate we take X Item
             PlayerInventory.Instance.ShowFullListItemTaken(itemsTaken);
             InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
@@ -285,6 +306,14 @@ namespace Loot
                 InventoryManager.Instance.DesactivateInventory();
                 LootUIManager.Instance.DesactivateLootUIPanel();
             }
+        }
+
+        public void SetSpriteToEmptyCrate()
+        {
+            if (itemsInLootableObject.Count == 0)
+            {
+                this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Empty);
+            }   
         }
         
         public void AddItemToList(Item item, int amount)

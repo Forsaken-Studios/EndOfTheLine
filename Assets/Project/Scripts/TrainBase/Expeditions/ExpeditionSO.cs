@@ -14,6 +14,7 @@ public class ExpeditionSO : ScriptableObject
     public Sprite expeditionImage;
     public string stationDifficulty;
 
+
     public List<Mission> missionAvailableInStation;
 }
 

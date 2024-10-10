@@ -11,7 +11,7 @@ public class TrainInventoryManager : IInventoryManager
     public static TrainInventoryManager Instance;
     
     private int numberOfTools = -1;
-
+    [SerializeField] private GameObject canvasInventory;
     [SerializeField] private TextMeshProUGUI textSwap;
     private void Awake()
     {
@@ -186,5 +186,10 @@ public class TrainInventoryManager : IInventoryManager
         {
             TryAddInventoryToItemSlot(itemPair.Key, itemPair.Value, out int remainingItems);
         }
+    }
+
+    public GameObject GetInventoryCanvas()
+    {
+        return canvasInventory;
     }
 }

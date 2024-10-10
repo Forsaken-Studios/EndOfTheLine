@@ -275,7 +275,7 @@ GameObject:
   - component: {fileID: 197131094}
   - component: {fileID: 197131095}
   m_Layer: 0
-  m_Name: SoundManager - OK
+  m_Name: 'SoundManager '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -351,12 +351,8 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2063421616}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2162835138503930875, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-      propertyPath: m_Name
-      value: Extraction Time Left To Arrive
-      objectReference: {fileID: 0}
     - target: {fileID: 5137646165596677547, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
       propertyPath: m_Name
       value: Canvas-Menus
@@ -449,26 +445,6 @@ PrefabInstance:
 --- !u!1 &364956468 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5137646165596677547, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-  m_PrefabInstance: {fileID: 364956467}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &364956469 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2635698698523842983, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-  m_PrefabInstance: {fileID: 364956467}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &364956470 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2162835138503930875, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-  m_PrefabInstance: {fileID: 364956467}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &364956471 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4232630046215510665, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-  m_PrefabInstance: {fileID: 364956467}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &364956475 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8755133958033455184, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
   m_PrefabInstance: {fileID: 364956467}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &373698101
@@ -1211,7 +1187,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2063421616}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 558238898691084635, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
       propertyPath: m_Pivot.x
@@ -2622,11 +2598,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
---- !u!1 &468725510 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4121925874714304663, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
-  m_PrefabInstance: {fileID: 468725508}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &468725511 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7339121011308282292, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
@@ -3036,11 +3007,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1437970354773814909, guid: 28ec060541cfd76409eb05d0e993401c, type: 3}
   m_PrefabInstance: {fileID: 608504510}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &671653294 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5730875023224870802, guid: f60280cfb481e524daff7ff0a5230a06, type: 3}
-  m_PrefabInstance: {fileID: 1561093581}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705165340 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7794864627038229728, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
@@ -3091,8 +3057,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b247f8c056e5248abbfbf1052006bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTimeLeftToExtractGameObject: {fileID: 364956469}
-  ExtractionTimeLeftToArrive: {fileID: 364956470}
 --- !u!114 &759782270 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 313531821554542351, guid: f60280cfb481e524daff7ff0a5230a06, type: 3}
@@ -8671,7 +8635,6 @@ MonoBehaviour:
   - {fileID: 49410375}
   - {fileID: 267713717}
   rightClickInterfacePrefab: {fileID: 4792720288501569853, guid: 577036473e1ad03449e6e50119b00e82, type: 3}
-  canvasInventory: {fileID: 0}
   expanded1ItemSlotsList:
   - {fileID: 1621468093}
   - {fileID: 1699217461}
@@ -9358,11 +9321,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2890156330106389251, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
   m_PrefabInstance: {fileID: 468725508}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &992546930 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1319950355829231934, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
-  m_PrefabInstance: {fileID: 468725508}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1018885688
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9453,7 +9411,7 @@ GameObject:
   - component: {fileID: 1040317357}
   - component: {fileID: 1040317358}
   m_Layer: 0
-  m_Name: SfcSource
+  m_Name: SfxSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22482,7 +22440,7 @@ GameObject:
   - component: {fileID: 1372429558}
   - component: {fileID: 1372429559}
   m_Layer: 0
-  m_Name: LogManager - OK
+  m_Name: LogManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24946,7 +24904,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2063421616}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 833283696943681689, guid: f60280cfb481e524daff7ff0a5230a06, type: 3}
       propertyPath: holder1
@@ -25456,7 +25414,7 @@ GameObject:
   - component: {fileID: 1621149657}
   - component: {fileID: 1621149656}
   m_Layer: 0
-  m_Name: GameManager - OK
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25519,10 +25477,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b1a29b599bb09e499ac93cd473628ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blackFadeEndGamePanel: {fileID: 364956471}
   CanvasMenus: {fileID: 364956468}
-  wallCollider: {fileID: 1213088788}
-  floorCollider: {fileID: 784146522}
+  gridMain: {fileID: 775963514}
   MAX_AMOUNT_PER_SLOT_BASE: 4
   MAX_AMOUNT_PER_SLOT_GAME: 3
 --- !u!114 &1621468093 stripped
@@ -25773,7 +25729,7 @@ GameObject:
   - component: {fileID: 1735921559}
   - component: {fileID: 1735921560}
   m_Layer: 0
-  m_Name: LoreManager - OK
+  m_Name: LoreManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25904,7 +25860,7 @@ GameObject:
   - component: {fileID: 1829886203}
   - component: {fileID: 1829886202}
   m_Layer: 0
-  m_Name: LootUIManager - OK
+  m_Name: 'LootUIManager '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25923,9 +25879,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lootAllKey: 116
-  lootUIPanel: {fileID: 468725510}
-  splittingView: {fileID: 992546930}
+  canvasInventory: {fileID: 1865595616}
   hotkeyPrefab: {fileID: 4138725030148504204, guid: cc3ace6a017cf08488005d28b190cc1c, type: 3}
+  CRATE_EMPTY_SPRITE: {fileID: 21300000, guid: bbb80c595765e1144aae2a77dc01e347, type: 3}
+  CRATE_LOOTED_SPRITE: {fileID: 21300000, guid: bbb80c595765e1144aae2a77dc01e347, type: 3}
+  CRATE_NOT_LOOTED_ITEMS_SPRITE: {fileID: 21300000, guid: bbb80c595765e1144aae2a77dc01e347, type: 3}
+  CHEST_EMPTY_SPRITE: {fileID: 21300000, guid: f0e5bb07796f61d42ab553aa63a69c6a, type: 3}
+  CHEST_LOOTED_SPRITE: {fileID: 21300000, guid: f0e5bb07796f61d42ab553aa63a69c6a, type: 3}
+  CHEST_NOT_LOOTED_SPRITE: {fileID: 0}
 --- !u!4 &1829886203
 Transform:
   m_ObjectHideFlags: 0
@@ -26003,6 +25964,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6147418024775122178, guid: 348266d5e3e461c45a6a21f0628ac71d, type: 3}
   m_PrefabInstance: {fileID: 1853515128}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1865595616 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8557323131348907406, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
+  m_PrefabInstance: {fileID: 468725508}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1876570030 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5856568240465944384, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
@@ -26014,11 +25980,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b939e488252b294fa0ac55e93edffde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &1887406187 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 558238898691084635, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
-  m_PrefabInstance: {fileID: 468725508}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1894111225 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5097927597395517727, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
@@ -26330,40 +26291,6 @@ Transform:
   - {fileID: 1206508237}
   m_Father: {fileID: 453304370}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2063421615
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2063421616}
-  m_Layer: 0
-  m_Name: Canvas
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2063421616
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2063421615}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 364956475}
-  - {fileID: 1887406187}
-  - {fileID: 671653294}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2098928098 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9142719316100293497, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
@@ -26442,7 +26369,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 456892930}
   - {fileID: 2023843035}
-  - {fileID: 2063421616}
+  - {fileID: 364956467}
+  - {fileID: 468725508}
+  - {fileID: 1561093581}
   - {fileID: 775963516}
   - {fileID: 1608956574}
   - {fileID: 801568187}
