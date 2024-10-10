@@ -17,7 +17,8 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
     private Sprite emptySprite;
     [SerializeField] private Image itemSlotImage;
     private TextMeshProUGUI amountText;
-
+    [SerializeField] private GameObject priceGameObject;
+    private int price;
 
     private void OnEnable()
     {
@@ -54,6 +55,12 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
         this.itemSlotImage.sprite = itemSO.itemIcon;
         this.amountText.text = "";
         this.amount = amount;
+    
+        priceGameObject.gameObject.SetActive(true);
+        price = itemSO.itemPriceAtMarket;
+        priceGameObject.GetComponentInChildren<TextMeshProUGUI>().text = price.ToString();
+   
+
     }
     
     public string GetItemName()
@@ -85,5 +92,10 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
     public int GetSlotAmount()
     {
         return amount;
+    }
+
+    public int GetPrice()
+    {
+        return price;
     }
 }

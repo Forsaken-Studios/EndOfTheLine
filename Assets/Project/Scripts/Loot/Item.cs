@@ -11,6 +11,7 @@ public class Item : ScriptableObject
     public Sprite itemIcon;
     public ItemType ItemType;
     public int itemValue;
+    public int itemPriceAtMarket;
     public float itemWeight;
     public string itemName;
     public float itemSpawnChance;

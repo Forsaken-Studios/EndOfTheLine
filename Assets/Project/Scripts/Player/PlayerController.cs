@@ -84,7 +84,6 @@ namespace Player
                         PlayerStamina.Instance.SetCanRecoveryEnergy(false);
                         return;
                     }
-
                     HandleMovementInputs();
                 }
                 else
@@ -94,11 +93,18 @@ namespace Player
                     {
                         _animator.SetBool("running", false);
                     }
-
                     speedX = 0;
                     speedY = 0;
+                    moveSpeed = 0;
                 }
             }
+            else
+            {
+                speedX = 0;
+                speedY = 0;
+                moveSpeed = 0;
+            }
+           
         }
 
         void FixedUpdate()
@@ -145,8 +151,6 @@ namespace Player
                 moveSpeed = 0;
                 _animator.SetBool("running", false);
             }
-                
-            
            // _animator.SetInteger("SpeedInt", (int)speedX);
         }
 

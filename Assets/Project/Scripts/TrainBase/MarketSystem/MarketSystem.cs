@@ -126,8 +126,6 @@ public class MarketSystem : MonoBehaviour
         itemsInMarket.Clear();
         Item[] allItems = UnityEngine.Resources.LoadAll<Item>("Items/Market");
         List<Item> itemsToSpawn = allItems.ToList();
-        
-        //TODO: Dependiendo de lo que queramos, aparecerán X Objetos, por ahora vamos a poner 3 o 4
         float numberOfItemsToBuy = UnityEngine.Random.Range(2 ,3);
 
         for (int i = 0; i < numberOfItemsToBuy; i++)
@@ -171,27 +169,29 @@ public class MarketSystem : MonoBehaviour
     {
         if (itemSelected != null)
         {
-            Debug.Log("WE CAN BUY ITEM: " + itemSelected.GetItemName());
-            if (itemSelected.GetSlotAmount() == 1)
+            if (TrainManager.Instance.resourceAirFilter >= itemSelected.GetItemSO().itemPriceAtMarket)
             {
-                if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemSelected.GetItemSO(), 1,
-                        out int remainingItemsWithoutSpace))
+                if (itemSelected.GetSlotAmount() == 1) //por ahora siempre es 1
                 {
-                    //TODO: Spend Money
-                    RemoveItemFromList(itemSelected.GetItemSO(), 1);
-                    itemSelected.ClearMarketSlot();
-                    SaveManager.Instance.SaveCurrentDayStoreJson();
+                    if (TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemSelected.GetItemSO(), 1,
+                            out int remainingItemsWithoutSpace))
+                    {
+                        //TODO: Spend Money
+                        TrainManager.Instance.resourceAirFilter -= itemSelected.GetItemSO().itemPriceAtMarket;
+                        RemoveItemFromList(itemSelected.GetItemSO(), 1);
+                        itemSelected.ClearMarketSlot();
+                        SaveManager.Instance.SaveCurrentDayStoreJson();
+                    }
+                    else
+                    {
+                        Debug.Log("NO SPACE FOR ITEM");
+                    }
                 }
                 else
                 {
-                    Debug.Log("NO SPACE FOR ITEM");
+                    ActivateAmountSelector(this.itemSelected.GetSlotAmount());
                 }
             }
-            else
-            {
-                ActivateAmountSelector(this.itemSelected.GetSlotAmount());
-            }
-           
         }
     }
     
