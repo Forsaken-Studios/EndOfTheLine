@@ -26,6 +26,10 @@ public class NewExpeditionManager : MonoBehaviour
      private List<Button> missionsButtons;
      private MissionStatSO currentMissionSelected;
      [SerializeField] private Button startExpeditionButton;
+     [SerializeField] private AStar aStarScript;
+     private int lastExpeditionID = 1;
+     private int currentExpeditionID;
+     
      private void Awake()
      {
          if (Instance != null)
@@ -123,8 +127,26 @@ public class NewExpeditionManager : MonoBehaviour
 
      public void ActivateDetailsView(MissionStatSO mission, MissionPanel missionPanel)
      {
+         if (currentMissionSelected != null)
+         {
+             lastExpeditionID = currentMissionSelected.expeditionMapID;
+         }
+         currentExpeditionID = mission.expeditionMapID;
          detailsView.GetComponent<ExpeditionDetailsPreview>().SetUpProperties(mission, missionPanel);
+         currentMissionSelected = mission;
          detailsView.SetActive(true);
+         aStarScript.SetCoordinates(lastExpeditionID, currentExpeditionID);
+         aStarScript.RunPath();
          messageText.gameObject.SetActive(false);
+     }
+
+
+     public int GetLastExpeditionID()
+     {
+         return lastExpeditionID;
+     }
+     public int GetCurrentExpeditionID()
+     {
+         return currentExpeditionID;
      }
 }

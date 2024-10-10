@@ -25,13 +25,15 @@ public class LootUIManager : MonoBehaviour
     public static LootUIManager Instance;
 
     [SerializeField] private KeyCode lootAllKey;
+    [SerializeField] private GameObject canvasInventory; 
+    private GameObject lootUIPanel;
+    private GameObject splittingView;
     
-    [SerializeField] private GameObject lootUIPanel;
+    
     private List<ItemSlot> itemsSlotsList;
     private LooteableObject currentCrateLooting;
     private bool getIfCrateIsOpened;
     private float distanceNeededToClosePanel = 2f;
-    [SerializeField] private GameObject splittingView;
     [SerializeField] private GameObject hotkeyPrefab;
 
     [FormerlySerializedAs("CRATE_NO_ITEMS_SPRITE")]
@@ -63,6 +65,7 @@ public class LootUIManager : MonoBehaviour
         }
 
         Instance = this;
+        GetReferences();
     }
 
     private void Start()
@@ -70,6 +73,13 @@ public class LootUIManager : MonoBehaviour
         itemsSlotsList = new List<ItemSlot>();
         itemsSlotsList = lootUIPanel.GetComponentsInChildren<ItemSlot>().ToList();
         lootUIPanel.SetActive(false);
+     
+    }
+
+    private void GetReferences()
+    {
+        lootUIPanel = canvasInventory.transform.Find("Loot UI Panel").gameObject;
+        splittingView = canvasInventory.transform.Find("Splitting View").gameObject;
     }
 
     private void Update()
