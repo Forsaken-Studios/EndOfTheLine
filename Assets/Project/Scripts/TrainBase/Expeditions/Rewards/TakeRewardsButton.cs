@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using LootSystem;
+using SaveManagerNamespace;
 using UnityEngine;
 using UnityEngine.UI;
 

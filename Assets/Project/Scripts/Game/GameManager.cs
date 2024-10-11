@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Extraction;
 using Inventory;
+using SaveManagerNamespace;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,8 +22,7 @@ public class GameManager : MonoBehaviour
     [FormerlySerializedAs("inspectItemCanvas")]
     [Header("Canvas Helper")]
     [Tooltip("We use this reference, to link inspect item to this parent")]
-    [SerializeField] private GameObject CanvasMenus; 
-    
+    [SerializeField] private GameObject CanvasMenus;
     private string trainSceneName = "TrainBase";
     [SerializeField] private GameObject gridMain;
     private Collider2D wallCollider; 
@@ -94,14 +94,17 @@ public class GameManager : MonoBehaviour
         ExtractionManager.Instance.SetIfExtractionArrived(false);
     }
     
-    public void EndGame()
+    public void EndGame(bool died=true)
     {
         //Sell scrap Items && Save items for train base
-        PlayerInventory.Instance.HandleItemsAtEndGame();
-        PlayerInventory.Instance.RemoveCoinFromInventory();
-        SaveManager.Instance.SavePlayerInventoryJson();
+        if (!died)
+        {
+            PlayerInventory.Instance.HandleItemsAtEndGame();
+            PlayerInventory.Instance.RemoveCoinFromInventory();
+            SaveManager.Instance.SavePlayerInventoryJson();
+        }
+
         //Add one more day to game
-        
         int currentDay = PlayerPrefs.GetInt("CurrentDay");
         PlayerPrefs.SetInt("PreviousDay", currentDay);
         PlayerPrefs.SetInt("CurrentDay", currentDay + 1);

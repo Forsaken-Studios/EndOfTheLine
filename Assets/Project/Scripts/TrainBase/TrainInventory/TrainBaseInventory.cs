@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Inventory;
+using LootSystem;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -227,7 +228,7 @@ public class TrainBaseInventory : MonoBehaviour
     return true;
     }
 
-    public void DeleteItemsFromItemSlot(Item item, int amount)
+    public void FindAndDeleteItemsFromItemSlot(Item item, int amount)
     {
         int remainingAmount = amount; 
         foreach (var itemSlot in itemsSlotsList)

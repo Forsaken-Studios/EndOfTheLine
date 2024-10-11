@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using LootSystem;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -39,7 +40,7 @@ public class StartTradeButton : MonoBehaviour
                     foreach (var requirement in itemTrade.requirements)
                     {
                         TrainBaseInventory.Instance.DeleteItemFromList(requirement.requirement.item, requirement.requirement.amountNeeded);
-                        TrainBaseInventory.Instance.DeleteItemsFromItemSlot(requirement.requirement.item, requirement.requirement.amountNeeded);
+                        TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(requirement.requirement.item, requirement.requirement.amountNeeded);
                     }
                     tradeButton.interactable = false;
                     tradeButton.GetComponentInChildren<TextMeshProUGUI>().text = "NO STOCK";

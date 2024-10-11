@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Inventory;
+using LootSystem;
+using SaveManagerNamespace;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -36,13 +38,18 @@ public class TrainInventoryManager : IInventoryManager
     
     private void Update()
     {
-        if (TrainManager.Instance.ValidStatusToOpenInventory() &&  TrainManager.Instance.TrainStatus != TrainStatus.onMarketScreen)
+        if (TrainManager.Instance.ValidStatusToOpenInventory() && !WagonScreen())
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 ReverseInventoryStatus();
             }
         }
+    }
+
+    private bool WagonScreen()
+    {
+        return TrainManager.Instance.canvasActivated;
     }
 
     public void OpenInventoryStatusToSell()
@@ -137,12 +144,33 @@ public class TrainInventoryManager : IInventoryManager
     {
         Dictionary<Item, int> items = new Dictionary<Item, int>();
         List<Item> itemsList = GetItemList();
-            foreach (var item in itemsID)
-            {
-                items.Add(GetItemFromID(item.Key, itemsList), item.Value);
-            }
+        foreach (var item in itemsID)
+        {
+            items.Add(GetItemFromID(item.Key, itemsList), item.Value);
+        }
         return items;
     }
+    public Dictionary<Item, bool> GetItemsFromIDForMarket(Dictionary<int, bool> itemsID)
+    {
+        Dictionary<Item, bool> items = new Dictionary<Item, bool>();
+        List<Item> itemsList = GetItemList();
+        foreach (var item in itemsID)
+        {
+            items.Add(GetItemFromID(item.Key, itemsList), item.Value);
+        }
+        return items;
+    }
+    public Dictionary<Item, bool> GetItemsFromIDWithBooleans(Dictionary<int, bool> itemsID)
+    {
+        Dictionary<Item, bool> items = new Dictionary<Item, bool>();
+        List<Item> itemsList = GetItemList();
+        foreach (var item in itemsID)
+        {
+            items.Add(GetItemFromID(item.Key, itemsList), item.Value);
+        }
+        return items;
+    }
+    
 
     public List<Item> GetItemList()
     {

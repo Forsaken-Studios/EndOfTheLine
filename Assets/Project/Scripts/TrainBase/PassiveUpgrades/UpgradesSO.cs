@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using LootSystem;
 using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Passive Upgrade", order = 1)]
 public class UpgradesSO : ScriptableObject
@@ -10,7 +11,9 @@ public class UpgradesSO : ScriptableObject
     public new string description;
     public Sprite upgradeIcon;
     public int upgradeID;
-    public float material1Cost;
-    public float material2Cost;
-    public float material3Cost;
+    public int airFilterCost;
+    public Item redMineralItem;
+    public int redMineralCost;
+    public Item purpleMineralItem;
+    public int purpleMineralCost;
 }

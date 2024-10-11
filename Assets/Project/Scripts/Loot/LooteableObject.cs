@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
+using LootSystem;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Internal;
@@ -12,7 +13,7 @@ using Utils.CustomLogs;
 using Object = System.Object;
 using Random = UnityEngine.Random;
 
-namespace Loot
+namespace LootSystem
 {
     public class ItemInterval
     {
@@ -34,21 +35,28 @@ namespace Loot
         private GameObject currentHotkeyGameObject;
         private Dictionary<Item, int> itemsInLootableObject;
         private bool chestOpened = false;
+        [Header("Need to spawn an specific item")]
         [SerializeField] private bool onlyOneItemInBag;
         [SerializeField] private bool needToSpawnXObject;
-        [SerializeField] private List<string> itemsToSpawn;
-        private bool isLooting = false;
-        [SerializeField] private float verticalOffset = 0.5f;
+        public bool CheckIfNeedToSpawnXObject
+        {
+            get { return needToSpawnXObject; }
+        }
 
+        public bool AlreadyLoadedWithLoot { get; private set; }
+        [SerializeField] private List<string> itemsToSpawn;
+        private List<Item> itemsNeededToSpawn;
+        private bool isLooting = false;
+        [Header("Hotkey Prefab offset ")]
+        [SerializeField] private float verticalOffset = 0.5f;
         private Dictionary<Item, ItemInterval> itemsIntervalSpawn;
+        private List<ItemInterval> intervalList;
         private bool isTemporalBox = false; 
         /// <summary>
         /// When we need to spawn X Items 100%
         /// </summary>
-        private List<Item> itemsNeededToSpawn;
         [SerializeField] private int maxSlotsInCrate;
-        private List<ItemInterval> intervalList;
-        
+ 
         private bool _isLooteable = false;
         public bool IsLooteable
         {
@@ -187,6 +195,8 @@ namespace Loot
             {
                 PrepareLoot(LootManager.Instance.GetRandomAmount());
             }
+
+            AlreadyLoadedWithLoot = true;
         }
 
         private void PrepareItemsNeededToSpawn(List<string> itemsList)
@@ -297,7 +307,7 @@ namespace Loot
             }
             //Text to indicate we take X Item
             PlayerInventory.Instance.ShowFullListItemTaken(itemsTaken);
-            InventoryManager.Instance.ChangeText(PlayerInventory.Instance.GetInventoryItems());
+            InventoryManager.Instance.ChangeText();
             
             if (isTemporalBox)
             {

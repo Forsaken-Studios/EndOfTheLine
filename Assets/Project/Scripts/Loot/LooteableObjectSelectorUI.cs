@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Loot;
+using LootSystem;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;

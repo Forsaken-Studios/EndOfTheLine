@@ -67,14 +67,14 @@ public class BasicEnemyActions : MonoBehaviour
     {
         if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
         {
-            // Dirección hacia el objetivo
+            // DirecciÃ³n hacia el objetivo
             Vector3 direction = _player.position - transform.position;
-            direction.z = 0; // Asegurarse de que la dirección esté en el plano XY
+            direction.z = 0; // Asegurarse de que la direcciÃ³n estÃ© en el plano XY
 
-            // Calcular el ángulo en el plano XY
+            // Calcular el Ã¡ngulo en el plano XY
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            // Aplicar la rotación solo en el eje Z
+            // Aplicar la rotaciÃ³n solo en el eje Z
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
         else
@@ -85,7 +85,7 @@ public class BasicEnemyActions : MonoBehaviour
             fixedRotation.y = 0;
             transform.rotation = Quaternion.Euler(fixedRotation);
 
-            // Rotar el agente para seguir la dirección del movimiento
+            // Rotar el agente para seguir la direcciÃ³n del movimiento
             if (_agent.velocity != Vector3.zero)
             {
                 float angle = Mathf.Atan2(_agent.velocity.y, _agent.velocity.x) * Mathf.Rad2Deg;

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class TrainPanels : MonoBehaviour
 {
 
+    [Tooltip("Estos son los blackScreen que podemos encontrar en cada vagón GeneralCanvas/Train/Vagon..")]
     [SerializeField] private List<GameObject> trainPanels;
     
     /// <summary>

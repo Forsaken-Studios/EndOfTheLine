@@ -32,7 +32,7 @@ namespace Extraction
                     //End game
                     if (!isEnding)
                     {
-                        GameManager.Instance.EndGame();
+                        GameManager.Instance.EndGame(false);
                         isEnding = true;
                     }
                     

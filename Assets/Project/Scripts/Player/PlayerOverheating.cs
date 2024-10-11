@@ -1,25 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using Player;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerOverheating : IPlayer_Bar
+namespace Player
 {
-            
-    public static PlayerOverheating Instance;
-    private void Awake()
+    public class PlayerOverheating : IPlayer_Bar
     {
-        if (Instance != null)
+            
+        public static PlayerOverheating Instance;
+        private void Awake()
         {
-            Debug.LogWarning("[PlayerStamina.cs] : There is already a PlayerStamina Instance");
-            Destroy(this);
+            if (Instance != null)
+            {
+                Debug.LogWarning("[PlayerStamina.cs] : There is already a PlayerStamina Instance");
+                Destroy(this);
+            }
+
+            Instance = this;
         }
 
-        Instance = this;
-    }
-
-    public override void SetEnergy(float newStamina)
-    {
-        this.energy = Mathf.Clamp(newStamina, 0, MAX_STAMINA);
+        public override void SetEnergy(float newStamina)
+        {
+            this.energy = Mathf.Clamp(newStamina, 0, MAX_STAMINA);
+        }
     }
 }
+

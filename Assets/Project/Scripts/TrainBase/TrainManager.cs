@@ -78,11 +78,9 @@ public class TrainManager : MonoBehaviour
                 OnVariableChange(RESOURCES_AIR_FILTER, 0);
                 PlayerPrefs.SetInt(RESOURCES_AIR_FILTER_NAME, RESOURCES_AIR_FILTER);
             }
-            
-            
         }
     }    
-    private bool canvasActivated
+    public bool canvasActivated
     {
         get { return currentCanvas.activeSelf;  }
     }
@@ -324,6 +322,7 @@ public class TrainManager : MonoBehaviour
         }
     }
 
+    
     public void SetIsShowingWagonBuyUI(bool aux)
     {
         isShowingWagonBuyUI = aux;

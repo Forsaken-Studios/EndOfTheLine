@@ -1,10 +1,5 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Utils.CustomLogs;
-
 namespace Player
 {
 
@@ -19,8 +14,51 @@ namespace Player
         
         private float moveSpeed;
         private float currentSpeedValue;
+        private float speedX, speedY;
+
+        [Header("Weight Properties")]
+        [SerializeField] private int maxLimitWeight = 35;
+        [SerializeField] private int overWeight = 25;
+        [Range(0,1)]
+        [Tooltip("A mas cercano a 0, mayor reducción")]
+        [SerializeField] private float moveReducerByWeight = 0.6f;
+        public bool isOverweight = false;
+        //ID => 0 -> Desactivate | 1 -> Overweight Icon | 2 -> weight Icon | 
+        public delegate void OnWeightChangedDelegate(int id);
+        public event OnWeightChangedDelegate OnWeightChange;
+        private float _currentWeight = 0;
+        public float CurrentWeight
+        {
+            get
+            {
+                return _currentWeight;
+            }
+            set
+            {
+                _currentWeight = value;
+                if (_currentWeight >= overWeight && _currentWeight < maxLimitWeight)
+                {
+                    playerCanMove = true;
+                    isOverweight = true;
+                    if (OnWeightChange != null)
+                        OnWeightChange(1);
+                }else if (_currentWeight >= maxLimitWeight)
+                {
+                    playerCanMove = false;
+                    if (OnWeightChange != null)
+                        OnWeightChange(2);
+                }
+                else
+                {
+                    playerCanMove = true;
+                    isOverweight = false;
+                    if (OnWeightChange != null)
+                        OnWeightChange(0);
+                }
+                
+            }
+        }
         
-        private float speedX, speedY; 
         [Header("Properties")]
         private Rigidbody2D _rb;
         private Animator _animator;
@@ -68,10 +106,36 @@ namespace Player
             _animator = GetComponentInChildren<Animator>();
             currentSpeedValue = walkSpeed;
             playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
+
+            SetWeightProperties();
+        }
+
+        private void SetWeightProperties()
+        {
+            if (PlayerPrefs.GetInt("UpgradeUnlocked_5") == 1)
+            {
+                maxLimitWeight += 7;
+                overWeight += 7;
+            }
+            if (PlayerPrefs.GetInt("UpgradeUnlocked_6") == 1)
+            {
+                maxLimitWeight += 7;
+                overWeight += 7;
+            }
+            if (PlayerPrefs.GetInt("UpgradeUnlocked_7") == 1)
+            {
+                maxLimitWeight += 7;
+                overWeight += 7;
+            }
         }
 
         private void Update()
         {
+            if (!playerCanMove)
+            { 
+                return;
+            }
+
             if (GameManager.Instance.GameState == GameState.OnGame)
             {
                 CalculateNoiseRadius();
@@ -84,7 +148,6 @@ namespace Player
                         PlayerStamina.Instance.SetCanRecoveryEnergy(false);
                         return;
                     }
-
                     HandleMovementInputs();
                 }
                 else
@@ -94,16 +157,22 @@ namespace Player
                     {
                         _animator.SetBool("running", false);
                     }
-
                     speedX = 0;
                     speedY = 0;
+                    moveSpeed = 0;
                 }
+            }
+            else
+            {
+                speedX = 0;
+                speedY = 0;
+                moveSpeed = 0;
             }
         }
 
         void FixedUpdate()
         {
-            if (isDashing)
+            if (isDashing || !playerCanMove)
             {
                 return;
             }
@@ -133,6 +202,13 @@ namespace Player
         {
             speedX = Input.GetAxisRaw("Horizontal");
             speedY = Input.GetAxisRaw("Vertical");
+            if (isOverweight)
+            {
+                speedX *= moveReducerByWeight;
+                speedY *= moveReducerByWeight;
+            }
+            
+
 
             if (speedX != 0 || speedY != 0)
             {
@@ -145,8 +221,6 @@ namespace Player
                 moveSpeed = 0;
                 _animator.SetBool("running", false);
             }
-                
-            
            // _animator.SetInteger("SpeedInt", (int)speedX);
         }
 
@@ -252,6 +326,16 @@ namespace Player
             {
                 return Instance;
             }
+        }
+
+        public int GetMaxWeight()
+        {
+            return maxLimitWeight;
+        }
+
+        public int GetOverweight()
+        {
+            return overWeight;
         }
         
         
