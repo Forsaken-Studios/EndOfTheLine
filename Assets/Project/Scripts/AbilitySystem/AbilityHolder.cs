@@ -50,7 +50,6 @@ public class AbilityHolder : MonoBehaviour
 
     public void TryToCancelAbility()
     {
-        Debug.Log("ID: " + abilityHolderID);
         if (state == AbilityState.preparing)
         {
             Destroy(currentCanvasCreated);

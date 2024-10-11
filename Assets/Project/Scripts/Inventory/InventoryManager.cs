@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Player;
 using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -33,6 +34,7 @@ namespace Inventory
         public override void Start()
         {
             base.Start();
+            ChangeText();
         }
 
         void Update()
@@ -79,10 +81,22 @@ namespace Inventory
             CameraSingleton.CameraSingletonInstance.UnZoomToNormalPosition();
             base.DesactivateInventory();
         }
-        public void ChangeText(Dictionary<Item, int> inventoryItems)
+        public void ChangeText()
         {
-            weightText.text = PlayerInventory.Instance.GetCurrentWeight().ToString("F2") + " / " +
-                              PlayerInventory.Instance.GetMaxWeight() + " KG";
+            weightText.text = PlayerController.Instance.CurrentWeight.ToString("F2") + " / " +
+                              PlayerController.Instance.GetMaxWeight() + " KG";
+            
+            if (PlayerController.Instance.CurrentWeight >= PlayerController.Instance.GetMaxWeight())
+            {
+                weightText.color = Color.red;
+            }else if (PlayerController.Instance.CurrentWeight >= PlayerController.Instance.GetOverweight())
+            {
+                weightText.color = Color.yellow;
+            }
+            else
+            {
+                weightText.color = Color.white;
+            }
         }
         /// <summary>
         /// Methods that finds and set the first available spot for item

@@ -36,13 +36,18 @@ public class TrainInventoryManager : IInventoryManager
     
     private void Update()
     {
-        if (TrainManager.Instance.ValidStatusToOpenInventory() &&  TrainManager.Instance.TrainStatus != TrainStatus.onMarketScreen)
+        if (TrainManager.Instance.ValidStatusToOpenInventory() && !WagonScreen())
         {
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 ReverseInventoryStatus();
             }
         }
+    }
+
+    private bool WagonScreen()
+    {
+        return TrainManager.Instance.canvasActivated;
     }
 
     public void OpenInventoryStatusToSell()

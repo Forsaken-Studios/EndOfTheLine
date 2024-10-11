@@ -37,7 +37,6 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
         {
             blackPanel.SetActive(true);
         }
-        Debug.Log("KW: " + itemSO.itemPriceAtMarket);
         this.alreadyBought = alreadyBought;
         this.itemSO = itemSO;
         this.itemSlotImage.sprite = itemSO.itemIcon;

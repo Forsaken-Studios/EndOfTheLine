@@ -44,13 +44,24 @@ public class LootManager : MonoBehaviour
     private void PrepareLoot()
     {
         int cratesToFill = (int)((totalCratesAmount) - (totalCratesAmount * totalEmptyCratesPercentage));
-        Debug.Log("CRATE: " + cratesToFill);
+        //First we check if we need to spawn an specific item
+        foreach (LooteableObject crate in cratesList)
+        {
+            if (crate.CheckIfNeedToSpawnXObject)
+            {
+                crate.StartSpawingObjects();
+                cratesToFill--;
+            }
+        }
         foreach (LooteableObject crate in cratesList)
         {
             if (cratesToFill != 0)
             {
-                crate.StartSpawingObjects();
-                cratesToFill--;
+                if (!crate.AlreadyLoadedWithLoot)
+                {
+                    crate.StartSpawingObjects();
+                    cratesToFill--;
+                }
             }
         }
     }

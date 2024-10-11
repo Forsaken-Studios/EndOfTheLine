@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Player;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -92,7 +93,13 @@ namespace Inventory
                 {
                     inventoryItemDictionary.Add(item, amount);
                 }  
-                AddWeight(item.itemWeight * amount);
+                
+                //Change Weight
+                if (PlayerController.Instance != null)
+                {
+                    PlayerController.Instance.CurrentWeight += item.itemWeight * amount;
+                }
+               
                 if(showItemsTakenMessage)
                     ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
                 if (remainingItemsWithoutSpace > 0)
@@ -147,10 +154,16 @@ namespace Inventory
                 {
                     inventoryItemDictionary.Add(item, amount);
                 }  
-                AddWeight(item.itemWeight * amount);
+
                 if(showItemsTakenMessage)
                     ShowItemTaken(item.itemName, amount - remainingItemsWithoutSpace);
-                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+
+                //Change Weight
+                if (PlayerController.Instance != null)
+                {
+                    PlayerController.Instance.CurrentWeight += item.itemWeight * amount;
+                }
+                InventoryManager.Instance.ChangeText();
                 if (remainingItemsWithoutSpace > 0)
                     return false;
                 else
@@ -172,11 +185,18 @@ namespace Inventory
             {
                 inventoryItemDictionary.Add(item, amount);
             }
-            AddWeight(item.itemWeight * amount);
-            if(showMessage){}
+
+            if(showMessage)
                 ShowItemTaken(item.itemName, amount);
+            //Change Weight
             if (SceneManager.GetActiveScene().name != "TrainBase")
-                InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+            {
+                 InventoryManager.Instance.ChangeText();
+                 if (PlayerController.Instance != null)
+                 {
+                     PlayerController.Instance.CurrentWeight += item.itemWeight * amount;
+                 }
+            }
             return true; 
         }
 
@@ -244,9 +264,16 @@ namespace Inventory
                     inventoryItemDictionary.Remove(item);
                 }
                 
-                DecreaseWeight(item.itemWeight * itemSlotAmount);
-                if(InventoryManager.Instance != null)
-                    InventoryManager.Instance.ChangeText(inventoryItemDictionary);
+                //Change Weight
+                if (InventoryManager.Instance != null)
+                {
+                    InventoryManager.Instance.ChangeText();
+                    if (PlayerController.Instance != null)
+                    {
+                        PlayerController.Instance.CurrentWeight -= item.itemWeight * itemSlotAmount;
+                    }
+                }
+                    
             }
         }
 
@@ -265,27 +292,7 @@ namespace Inventory
                 currentWeight += item.Value * item.Key.itemWeight; 
             }
         }
-
-        private void AddWeight(float weight)
-        {
-            currentWeight += weight;
-        }
-
-        private void DecreaseWeight(float weight)
-        {
-            currentWeight -= weight;
-        }
-
-        public float GetCurrentWeight()
-        {
-            return currentWeight;
-        }
-
-        public float GetMaxWeight()
-        {
-            return MAX_WEIGHT;
-        }
-
+        
         public void SetInventoryDictionary(Dictionary<Item, int> inventory)
         {
             this.inventoryItemDictionary = inventory;
