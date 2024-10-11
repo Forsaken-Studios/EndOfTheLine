@@ -1250,7 +1250,7 @@ GameObject:
   - component: {fileID: 8614385168009660407}
   - component: {fileID: 5878895453203938167}
   m_Layer: 5
-  m_Name: BuyWagon
+  m_Name: BuyWagonPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1292,9 +1292,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84ad29b58eacf4c46bf0045ae9b3c359, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  foodResource: {fileID: 8781508846377692927}
-  materialResource: {fileID: 7959464095853766717}
-  goldResource: {fileID: 4000624977178745792}
+  material1Resource: {fileID: 8781508846377692927}
+  material2Resource: {fileID: 7959464095853766717}
+  airFilterResource: {fileID: 4000624977178745792}
   restoreButton: {fileID: 1089873670845010975}
   cancelButton: {fileID: 7685676224030745254}
 --- !u!1 &5465700844664586617

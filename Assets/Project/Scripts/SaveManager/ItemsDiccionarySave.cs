@@ -22,3 +22,22 @@ public class ItemsDiccionarySave
         return itemsSaved;
     }
 }
+public class ItemsBoolDiccionarySave
+{
+    public Dictionary<int , bool> itemsSaved;
+
+    public ItemsBoolDiccionarySave()
+    {
+        itemsSaved = new Dictionary<int, bool>();
+    }
+    
+    public ItemsBoolDiccionarySave(Dictionary<int, bool> items)
+    {
+        itemsSaved = items;
+    }
+
+    public Dictionary<int, bool> GetInventory()
+    {
+        return itemsSaved;
+    }
+}

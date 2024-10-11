@@ -21633,7 +21633,7 @@ GameObject:
   - component: {fileID: 1495689645}
   - component: {fileID: 1495689644}
   m_Layer: 5
-  m_Name: Train - Canvas
+  m_Name: General - Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25787,8 +25787,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a1238b627549a445997cb3435c65ba5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minItemsAtMarket: 2
+  maxItemsAtMarket: 4
   buyButton: {fileID: 1037883656}
-  itemSoldTextPrefab: {fileID: 5074117701762208993, guid: 22aae7941636bd7439250c54a924e47f, type: 3}
   marketSlots:
   - {fileID: 734690348}
   - {fileID: 403955829}
@@ -25800,8 +25801,7 @@ MonoBehaviour:
   - {fileID: 14331283}
   - {fileID: 1742652883}
   - {fileID: 1098746888}
-  amountSelector: {fileID: 1877041563}
-  emptySprite: {fileID: 21300000, guid: 031272aefaf0e7a408cb6f8a675678ba, type: 3}
+  itemSoldTextPrefab: {fileID: 5074117701762208993, guid: 22aae7941636bd7439250c54a924e47f, type: 3}
 --- !u!1001 &1782808477
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27201,11 +27201,6 @@ Transform:
   - {fileID: 1270545029}
   m_Father: {fileID: 1495689647}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1877041563 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3522903659407532667, guid: 68e179b56fe9def4ea19e583831beb8b, type: 3}
-  m_PrefabInstance: {fileID: 1827781378}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1890739888
 GameObject:
   m_ObjectHideFlags: 0

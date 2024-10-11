@@ -112,8 +112,8 @@ public class SaveManager : MonoBehaviour
     public void SaveCurrentDayStoreJson()
     {
         //Create Folder
-        Dictionary<int, int> idDictionary = SaveManager.Instance.ConvertItemsDictionaryIntoIDDictionary(MarketSystem.Instance.GetItemsInMarket());
-        ItemsDiccionarySave data = new ItemsDiccionarySave(idDictionary);
+        Dictionary<int, bool> idDictionary = SaveManager.Instance.ConvertItemsDictionaryIntoIDBoolDictionaryForMarket(MarketSystem.Instance.GetItemsInMarket());
+        ItemsBoolDiccionarySave data = new ItemsBoolDiccionarySave(idDictionary);
         
         _dataDirPath = Application.persistentDataPath;
         string fullPath = Path.Combine(_dataDirPath, "market", "store");
@@ -126,7 +126,7 @@ public class SaveManager : MonoBehaviour
             streamWriter.Write(json);
         }
     }
-    public ItemsDiccionarySave TryLoadCurrentDayStoreJson()
+    public ItemsBoolDiccionarySave TryLoadCurrentDayStoreJson()
     {
         try
         {
@@ -138,7 +138,7 @@ public class SaveManager : MonoBehaviour
             {
                 string jsonFromFile = streamReader.ReadToEnd();
                 Debug.Log("LOADED STORE: " + jsonFromFile);
-                return JsonConvert.DeserializeObject<ItemsDiccionarySave>(jsonFromFile);
+                return JsonConvert.DeserializeObject<ItemsBoolDiccionarySave>(jsonFromFile);
             }
         }
         catch (Exception error)
@@ -236,6 +236,23 @@ public class SaveManager : MonoBehaviour
                 idDictionary.Add(itemPair.Key.itemID, itemPair.Value);
             }
   
+        }
+        return idDictionary;
+    }
+    
+    public  Dictionary<int, bool> ConvertItemsDictionaryIntoIDBoolDictionaryForMarket(Dictionary<Item, bool> items)
+    {
+        Dictionary<int, bool> idDictionary = new Dictionary<int, bool>();
+        foreach (var itemPair in items)
+        {
+            if (idDictionary.ContainsKey(itemPair.Key.itemID))
+            {
+                idDictionary[itemPair.Key.itemID] = itemPair.Value;
+            }
+            else
+            {
+                idDictionary.Add(itemPair.Key.itemID, itemPair.Value);
+            }
         }
         return idDictionary;
 

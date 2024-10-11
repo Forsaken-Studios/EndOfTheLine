@@ -12,54 +12,38 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
     private UsableItemSO usableItem;
 
     private Item itemSO;
-    private int amount; 
     public event EventHandler onItemClicked;
-    private Sprite emptySprite;
     [SerializeField] private Image itemSlotImage;
-    private TextMeshProUGUI amountText;
     [SerializeField] private GameObject priceGameObject;
+    [SerializeField] private GameObject blackPanel;
     private int price;
-
-    private void OnEnable()
-    {
-        amountText = GetComponentInChildren<TextMeshProUGUI>();
-    }
-
-    public void SetUpProperties(UsableItemSO itemInSlot, int amount)
-    {
-        usableItem = itemInSlot;
-        this.itemSlotImage.sprite = itemInSlot.itemIcon;
-   
-    }
-
+    private bool alreadyBought = false;
+    
     public void RemoveAmountFromSlot(int amountToRemove)
     {
-        this.amount -= amountToRemove;
-        this.amountText.text = "x" + amount.ToString();
+        /*this.amount -= amountToRemove;
+        this.amountText.text = "x" + amount.ToString();*/
     }
 
     public void ClearMarketSlot()
     {
-        this.itemSlotImage.sprite = MarketSystem.Instance.GetEmptySprite();
-        this.itemSO = null;
-        this.amountText.text = "";
-        this.amount = 0;
-        this.usableItem = null;
+        blackPanel.SetActive(true);
         GetComponent<Button>().interactable = false;
     }
 
-    public void SetUpProperties(Item itemSO, int amount)
+    public void SetUpProperties(Item itemSO, bool alreadyBought)
     {
-        amountText = GetComponentInChildren<TextMeshProUGUI>();
+        if (alreadyBought)
+        {
+            blackPanel.SetActive(true);
+        }
+        Debug.Log("KW: " + itemSO.itemPriceAtMarket);
+        this.alreadyBought = alreadyBought;
         this.itemSO = itemSO;
         this.itemSlotImage.sprite = itemSO.itemIcon;
-        this.amountText.text = "";
-        this.amount = amount;
-    
         priceGameObject.gameObject.SetActive(true);
         price = itemSO.itemPriceAtMarket;
-        priceGameObject.GetComponentInChildren<TextMeshProUGUI>().text = price.ToString();
-   
+        priceGameObject.GetComponentInChildren<TextMeshProUGUI>().text = itemSO.itemPriceAtMarket.ToString();
 
     }
     
@@ -89,13 +73,13 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public int GetSlotAmount()
-    {
-        return amount;
-    }
-
     public int GetPrice()
     {
         return price;
+    }
+
+    public bool GetIfIsAlreadyBought()
+    {
+        return alreadyBought;
     }
 }

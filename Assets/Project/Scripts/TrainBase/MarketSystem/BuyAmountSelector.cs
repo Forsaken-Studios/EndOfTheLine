@@ -72,8 +72,8 @@ public class BuyAmountSelector : MonoBehaviour
                     out int remainingItemsWithoutSpace))
             {          
                 
-                MarketSystem.Instance.RemoveItemFromList(itemSelected.GetItemSO(), (int) slider.value);
-                //TODO: SPEND MONEY
+                //MarketSystem.Instance.RemoveItemFromList(itemSelected.GetItemSO(), (int) slider.value);
+                //TODO: SPEND MONEY POR AHORA SE HA DEPRECADO EL SELECTOR AMOUNT
                 if (slider.maxValue == slider.value)
                 {
                     itemSelected.ClearMarketSlot(); 
