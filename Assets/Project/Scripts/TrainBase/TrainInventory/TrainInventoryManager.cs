@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Inventory;
+using LootSystem;
+using SaveManagerNamespace;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;

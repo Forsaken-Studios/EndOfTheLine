@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Extraction;
 using Inventory;
+using SaveManagerNamespace;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using LootSystem;
 using Player;
 using TMPro;
 using Unity.Mathematics;

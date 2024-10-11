@@ -1,28 +1,29 @@
-using System.Collections;
+
 using System.Collections.Generic;
-using UnityEngine;
-
-public class DataBaseInventory
+namespace SaveManagerNamespace
 {
-    /// <summary>
-    /// Int - Slot index
-    /// ItemInBaseDataSave - Item in given slot
-    /// </summary>
-    public Dictionary<int, ItemInBaseDataSave> baseInventory;
-
-    public DataBaseInventory(Dictionary<int, ItemInBaseDataSave> baseInventory)
+    public class DataBaseInventory
     {
-        this.baseInventory = baseInventory; 
-    }
+        /// <summary>
+        /// Int - Slot index
+        /// ItemInBaseDataSave - Item in given slot
+        /// </summary>
+        public Dictionary<int, ItemInBaseDataSave> baseInventory;
+
+        public DataBaseInventory(Dictionary<int, ItemInBaseDataSave> baseInventory)
+        {
+            this.baseInventory = baseInventory; 
+        }
     
-    public DataBaseInventory()
-    {
-        baseInventory = new Dictionary<int, ItemInBaseDataSave>();
-    }
+        public DataBaseInventory()
+        {
+            baseInventory = new Dictionary<int, ItemInBaseDataSave>();
+        }
 
-    public Dictionary<int, ItemInBaseDataSave> GetInventory()
-    {
-        return baseInventory;
+        public Dictionary<int, ItemInBaseDataSave> GetInventory()
+        {
+            return baseInventory;
+        }
     }
 }
 

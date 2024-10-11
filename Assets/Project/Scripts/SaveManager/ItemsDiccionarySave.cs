@@ -1,27 +1,30 @@
-using System.Collections;
+
 using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
 
-public class ItemsDiccionarySave
+
+namespace SaveManagerNamespace
 {
-    public Dictionary<int , int> itemsSaved;
-
-    public ItemsDiccionarySave()
+    public class ItemsDiccionarySave
     {
-        itemsSaved = new Dictionary<int, int>();
-    }
+        public Dictionary<int , int> itemsSaved;
+
+        public ItemsDiccionarySave()
+        {
+            itemsSaved = new Dictionary<int, int>();
+        }
     
-    public ItemsDiccionarySave(Dictionary<int, int> items)
-    {
-        itemsSaved = items;
-    }
+        public ItemsDiccionarySave(Dictionary<int, int> items)
+        {
+            itemsSaved = items;
+        }
 
-    public Dictionary<int, int> GetInventory()
-    {
-        return itemsSaved;
+        public Dictionary<int, int> GetInventory()
+        {
+            return itemsSaved;
+        }
     }
 }
+
 public class ItemsBoolDiccionarySave
 {
     public Dictionary<int , bool> itemsSaved;

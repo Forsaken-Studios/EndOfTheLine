@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using LootSystem;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Expeditions/Expedition Mission Bonus Items", order = 1)]

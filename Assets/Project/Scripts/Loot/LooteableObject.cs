@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
+using LootSystem;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Internal;
@@ -12,7 +13,7 @@ using Utils.CustomLogs;
 using Object = System.Object;
 using Random = UnityEngine.Random;
 
-namespace Loot
+namespace LootSystem
 {
     public class ItemInterval
     {

@@ -1,90 +1,91 @@
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using Loot;
 using UnityEngine;
 
-public class LooteableObjectSelector : MonoBehaviour
+namespace LootSystem
 {
-    public static LooteableObjectSelector Instance;
-    
-    private void Awake()
+    public class LooteableObjectSelector : MonoBehaviour
     {
-        if (Instance != null)
+        public static LooteableObjectSelector Instance;
+    
+        private void Awake()
         {
-            Debug.LogError("There's more than one LooteableObjectSelector! " + transform + " - " + Instance);
-            Destroy(gameObject);
-            return;
+            if (Instance != null)
+            {
+                Debug.LogError("There's more than one LooteableObjectSelector! " + transform + " - " + Instance);
+                Destroy(gameObject);
+                return;
+            }
+            Instance = this;
         }
-        Instance = this;
-    }
     
-    //TEST 
+        //TEST 
 
-    private List<LooteableObject> looteableObjectInRange;
+        private List<LooteableObject> looteableObjectInRange;
 
-    [SerializeField] private GameObject lootSelectorPrefab;
-    private GameObject lootSelectorGameObject;
-    private LooteableObjectSelectorUI looteableObjectSelectorUI;
-    private void Start()
-    {
-        looteableObjectInRange = new List<LooteableObject>();
+        [SerializeField] private GameObject lootSelectorPrefab;
+        private GameObject lootSelectorGameObject;
+        private LooteableObjectSelectorUI looteableObjectSelectorUI;
+        private void Start()
+        {
+            looteableObjectInRange = new List<LooteableObject>();
       
-    }
+        }
     
 
-    public void AddOneInTrigger(LooteableObject loot)
-    {
-        looteableObjectInRange.Add(loot);
-        if (looteableObjectInRange.Count > 1)
+        public void AddOneInTrigger(LooteableObject loot)
         {
-            ShowItemSelector();
+            looteableObjectInRange.Add(loot);
+            if (looteableObjectInRange.Count > 1)
+            {
+                ShowItemSelector();
+            }
         }
-    }
 
-    public bool GetIfIndexIsThisLooteableObject(LooteableObject looteableObject)
-    {
-        return looteableObjectInRange[looteableObjectSelectorUI.GetCurrentIndex()].Equals(looteableObject); 
-    }
-    
-    public void DecreaseOneInTrigger(LooteableObject loot)
-    {
-        looteableObjectInRange.Remove(loot);
-        if (looteableObjectInRange.Count < 2)
+        public bool GetIfIndexIsThisLooteableObject(LooteableObject looteableObject)
         {
-            HideItemSelector();
+            return looteableObjectInRange[looteableObjectSelectorUI.GetCurrentIndex()].Equals(looteableObject); 
         }
-    }
     
-    private void ShowItemSelector()
-    {
-        if(lootSelectorGameObject)
-            Destroy(lootSelectorGameObject);
-        lootSelectorGameObject = Instantiate(lootSelectorPrefab,
-        looteableObjectInRange[0].gameObject.transform.position, Quaternion.identity);
-        looteableObjectSelectorUI = lootSelectorGameObject.GetComponent<LooteableObjectSelectorUI>();
+        public void DecreaseOneInTrigger(LooteableObject loot)
+        {
+            looteableObjectInRange.Remove(loot);
+            if (looteableObjectInRange.Count < 2)
+            {
+                HideItemSelector();
+            }
+        }
+    
+        private void ShowItemSelector()
+        {
+            if(lootSelectorGameObject)
+                Destroy(lootSelectorGameObject);
+            lootSelectorGameObject = Instantiate(lootSelectorPrefab,
+                looteableObjectInRange[0].gameObject.transform.position, Quaternion.identity);
+            looteableObjectSelectorUI = lootSelectorGameObject.GetComponent<LooteableObjectSelectorUI>();
         
-    } 
-    private void HideItemSelector()
-    {
-        if (lootSelectorGameObject != null)
+        } 
+        private void HideItemSelector()
         {
-            Destroy(lootSelectorGameObject);
-            looteableObjectSelectorUI = null;
+            if (lootSelectorGameObject != null)
+            {
+                Destroy(lootSelectorGameObject);
+                looteableObjectSelectorUI = null;
+            }
         }
-    }
 
-    public int GetLooteableObjectCount()
-    {
-        return looteableObjectInRange.Count;
-    }
+        public int GetLooteableObjectCount()
+        {
+            return looteableObjectInRange.Count;
+        }
 
-    public List<LooteableObject> GetLootList()
-    {
-        return looteableObjectInRange;
-    }
-    public bool GetIfSelectorIsActive()
-    {
-        return looteableObjectInRange.Count > 1;
+        public List<LooteableObject> GetLootList()
+        {
+            return looteableObjectInRange;
+        }
+        public bool GetIfSelectorIsActive()
+        {
+            return looteableObjectInRange.Count > 1;
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using LootSystem;
 using Player;
 using TMPro;
 using Unity.VisualScripting;

@@ -1,17 +1,12 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
-using Loot;
-using Unity.VisualScripting;
+using LootSystem;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using Utils.CustomLogs;
-using Object = System.Object;
 
 namespace Inventory
 {
