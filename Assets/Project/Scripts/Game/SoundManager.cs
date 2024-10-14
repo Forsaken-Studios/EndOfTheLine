@@ -32,7 +32,11 @@ public class SoundManager : MonoBehaviour
     //Se tendría que ver como lo renombramos en resources para tener varios sonidos para lo mismo
     private Dictionary<SoundAction, AudioClip> audioDictionary;
     [SerializeField] private AudioSource musicSource, sfxSource;
-    private float currentVolume = 0;
+    private List<AudioSource> externalAudioSources; 
+
+    public float sfxVolume { get; set; }
+    public float musicVolume { get; set; }
+    
     private void Awake()
     {
         if (Instance != null)
@@ -46,17 +50,18 @@ public class SoundManager : MonoBehaviour
     }
     private void Start()
     {
+        externalAudioSources = new List<AudioSource>();
         inventoryAudioClips = new List<Sound>();
         audioDictionary = new Dictionary<SoundAction, AudioClip>();
-        currentVolume = sfxSource.volume;
         LoadAllSounds();
     }
-
     
+
     /// <summary>
     /// Para cargar sonidos, lo que hay que hacer, es,
-    /// 1. Comprobar que el sonido está metido en un de los diccionarios de abajo.
+    /// 1. Comprobar que el sonido está metido en un de los diccionarios de abajo (Carpeta resources).
     /// 2. Ir a SoundAction, y meter dentro del enum, el nombre (identico) del sonido.
+    /// Esto es para sonidos que vamos a escuchar por el personaje por asi decirlo, abrir inventario, gas, sonido del mundo
     /// </summary>
     private void LoadAllSounds()
     {
@@ -77,6 +82,31 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void PauseSounds()
+    {
+        if (sfxSource.isPlaying)
+            sfxSource.Pause();
+        if (musicSource.isPlaying)
+            musicSource.Pause();
+
+        foreach (var audioSource in externalAudioSources)
+        {
+            if (audioSource.isPlaying)
+                audioSource.Pause();
+        }
+    }
+
+    public void ResumeSounds()
+    {
+        musicSource.Play();
+        sfxSource.Play();
+        
+        foreach (var audioSource in externalAudioSources)
+        {
+            audioSource.Play();
+        }
+    }
+    
     private void LoadSpecificSoundsInDictionary(string path)
     {
         List<UnityEngine.Object> allSpecificItems = UnityEngine.Resources.LoadAll(path).ToList();
@@ -110,6 +140,8 @@ public class SoundManager : MonoBehaviour
         AudioClip audioClip = GetAudioClipFromName(audioAction);
         if (audioClip != null)
         {
+            sfxSource.clip = audioClip;
+            sfxSource.volume = sfxVolume;
             sfxSource.PlayOneShot(audioClip);
         }
     }
@@ -127,14 +159,14 @@ public class SoundManager : MonoBehaviour
     {
         float currentTime = 0;
         float start = audioSource.volume;
-        currentVolume = start;
+        sfxVolume = start;
         while (currentTime < duration)
         {
             currentTime += Time.deltaTime;
             audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
             yield return null;
         }
-        sfxSource.volume = currentVolume;
+        sfxSource.volume = sfxVolume;
         audioSource.Stop();
         StopAllCoroutines();
         yield break;
@@ -145,8 +177,29 @@ public class SoundManager : MonoBehaviour
         if (sfxSource != null)
         {
             sfxSource.Stop();
+            sfxSource.clip = null;
         }
-       
+    }
+
+    public void ChangeSFXAudioVolume(float volume)
+    {
+        this.sfxSource.volume = volume;
+        this.sfxVolume = volume;
+    }
+    public void ChangeMusicAudioVolume(float volume)
+    {
+        this.musicVolume = volume;
+        this.musicSource.volume = volume;
+    }
+
+    public void AddExternalAudioSource(AudioSource audio)
+    {
+        externalAudioSources.Add(audio);
+    }
+
+    public void RemoveExternalAudioSource(AudioSource audio)
+    {
+        externalAudioSources.Remove(audio);
     }
     
 }
