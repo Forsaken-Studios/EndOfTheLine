@@ -23,11 +23,6 @@ public class Sound
     }
 }
 
-public enum SoundType
-{
-    sfx, music
-}
-
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
