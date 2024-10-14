@@ -10,11 +10,13 @@ public class PauseMenu : MonoBehaviour
 {
 
     [SerializeField] private GameObject pauseMenuGameObject;
-        
     [Header("Buttons")]
     [SerializeField] private Button playButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private Button returnToTrainButton;
+    [Header("SFX & Music Sliders")]
+    [SerializeField] private Slider sfxVolumeSlider;
+    [SerializeField] private Slider musicVolumeSlider;
     
      private void Start()
     {
@@ -22,6 +24,40 @@ public class PauseMenu : MonoBehaviour
         returnToTrainButton.onClick.AddListener(() => ReturnToTrain());
         quitButton.onClick.AddListener(() => QuitGame());
         pauseMenuGameObject.SetActive(false);
+        sfxVolumeSlider.onValueChanged.AddListener(delegate { OnSfxValueChanged(); });
+        musicVolumeSlider.onValueChanged.AddListener(delegate { OnMusicValueChanged(); });
+        LoadVolumeValues();
+    }
+
+    private void OnDestroy()
+    {
+        sfxVolumeSlider.onValueChanged.RemoveAllListeners();
+        musicVolumeSlider.onValueChanged.RemoveAllListeners();
+    }
+
+    private void OnSfxValueChanged()
+    {
+        SoundManager.Instance.ChangeSFXAudioVolume(sfxVolumeSlider.value);
+        PlayerPrefs.SetFloat("SFXVolume", sfxVolumeSlider.value);
+    }
+    
+    private void OnMusicValueChanged()
+    {
+        SoundManager.Instance.ChangeMusicAudioVolume(musicVolumeSlider.value);
+        PlayerPrefs.SetFloat("MusicVolume", musicVolumeSlider.value);
+    }
+    private void LoadVolumeValues()
+    {
+        if (PlayerPrefs.HasKey("SFXVolume"))
+            sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume");
+        else
+            sfxVolumeSlider.value = 0.5f;
+            
+        
+        if (PlayerPrefs.HasKey("MusicVolume"))
+            musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume");
+        else
+            musicVolumeSlider.value = 0.5f;
     }
 
     private void ReturnToTrain()
@@ -45,6 +81,7 @@ public class PauseMenu : MonoBehaviour
                  if (AbilitiesNotActivated())
                  {
                      PauseGame();
+                     
                  }
              }
              else
@@ -75,7 +112,19 @@ public class PauseMenu : MonoBehaviour
 
     private void PauseGame()
     {
+        //Si no esta activado, paramos sonidos
+        if (pauseMenuGameObject.activeSelf)
+        {
+            SoundManager.Instance.ResumeSounds();
+        }
+        else
+        {
+            SoundManager.Instance.PauseSounds();
+        }
+        
+        //Ponemos lo contrario a lo que estaba
         pauseMenuGameObject.SetActive(!pauseMenuGameObject.activeSelf);
+        //Si ahora está activado, es que hemos puesto en pausa
         GameManager.Instance.GameState = pauseMenuGameObject.activeSelf ? GameState.OnPause : GameState.OnGame;
         Time.timeScale = pauseMenuGameObject.activeSelf ? 0f: 1f;
     }
