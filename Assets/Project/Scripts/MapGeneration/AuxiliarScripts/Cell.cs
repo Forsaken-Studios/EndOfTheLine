@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -26,6 +27,8 @@ public class Cell
         }
     } // Suma de los dos anteriores
 
+    public bool IsOpenUp, IsOpenDown, IsOpenRight, IsOpenLeft;
+    public bool HasDoorUp, HasDoorDown, HasDoorRight, HasDoorLeft;
 
     public Cell(int row, int col)
     {
@@ -91,7 +94,7 @@ public class Cell
             bool allowedEntrance = newCell.IsDoorInDirection(Row, Col);
             if(allowedConnection && allowedEntrance)
             {
-                Debug.Log($"finalpath -> CanConnectTo(): CONECTADAAAAAAAAAA [{Row}, {Col}] con [{newCell.Row}, {newCell.Col}]");
+                Debug.Log($"finalpath -> CanConnectTo(): conectada [{Row}, {Col}] con [{newCell.Row}, {newCell.Col}]");
                 return true;
             }
             else
@@ -105,7 +108,7 @@ public class Cell
             bool allowedExit = IsDoorInDirection(newCell.Row, newCell.Col);
             if (allowedConnection && allowedExit)
             {
-                Debug.Log($"finalpath -> CanConnectTo(): CONECTADAAAAAAAAAA [{Row}, {Col}] con [{newCell.Row}, {newCell.Col}]");
+                Debug.Log($"finalpath -> CanConnectTo(): conectada [{Row}, {Col}] con [{newCell.Row}, {newCell.Col}]");
                 return true;
             }
             else
@@ -116,7 +119,7 @@ public class Cell
         }
         if (allowedConnection)
         {
-            Debug.Log($"finalpath -> CanConnectTo(): CONECTADAAAAAAAAAA [{Row}, {Col}] con [{newCell.Row}, {newCell.Col}] con estado actual: {State} y vecino: {newCell.State}");
+            Debug.Log($"finalpath -> CanConnectTo(): conectada [{Row}, {Col}] con [{newCell.Row}, {newCell.Col}] con estado actual: {State} y vecino: {newCell.State}");
         }
         else
         {
@@ -169,7 +172,103 @@ public class Cell
                 AllowedConnections.Add(CellState.Corridor);
                 AllowedConnections.Add(CellState.Empty);
                 break;
+            case CellState.FillingRoom:
+                IsRoomPlaceable = false;
+                break;
         }
+    }
+
+    public void SetCorridorConfiguration(Cell aboveNeighbour, Cell belowNeighbour, Cell rightNeighbour, Cell leftNeighbour)
+    {
+        // Configura las aperturas.
+        IsOpenUp = OpeningsEquivalences(aboveNeighbour);
+        IsOpenDown = OpeningsEquivalences(belowNeighbour);
+        IsOpenRight = OpeningsEquivalences(rightNeighbour);
+        IsOpenLeft = OpeningsEquivalences(leftNeighbour);
+
+        // Configura las puertas.
+        HasDoorUp = DoorsEquivalences(aboveNeighbour);
+        HasDoorDown = DoorsEquivalences(belowNeighbour);
+        HasDoorRight = DoorsEquivalences(rightNeighbour);
+        HasDoorLeft = DoorsEquivalences(leftNeighbour);
+    }
+
+    private bool OpeningsEquivalences(Cell cell)
+    {
+        bool result = false;
+        
+        if(cell == null)
+        {
+            return false;
+        }
+
+        switch (cell.State)
+        {
+            case CellState.Start:
+                result = false;
+                break;
+            case CellState.End:
+                result = false;
+                break;
+            case CellState.Empty:
+                result = false;
+                break;
+            case CellState.Corridor:
+                result = true;
+                break;
+            case CellState.Room:
+                result = false;
+                break;
+            case CellState.CorridorRoom:
+                result = false;
+                break;
+            case CellState.EntranceRoom:
+                result = false;
+                break;
+            case CellState.FillingRoom:
+                result = false;
+                break;
+        }
+        return result;
+    }
+
+    private bool DoorsEquivalences(Cell cell)
+    {
+        bool result = false;
+
+        if (cell == null)
+        {
+            return false;
+        }
+
+        switch (cell.State)
+        {
+            case CellState.Start:
+                result = true;
+                break;
+            case CellState.End:
+                result = true;
+                break;
+            case CellState.Empty:
+                result = false;
+                break;
+            case CellState.Corridor:
+                result = false;
+                break;
+            case CellState.Room:
+                result = false;
+                break;
+            case CellState.CorridorRoom:
+                result = false;
+                break;
+            case CellState.EntranceRoom:
+                result = cell.IsDoorInDirection(Row, Col);
+                break;
+            case CellState.FillingRoom:
+                result = false;
+                break;
+        }
+        return result;
     }
 
     public void AddParent(Cell newCell)

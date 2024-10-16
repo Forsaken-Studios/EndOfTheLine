@@ -18,7 +18,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     [Header("Patrol")]
     [SerializeField] private List<Transform> _patrolPoints;
-    [SerializeField] private bool _isLoopable;
+    [SerializeField] private bool _isFullCircle;
     [SerializeField] private float _timeWaitEndPatrol = 2f;
     private float _timerWaitEndPatrol = 2f;
     private bool _isChangingPatrolPoint;
@@ -166,7 +166,7 @@ public class BasicEnemyActions : MonoBehaviour
 
         if (_isChangingPatrolPoint && _patrolPoints.Count > 0)
         {
-            if (_isLoopable)
+            if (_isFullCircle)
             {
                 if (_newPatrolIndex + 1 < _patrolPoints.Count)
                 {

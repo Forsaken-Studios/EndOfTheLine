@@ -19,7 +19,7 @@ public static class AuxiliarMapGenerator
     public static Cell[,] FindPath(List<Cell> destinationCellList, Cell[,] grid, bool isPointToPoint = false, List<Cell> possibleOriginCells = null)
     {
         Cell[,] copiedGrid = CopyGrid(grid);
-        if(isPointToPoint == false)
+        if (isPointToPoint == false)
         {
             possibleOriginCells = GetPossibleStartCells(copiedGrid);
         }
@@ -74,7 +74,7 @@ public static class AuxiliarMapGenerator
                         continue;
 
                     int stateCost = 0;
-                    if(isPointToPoint == false)
+                    if (isPointToPoint == false)
                     {
                         stateCost = GetUsualStateCost(cell);
                     }
@@ -82,7 +82,7 @@ public static class AuxiliarMapGenerator
                     {
                         stateCost = GetFinalStateCost(cell);
                     }
-                    
+
 
                     if (!OpenNodes.Contains(cell))
                     {
@@ -132,12 +132,27 @@ public static class AuxiliarMapGenerator
 
         if (cell.State == CellState.Corridor)
         {
-            cost = 1;
+            if (MapGenerator.Instance.isUsingExistingCorridors)
+            {
+                cost = 1;
+            }
+            else
+            {
+                cost = 10;
+            }
         }
         else if (cell.State == CellState.Empty)
         {
-            cost = 10;
-        }else if (cell.State == CellState.CorridorRoom || cell.State == CellState.EntranceRoom)
+            if (MapGenerator.Instance.isUsingExistingCorridors)
+            {
+                cost = 10;
+            }
+            else
+            {
+                cost = 1;
+            }
+        }
+        else if (cell.State == CellState.CorridorRoom || cell.State == CellState.EntranceRoom)
         {
             cost = 50;
         }
@@ -260,55 +275,82 @@ public static class AuxiliarMapGenerator
         currentCell.DestinationCells.Clear();
     }
 
-    private static List<Cell> GetVerticalNeighbours(Cell cell, Cell[,] grid)
+    public static Cell GetAboveNeighbour(Cell cell, Cell[,] grid)
     {
-        List<Cell> neighbors = new List<Cell>();
         int row = cell.Row;
         int col = cell.Col;
         //Checking to the above
         if ((row + 1 < grid.GetLength(0)))
-            neighbors.Add(grid[row + 1, col]);
-        //Checking to the below
-        if ((row - 1 >= 0))
-            neighbors.Add(grid[row - 1, col]);
-        return neighbors;
+            return grid[row + 1, col];
+        else
+            return null;
     }
 
-    private static List<Cell> GetHorizontalNeighbours(Cell cell, Cell[,] grid)
+    public static Cell GetBelowNeighbour(Cell cell, Cell[,] grid)
     {
-        List<Cell> neighbors = new List<Cell>();
+        int row = cell.Row;
+        int col = cell.Col;
+        //Checking to the below
+        if ((row - 1 >= 0))
+            return grid[row - 1, col];
+        else
+            return null;
+    }
+
+    public static Cell GetRightNeighbour(Cell cell, Cell[,] grid)
+    {
         int row = cell.Row;
         int col = cell.Col;
         //Checking right
         if ((col + 1 < grid.GetLength(1)))
-            neighbors.Add(grid[row, col + 1]);
+            return grid[row, col + 1];
+        else
+            return null;
+    }
+
+    public static Cell GetLeftNeighbour(Cell cell, Cell[,] grid)
+    {
+        int row = cell.Row;
+        int col = cell.Col;
         //Checking left
         if ((col - 1 >= 0))
-            neighbors.Add(grid[row, col - 1]);
-        return neighbors;
+            return grid[row, col - 1];
+        else
+            return null;
     }
 
     public static List<Cell> GetNeighbours(Cell cell, Cell[,] grid, List<Cell> endCells = null)
     {
         List<Cell> neighbors = new List<Cell>();
-        int row = cell.Row;
-        int col = cell.Col;
+        Cell neighbourCell = null;
 
-        foreach (Cell neighbourCell in GetHorizontalNeighbours(cell, grid))
+        neighbourCell = GetAboveNeighbour(cell, grid);
+        if (neighbourCell != null && cell.CanConnectTo(neighbourCell, endCells))
         {
-            if (cell.CanConnectTo(neighbourCell, endCells))
-            {
-                neighbors.Add(neighbourCell);
-            }
+            neighbors.Add(neighbourCell);
         }
+        neighbourCell = null;
 
-        foreach (Cell neighbourCell in GetVerticalNeighbours(cell, grid))
+        neighbourCell = GetBelowNeighbour(cell, grid);
+        if (neighbourCell != null && cell.CanConnectTo(neighbourCell, endCells))
         {
-            if (cell.CanConnectTo(neighbourCell, endCells))
-            {
-                neighbors.Add(neighbourCell);
-            }
+            neighbors.Add(neighbourCell);
         }
+        neighbourCell = null;
+
+        neighbourCell = GetRightNeighbour(cell, grid);
+        if (neighbourCell != null && cell.CanConnectTo(neighbourCell, endCells))
+        {
+            neighbors.Add(neighbourCell);
+        }
+        neighbourCell = null;
+
+        neighbourCell = GetLeftNeighbour(cell, grid);
+        if (neighbourCell != null && cell.CanConnectTo(neighbourCell, endCells))
+        {
+            neighbors.Add(neighbourCell);
+        }
+        neighbourCell = null;
 
         return neighbors;
     }
@@ -342,7 +384,7 @@ public static class AuxiliarMapGenerator
     {
         List<Cell> possibleEndCells = new List<Cell>();
 
-        for(int row = 0; row < grid.GetLength(0); row++)
+        for (int row = 0; row < grid.GetLength(0); row++)
         {
             for (int col = 0; col < grid.GetLength(1); col++)
             {
@@ -372,7 +414,7 @@ public static class AuxiliarMapGenerator
         List<Cell> endCells = new List<Cell>();
 
         List<Cell> cellsToRecalculateCopied = new List<Cell>();
-        foreach(Cell cell in cellsToRecalculate)
+        foreach (Cell cell in cellsToRecalculate)
         {
             cellsToRecalculateCopied.Add(copiedGrid[cell.Row, cell.Col]);
         }
@@ -386,7 +428,7 @@ public static class AuxiliarMapGenerator
             List<Cell> endCellList = new List<Cell>();
             endCellList.Add(endCell);
 
-            if(endCellList.Count == 0)
+            if (endCellList.Count == 0)
             {
                 isReCalculated = false;
                 break;
@@ -404,7 +446,7 @@ public static class AuxiliarMapGenerator
             }
         }
 
-        if(endCells.Count == 0 || isReCalculated == true)
+        if (endCells.Count == 0 || isReCalculated == true)
         {
             return copiedGrid;
         }

@@ -1,15 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Xml.Linq;
-using System.Xml.Schema;
-using Unity.VisualScripting;
-using Unity.VisualScripting.FullSerializer;
-using UnityEditor;
 using UnityEngine;
-using Utils.CustomLogs;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -21,7 +14,7 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] private List<Room> _testRooms;
     [SerializeField] private List<Room> _testRoomsPrefabs;
-    private Dictionary<Vector3, GameObject> _roomsToInsert;
+    private Dictionary<Vector3, Room> _roomsToInsert;
     private List<GameObject> _roomsInserted;
 
 
@@ -30,8 +23,12 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private int _maxRoomsInserted = 4;
     [SerializeField] private int _radius = 5;
     [SerializeField] private bool _isTotallyGizmos = true;
+    public bool isUsingExistingCorridors = true;
 
     private System.Random _rnd;
+
+    [SerializeField] private CorridorsDataBase corridorsDB;
+    private List<GameObject> _corridorsInserted;
 
     private void OnValidate()
     {
@@ -75,8 +72,27 @@ public class MapGenerator : MonoBehaviour
     void Start()
     {
         _roomsInserted = new List<GameObject>();
-        _roomsToInsert = new Dictionary<Vector3, GameObject>();
+        _roomsToInsert = new Dictionary<Vector3, Room>();
+
+        _corridorsInserted = new List<GameObject>();
+        if (corridorsDB != null)
+        {
+            corridorsDB.LoadCorridors();
+            ParseAllCorridors();
+        }
+        else
+        {
+            Debug.LogError("Error cargando los prefabs de los pasillos.");
+        }
         BuildMap();
+    }
+
+    private void ParseAllCorridors()
+    {
+        foreach(GameObject corridor in corridorsDB.corridorPrefabs)
+        {
+            corridor.GetComponent<Corridor>().ParseCorridorData();
+        }
     }
 
     private void BuildMap()
@@ -87,6 +103,19 @@ public class MapGenerator : MonoBehaviour
             {
                 Destroy(room);
             }
+
+            _roomsInserted.Clear();
+        }
+
+        if (_corridorsInserted != null && _corridorsInserted.Count > 0)
+        {
+            foreach (GameObject corridor in _corridorsInserted)
+            {
+                Destroy(corridor);
+            }
+
+            Destroy(GameObject.Find("Corridors"));
+            _corridorsInserted.Clear();
         }
 
         _rnd = new System.Random();
@@ -98,7 +127,7 @@ public class MapGenerator : MonoBehaviour
         if (_isTotallyGizmos == true)
         {
             bool mapCreated = false;
-            int tries = 5;
+            int tries = 10;
             while (mapCreated == false && tries > 0)
             {
                 mapCreated = PlacingRooms();
@@ -108,11 +137,48 @@ public class MapGenerator : MonoBehaviour
         else
         {
             bool mapCreated = false;
-            int tries = 5;
+            int tries = 10;
             while (mapCreated == false && tries > 0)
             {
                 mapCreated = PlacingRoomsPrefabs();
                 tries--;
+            }
+        }
+
+        InstantiateCorridorsPrefabs();
+    }
+
+    private void InstantiateCorridorsPrefabs()
+    {
+        GameObject parentObject = new GameObject("Corridors");
+
+        // Recorre todas las celdas cogiendo las que son pasillos.
+        foreach (Cell cell in _grid)
+        {
+            if (cell.State == CellState.Corridor)
+            {
+                // Configura las aperturas y puertas de la celda.
+                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _grid);
+                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _grid);
+                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _grid);
+                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour);
+
+                // Instancia el prefab de pasillo que equivalga a la configuración de la celda.
+                foreach (GameObject corridorPrefab in corridorsDB.corridorPrefabs)
+                {
+                    Corridor corridor = corridorPrefab.GetComponent<Corridor>();
+
+                    // Si el prefab encaja con la configuración lo instancia en la posición de la celda.
+                    if (corridor.MatchesConfig(cell.IsOpenUp, cell.IsOpenDown, cell.IsOpenRight, cell.IsOpenLeft, cell.HasDoorUp, cell.HasDoorDown, cell.HasDoorRight, cell.HasDoorLeft))
+                    {
+                        // Instanciar el prefab del pasillo
+                        Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
+                        GameObject corridorInstance = Instantiate(corridorPrefab, centeredPosition, corridorPrefab.transform.rotation);
+                        corridorInstance.transform.SetParent(parentObject.transform);
+                        _corridorsInserted.Add(corridorInstance);
+                    }
+                }
             }
         }
     }
@@ -157,6 +223,9 @@ public class MapGenerator : MonoBehaviour
                 break;
             case CellState.CorridorRoom:
                 Gizmos.color = UnityEngine.Color.white;
+                break;
+            case CellState.FillingRoom:
+                Gizmos.color = UnityEngine.Color.magenta;
                 break;
             case CellState.Corridor:
                 Gizmos.color = UnityEngine.Color.blue;
@@ -355,9 +424,16 @@ public class MapGenerator : MonoBehaviour
             else
             {
                 _grid = modifiedGrid;
+                // BORRAR
+                foreach (Cell cell in _grid)
+                {
+                    Debug.Log($"Celda -> [{cell.Row}, {cell.Col}]   Estado -> {cell.State}");
+                }
                 return true;
             }
         }
+
+        
 
     }
 
@@ -386,9 +462,9 @@ public class MapGenerator : MonoBehaviour
             }
             else
             {
-                foreach(KeyValuePair<Vector3, GameObject> entry in _roomsToInsert)
+                foreach (KeyValuePair<Vector3, Room> entry in _roomsToInsert)
                 {
-                    _roomsInserted.Add(Instantiate(entry.Value, entry.Key, Quaternion.identity));
+                    _roomsInserted.Add(Instantiate(entry.Value.gameObject, entry.Key, Quaternion.identity));
                 }
                 _roomsToInsert.Clear();
                 _grid = modifiedGrid;
@@ -400,7 +476,7 @@ public class MapGenerator : MonoBehaviour
 
     private Cell[,] TryToReachFinal(Cell[,] grid)
     {
-        List<Cell> restEntrancesList = GetRestEntrances(grid);
+        List<Cell> restEntrancesList = GetRestEntrances(grid);;
         int counterRestEntrances = restEntrancesList.Count;
 
         foreach (Cell entranceCell in restEntrancesList)
@@ -454,20 +530,18 @@ public class MapGenerator : MonoBehaviour
     {
 
         List<Cell> adjacentCellsList = GetAdjacentCells(startCell, grid, _radius);
+        Debug.Log($"Number AdjacentCells for [{startCell.Row}, {startCell.Col}]: {adjacentCellsList.Count}");
 
         foreach (Cell adjacentCell in adjacentCellsList)
         {
-            if (adjacentCell.State == CellState.Corridor)
+            List<Cell> destinationCellList = new List<Cell>() { adjacentCell };
+            List<Cell> possibleOrigins = new List<Cell>() { startCell };
+            Cell[,] modifiedGrid = AuxiliarMapGenerator.FindPath(destinationCellList, grid, true, possibleOrigins);
+            if (modifiedGrid != null)
             {
-                List<Cell> destinationCellList = new List<Cell>() { adjacentCell };
-                List<Cell> possibleOrigins = new List<Cell>() { startCell };
-                Cell[,] modifiedGrid = AuxiliarMapGenerator.FindPath(destinationCellList, grid, true, possibleOrigins);
-                if (modifiedGrid != null)
-                {
-                    Debug.Log($"Camino encontrado desde [{startCell.Row}, {startCell.Col}] hasta [{adjacentCell.Row}, {adjacentCell.Col}]");
-                    grid = modifiedGrid;
-                    return grid;
-                }
+                Debug.Log($"Camino encontrado desde [{startCell.Row}, {startCell.Col}] hasta [{adjacentCell.Row}, {adjacentCell.Col}]");
+                grid = modifiedGrid;
+                return grid;
             }
         }
 
@@ -478,15 +552,37 @@ public class MapGenerator : MonoBehaviour
     {
         List<Cell> adjacentCells = new List<Cell>();
 
-        for (int row = cell.Row - radius; row <= cell.Row + radius; row++)
+        //for (int row = cell.Row - radius; row <= cell.Row + radius; row++)
+        //{
+        //    for (int col = cell.Col - radius; col <= cell.Col + radius; col++)
+        //    {
+        //        if ((row == cell.Row && col == cell.Col) || row >= grid.GetLength(0) || row <= 0 || col >= grid.GetLength(1) || col <= 0)
+        //        {
+        //            continue;
+        //        }
+        //        if (grid[row, col].State == CellState.Corridor)
+        //        {
+        //            adjacentCells.Add(grid[row, col]);
+        //        }
+        //    }
+        //}
+
+        for (int row = 0; row < grid.GetLength(0); row++)
         {
-            for (int col = cell.Col - radius; col <= cell.Col + radius; col++)
+            for (int col = 0; col < grid.GetLength(1); col++)
             {
-                if ((row == cell.Row && col == cell.Col) || row >= grid.GetLength(0) || row <= 0 || col >= grid.GetLength(1) || col <= 0)
+                if (row == cell.Row && col == cell.Col)
                 {
                     continue;
                 }
-                adjacentCells.Add(grid[row, col]);
+                if ((row > cell.Row - radius && row < cell.Row + radius) || (col > cell.Col - radius && col < cell.Col + radius))
+                {
+                    continue;
+                }
+                if (grid[row, col].State == CellState.Corridor)
+                {
+                    adjacentCells.Add(grid[row, col]);
+                }
             }
         }
 
@@ -531,7 +627,7 @@ public class MapGenerator : MonoBehaviour
     private Cell[,] ReachFinal(Cell start, Cell[,] grid)
     {
         List<Cell> possibleOrigins = new List<Cell>() { start };
-        foreach(Cell destinationCell in AuxiliarMapGenerator.GetPossibleEndCells(grid))
+        foreach (Cell destinationCell in AuxiliarMapGenerator.GetPossibleEndCells(grid))
         {
             List<Cell> destinationCellList = new List<Cell>() { destinationCell };
             Cell[,] modifiedGrid = AuxiliarMapGenerator.FindPath(destinationCellList, grid, true, possibleOrigins);
@@ -553,7 +649,7 @@ public class MapGenerator : MonoBehaviour
         foreach (Room room in _testRooms)
         {
 
-            room.InitializeRoom();
+            room.InitializeRandomRoom();
 
             int insertionTry = 15;
 
@@ -622,7 +718,7 @@ public class MapGenerator : MonoBehaviour
         foreach (Room room in _testRoomsPrefabs)
         {
 
-            room.InitializeRoom();
+            room.InitializeRandomRoom();
 
             int insertionTry = 15;
 
@@ -654,7 +750,7 @@ public class MapGenerator : MonoBehaviour
                 if (modifiedGrid != null)
                 {
                     Debug.Log($"Nombre: {room.gameObject.name}");
-                    _roomsToInsert.Add(positonToInstantiate, room.gameObject);
+                    _roomsToInsert.Add(positonToInstantiate, room);
                     grid = modifiedGrid; // Actualizar grid con el grid modificado
                     roomsInserted++;
                     break;

@@ -12,5 +12,6 @@ public enum CellState
 
     Room,
     EntranceRoom,
-    CorridorRoom
+    CorridorRoom,
+    FillingRoom
 }

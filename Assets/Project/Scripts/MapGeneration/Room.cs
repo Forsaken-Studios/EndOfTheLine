@@ -15,22 +15,66 @@ public class Room : MonoBehaviour
 
     public Cell[,] selfGrid;// [Row, Col]
 
-    [SerializeField] private RoomData _roomData;
+    [SerializeField] private List<RoomData> _roomDataList;
+    System.Random rnd;
 
-    private void Start()
+    private int _configurationSelected = 1;
+    private Vector3 _positionSelected = Vector3.zero;
+
+    void Start()
     {
-        InitializeRoom();
+        rnd = new System.Random();
     }
 
-    public void InitializeRoom()
+    public int GetNumberOfConfigurations()
     {
-        _roomSize = _roomData.roomSize;
-        _shape = _roomData.GetShape();
-        _entrances = _roomData.GetEntrances();
-        _entrancesDirections = _roomData.entrancesDirections;
+        return _roomDataList.Count;
+    }
+
+    public void SetPositionSelected(Vector3 positionSelected)
+    {
+        _positionSelected = positionSelected;
+    }
+
+    public void InitializeRandomRoom()
+    {
+        _configurationSelected = rnd.Next(1, _roomDataList.Count);
+
+        _roomSize = _roomDataList[_configurationSelected].roomSize;
+        _shape = _roomDataList[_configurationSelected].GetShape();
+        _entrances = _roomDataList[_configurationSelected].GetEntrances();
+        _entrancesDirections = _roomDataList[_configurationSelected].entrancesDirections;
 
         CalculateCenterPosition();
         CreateSelfGrid();
+    }
+
+    public GameObject InstantiateRoom()
+    {
+        GameObject roomInstantiated = Instantiate(this.gameObject, _positionSelected, Quaternion.identity);
+
+        for (int i = 1; i < _roomDataList.Count; i++)
+        {
+            GameObject currentConfiguration = roomInstantiated.transform.Find($"Configuration_{i}").gameObject;
+
+            if (i == _configurationSelected)
+            {
+                currentConfiguration.SetActive(true);
+            }
+            else
+            {
+                currentConfiguration.SetActive(false);
+            }
+        }
+
+        GameObject aux = roomInstantiated.transform.Find($"AUX_Configuration_base").gameObject;
+        aux.SetActive(false);
+        GameObject gas = roomInstantiated.transform.Find($"Gas").gameObject;
+        aux.SetActive(true);
+        GameObject gasHigh = roomInstantiated.transform.Find($"GasHigh").gameObject;
+        aux.SetActive(true);
+
+        return roomInstantiated;
     }
 
     private void CalculateCenterPosition()
@@ -95,6 +139,9 @@ public class Room : MonoBehaviour
                     {
                         selfGrid[row, col].SetCellState(CellState.Room);
                     }
+                }else if (_shape.GetValue(col, row) == false)
+                {
+                    selfGrid[row, col].SetCellState(CellState.FillingRoom);
                 }
             }
         }
