@@ -63,6 +63,13 @@ public class AbilityHolder : MonoBehaviour
         int abilityEquippedInSlot1 = abilityEquipped1 / 10;
         int ability1Slot = abilityEquipped1 % 10;
 
+        if (abilityEquipped1 == 0)
+        {
+            //No ability equipped
+            return;
+        }
+        
+
         Debug.Log("COLOCANDO HABILIDAD DE SLOT" + ability1Slot);
         int abilityIDtoEquip = 0;
         
@@ -110,9 +117,9 @@ public class AbilityHolder : MonoBehaviour
     void Update()
     {
 
-        if (GameManager.Instance.GameState == GameState.OnGame)
+        if (GameManager.Instance.GameState == GameState.OnGame && ability != null)
         {
-              switch (state)
+        switch (state)
         {
             case AbilityState.ready:
                 if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost))

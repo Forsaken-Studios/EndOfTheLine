@@ -163,8 +163,9 @@ namespace Inventory
                 if (PlayerController.Instance != null)
                 {
                     PlayerController.Instance.CurrentWeight += item.itemWeight * amount;
+                    InventoryManager.Instance.ChangeText();
                 }
-                InventoryManager.Instance.ChangeText();
+ 
                 if (remainingItemsWithoutSpace > 0)
                     return false;
                 else
@@ -192,10 +193,11 @@ namespace Inventory
             //Change Weight
             if (SceneManager.GetActiveScene().name != "TrainBase")
             {
-                 InventoryManager.Instance.ChangeText();
                  if (PlayerController.Instance != null)
                  {
+                     Debug.Log("KWKW");
                      PlayerController.Instance.CurrentWeight += item.itemWeight * amount;
+                     InventoryManager.Instance.ChangeText();
                  }
             }
             return true; 
@@ -268,11 +270,11 @@ namespace Inventory
                 //Change Weight
                 if (InventoryManager.Instance != null)
                 {
-                    InventoryManager.Instance.ChangeText();
                     if (PlayerController.Instance != null)
                     {
                         PlayerController.Instance.CurrentWeight -= item.itemWeight * itemSlotAmount;
                     }
+                    InventoryManager.Instance.ChangeText();
                 }
                     
             }

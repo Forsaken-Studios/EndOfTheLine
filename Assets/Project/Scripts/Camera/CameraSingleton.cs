@@ -9,7 +9,7 @@ public class CameraSingleton : MonoBehaviour
 
     [SerializeField] private float inventoryZoomValue = 2; 
     [SerializeField] private float normalZoomValue = 5;
-
+    [SerializeField] private float zoomLerp = 0.02f;
     [SerializeField] private bool zoomIn;
     [SerializeField] private bool zoomOut;
     
@@ -36,7 +36,7 @@ public class CameraSingleton : MonoBehaviour
         if (zoomIn)
         {
             float currentValue = this.GetComponent<Camera>().orthographicSize;
-            this.GetComponent<Camera>().orthographicSize = Mathf.Lerp(currentValue, inventoryZoomValue, 0.02f);
+            this.GetComponent<Camera>().orthographicSize = Mathf.Lerp(currentValue, inventoryZoomValue, zoomLerp);
             if (currentValue == inventoryZoomValue)
             {
                 zoomIn = false;
@@ -44,7 +44,7 @@ public class CameraSingleton : MonoBehaviour
         }else if (zoomOut)
         {
             float currentValue = this.GetComponent<Camera>().orthographicSize;
-            this.GetComponent<Camera>().orthographicSize = Mathf.Lerp(currentValue, normalZoomValue, 0.02f);
+            this.GetComponent<Camera>().orthographicSize = Mathf.Lerp(currentValue, normalZoomValue, zoomLerp);
             if (currentValue == normalZoomValue)
             {
                 zoomOut = false;
