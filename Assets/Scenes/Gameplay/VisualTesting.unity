@@ -979,6 +979,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryZoomValue: 2
   normalZoomValue: 5
+  zoomLerp: 0.02
   zoomIn: 0
   zoomOut: 0
 --- !u!114 &456892933
@@ -2476,11 +2477,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7339121011308282292, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
   m_PrefabInstance: {fileID: 477824812}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &604312069 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4121925874714304663, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
-  m_PrefabInstance: {fileID: 477824812}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &608504510
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2588,8 +2584,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b247f8c056e5248abbfbf1052006bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTimeLeftToExtractGameObject: {fileID: 0}
-  ExtractionTimeLeftToArrive: {fileID: 0}
 --- !u!1 &775963514
 GameObject:
   m_ObjectHideFlags: 0
@@ -8147,7 +8141,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   rightClickInterfacePrefab: {fileID: 4792720288501569853, guid: 577036473e1ad03449e6e50119b00e82, type: 3}
-  canvasInventory: {fileID: 0}
   expanded1ItemSlotsList: []
   expanded2ItemSlotsList: []
   expanded3ItemSlotsList: []
@@ -24589,10 +24582,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b1a29b599bb09e499ac93cd473628ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blackFadeEndGamePanel: {fileID: 1750998425}
   CanvasMenus: {fileID: 1456828064}
-  wallCollider: {fileID: 1213088788}
-  floorCollider: {fileID: 784146522}
+  gridMain: {fileID: 0}
   MAX_AMOUNT_PER_SLOT_BASE: 4
   MAX_AMOUNT_PER_SLOT_GAME: 3
 --- !u!114 &1630251719 stripped
@@ -24846,11 +24837,6 @@ MonoBehaviour:
   pickupLorePrefab: {fileID: 5732930990995370671, guid: d5ccbb137c6093848afe007a4931c6a4, type: 3}
   expandedLoreViewPrefab: {fileID: 529020779935882830, guid: d933e1d5d2fbe7c4998b88fa2c3a9a87, type: 3}
   playerIsReadingLore: 0
---- !u!1 &1750998425 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4232630046215510665, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
-  m_PrefabInstance: {fileID: 1431736973}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1765749993 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8031993872325086579, guid: 9b8c9476d96828e47b7bbb8c3b3ef307, type: 3}
@@ -24943,9 +24929,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lootAllKey: 116
-  lootUIPanel: {fileID: 604312069}
-  splittingView: {fileID: 0}
+  canvasInventory: {fileID: 0}
   hotkeyPrefab: {fileID: 4138725030148504204, guid: cc3ace6a017cf08488005d28b190cc1c, type: 3}
+  CRATE_EMPTY_SPRITE: {fileID: 0}
+  CRATE_LOOTED_SPRITE: {fileID: 0}
+  CRATE_NOT_LOOTED_ITEMS_SPRITE: {fileID: 0}
+  CHEST_EMPTY_SPRITE: {fileID: 0}
+  CHEST_LOOTED_SPRITE: {fileID: 0}
+  CHEST_NOT_LOOTED_SPRITE: {fileID: 0}
 --- !u!4 &1829886203
 Transform:
   m_ObjectHideFlags: 0
@@ -25357,6 +25348,10 @@ PrefabInstance:
     - target: {fileID: 3524024178497533248, guid: 05585175bb8a4744695fe52cb55cde53, type: 3}
       propertyPath: m_Name
       value: ExpeditionMap
+      objectReference: {fileID: 0}
+    - target: {fileID: 3524024178497533248, guid: 05585175bb8a4744695fe52cb55cde53, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4814212035385936366, guid: 05585175bb8a4744695fe52cb55cde53, type: 3}
       propertyPath: m_LocalPosition.x
