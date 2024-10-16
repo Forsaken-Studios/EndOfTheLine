@@ -30,7 +30,9 @@ public abstract class IInventoryManager : MonoBehaviour
     public virtual void Start()
     {
         HandleExpandedInventories();
-
+        expandedInventory.SetActive(false);
+        expandedInventory2.SetActive(false);
+        expandedInventory3.SetActive(false);
         inspectListViewList = new List<GameObject>();
         inventoryHUD.SetActive(false);
     }
@@ -77,7 +79,6 @@ public abstract class IInventoryManager : MonoBehaviour
             for (int i = 0; i < 3; i++)
             {
                 itemSlotList.Add(expanded1ItemSlotsList[i]);
-               
             }
         }
         else

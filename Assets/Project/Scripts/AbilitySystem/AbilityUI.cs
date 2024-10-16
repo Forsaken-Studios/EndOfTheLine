@@ -19,6 +19,7 @@ public class AbilityUI : MonoBehaviour
         this.abilityIcon.sprite = ability.abilityIcon;
         blackPanel.fillAmount = 0f;
     }
+    
 
     public void StartCooldown()
     {

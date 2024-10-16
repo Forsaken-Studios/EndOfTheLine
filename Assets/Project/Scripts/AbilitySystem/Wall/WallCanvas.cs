@@ -1,10 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using Player;
-using Unity.VisualScripting.ReorderableList;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class WallCanvas : MonoBehaviour
