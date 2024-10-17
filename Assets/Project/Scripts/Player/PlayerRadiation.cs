@@ -10,10 +10,10 @@ namespace Player
     /// <summary>
     /// Class to control player stamina (Gas Zone)
     /// </summary>
-    public class PlayerStamina : IPlayer_Bar
+    public class PlayerRadiation : IPlayer_Bar
     {
         
-        public static PlayerStamina Instance;
+        public static PlayerRadiation Instance;
         private void Awake()
         {
             if (Instance != null)

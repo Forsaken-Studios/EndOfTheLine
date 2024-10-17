@@ -27,6 +27,7 @@ namespace Extraction
         {
             if (currentTime <= 0)
             {
+                timerText.text = "0.00";
                 if (ExtractionManager.Instance.GetIfExtractionArrived())
                 {
                     //End game

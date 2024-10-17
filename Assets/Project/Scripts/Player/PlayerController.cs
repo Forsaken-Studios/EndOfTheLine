@@ -145,7 +145,7 @@ namespace Player
                 {
                     if (isDashing)
                     {
-                        PlayerStamina.Instance.SetCanRecoveryEnergy(false);
+                        PlayerRadiation.Instance.SetCanRecoveryEnergy(false);
                         return;
                     }
                     HandleMovementInputs();

@@ -30,9 +30,6 @@ public abstract class IInventoryManager : MonoBehaviour
     public virtual void Start()
     {
         HandleExpandedInventories();
-        expandedInventory.SetActive(false);
-        expandedInventory2.SetActive(false);
-        expandedInventory3.SetActive(false);
         inspectListViewList = new List<GameObject>();
         inventoryHUD.SetActive(false);
     }
@@ -74,16 +71,16 @@ public abstract class IInventoryManager : MonoBehaviour
         //Lo pongo para que haya diferentes mejoras
         if (PlayerPrefs.GetInt("UpgradeUnlocked_1") == 1)
         {
-            
             expandedInventory.transform.parent = inventoryHUD.transform;
             for (int i = 0; i < 3; i++)
             {
                 itemSlotList.Add(expanded1ItemSlotsList[i]);
             }
+            expandedInventory.SetActive(true);
         }
         else
         {
-            expandedInventory3.SetActive(false);
+            expandedInventory.SetActive(false);
         }
         if (PlayerPrefs.GetInt("UpgradeUnlocked_3") == 1)
         {
@@ -92,10 +89,11 @@ public abstract class IInventoryManager : MonoBehaviour
             {
                 itemSlotList.Add(expanded2ItemSlotsList[i]);
             }
+            expandedInventory2.SetActive(true);
         }
         else
         {
-            expandedInventory3.SetActive(false);
+            expandedInventory2.SetActive(false);
         }
         if (PlayerPrefs.GetInt("UpgradeUnlocked_4") == 1)
         {
@@ -104,6 +102,7 @@ public abstract class IInventoryManager : MonoBehaviour
             {
                 itemSlotList.Add(expanded2ItemSlotsList[i]);
             }
+            expandedInventory3.SetActive(true);
         }
         else
         {

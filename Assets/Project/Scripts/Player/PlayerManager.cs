@@ -8,12 +8,12 @@ namespace Player
         private bool isPlayerInGasZone = false;
         private bool isPlayerInExtractionPoint = false;
 
-        private PlayerStamina playerStamina;
+        private PlayerRadiation playerStamina;
 
 
         private void Awake()
         {
-            this.playerStamina = GetComponent<PlayerStamina>();
+            this.playerStamina = GetComponent<PlayerRadiation>();
         }
 
         public void PlayerEnteredGasZone()
