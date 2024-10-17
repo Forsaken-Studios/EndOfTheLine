@@ -8701,12 +8701,32 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4194676598750249467}
     - target: {fileID: 3878746648933132990, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
-      propertyPath: recoveryEnergyTimeLerp
+      propertyPath: recoveryEnergyTime
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3878746648933132990, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: recoveryEnergySpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3878746648933132990, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: recoveryEnergyTimeLerp
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3878746648933132990, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: TimeCooldownBetweenRecoveries
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: dashSpeed
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: overWeight
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: dashDuration
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: maxLimitWeight
@@ -8721,8 +8741,24 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 802970990}
     - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: recoveryEnergyTime
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: increaseEnergySpeed
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: recoveryEnergySpeed
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: recoveryEnergyTimeLerp
-      value: 0.1
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: TimeCooldownBetweenRecoveries
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5970675836886858743, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: abilityUI
@@ -9801,11 +9837,9 @@ MonoBehaviour:
   statusBar: {fileID: 1150400102875501175}
   energy: 100
   canRecoverEnergy: 0
-  recoveryEnergySpeed: 5
-  recoveryEnergyTime: 4
-  recoveryEnergyTimeLerp: 0.2
-  valueStaminaDecrease: 5
-  barLerpSpeed: 0
+  increaseEnergySpeed: 0
+  TimeCooldownBetweenRecoveries: 0
+  valueEnergyDecrease: 0.01
   holder1: {fileID: 1026545009}
   holder2: {fileID: 1026545008}
 --- !u!1 &1154896776
