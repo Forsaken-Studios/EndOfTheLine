@@ -25,7 +25,8 @@ public class RaidTime : MonoBehaviour
     {
         if (currentTime <= 0)
         {
-            timerText.text = "00:00";
+            timerText.text = "0:00";
+            StopAllCoroutines();
             //END GAME
             GameManager.Instance.EndGame();
         }
