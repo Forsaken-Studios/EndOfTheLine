@@ -17,8 +17,8 @@ namespace Player
         [FormerlySerializedAs("recoveryStaminaSpeed")]
         [Header("Stamina properties")] 
         [SerializeField] private float recoveryEnergySpeed = 5f;
-        [FormerlySerializedAs("recoveryStaminaTime")] [SerializeField] private float recoveryEnergyTime = 0.2f;
-        [FormerlySerializedAs("recoveryStaminaTimeLerp")] [SerializeField] private float recoveryEnergyTimeLerp = 0.2f;
+        [SerializeField] private float recoveryEnergyTime = 0.2f;
+        [SerializeField] private float recoveryEnergyTimeLerp = 0.2f;
 
         [HideInInspector]
         [Header("Gas Zone Properties")] [SerializeField]
@@ -42,8 +42,7 @@ namespace Player
             {
                 if ((energy / 100) != statusBar.fillAmount)
                 {
-                    this.statusBar.fillAmount = Mathf.Lerp(this.statusBar.fillAmount, GetEnergy() / 100,
-                        recoveryEnergyTimeLerp);
+                    this.statusBar.fillAmount = GetEnergy() / 100;
                     if (this.statusBar.fillAmount >= 0.98)
                     {
                         this.statusBar.fillAmount = 1;
