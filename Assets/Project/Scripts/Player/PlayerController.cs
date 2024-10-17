@@ -253,7 +253,16 @@ namespace Player
             PlayerOverheating.Instance.SetCanRecoveryEnergy(false);
             canDash = false;
             isDashing = true;
-            _rb.velocity = new Vector2(speedX * dashSpeed, speedY * dashSpeed / 2);
+
+            if (speedX == 0)
+            {
+                _rb.velocity = new Vector2(speedX * dashSpeed, speedY * dashSpeed);
+            }
+            else
+            {
+                _rb.velocity = new Vector2(speedX * dashSpeed, speedY * dashSpeed / 3);
+            }
+
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
             yield return new WaitForSeconds(dashCooldown);

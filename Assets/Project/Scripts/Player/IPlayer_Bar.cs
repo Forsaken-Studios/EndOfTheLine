@@ -7,26 +7,20 @@ namespace Player
 {
     public abstract class IPlayer_Bar : MonoBehaviour
     {
-        [FormerlySerializedAs("staminaBar")] [SerializeField] protected Image statusBar;
+        [SerializeField] protected Image statusBar;
 
-        protected int MAX_STAMINA;
-        [FormerlySerializedAs("stamina")] [SerializeField] protected float energy;
+        protected int MAX_STAMINA; 
+        [SerializeField] protected float energy;
 
         [SerializeField] private bool canRecoverEnergy;
+        [Header("Energy properties")] 
+        [Tooltip("Amount that increase [Increase Bar]")]
+        [SerializeField] private float increaseEnergySpeed = 5f;
+        [Tooltip("Time between waits")]
+        [SerializeField] private float TimeCooldownBetweenRecoveries = 0.2f;
+        [Tooltip("Decrease[Bar]")]
+        [SerializeField]private float valueEnergyDecrease = 5;
 
-        [FormerlySerializedAs("recoveryStaminaSpeed")]
-        [Header("Stamina properties")] 
-        [SerializeField] private float recoveryEnergySpeed = 5f;
-        [SerializeField] private float recoveryEnergyTime = 0.2f;
-        [SerializeField] private float recoveryEnergyTimeLerp = 0.2f;
-
-        [HideInInspector]
-        [Header("Gas Zone Properties")] [SerializeField]
-        private float valueStaminaDecrease = 5;
-        [HideInInspector]
-        [Header("Bar Lerp Speed")]
-        [SerializeField] private float barLerpSpeed;
-    
         public virtual void Start()
         {
             statusBar.fillAmount = 1.0f;
@@ -58,8 +52,8 @@ namespace Player
             {
                 if (energy != MAX_STAMINA && canRecoverEnergy)
                 {
-                    IncreaseEnergy(recoveryEnergySpeed);
-                    yield return new WaitForSeconds(recoveryEnergyTime);
+                    IncreaseEnergy(increaseEnergySpeed);
+                    yield return new WaitForSeconds(TimeCooldownBetweenRecoveries);
                 }
 
                 yield return null;
@@ -73,8 +67,8 @@ namespace Player
             {
                 if (energy >= 0.01)
                 {
-                    DecreaseEnergy(valueStaminaDecrease);
-                    yield return new WaitForSeconds(recoveryEnergyTime);
+                    DecreaseEnergy(valueEnergyDecrease);
+                    yield return new WaitForSeconds(TimeCooldownBetweenRecoveries);
                 }
 
                 yield return null;
