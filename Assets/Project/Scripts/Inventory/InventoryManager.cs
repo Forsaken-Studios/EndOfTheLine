@@ -62,7 +62,6 @@ namespace Inventory
         {
             if (!inventoryHUD.activeSelf)
             {
-                Debug.Log("DJE");
                 CameraSingleton.CameraSingletonInstance.ZoomCameraOnInventory();
             }
             else

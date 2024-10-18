@@ -30,7 +30,6 @@ public class AbilityUI : MonoBehaviour
         countdownRunning = true;
         StartCoroutine("CountDownAnimation",time);
         yield return new WaitForSeconds(time);
-        Debug.Log ("Ding ding ding");
         if(countdownRunning)
             //do stuff
 	

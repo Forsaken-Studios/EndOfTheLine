@@ -195,7 +195,6 @@ namespace Inventory
             {
                  if (PlayerController.Instance != null)
                  {
-                     Debug.Log("KWKW");
                      PlayerController.Instance.CurrentWeight += item.itemWeight * amount;
                      InventoryManager.Instance.ChangeText();
                  }
@@ -228,7 +227,6 @@ namespace Inventory
                         if (item.Key.itemID == gasFilterID)
                         {
                             currentAirFilter += item.Value * item.Key.itemValue;
-                            Debug.Log("AÑADIMOS AIR FILTER: " + currentAirFilter);
                         }
                         break;
                 }

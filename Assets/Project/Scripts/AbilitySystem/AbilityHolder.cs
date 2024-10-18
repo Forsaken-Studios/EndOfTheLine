@@ -68,9 +68,6 @@ public class AbilityHolder : MonoBehaviour
             //No ability equipped
             return;
         }
-        
-
-        Debug.Log("COLOCANDO HABILIDAD DE SLOT" + ability1Slot);
         int abilityIDtoEquip = 0;
         
         if (ability1Slot == 1)
@@ -89,7 +86,6 @@ public class AbilityHolder : MonoBehaviour
         Ability ability = FindAbilityID(abilityIDtoEquip);
         this.ability = ability;
         //Load image to ability icon
-        Debug.Log(ability);
         abilityUI.SetUpProperties(ability);
     }
 
@@ -213,12 +209,10 @@ public class AbilityHolder : MonoBehaviour
     {
         if (abilityHolderID == 1)
         {
-            Debug.Log("CANCELING ID: 2");
             OverheatManager.Instance.GetHolder2().TryToCancelAbility();
         }
         else
         {
-            Debug.Log("CANCELING ID: 1");
             OverheatManager.Instance.GetHolder1().TryToCancelAbility();
         }
     }

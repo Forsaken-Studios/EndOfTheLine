@@ -98,7 +98,6 @@ public class LooteableObjectSelectorUI : MonoBehaviour
     
     private void OnDisable()
     {
-        Debug.Log("DISABLE");
         currentIndex = 0;
     }
 }

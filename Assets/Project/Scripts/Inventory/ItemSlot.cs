@@ -50,7 +50,6 @@ namespace Inventory
             {
                 if (Input.GetKeyDown(KeyCode.X))
                 {
-                    Debug.Log("DESECHAR");
                     ThrowItemToGround();
                 }
             }
@@ -551,7 +550,6 @@ namespace Inventory
                 TrainBaseInventory.Instance.TryAddItemCrateToItemSlot(itemToLoot, amountToLoot, out remainingItemsWithoutSpace);
             else
                  LootUIManager.Instance.TryAddItemCrateToItemSlot(itemToLoot, amountToLoot, out remainingItemsWithoutSpace);
-            Debug.Log("REMAINING ITEMS: " + remainingItemsWithoutSpace);
             if (remainingItemsWithoutSpace > 0)
             {
                 if (SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
@@ -750,7 +748,6 @@ namespace Inventory
                 if (loot.GetIfItIsTemporalBox() && loot.CheckIfLootBoxIsEmpty())
                 {
                     Destroy(loot.gameObject);
-                    Debug.Log("TEMPORAL BOX DESTROYED");
                     InventoryManager.Instance.DesactivateInventory();
                     LootUIManager.Instance.DesactivateLootUIPanel();
                 }

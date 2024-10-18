@@ -24,8 +24,6 @@ public class DecoyGrenadeMovement : MonoBehaviour
                 rigidbody2D.velocity.magnitude <= 5f)
             {
                 //Stop
-                
-                Debug.Log("STOP GRENADE");
                 //rigidbody2D.MovePosition(this.gameObject.transform.position);
                 rigidbody2D.drag = 2000f;
                 keepMovingGrenade = false;

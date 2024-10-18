@@ -186,7 +186,6 @@ namespace LootSystem
                     }
                     else
                     {
-                        Debug.Log("NO SLOTS AVAILABLE FOR THAT CRATE");
                     } 
                 }
             
@@ -226,8 +225,6 @@ namespace LootSystem
             if (!onlyOneItemInBag)
                 itemsToLoot = remainingSlotsInCrate;
             
-            Debug.Log(itemsToLoot);
-
             for (int i = 0; i < itemsToLoot; i++)
             {
                 int value = (int) Random.Range(0, intervalAcount);

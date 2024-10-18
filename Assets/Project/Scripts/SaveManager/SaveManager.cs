@@ -37,7 +37,6 @@ namespace SaveManagerNamespace
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
    
             string json = JsonConvert.SerializeObject(data);
-            Debug.Log("SAVED: " + json);
             using (StreamWriter streamWriter = new StreamWriter(fullPath))
             {
                 streamWriter.Write(json);
@@ -55,7 +54,6 @@ namespace SaveManagerNamespace
                 using (StreamReader streamReader = new StreamReader(fullPath))
                 {
                     string jsonFromFile = streamReader.ReadToEnd();
-                    Debug.Log("LOADED EXPEDITION REWARD: " + jsonFromFile);
                     return JsonConvert.DeserializeObject<ItemsDiccionarySave>(jsonFromFile);
                 }
             }
@@ -80,7 +78,6 @@ namespace SaveManagerNamespace
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
    
             string json = JsonConvert.SerializeObject(data);
-            Debug.Log("SAVED: " + json);
             using (StreamWriter streamWriter = new StreamWriter(fullPath))
             {
                 streamWriter.Write(json);
@@ -97,7 +94,6 @@ namespace SaveManagerNamespace
                 using (StreamReader streamReader = new StreamReader(fullPath))
                 {
                     string jsonFromFile = streamReader.ReadToEnd();
-                    Debug.Log("LOADED PLAYER INVENTORY: " + jsonFromFile);
                     return JsonConvert.DeserializeObject<ItemsDiccionarySave>(jsonFromFile);
                 }
             }
@@ -122,7 +118,6 @@ namespace SaveManagerNamespace
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
    
             string json = JsonConvert.SerializeObject(data);
-            Debug.Log("SAVED: " + json);
             using (StreamWriter streamWriter = new StreamWriter(fullPath))
             {
                 streamWriter.Write(json);
@@ -139,7 +134,6 @@ namespace SaveManagerNamespace
                 using (StreamReader streamReader = new StreamReader(fullPath))
                 {
                     string jsonFromFile = streamReader.ReadToEnd();
-                    Debug.Log("LOADED STORE: " + jsonFromFile);
                     return JsonConvert.DeserializeObject<ItemsBoolDiccionarySave>(jsonFromFile);
                 }
             }
@@ -164,7 +158,6 @@ namespace SaveManagerNamespace
             Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
    
             string json = JsonConvert.SerializeObject(data);
-            Debug.Log("SAVED BASE INVENTORY: " + json);
             using (StreamWriter streamWriter = new StreamWriter(fullPath))
             {
                 streamWriter.Write(json);
@@ -181,7 +174,6 @@ namespace SaveManagerNamespace
                 using (StreamReader streamReader = new StreamReader(fullPath))
                 {
                     string jsonFromFile = streamReader.ReadToEnd();
-                    Debug.Log("LOADED BASE INVENTORY: " + jsonFromFile);
                     return JsonConvert.DeserializeObject<DataBaseInventory>(jsonFromFile);
                 }
 

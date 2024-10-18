@@ -15,13 +15,16 @@ MonoBehaviour:
   name: Decoy
   description: Hace ruiditos donde lo pongas
   abilityIcon: {fileID: 21300000, guid: 65778c57c96cce94cb738b4bb1beef45, type: 3}
-  abilityID: 3
+  abilityID: 200
   cooldownTime: 4
   activeTime: 2
   overheatCost: 36
   needToBeReactivated: 1
-  goldNeededToUnlock: 12
-  materialNeededToUnlock: 12
+  airFilterNeededToUnlock: 1
+  material1Item: {fileID: 11400000, guid: 7da282e1236b2524091e97c025d1cfc7, type: 2}
+  material1NeededToUnlock: 5
+  material2Item: {fileID: 11400000, guid: c002f4e39df0e7141a4f3b4bb99ba6aa, type: 2}
+  material2NeededToUnlock: 6
   force: 35
   decoyRadius: 14
   decoyGrenadeCanvasPrefab: {fileID: 1547009640050184320, guid: 4416c86987cb3744c880451adf774abe, type: 3}

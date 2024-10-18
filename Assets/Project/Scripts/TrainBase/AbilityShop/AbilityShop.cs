@@ -22,7 +22,8 @@ public class AbilityShop : MonoBehaviour
     [SerializeField] private TextMeshProUGUI abilityCooldown;
     [SerializeField] private Image abilityIcon;
     [SerializeField] private TextMeshProUGUI abilityGoldCost;
-    [SerializeField] private TextMeshProUGUI abilityMaterialCost;
+    [SerializeField] private TextMeshProUGUI abilityMaterial2Cost;
+    [SerializeField] private TextMeshProUGUI abilityMaterial3Cost;
     [SerializeField] private Button buyAbilityButton;
 
     private void Awake()
@@ -60,8 +61,9 @@ public class AbilityShop : MonoBehaviour
        abilityDescription.text = ability.description;
        abilityIcon.sprite = ability.abilityIcon;
        abilityCooldown.text = ability.cooldownTime.ToString();
-       abilityGoldCost.text = ability.goldNeededToUnlock.ToString();
-       abilityMaterialCost.text = ability.materialNeededToUnlock.ToString();
+       abilityGoldCost.text = ability.airFilterNeededToUnlock.ToString();
+       abilityMaterial2Cost.text = ability.material1NeededToUnlock.ToString();
+       abilityMaterial3Cost.text = ability.material2NeededToUnlock.ToString();
        buyAbilityButton.gameObject.SetActive(!isUnlocked);
        if (!isUnlocked)
        {
@@ -72,14 +74,32 @@ public class AbilityShop : MonoBehaviour
 
     private void BuyAbilityButton()
     {
-        //if(has resources){} 
-        /*
-         *
-         *   if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
-                    PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
-         */
-        PlayerPrefs.SetInt("AbilityUnlocked_" + currentAbilitySelected.abilityID, 1);
-        buyAbilityButton.gameObject.SetActive(false);
+        
+        if (TrainManager.Instance.resourceAirFilter >= currentAbilitySelected.airFilterNeededToUnlock)
+        {
+            bool haveRedMineral =
+                TrainBaseInventory.Instance.GetIfItemIsInInventory(currentAbilitySelected.material1Item,
+                    currentAbilitySelected.material1NeededToUnlock);
+            bool havePurpleMineral =
+                TrainBaseInventory.Instance.GetIfItemIsInInventory(currentAbilitySelected.material2Item,
+                    currentAbilitySelected.material2NeededToUnlock);
+            if (haveRedMineral && havePurpleMineral)
+            {
+                TrainManager.Instance.resourceAirFilter -= currentAbilitySelected.airFilterNeededToUnlock;
+                TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(currentAbilitySelected.material1Item, currentAbilitySelected.material1NeededToUnlock);
+                TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(currentAbilitySelected.material2Item, currentAbilitySelected.material2NeededToUnlock);
+                PlayerPrefs.SetInt("AbilityUnlocked_" + currentAbilitySelected.abilityID, 1);
+                buyAbilityButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                buyAbilityButton.gameObject.GetComponent<Animator>().SetTrigger("Shake"); 
+            }
+        }
+        else
+        {
+            buyAbilityButton.gameObject.GetComponent<Animator>().SetTrigger("Shake"); 
+        }
     }
     
     private void OnDisable()

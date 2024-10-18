@@ -31,8 +31,6 @@ public class EquipmentScreen : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("SLOT 1: " + abilityInSlot1.name);
-        Debug.Log("SLOT 2: " + abilityInSlot2.name);
     }
 
     private void OnEnable()

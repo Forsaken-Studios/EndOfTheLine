@@ -49,13 +49,11 @@ namespace ContextMenu
 
         private void UseItem()
         {
-            Debug.Log("USE ITEM");
             InventoryManager.Instance.TryDestroyContextMenu();
         }
 
         private void InspectItem()
         {
-            Debug.Log("INSPECT ITEM");
             Debug.Log("ESTAMOS INSPECCIONANDO: " + item.itemName.ToString());
             Vector2 spawnPosition = Vector2.zero;
             if (SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
@@ -115,7 +113,6 @@ namespace ContextMenu
         {
             if (eventData.pointerPress.gameObject.CompareTag("BackgroundToDeleteContextMenu"))
             {
-                Debug.Log("CLICK OUTSIDE");
                 Destroy(this.gameObject);
             }
         }
