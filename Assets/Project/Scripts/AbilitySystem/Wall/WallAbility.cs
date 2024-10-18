@@ -10,17 +10,20 @@ public class WallAbility : Ability
     private GameObject canvasObject;
     private AbilityHolder holder;
     private GameObject wallSquare;
+    private WallPlacers wallPlacers;
     public override void Activating(GameObject parent, Vector2 position, Vector2 endPosition, out GameObject gm)
     {
         Destroy(canvasObject);
         //Instantiate placer in walls
         GameObject placers = Instantiate(wallPlacerPrefab, Vector2.zero, Quaternion.identity);
         placers.GetComponent<WallPlacers>().SetLocations(position, endPosition, out wallSquare);
+        wallPlacers = placers.GetComponent<WallPlacers>();
         gm = placers;
     }
     public override void Activate(GameObject parent, Vector2 position, Vector2 endPosition)
     {
         //Instantiate wall
+        wallPlacers.ActivateSound();
         wallSquare.SetActive(true);
     }
     
@@ -35,4 +38,5 @@ public class WallAbility : Ability
     {
         // Debug.Log("ABILITY " +this.name + " cooldown [Animation, or something if needed]");
     }
+    
 }

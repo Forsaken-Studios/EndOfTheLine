@@ -22,6 +22,22 @@ public class SmokeGrenadeMovement : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
+    private void Start()
+    {
+        SoundManager.Instance.onResumeAudios += ResumeAudios;
+        SoundManager.Instance.onStopAudios += StopAudios;
+    }
+
+    private void StopAudios(object sender, EventArgs e)
+    {
+        audioSource.Stop();
+    }
+
+    private void ResumeAudios(object sender, EventArgs e)
+    {
+        audioSource.Play();
+    }
+
     private void Update()
     {
         if (keepMovingGrenade)
@@ -37,6 +53,7 @@ public class SmokeGrenadeMovement : MonoBehaviour
                 smokeCollider.SetActive(true);
                 AbilityManager.Instance.SetActivatedSmoke(true);
                 rigidbody2D.drag = 2000f;
+                audioSource.Play();
                 holder.ActivateAbility();
                 keepMovingGrenade = false;
             }

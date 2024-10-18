@@ -80,7 +80,6 @@ public class PauseMenu : MonoBehaviour
                  if (AbilitiesNotActivated())
                  {
                      PauseGame();
-                     
                  }
              }
              else

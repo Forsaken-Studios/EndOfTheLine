@@ -26,13 +26,15 @@ public class Sound
 public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance;
-
-
+    
     private List<Sound> inventoryAudioClips;
     //Se tendría que ver como lo renombramos en resources para tener varios sonidos para lo mismo
     private Dictionary<SoundAction, AudioClip> audioDictionary;
     [SerializeField] private AudioSource musicSource, sfxSource;
 
+    public event EventHandler onStopAudios;
+    public event EventHandler onResumeAudios;
+    
     public float sfxVolume { get; set; }
     public float musicVolume { get; set; }
     
@@ -83,6 +85,7 @@ public class SoundManager : MonoBehaviour
 
     public void PauseSounds()
     {
+        onStopAudios?.Invoke(this, EventArgs.Empty);
         if (sfxSource.isPlaying)
             sfxSource.Pause();
         if (musicSource.isPlaying)
@@ -91,6 +94,7 @@ public class SoundManager : MonoBehaviour
 
     public void ResumeSounds()
     {
+        onResumeAudios?.Invoke(this, EventArgs.Empty);
         musicSource.Play();
         sfxSource.Play();
     }
