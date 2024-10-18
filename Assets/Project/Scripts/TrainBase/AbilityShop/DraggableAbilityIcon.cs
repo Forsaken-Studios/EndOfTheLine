@@ -56,7 +56,7 @@ public class DraggableAbilityIcon : MonoBehaviour, IBeginDragHandler, IDragHandl
             
             transform.SetParent(parentBeforeDrag);
             this.transform.position = parentBeforeDrag.position;
-            transform.SetAsFirstSibling();
+            transform.SetSiblingIndex(2);
             image.raycastTarget = true;
         }
 
