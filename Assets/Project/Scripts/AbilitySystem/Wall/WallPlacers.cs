@@ -10,6 +10,8 @@ public class WallPlacers : MonoBehaviour
     [SerializeField] private GameObject secondPlacer;
 
     [SerializeField] private GameObject wall;
+
+    private AudioSource audioSource;
     public void SetLocations(Vector2 location1, Vector2 location2, out GameObject wallSquare)
     {
         firstPlacer.transform.position = location1;
@@ -24,5 +26,30 @@ public class WallPlacers : MonoBehaviour
         wall.transform.rotation = Quaternion.Euler(0, 0, angle);
         wall.SetActive(false);
         wallSquare = wall;
+    }
+
+    private void Awake()
+    {
+        audioSource = GetComponentInChildren<AudioSource>();
+    }
+
+    public void ActivateSound()
+    {
+        audioSource.Play();
+    }
+    private void Start()
+    {
+        SoundManager.Instance.onResumeAudios += ResumeAudios;
+        SoundManager.Instance.onStopAudios += StopAudios;
+    }
+
+    private void StopAudios(object sender, EventArgs e)
+    {
+        audioSource.Stop();
+    }
+
+    private void ResumeAudios(object sender, EventArgs e)
+    {
+        audioSource.Play();
     }
 }

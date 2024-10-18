@@ -9,50 +9,49 @@ using UnityEngine.UI;
 public class PauseMenu : MonoBehaviour
 {
 
+    public static PauseMenu Instance;
+
     [SerializeField] private GameObject pauseMenuGameObject;
     [Header("Buttons")]
     [SerializeField] private Button playButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private Button returnToTrainButton;
-    [Header("SFX & Music Sliders")]
+    [Header("General & SFX & Music Sliders")]
+    [SerializeField] private Slider generalVolumeSlider;
     [SerializeField] private Slider sfxVolumeSlider;
     [SerializeField] private Slider musicVolumeSlider;
-    
-     private void Start()
+
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(this);
+            Debug.LogError("[PauseMenu.cs] : There is already a pause menu");
+        }
+    }
+
+    private void Start()
     {
         playButton.onClick.AddListener(() => ResumeGame());
         returnToTrainButton.onClick.AddListener(() => ReturnToTrain());
         quitButton.onClick.AddListener(() => QuitGame());
         pauseMenuGameObject.SetActive(false);
-        sfxVolumeSlider.onValueChanged.AddListener(delegate { OnSfxValueChanged(); });
-        musicVolumeSlider.onValueChanged.AddListener(delegate { OnMusicValueChanged(); });
         LoadVolumeValues();
     }
 
-    private void OnDestroy()
+    public void LoadVolumeValues()
     {
-        sfxVolumeSlider.onValueChanged.RemoveAllListeners();
-        musicVolumeSlider.onValueChanged.RemoveAllListeners();
-    }
-
-    private void OnSfxValueChanged()
-    {
-        SoundManager.Instance.ChangeSFXAudioVolume(sfxVolumeSlider.value);
-        PlayerPrefs.SetFloat("SFXVolume", sfxVolumeSlider.value);
-    }
-    
-    private void OnMusicValueChanged()
-    {
-        SoundManager.Instance.ChangeMusicAudioVolume(musicVolumeSlider.value);
-        PlayerPrefs.SetFloat("MusicVolume", musicVolumeSlider.value);
-    }
-    private void LoadVolumeValues()
-    {
-        if (PlayerPrefs.HasKey("SFXVolume"))
-            sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume");
+        if (PlayerPrefs.HasKey("MasterVolume"))
+            generalVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume");
         else
-            sfxVolumeSlider.value = 0.5f;
-            
+            generalVolumeSlider.value = 0.5f;
+        
+        if (PlayerPrefs.HasKey("SoundEffectsVolume"))
+            sfxVolumeSlider.value = PlayerPrefs.GetFloat("SoundEffectsVolume");
+        else
+            sfxVolumeSlider.value = 0.5f;   
+        
         
         if (PlayerPrefs.HasKey("MusicVolume"))
             musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume");
@@ -81,7 +80,6 @@ public class PauseMenu : MonoBehaviour
                  if (AbilitiesNotActivated())
                  {
                      PauseGame();
-                     
                  }
              }
              else

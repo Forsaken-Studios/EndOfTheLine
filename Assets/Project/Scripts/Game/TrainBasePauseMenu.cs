@@ -6,21 +6,33 @@ using UnityEngine.UI;
 
 public class TrainBasePauseMenu : MonoBehaviour
 {
+    
+    public static TrainBasePauseMenu Instance;
+    
+    
    [SerializeField] private GameObject pauseMenuGameObject;
     [Header("Buttons")]
     [SerializeField] private Button quitButton;
     [SerializeField] private Button returnToMenuButton;
     [Header("SFX & Music Sliders")]
     [SerializeField] private Slider sfxVolumeSlider;
+    [SerializeField] private Slider generalVolumeSlider;
     [SerializeField] private Slider musicVolumeSlider;
     
+    
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(this);
+            Debug.LogError("[PauseMenu.cs] : There is already a pause menu");
+        }
+    }
      private void Start()
     {
         returnToMenuButton.onClick.AddListener(() => ReturnToMenuButton());
         quitButton.onClick.AddListener(() => QuitGame());
         pauseMenuGameObject.SetActive(false);
-        sfxVolumeSlider.onValueChanged.AddListener(delegate { OnSfxValueChanged(); });
-        musicVolumeSlider.onValueChanged.AddListener(delegate { OnMusicValueChanged(); });
         LoadVolumeValues();
     }
 
@@ -35,25 +47,19 @@ public class TrainBasePauseMenu : MonoBehaviour
         sfxVolumeSlider.onValueChanged.RemoveAllListeners();
         musicVolumeSlider.onValueChanged.RemoveAllListeners();
     }
-
-    private void OnSfxValueChanged()
-    {
-        SoundManager.Instance.ChangeSFXAudioVolume(sfxVolumeSlider.value);
-        PlayerPrefs.SetFloat("SFXVolume", sfxVolumeSlider.value);
-    }
     
-    private void OnMusicValueChanged()
+    public void LoadVolumeValues()
     {
-        SoundManager.Instance.ChangeMusicAudioVolume(musicVolumeSlider.value);
-        PlayerPrefs.SetFloat("MusicVolume", musicVolumeSlider.value);
-    }
-    private void LoadVolumeValues()
-    {
-        if (PlayerPrefs.HasKey("SFXVolume"))
-            sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume");
+        if (PlayerPrefs.HasKey("MasterVolume"))
+            generalVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume");
         else
-            sfxVolumeSlider.value = 0.5f;
-            
+            generalVolumeSlider.value = 0.5f;
+        
+        if (PlayerPrefs.HasKey("SoundEffectsVolume"))
+            sfxVolumeSlider.value = PlayerPrefs.GetFloat("SoundEffectsVolume");
+        else
+            sfxVolumeSlider.value = 0.5f;   
+        
         
         if (PlayerPrefs.HasKey("MusicVolume"))
             musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume");
