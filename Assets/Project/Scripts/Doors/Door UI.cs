@@ -43,8 +43,6 @@ public class DoorUI : MonoBehaviour
             {
                 if (PlayerInventory.Instance.CheckIfPlayerHasKey())
                 {
-                    Debug.Log("Open Door");
-                    
                     doorSpriteRenderer.sprite = doorOpenedSprite;
                     doorCollider.enabled = false;
                     doorOpened = !doorOpened;

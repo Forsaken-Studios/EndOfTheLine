@@ -73,7 +73,6 @@ public class BuyWagon : MonoBehaviour
         {
             //Buy Wagon
             Destroy(this.gameObject);
-            Debug.Log("BUY BUY BUY");
         }
         else
         {

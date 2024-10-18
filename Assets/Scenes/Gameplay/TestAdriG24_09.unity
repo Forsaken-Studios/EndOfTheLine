@@ -25647,6 +25647,7 @@ GameObject:
   - component: {fileID: 1621149658}
   - component: {fileID: 1621149657}
   - component: {fileID: 1621149656}
+  - component: {fileID: 1621149659}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -25715,6 +25716,18 @@ MonoBehaviour:
   gridMain: {fileID: 775963514}
   MAX_AMOUNT_PER_SLOT_BASE: 4
   MAX_AMOUNT_PER_SLOT_GAME: 3
+--- !u!114 &1621149659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621149654}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4ceab61c32d08649a9ee9e94ac5445f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1621468093 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2511851951557720410, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}

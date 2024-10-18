@@ -9,7 +9,6 @@ public class GasZoneLocationTrigger : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("GAS ZONE");
             SoundManager.Instance.ActivateSoundByName(SoundAction.GasZone_Geiger);
             other.gameObject.GetComponent<PlayerManager>().PlayerEnteredGasZone();
         }

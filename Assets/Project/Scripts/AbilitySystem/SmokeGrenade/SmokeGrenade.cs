@@ -29,7 +29,7 @@ public class SmokeGrenade : Ability
     public override void Activate(GameObject parent, Vector2 position, Vector2 endPosition)
     {
         //Instantiate smoke
-        Debug.Log("SMOKE SMOKE SMOKE");
+        Debug.Log("Throwing Smoke");
     }
     public override void PrepareAbility(GameObject parent, AbilityHolder abilityHolder, out GameObject currentCanvas)
     {
