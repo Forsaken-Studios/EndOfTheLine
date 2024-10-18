@@ -32,7 +32,6 @@ public class SoundManager : MonoBehaviour
     //Se tendría que ver como lo renombramos en resources para tener varios sonidos para lo mismo
     private Dictionary<SoundAction, AudioClip> audioDictionary;
     [SerializeField] private AudioSource musicSource, sfxSource;
-    private List<AudioSource> externalAudioSources; 
 
     public float sfxVolume { get; set; }
     public float musicVolume { get; set; }
@@ -50,7 +49,7 @@ public class SoundManager : MonoBehaviour
     }
     private void Start()
     {
-        externalAudioSources = new List<AudioSource>();
+
         inventoryAudioClips = new List<Sound>();
         audioDictionary = new Dictionary<SoundAction, AudioClip>();
         LoadAllSounds();
@@ -88,23 +87,12 @@ public class SoundManager : MonoBehaviour
             sfxSource.Pause();
         if (musicSource.isPlaying)
             musicSource.Pause();
-
-        foreach (var audioSource in externalAudioSources)
-        {
-            if (audioSource.isPlaying)
-                audioSource.Pause();
-        }
     }
 
     public void ResumeSounds()
     {
         musicSource.Play();
         sfxSource.Play();
-        
-        foreach (var audioSource in externalAudioSources)
-        {
-            audioSource.Play();
-        }
     }
     
     private void LoadSpecificSoundsInDictionary(string path)
@@ -141,8 +129,7 @@ public class SoundManager : MonoBehaviour
         if (audioClip != null)
         {
             sfxSource.clip = audioClip;
-            sfxSource.volume = sfxVolume;
-            sfxSource.PlayOneShot(audioClip);
+            sfxSource.Play();
         }
     }
     
@@ -180,26 +167,6 @@ public class SoundManager : MonoBehaviour
             sfxSource.clip = null;
         }
     }
-
-    public void ChangeSFXAudioVolume(float volume)
-    {
-        this.sfxSource.volume = volume;
-        this.sfxVolume = volume;
-    }
-    public void ChangeMusicAudioVolume(float volume)
-    {
-        this.musicVolume = volume;
-        this.musicSource.volume = volume;
-    }
-
-    public void AddExternalAudioSource(AudioSource audio)
-    {
-        externalAudioSources.Add(audio);
-    }
-
-    public void RemoveExternalAudioSource(AudioSource audio)
-    {
-        externalAudioSources.Remove(audio);
-    }
+    
     
 }

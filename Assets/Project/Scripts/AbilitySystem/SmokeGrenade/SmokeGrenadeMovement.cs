@@ -36,27 +36,12 @@ public class SmokeGrenadeMovement : MonoBehaviour
                 grenadeSprite.SetActive(false); 
                 smokeCollider.SetActive(true);
                 AbilityManager.Instance.SetActivatedSmoke(true);
-                ActivateSound();
                 rigidbody2D.drag = 2000f;
                 holder.ActivateAbility();
                 keepMovingGrenade = false;
             }
         }
     }
-
-    private void ActivateSound()
-    {
-        SoundManager.Instance.AddExternalAudioSource(audioSource);
-        audioSource.volume = SoundManager.Instance.sfxVolume;
-        audioSource.Play();
-    }
-
-    private void OnDestroy()
-    {
-        SoundManager.Instance.RemoveExternalAudioSource(audioSource);
-    }
-
-
     public void SetUpProperties(Vector2 endPosition, AbilityHolder abilityHolder)
     {
         this.endPosition = endPosition;
