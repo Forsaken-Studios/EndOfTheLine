@@ -141,7 +141,6 @@ public class ExpeditionDetailsPreview : MonoBehaviour
         {
             if (randomValue < currentChanceOfSuccess)
             {
-                Debug.Log("SUCCESS");
                 PlayerPrefs.SetInt("ExpeditionResult", 1);
                 PlayerPrefs.SetInt("ExpeditionInProgress", 1);
                 startExpeditionButton.interactable = false;
@@ -154,7 +153,6 @@ public class ExpeditionDetailsPreview : MonoBehaviour
                 PlayerPrefs.SetInt("ExpeditionResult", -1);
                 PlayerPrefs.SetInt("ExpeditionInProgress", 1);
                 startExpeditionButton.interactable = false;
-                Debug.Log("FAILURE");
                 // -1 => Failure
             }
 
@@ -268,12 +266,10 @@ public class ExpeditionDetailsPreview : MonoBehaviour
                 if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
                     PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
                 {
-                    Debug.Log("WE HAVE ITEM");
                     startExpeditionButton.interactable = true;
                 }
                 else
                 { 
-                    Debug.Log("WE DONT HAVE ITEM");
                     startExpeditionButton.interactable = false;
                     return false;
                     break; 

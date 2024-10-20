@@ -87,8 +87,7 @@ namespace LootSystem
                         if (LooteableObjectSelector.Instance.GetIfSelectorIsActive() &&
                             LooteableObjectSelector.Instance.GetIfIndexIsThisLooteableObject(this))
                         {
-                            //CUIDADO QUE ESTÁ AL REVES, PILLA EL NOMBRE DEL OTRO
-                            Debug.Log(this.name);
+                            //CUIDADO QUE ESTÁ AL REVES, PILLA EL NOMBRE DEL OTR
                             HandleInventory();
                         }
                     

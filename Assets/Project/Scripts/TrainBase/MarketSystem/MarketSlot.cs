@@ -67,7 +67,6 @@ public class MarketSlot : MonoBehaviour, IPointerClickHandler
         {
             if (itemSO != null || usableItem != null)
             {
-                Debug.Log("ITEM CLICKED");
                 onItemClicked?.Invoke(this, EventArgs.Empty); 
             } 
         }

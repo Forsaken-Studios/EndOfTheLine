@@ -50,7 +50,6 @@ public class TraderPanel : MonoBehaviour
     
     public void HandleTrade()
     {
-        Debug.Log("ON DAY CHANGED TRADER");
         string resourcesPath = "Trades";
         List<ItemTradeSO> itemTrades =
             UnityEngine.Resources.LoadAll<ItemTradeSO>(resourcesPath).ToList();
@@ -96,7 +95,6 @@ public class TraderPanel : MonoBehaviour
     {
         foreach (var button in buttonList)
         {
-            Debug.Log(button);
             button.interactable = true;
         }
     }
@@ -160,8 +158,6 @@ public class TraderPanel : MonoBehaviour
         if (tradeInProgress && rewardPickedUp)
         {
             int tradeID = PlayerPrefs.GetInt("TradeID");
-            Debug.Log("ID: " + id);
-            Debug.Log("TRADE ID: " + tradeID);
             if (id == tradeID)
             {
                 int currentDay = PlayerPrefs.GetInt("CurrentDay");

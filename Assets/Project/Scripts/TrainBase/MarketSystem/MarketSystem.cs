@@ -111,7 +111,6 @@ public class MarketSystem : MonoBehaviour
     {
         MarketSlot item = sender as MarketSlot;
         itemSelected = item;
-        Debug.Log("CLICKED SLOT WITH ITEM: " + item.GetItemSO().itemName);
     }
 
     private void UpdateStoreEvent(object sender, EventArgs e)
@@ -173,7 +172,6 @@ public class MarketSystem : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("NO SPACE FOR ITEM");
                 }
             }
         }

@@ -279,7 +279,6 @@ public class TrainManager : MonoBehaviour
                     isShowingWagonBuyUI = true;
                     //We would like to buy this wagon
                     Object price = UnityEngine.Resources.Load("Wagons/Wagon " + (currentIndex + 1));
-                    Debug.Log(price);
                     WagonPrice wagonPrice = price as WagonPrice;
                     
                     Vector2 initialPosition = new Vector2(960, 540);

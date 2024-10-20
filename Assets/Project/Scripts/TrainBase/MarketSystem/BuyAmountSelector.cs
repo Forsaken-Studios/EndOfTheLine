@@ -51,10 +51,8 @@ public class BuyAmountSelector : MonoBehaviour
     }
     public void SetUpProperties(int maxAmount, MarketSlot itemSelected)
     {
-        Debug.Log("SET UP");
         this.itemSelected = itemSelected;
         this.maxText.text = maxAmount.ToString();
-        Debug.Log(slider);
         slider.maxValue = maxAmount;
         slider.value = maxAmount / 2;
         inputField.text = slider.value.ToString();
@@ -65,7 +63,6 @@ public class BuyAmountSelector : MonoBehaviour
     
     private void Buy()
     {
-        Debug.Log("SPLITTING: " + slider.value);
         this.gameObject.SetActive(false);
         if (slider.value != 0)
         {
@@ -88,7 +85,6 @@ public class BuyAmountSelector : MonoBehaviour
             }
             else
             {
-                Debug.Log("NO SPACE FOR ITEM");
             }
             this.gameObject.SetActive(false);
         }

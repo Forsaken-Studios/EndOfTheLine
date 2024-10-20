@@ -129,7 +129,6 @@ public class TrainBaseInventory : MonoBehaviour
     {
         if (itemsSlotsList[itemSlotIndex].amount == amount)
         {
-            Debug.Log("HEMOS QUITADO EL ITEM ENTERO: INDEX: " + itemSlotIndex);
             itemsSlotsList[itemSlotIndex].ClearItemSlot();
         }
         else

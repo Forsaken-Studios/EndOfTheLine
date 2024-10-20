@@ -51,7 +51,6 @@ public class TakeRewardsButton : MonoBehaviour
             Dictionary<int, int> slotUsed = new Dictionary<int, int>();
             if (TrainBaseInventory.Instance.TryCheckIfThereIsSpaceForAllItems(items, out slotUsed))
             {
-               Debug.Log("SUCCESS");
                 GameObject expeditionSuccess= Instantiate(this.expeditionSuccess, Vector2.zero, Quaternion.identity);
                 expeditionSuccess.GetComponentInChildren<ExpeditionSuccessPanel>().SetUpItemList(items);
                 TrainManager.Instance.TrainStatus = TrainStatus.showingSpecialScreen;
@@ -59,7 +58,6 @@ public class TakeRewardsButton : MonoBehaviour
             }
             else
             {
-                Debug.Log("ITEM REWARD DIDNT FIT IN INVENTORY");
                 GameObject noSpaceForItems = Instantiate(this.noSpaceForItemsMessage, Vector2.zero, Quaternion.identity);
                 foreach (var slot in slotUsed)
                 {

@@ -53,7 +53,6 @@ public class StartTradeButton : MonoBehaviour
                    // onTradeEnded?.Invoke(this, EventArgs.Empty);
                 }else
                 {
-                    Debug.Log("NO SPACE FOR ITEM");
                 } 
 
             }
