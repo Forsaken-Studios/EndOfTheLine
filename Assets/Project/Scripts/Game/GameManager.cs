@@ -27,19 +27,26 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gridMain;
     private Collider2D wallCollider; 
     private Collider2D floorCollider;
+    
+    [Header("Loading Screen - Not needed in trainBase")]
+    public GameObject loadingScreen;
+    public Image LoadingBarFill;
+    public bool sceneIsLoading;
 
+
+    
     private bool holder1Activated = false;
     private bool holder2Activated = false;
     
     
-    [Header("Extraction Properties")] 
+
     private GameState _gameState;
     public GameState GameState
     {
         get { return _gameState; }
         set { _gameState = value; }
     }
-
+    [Header("Inventory Slot Size Properties")] 
     [SerializeField] private int MAX_AMOUNT_PER_SLOT_BASE = 4;
     [SerializeField] private int MAX_AMOUNT_PER_SLOT_GAME = 3;
     
@@ -54,9 +61,32 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        if (SceneManager.GetActiveScene().name != trainSceneName)
+        {
+            StartCoroutine(ActivateLoadingScreen());
+            GameState = GameState.onLoad;  
+        }
+    }
+
+    private IEnumerator ActivateLoadingScreen()
+    {
+        loadingScreen.SetActive(true);
+        blackFadeEndGamePanel = CanvasMenus.gameObject.transform.Find("Black Fade End Game Panel").gameObject;
+        while (sceneIsLoading)
+        {
+            float newValue = LoadingBarFill.fillAmount += 0.25f;
+            LoadingBarFill.fillAmount = Mathf.Clamp(newValue, 0f, 0.80f);
+            yield return new WaitForSeconds(0.3f);
+        }
+        
+
+        yield return new WaitForSeconds(0.5f);
+        blackFadeEndGamePanel.SetActive(true);
+        blackFadeEndGamePanel.GetComponent<Animator>().SetTrigger("starting");
+        LoadingBarFill.fillAmount = 1.0f;
+        loadingScreen.SetActive(false);
         GetReferences();
         GameState = GameState.OnGame;
-        
     }
 
     private void GetReferences()
@@ -65,8 +95,8 @@ public class GameManager : MonoBehaviour
         {
             wallCollider = gridMain.transform.Find("Walls").GetComponent<Collider2D>();
             floorCollider = gridMain.transform.Find("Floor").GetComponent<Collider2D>();
-            blackFadeEndGamePanel = CanvasMenus.gameObject.transform.Find("Black Fade End Game Panel").gameObject;
-            blackFadeEndGamePanel.SetActive(false);
+            //blackFadeEndGamePanel = CanvasMenus.gameObject.transform.Find("Black Fade End Game Panel").gameObject;
+            //blackFadeEndGamePanel.SetActive(false);
         }
     }
 

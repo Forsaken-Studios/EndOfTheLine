@@ -127,17 +127,22 @@ public class NewExpeditionManager : MonoBehaviour
 
      public void ActivateDetailsView(MissionStatSO mission, MissionPanel missionPanel)
      {
+         
          if (currentMissionSelected != null)
          {
              lastExpeditionID = currentMissionSelected.expeditionMapID;
          }
-         currentExpeditionID = mission.expeditionMapID;
-         detailsView.GetComponent<ExpeditionDetailsPreview>().SetUpProperties(mission, missionPanel);
-         currentMissionSelected = mission;
-         detailsView.SetActive(true);
-         aStarScript.SetCoordinates(lastExpeditionID, currentExpeditionID);
-         aStarScript.RunPath();
-         messageText.gameObject.SetActive(false);
+
+         if (currentMissionSelected != mission)
+         {
+             currentExpeditionID = mission.expeditionMapID;
+             detailsView.GetComponent<ExpeditionDetailsPreview>().SetUpProperties(mission, missionPanel);
+             currentMissionSelected = mission;
+             detailsView.SetActive(true);
+             aStarScript.SetCoordinates(lastExpeditionID, currentExpeditionID);
+             aStarScript.RunPath();
+             messageText.gameObject.SetActive(false);
+         }
      }
 
 

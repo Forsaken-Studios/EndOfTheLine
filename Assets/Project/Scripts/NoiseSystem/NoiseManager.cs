@@ -46,27 +46,31 @@ public class NoiseManager : MonoBehaviour
     {
         while (true)
         {
-     
-            float timeToWaitBetweenNoise = UnityEngine.Random.Range(minTimeRange, maxTimeRange);
-            float worldNoiseDuration = UnityEngine.Random.Range(worldNoiseDurationMin, worldNoiseDurationMax);
-            //yield return new WaitForSeconds(timeToWaitBetweenNoise); //WHEN FINISHED
-            //Activate UI to show world noise
-            GameObject worldNoiseUIPrefab = Instantiate(this.worldNoiseUIPrefab, Vector3.zero, Quaternion.identity);
-            //Activate Sound
-            SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_Start);
-            //Activate screen shake?
+            if(GameManager.Instance.GameState == GameState.OnGame)
+            {
+                float timeToWaitBetweenNoise = UnityEngine.Random.Range(minTimeRange, maxTimeRange);
+                float worldNoiseDuration = UnityEngine.Random.Range(worldNoiseDurationMin, worldNoiseDurationMax);
+                //yield return new WaitForSeconds(timeToWaitBetweenNoise); //WHEN FINISHED
+                //Activate UI to show world noise
+                GameObject worldNoiseUIPrefab = Instantiate(this.worldNoiseUIPrefab, Vector3.zero, Quaternion.identity);
+                //Activate Sound
+                SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_Start);
+                //Activate screen shake?
             
-            //Reduce noise radius
-            PlayerController.Instance.GetNoiseScript().UpdateColliderOnWorldNoise();
-            worldNoiseActivated = true;
-            yield return new WaitForSeconds(worldNoiseDuration);
+                //Reduce noise radius
+                PlayerController.Instance.GetNoiseScript().UpdateColliderOnWorldNoise();
+                worldNoiseActivated = true;
+                yield return new WaitForSeconds(worldNoiseDuration);
             
-            worldNoiseActivated = false; 
-            SoundManager.Instance.StopSound();
-            Destroy(worldNoiseUIPrefab);
-            PlayerController.Instance.GetNoiseScript().ResetColliderOnWorldNoise();
-            SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_End);
-            yield return new WaitForSeconds(timeToWaitBetweenNoise);
+                worldNoiseActivated = false; 
+                SoundManager.Instance.StopSound();
+                Destroy(worldNoiseUIPrefab);
+                PlayerController.Instance.GetNoiseScript().ResetColliderOnWorldNoise();
+                SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_End);
+                yield return new WaitForSeconds(timeToWaitBetweenNoise);
+            }
+
+            yield return null;
         }   
     }
 
