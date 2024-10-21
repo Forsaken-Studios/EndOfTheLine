@@ -77,7 +77,6 @@ public class BuyWagon : MonoBehaviour
         else
         {
             //We cant buy wagon
-            Debug.Log("NO RESOURCES");
         }
     }
 

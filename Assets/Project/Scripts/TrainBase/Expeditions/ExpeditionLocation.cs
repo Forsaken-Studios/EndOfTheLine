@@ -54,7 +54,6 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
     }
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("CLICK");
     }
     
     
@@ -62,7 +61,6 @@ public class ExpeditionLocation : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         if (!isClicked)
         {
-            Debug.Log("EXIT CLICK " + this.stationName.text);
             stationName.gameObject.SetActive(false);
             HideButton();
         }

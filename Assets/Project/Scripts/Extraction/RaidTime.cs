@@ -17,18 +17,36 @@ public class RaidTime : MonoBehaviour
     void Start()
     { 
         currentTime = initialTime;
-        StartCoroutine(StartCountdown());
+        //StartCoroutine(StartCountdown());
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (currentTime <= 0)
+        if (GameManager.Instance.GameState == GameState.OnGame)
         {
-            timerText.text = "0:00";
-            StopAllCoroutines();
-            //END GAME
-            GameManager.Instance.EndGame();
+            if (currentTime <= 0)
+            {
+                timerText.text = "0:00";
+                StopAllCoroutines();
+                //END GAME
+                GameManager.Instance.EndGame();
+            }
+            else
+            {
+                currentTime -= Time.deltaTime;
+                TimeSpan t = TimeSpan.FromSeconds(currentTime);
+                string s = "";
+                if (t.Seconds < 10)
+                {
+                    s  = string.Format("{0}:0{1}", t.Minutes, t.Seconds); 
+                }
+                else
+                {
+                    s= string.Format("{0}:{1}", t.Minutes, t.Seconds); 
+                }
+                timerText.text = s;    
+            } 
         }
     }
     

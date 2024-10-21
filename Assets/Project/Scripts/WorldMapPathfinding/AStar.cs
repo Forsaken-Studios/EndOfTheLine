@@ -151,7 +151,7 @@ public class AStar : MonoBehaviour
             foreach (var coord in path)
             {
                 counter++;
-                Debug.Log("Coord "+counter+": ID " + coord.ID);
+                //Debug.Log("Coord "+counter+": ID " + coord.ID);
             }
             runPathfinding = false;
         }

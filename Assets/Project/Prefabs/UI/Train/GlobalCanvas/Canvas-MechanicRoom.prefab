@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8088811494014447594}
   - component: {fileID: 693278712972159154}
   m_Layer: 5
-  m_Name: AbilitiesUnlocked
+  m_Name: AbilitiesUnlockedPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -373,7 +373,7 @@ GameObject:
   - component: {fileID: 1490494701570456372}
   - component: {fileID: 6441303425761328554}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Divider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -529,7 +529,7 @@ GameObject:
   - component: {fileID: 5802669322883217223}
   - component: {fileID: 8661416627837235007}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Divider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -625,9 +625,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4231048725920798718}
-  - {fileID: 3589640222124232935}
-  - {fileID: 1895975620245060744}
-  - {fileID: 6542751720066945481}
+  - {fileID: 5292087209242917431}
   - {fileID: 3974242818829327869}
   - {fileID: 7284190994545565493}
   - {fileID: 2225741534460320820}
@@ -1186,7 +1184,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6c2d57cb0eeed5440ab7fd3c8c6f0458, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ab19a37d96ae0384b8ad41e5ff25468f, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1228,12 +1226,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8267649341797573904}
-  m_Father: {fileID: 2711952766483390120}
+  m_Father: {fileID: 5292087209242917431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 292.40015, y: 322}
-  m_SizeDelta: {x: -1717.5956, y: -1019.0121}
+  m_AnchoredPosition: {x: 0.00012207031, y: 0}
+  m_SizeDelta: {x: -404.79553, y: -0.0010986328}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7945728752364848140
 CanvasRenderer:
@@ -1650,7 +1648,7 @@ GameObject:
   - component: {fileID: 2462570944592585965}
   - component: {fileID: 7802260520228256453}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Divider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2064,7 +2062,7 @@ GameObject:
   - component: {fileID: 8144062711567511153}
   - component: {fileID: 5422669080479408564}
   m_Layer: 5
-  m_Name: RoomType
+  m_Name: UpgradesText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2260,12 +2258,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7108645072052038590}
-  m_Father: {fileID: 2711952766483390120}
+  m_Father: {fileID: 5292087209242917431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 494.80005, y: 322}
-  m_SizeDelta: {x: -1717.5956, y: -1019.0121}
+  m_AnchoredPosition: {x: 202.40002, y: 0}
+  m_SizeDelta: {x: -404.79553, y: -0.0010986328}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1361305384892825802
 CanvasRenderer:
@@ -3332,12 +3330,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6842872291993743736}
-  m_Father: {fileID: 2711952766483390120}
+  m_Father: {fileID: 5292087209242917431}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 90, y: 322}
-  m_SizeDelta: {x: -1717.5956, y: -1019.0121}
+  m_AnchoredPosition: {x: -202.40002, y: 0}
+  m_SizeDelta: {x: -404.79553, y: -0.0010986328}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4570545589824901533
 CanvasRenderer:
@@ -3730,6 +3728,44 @@ RectTransform:
   m_AnchoredPosition: {x: 9.570618, y: -106.05}
   m_SizeDelta: {x: -160.19995, y: -377.06}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &6158695535780803645
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5292087209242917431}
+  m_Layer: 5
+  m_Name: Buttons
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5292087209242917431
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6158695535780803645}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3589640222124232935}
+  - {fileID: 1895975620245060744}
+  - {fileID: 6542751720066945481}
+  m_Father: {fileID: 2711952766483390120}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 292.40002, y: 322}
+  m_SizeDelta: {x: -1312.8, y: -1019.011}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6311899351630335817
 GameObject:
   m_ObjectHideFlags: 0
@@ -3870,7 +3906,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6c2d57cb0eeed5440ab7fd3c8c6f0458, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ab19a37d96ae0384b8ad41e5ff25468f, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -4733,8 +4769,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4.000004, y: 0.0000076293945}
-  m_SizeDelta: {x: 268.1334, y: 240.58}
+  m_AnchoredPosition: {x: -2.263, y: -12.5261}
+  m_SizeDelta: {x: 341.5004, y: 347.9465}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6326955479141816835
 CanvasRenderer:
@@ -5576,8 +5612,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.2695, y: 0}
-  m_SizeDelta: {x: 248.0804, y: 242.9921}
+  m_AnchoredPosition: {x: -1.8883, y: -10.7366}
+  m_SizeDelta: {x: 344.7103, y: 343.2009}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6907498326064711624
 CanvasRenderer:

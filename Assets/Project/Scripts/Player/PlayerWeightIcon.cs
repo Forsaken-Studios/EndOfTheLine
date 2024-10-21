@@ -31,7 +31,6 @@ namespace Player
 
         private void ChangeSprite(int id)
         {
-            Debug.Log("CHANGE KW");
             switch (id)
             {
                 case 0:

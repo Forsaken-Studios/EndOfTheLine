@@ -44,7 +44,6 @@ namespace ContextMenu
 
         private void DestroyContextMenu()
         {
-            Debug.Log("DESTROY CONTEXT MENU");
         }
 
         private void UseItem()
@@ -54,7 +53,6 @@ namespace ContextMenu
 
         private void InspectItem()
         {
-            Debug.Log("ESTAMOS INSPECCIONANDO: " + item.itemName.ToString());
             Vector2 spawnPosition = Vector2.zero;
             if (SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
             {

@@ -38,7 +38,6 @@ namespace Extraction
 
         private void GetReferences()
         {
-            Debug.LogWarning(GameManager.Instance.GetMenuCanvas());
             currentTimeLeftToExtractGameObject =
                 GameManager.Instance.GetMenuCanvas().transform.Find("Extraction/CurrentTimeLeftToExtractGameObject").gameObject;
             extractionTimeLeftToArrive =

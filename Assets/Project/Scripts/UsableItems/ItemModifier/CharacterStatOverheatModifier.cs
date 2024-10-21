@@ -7,6 +7,5 @@ public class CharacterStatOverheatModifier : CharacterStatModifierSO
 {
     public override void AffectCharacter(GameObject character, float val)
     {
-        Debug.Log("OVERHEAT MODIFIER WORKING");
     }
 }

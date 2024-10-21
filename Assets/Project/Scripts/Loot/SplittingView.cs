@@ -60,7 +60,6 @@ namespace LootSystem
             this.finalItemSlot = itemSlot;
             this.previousItemSlot = previousItemSlot; 
             this.maxText.text = maxAmount.ToString();
-            Debug.Log(slider);
             slider.maxValue = maxAmount;
             slider.value = maxAmount / 2;
             inputField.text = slider.value.ToString();

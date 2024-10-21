@@ -11,12 +11,21 @@ namespace Resources.Scripts.Menu
     
         [Header("Buttons")]
         [SerializeField] private Button playButton;
+        [SerializeField] private Button optionsButton;
+        [SerializeField] private Button backFromOptionsButton;
         [SerializeField] private Button creditsButton;
         [SerializeField] private Button quitButton;
 
         [Header("Panels")]
         [SerializeField] private GameObject _creditsPanel;
+        [SerializeField] private GameObject buttonsPanel;
+        [SerializeField] private GameObject optionsPanel;
 
+        [Header("General & SFX & Music Sliders")]
+        [SerializeField] private Slider generalVolumeSlider;
+        [SerializeField] private Slider sfxVolumeSlider;
+        [SerializeField] private Slider musicVolumeSlider;
+        
         private bool _isOnCredits = false;
    
         private void Awake()
@@ -34,10 +43,44 @@ namespace Resources.Scripts.Menu
             _isOnCredits = false;
 
             playButton.onClick.AddListener(() => PlayGame());
+            optionsButton.onClick.AddListener(() => ActivateOptionsPanel());
+            backFromOptionsButton.onClick.AddListener(() => BackFromOptions());
             creditsButton.onClick.AddListener(() => ShowCredits());
             quitButton.onClick.AddListener(() => QuitGame());
+            LoadVolumeValues();
         }
 
+        private void BackFromOptions()
+        {
+            optionsPanel.SetActive(false);
+            buttonsPanel.SetActive(true);
+        }
+
+        private void ActivateOptionsPanel()
+        {
+            optionsPanel.SetActive(true);
+            buttonsPanel.SetActive(false);
+        }
+
+        public void LoadVolumeValues()
+        {
+            if (PlayerPrefs.HasKey("MasterVolume"))
+                generalVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume");
+            else
+                generalVolumeSlider.value = 0.5f;
+        
+            if (PlayerPrefs.HasKey("SoundEffectsVolume"))
+                sfxVolumeSlider.value = PlayerPrefs.GetFloat("SoundEffectsVolume");
+            else
+                sfxVolumeSlider.value = 0.5f;   
+        
+        
+            if (PlayerPrefs.HasKey("MusicVolume"))
+                musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume");
+            else
+                musicVolumeSlider.value = 0.5f;
+        }
+        
         void Update()
         {
             CheckCredits();
