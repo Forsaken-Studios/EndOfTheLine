@@ -54,7 +54,7 @@ public class NoiseManager : MonoBehaviour
                 //Activate UI to show world noise
                 GameObject worldNoiseUIPrefab = Instantiate(this.worldNoiseUIPrefab, Vector3.zero, Quaternion.identity);
                 //Activate Sound
-                SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_Start);
+                AudioSource audioSource = SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_Start, null, true);
                 //Activate screen shake?
             
                 //Reduce noise radius
@@ -66,7 +66,8 @@ public class NoiseManager : MonoBehaviour
                 SoundManager.Instance.StopSound();
                 Destroy(worldNoiseUIPrefab);
                 PlayerController.Instance.GetNoiseScript().ResetColliderOnWorldNoise();
-                SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_End);
+                Destroy(audioSource.gameObject);
+                SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_End, null, true);
                 yield return new WaitForSeconds(timeToWaitBetweenNoise);
             }
 

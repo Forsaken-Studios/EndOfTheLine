@@ -41,11 +41,11 @@ public abstract class IInventoryManager : MonoBehaviour
     {
         if (!inventoryHUD.activeSelf)
         {
-            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenInventory);
+            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenInventory, null, true);
         }
         else
         {
-            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseInventory);
+            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseInventory, null, true);
             TryDestroyContextMenu();
         }
               

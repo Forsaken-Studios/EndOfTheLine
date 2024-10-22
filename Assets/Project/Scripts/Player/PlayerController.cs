@@ -243,7 +243,7 @@ namespace Player
             if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetEnergy() >= dashStaminaCost)
             {
                 StartCoroutine(Dash());
-                SoundManager.Instance.ActivateSoundByName(SoundAction.Movement_Dash);
+                SoundManager.Instance.ActivateSoundByName(SoundAction.Movement_Dash, null, true);
             }
         }
 

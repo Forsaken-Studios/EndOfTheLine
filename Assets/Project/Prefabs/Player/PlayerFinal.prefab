@@ -104,8 +104,12 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 10
   speedModifier: 0.5
-  dashSpeed: 10
-  dashDuration: 0.5
+  maxLimitWeight: 2
+  overWeight: 1
+  moveReducerByWeight: 0.6
+  isOverweight: 0
+  dashSpeed: 18
+  dashDuration: 0.1
   dashCooldown: 0
   dashStaminaCost: 40
   walkRadius: 1
@@ -128,11 +132,9 @@ MonoBehaviour:
   statusBar: {fileID: 0}
   energy: 0
   canRecoverEnergy: 0
-  recoveryEnergySpeed: 5
-  recoveryEnergyTime: 0.2
-  recoveryEnergyTimeLerp: 0.2
-  valueStaminaDecrease: 5
-  barLerpSpeed: 0
+  increaseEnergySpeed: 0.25
+  TimeCooldownBetweenRecoveries: 0
+  valueEnergyDecrease: 5
 --- !u!114 &3878746648933132990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,11 +150,9 @@ MonoBehaviour:
   statusBar: {fileID: 0}
   energy: 100
   canRecoverEnergy: 0
-  recoveryEnergySpeed: 5
-  recoveryEnergyTime: 0.2
-  recoveryEnergyTimeLerp: 0.2
-  valueStaminaDecrease: 8
-  barLerpSpeed: 0
+  increaseEnergySpeed: 5
+  TimeCooldownBetweenRecoveries: 0.1
+  valueEnergyDecrease: 5
 --- !u!114 &8257176522720542377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,7 +192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityHolderID: 1
   testAbility: 0
-  ability: {fileID: 11400000, guid: eccb020b6bcb2f9429291c56e679e8e2, type: 2}
+  ability: {fileID: 0}
   abilityUI: {fileID: 0}
   canThrowAbility: 1
   key: 113

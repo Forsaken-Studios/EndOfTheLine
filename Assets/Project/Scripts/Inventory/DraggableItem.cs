@@ -82,7 +82,7 @@ namespace Inventory
                     ItemSlot itemSlotFinal = parentAfterDrag.GetComponentInParent<ItemSlot>();
                     transform.SetParent(parentBeforeDrag);
                     this.transform.position = parentBeforeDrag.position;
-                    SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_MoveItem);
+                    SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_MoveItem, null, true);
             }
             transform.SetAsFirstSibling();
             image.raycastTarget = true;

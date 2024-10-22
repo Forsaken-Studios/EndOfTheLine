@@ -17,8 +17,7 @@ namespace Player
         void Start()
         {
             PlayerController.Instance.OnWeightChange += ChangeSprite;
-        
-            weightIcon = GameManager.Instance.GetMenuCanvas().transform.Find("WeightIcon").gameObject;
+            weightIcon = this.gameObject;
             icon = weightIcon.GetComponentInChildren<Image>();
             weightIcon.SetActive(false);
         }
@@ -35,14 +34,17 @@ namespace Player
             {
                 case 0:
                     weightIcon.SetActive(false);
+                    icon.fillAmount = 0.0f;
                     break;        
                 case 1:
                     weightIcon.SetActive(true);
-                    icon.sprite = overweightIcon;
+                    icon.fillAmount = 1.0f;
+                    icon.color = Color.yellow;
                     break;     
                 case 2:
                     weightIcon.SetActive(true);
-                    icon.sprite = maxWeightIcon;
+                    icon.fillAmount = 1.0f;
+                    icon.color = Color.red;
                     break;
             }
         }

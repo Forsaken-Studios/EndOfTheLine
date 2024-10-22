@@ -176,14 +176,14 @@ namespace LootSystem
 
         public void ActivateLootUIPanel()
         {
-            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenCrate);
+            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenCrate, null, true);
             lootUIPanel.SetActive(true);
             getIfCrateIsOpened = true;
         }
 
         public void DesactivateLootUIPanel()
         {
-            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseCrate);
+            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseCrate, null, true);
             lootUIPanel.SetActive(false);
             getIfCrateIsOpened = false;
         }

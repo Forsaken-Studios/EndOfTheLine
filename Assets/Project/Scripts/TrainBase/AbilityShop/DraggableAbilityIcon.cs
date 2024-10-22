@@ -51,7 +51,7 @@ public class DraggableAbilityIcon : MonoBehaviour, IBeginDragHandler, IDragHandl
                 ItemSlot itemSlotFinal = parentAfterDrag.GetComponentInParent<ItemSlot>();
                 transform.SetParent(parentBeforeDrag);
                 this.transform.position = parentBeforeDrag.position;
-                SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_MoveItem);
+                SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_MoveItem, null, true);
             }
             
             transform.SetParent(parentBeforeDrag);

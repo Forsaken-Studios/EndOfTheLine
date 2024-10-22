@@ -2,7 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Internal;
+using UnityEngine.Serialization;
 using Utils.CustomLogs;
 
 [Serializable]
@@ -32,6 +35,9 @@ public class SoundManager : MonoBehaviour
     private Dictionary<SoundAction, AudioClip> audioDictionary;
     [SerializeField] private AudioSource musicSource, sfxSource;
 
+    [SerializeField] private AudioSource soundFXObjectPrefab;
+    [SerializeField] private AudioSource soundMusicObjectPrefab;
+    private List<AudioSource> audiosPlaying;
     public event EventHandler onStopAudios;
     public event EventHandler onResumeAudios;
     
@@ -127,14 +133,34 @@ public class SoundManager : MonoBehaviour
         return null; 
     }
 
-    public void ActivateSoundByName(SoundAction audioAction)
+    public AudioSource ActivateSoundByName(SoundAction audioAction, Transform spawnTransform, bool isFX)
     {
+        if (spawnTransform == null)
+        {
+            spawnTransform = this.transform;
+        }
         AudioClip audioClip = GetAudioClipFromName(audioAction);
         if (audioClip != null)
         {
-            sfxSource.clip = audioClip;
-            sfxSource.Play();
+            AudioSource audioSource;
+            //spawn gameObject
+            if (isFX)
+                audioSource = Instantiate(soundFXObjectPrefab, spawnTransform.position, Quaternion.identity);
+            else
+                audioSource = Instantiate(soundFXObjectPrefab, spawnTransform.position, Quaternion.identity);
+            //audioClip
+            audioSource.clip = audioClip;
+            //play
+            audioSource.Play();
+            //Destroy after lengh
+            float clipLength = audioSource.clip.length;
+            
+            Destroy(audioSource.gameObject, clipLength);
+            
+            return audioSource;
         }
+
+        return null;
     }
     
     /// <summary>
