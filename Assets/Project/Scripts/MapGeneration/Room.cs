@@ -26,19 +26,18 @@ public class Room : MonoBehaviour
         rnd = new System.Random();
     }
 
-    public int GetNumberOfConfigurations()
+    void OnValidate()
     {
-        return _roomDataList.Count;
-    }
-
-    public void SetPositionSelected(Vector3 positionSelected)
-    {
-        _positionSelected = positionSelected;
+        if (_roomDataList == null)
+        {
+            Debug.LogError("El ScriptableObject 'roomData' no ha sido asignado.");
+        }
     }
 
     public void InitializeRandomRoom()
     {
-        _configurationSelected = rnd.Next(1, _roomDataList.Count);
+        rnd = new System.Random();
+        _configurationSelected = rnd.Next(0, _roomDataList.Count);
 
         _roomSize = _roomDataList[_configurationSelected].roomSize;
         _shape = _roomDataList[_configurationSelected].GetShape();
@@ -49,15 +48,16 @@ public class Room : MonoBehaviour
         CreateSelfGrid();
     }
 
-    public GameObject InstantiateRoom()
+    public void MoveRoomPosition(Vector3 positionSelected)
     {
-        GameObject roomInstantiated = Instantiate(this.gameObject, _positionSelected, Quaternion.identity);
+        _positionSelected = positionSelected;
+        transform.position = _positionSelected;
 
-        for (int i = 1; i < _roomDataList.Count; i++)
+        for (int i = 1; i <= _roomDataList.Count; i++)
         {
-            GameObject currentConfiguration = roomInstantiated.transform.Find($"Configuration_{i}").gameObject;
+            GameObject currentConfiguration = transform.Find($"Configuration_{i}").gameObject;
 
-            if (i == _configurationSelected)
+            if (i - 1 == _configurationSelected)
             {
                 currentConfiguration.SetActive(true);
             }
@@ -67,14 +67,12 @@ public class Room : MonoBehaviour
             }
         }
 
-        GameObject aux = roomInstantiated.transform.Find($"AUX_Configuration_base").gameObject;
+        GameObject aux = transform.Find($"AUX_Configuration_base").gameObject;
         aux.SetActive(false);
-        GameObject gas = roomInstantiated.transform.Find($"Gas").gameObject;
-        aux.SetActive(true);
-        GameObject gasHigh = roomInstantiated.transform.Find($"GasHigh").gameObject;
-        aux.SetActive(true);
-
-        return roomInstantiated;
+        GameObject gas = transform.Find($"Gas").gameObject;
+        gas.SetActive(true);
+        GameObject gasHigh = transform.Find($"GasHigh").gameObject;
+        gasHigh.SetActive(true);
     }
 
     private void CalculateCenterPosition()
@@ -82,22 +80,32 @@ public class Room : MonoBehaviour
         float centerPosition_x = 0;
         float centerPosition_y = 0;
 
-        if(_shape.Rows % 2 == 0)
+        // Columnas.
+        if (_shape.Cols == 1)
         {
-            centerPosition_x = MapGenerator.Instance.cellSize * _shape.Rows/2 - MapGenerator.Instance.cellSize / 2;
+            centerPosition_x = MapGenerator.Instance.cellSize / 2;
+        }
+        else if (_shape.Cols % 2 == 0)
+        {
+            centerPosition_x = MapGenerator.Instance.cellSize * _shape.Cols / 2 - MapGenerator.Instance.cellSize / 2;
         }
         else
         {
-            centerPosition_x = MapGenerator.Instance.cellSize * _shape.Rows / 2;
+            centerPosition_x = MapGenerator.Instance.cellSize * _shape.Cols / 2;
         }
 
-        if (_shape.Cols % 2 == 0)
+        // Filas.
+        if (_shape.Rows == 1)
         {
-            centerPosition_y = MapGenerator.Instance.cellSize * _shape.Cols / 2 - MapGenerator.Instance.cellSize / 2;
+            centerPosition_y = MapGenerator.Instance.cellSize / 2;
+        }
+        else if (_shape.Rows % 2 == 0)
+        {
+            centerPosition_y = MapGenerator.Instance.cellSize * _shape.Rows / 2 - MapGenerator.Instance.cellSize / 2;
         }
         else
         {
-            centerPosition_y = MapGenerator.Instance.cellSize * _shape.Cols / 2;
+            centerPosition_y = MapGenerator.Instance.cellSize * _shape.Rows / 2;
         }
 
         centerPosition = new Vector3(centerPosition_x, centerPosition_y, centerPosition.z);
@@ -165,41 +173,6 @@ public class Room : MonoBehaviour
     {
         return _roomSize.y;
     }
-
-    //public List<Vector2Int> GetPosStartEnd() // [Col, Row]
-    //{
-    //    List<Vector2Int> positionsToReturn = new List<Vector2Int>();
-
-    //    // Recorre _entranceDirections y calcula las posiciones de start/end del algoritmo de búsqueda de caminos.
-    //    foreach (var cell in _entrancesDirections)
-    //    {
-    //        Cell cellGrid = selfGrid[cell.Key.y, cell.Key.x];
-
-    //        Vector2Int newPostion = new Vector2Int();
-    //        switch (cellGrid.EntranceDirection)
-    //        {
-    //            case DirectionFlag.Up:
-    //                newPostion.y = cellGrid.Row + 1;
-    //                newPostion.x = cellGrid.Col;
-    //                break;
-    //            case DirectionFlag.Down:
-    //                newPostion.y = cellGrid.Row - 1;
-    //                newPostion.x = cellGrid.Col;
-    //                break;
-    //            case DirectionFlag.Right:
-    //                newPostion.y = cellGrid.Row;
-    //                newPostion.x = cellGrid.Col + 1;
-    //                break;
-    //            case DirectionFlag.Left:
-    //                newPostion.y = cellGrid.Row;
-    //                newPostion.x = cellGrid.Col - 1;
-    //                break;
-    //        }
-    //        positionsToReturn.Add(newPostion);
-    //    }
-
-    //    return positionsToReturn;
-    //}
 
     public List<Vector2Int> GetPosStartEnd() // [Col, Row]
     {

@@ -12,7 +12,7 @@ public class Corridor : MonoBehaviour
     {
         string prefabName = gameObject.name;
 
-        if(prefabName.StartsWith("Corridor_") && prefabName.Length == 18)
+        if(prefabName.StartsWith("Corridor_"))
         {
             string[] sectionsName = prefabName.Split('_');
 

@@ -13,7 +13,7 @@ public class CorridorsDataBase : ScriptableObject
         {
             corridorPrefabs = new List<GameObject>();
 
-            for (int i = 1; i <= 15; i++)
+            for (int i = 1; i <= 16; i++)
             {
                 string path = $"Corridors/{i}";
 

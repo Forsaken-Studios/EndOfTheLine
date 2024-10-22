@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "RoomData", menuName = "ScriptableObjects/RoomData")]
+[CreateAssetMenu(fileName = "RoomData", menuName = "ScriptableObjects/MapGenerator/RoomData")]
 public class RoomData : ScriptableObject, ISerializationCallbackReceiver
 {
     public Vector2Int roomSize; // Room size in cells.

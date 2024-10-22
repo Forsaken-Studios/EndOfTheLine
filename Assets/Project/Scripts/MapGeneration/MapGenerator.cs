@@ -12,10 +12,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private int _startSize = 2;
     [SerializeField] private int _exitSize = 2;
 
-    [SerializeField] private List<Room> _testRooms;
-    [SerializeField] private List<Room> _testRoomsPrefabs;
-    private Dictionary<Vector3, Room> _roomsToInsert;
-    private List<GameObject> _roomsInserted;
+    private Dictionary<Vector3, GameObject> _roomsInserted;
 
 
     [HideInInspector] public Vector3 startingGridPosition = Vector3.zero;
@@ -71,10 +68,11 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
-        _roomsInserted = new List<GameObject>();
-        _roomsToInsert = new Dictionary<Vector3, Room>();
-
+        // Inicialización de listas.
+        _roomsInserted = new Dictionary<Vector3, GameObject>();
         _corridorsInserted = new List<GameObject>();
+
+        // Inicialización de prefabs de pasillos y de habitaciones.
         if (corridorsDB != null)
         {
             corridorsDB.LoadCorridors();
@@ -84,12 +82,14 @@ public class MapGenerator : MonoBehaviour
         {
             Debug.LogError("Error cargando los prefabs de los pasillos.");
         }
+        RoomLoader.Load();
+
         BuildMap();
     }
 
     private void ParseAllCorridors()
     {
-        foreach(GameObject corridor in corridorsDB.corridorPrefabs)
+        foreach (GameObject corridor in corridorsDB.corridorPrefabs)
         {
             corridor.GetComponent<Corridor>().ParseCorridorData();
         }
@@ -97,61 +97,72 @@ public class MapGenerator : MonoBehaviour
 
     private void BuildMap()
     {
-        if (_roomsInserted != null && _roomsInserted.Count > 0)
-        {
-            foreach (GameObject room in _roomsInserted)
-            {
-                Destroy(room);
-            }
-
-            _roomsInserted.Clear();
+        // Borrado y creación de la estructura de carpetas en la jerarquia de los pasillos y habitaciones.
+        GameObject mapObject = GameObject.Find("Map");
+        if (mapObject == null){
+            mapObject = new GameObject("Map");
         }
 
-        if (_corridorsInserted != null && _corridorsInserted.Count > 0)
+        GameObject roomsObject = GameObject.Find("Rooms");
+        if (roomsObject == null)
         {
-            foreach (GameObject corridor in _corridorsInserted)
-            {
-                Destroy(corridor);
-            }
-
-            Destroy(GameObject.Find("Corridors"));
-            _corridorsInserted.Clear();
-        }
-
-        _rnd = new System.Random();
-        InitializeGrid();
-
-        PlacingStart();
-        PlacingExit();
-
-        if (_isTotallyGizmos == true)
-        {
-            bool mapCreated = false;
-            int tries = 10;
-            while (mapCreated == false && tries > 0)
-            {
-                mapCreated = PlacingRooms();
-                tries--;
-            }
+            roomsObject = new GameObject("Rooms");
+            roomsObject.transform.SetParent(mapObject.transform, false);
         }
         else
         {
-            bool mapCreated = false;
-            int tries = 10;
-            while (mapCreated == false && tries > 0)
+            foreach (Transform room in roomsObject.transform)
             {
-                mapCreated = PlacingRoomsPrefabs();
-                tries--;
+                Destroy(room.gameObject);
             }
+            _roomsInserted.Clear();
         }
 
+        GameObject corridorsObject = GameObject.Find("Corridors");
+        if (corridorsObject == null)
+        {
+            corridorsObject = new GameObject("Corridors");
+            corridorsObject.transform.SetParent(mapObject.transform, false);
+        }
+        else
+        {
+            foreach (Transform corridor in corridorsObject.transform)
+            {
+                Destroy(corridor.gameObject);
+            }
+            _corridorsInserted.Clear();
+        }
+
+        // Se inicializa el grid general.
+        _rnd = new System.Random();
+        InitializeGrid();
+
+        // Se coloca la entrada y salida del mapa.
+        PlacingStart();
+        PlacingExit();
+
+        // Se crea el mapa con gizmos unicamente o con prefabs.
+        bool mapCreated = false;
+        int tries = 10;
+        while (mapCreated == false && tries > 0)
+        {
+            if (_isTotallyGizmos == true)
+            {
+                mapCreated = PlacingRooms();
+            }
+            else
+            {
+                mapCreated = PlacingRoomsPrefabs();
+            }
+            tries--;
+        }
+
+        // Se instancian los pasillos.
         InstantiateCorridorsPrefabs();
     }
 
     private void InstantiateCorridorsPrefabs()
     {
-        GameObject parentObject = new GameObject("Corridors");
-
         // Recorre todas las celdas cogiendo las que son pasillos.
         foreach (Cell cell in _grid)
         {
@@ -175,7 +186,7 @@ public class MapGenerator : MonoBehaviour
                         // Instanciar el prefab del pasillo
                         Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
                         GameObject corridorInstance = Instantiate(corridorPrefab, centeredPosition, corridorPrefab.transform.rotation);
-                        corridorInstance.transform.SetParent(parentObject.transform);
+                        corridorInstance.transform.SetParent(GameObject.Find("Corridors").transform);
                         _corridorsInserted.Add(corridorInstance);
                     }
                 }
@@ -412,7 +423,7 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            copiedGrid = modifiedGrid;
+            copiedGrid = AuxiliarMapGenerator.CopyGrid(modifiedGrid); ;
 
             // Intentar llevar el resto de salidas al final.
             modifiedGrid = TryToReachFinal(copiedGrid);
@@ -433,7 +444,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        
+
 
     }
 
@@ -450,23 +461,24 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            copiedGrid = modifiedGrid;
+            copiedGrid = AuxiliarMapGenerator.CopyGrid(modifiedGrid); ;
 
             // Intentar llevar el resto de salidas al final.
             modifiedGrid = TryToReachFinal(copiedGrid);
+
             if (modifiedGrid == null)
             {
                 Debug.LogWarning("FINAL MAP GENERATION -Retrying to create map-.");
-                _roomsToInsert.Clear();
+                foreach (KeyValuePair<Vector3, GameObject> entry in _roomsInserted)
+                {
+                    Destroy(entry.Value);
+                }
+                _roomsInserted.Clear();
                 return false;
             }
             else
             {
-                foreach (KeyValuePair<Vector3, Room> entry in _roomsToInsert)
-                {
-                    _roomsInserted.Add(Instantiate(entry.Value.gameObject, entry.Key, Quaternion.identity));
-                }
-                _roomsToInsert.Clear();
+                _roomsInserted.Clear();
                 _grid = modifiedGrid;
                 return true;
             }
@@ -476,7 +488,7 @@ public class MapGenerator : MonoBehaviour
 
     private Cell[,] TryToReachFinal(Cell[,] grid)
     {
-        List<Cell> restEntrancesList = GetRestEntrances(grid);;
+        List<Cell> restEntrancesList = GetRestEntrances(grid); ;
         int counterRestEntrances = restEntrancesList.Count;
 
         foreach (Cell entranceCell in restEntrancesList)
@@ -646,9 +658,11 @@ public class MapGenerator : MonoBehaviour
         int roomsInserted = 0;
         int numberRoom = 0;
 
-        foreach (Room room in _testRooms)
+        int tries = 15;
+        while (tries > 0)
         {
-
+            GameObject roomObject = RoomLoader.GetRandomRoom();
+            Room room = roomObject.GetComponent<Room>();
             room.InitializeRandomRoom();
 
             int insertionTry = 15;
@@ -695,6 +709,7 @@ public class MapGenerator : MonoBehaviour
                 break;
             }
 
+            tries--;
             numberRoom++;
         }
 
@@ -713,18 +728,22 @@ public class MapGenerator : MonoBehaviour
     private Cell[,] TryToInsertRoomsPrefabs(Cell[,] grid)
     {
         int roomsInserted = 0;
-        int numberRoom = 0;
+        int tries = 15;
 
-        foreach (Room room in _testRoomsPrefabs)
+        while (tries > 0)
         {
+            bool isInserted = false;
 
+            GameObject roomPrefab = RoomLoader.GetRandomRoom();
+            GameObject roomObject = Instantiate(roomPrefab, Vector3.zero, roomPrefab.transform.rotation);
+            roomObject.transform.SetParent(GameObject.Find("Rooms").transform, false);
+            Room room = roomObject.GetComponent<Room>();
             room.InitializeRandomRoom();
 
             int insertionTry = 15;
 
             while (insertionTry > 0)
             {
-                Debug.Log($"GetPosStartEnd(): Intento número {insertionTry} en habitación {numberRoom}");
                 List<Cell> endCellList = new List<Cell>();
 
                 int initialRow = _rnd.Next(0, grid.GetLength(0));
@@ -749,10 +768,10 @@ public class MapGenerator : MonoBehaviour
 
                 if (modifiedGrid != null)
                 {
-                    Debug.Log($"Nombre: {room.gameObject.name}");
-                    _roomsToInsert.Add(positonToInstantiate, room);
+                    room.MoveRoomPosition(positonToInstantiate);
+                    _roomsInserted.Add(positonToInstantiate, roomObject);
                     grid = modifiedGrid; // Actualizar grid con el grid modificado
-                    roomsInserted++;
+                    isInserted = true;
                     break;
                 }
                 else
@@ -762,12 +781,22 @@ public class MapGenerator : MonoBehaviour
 
             }
 
+            if(isInserted == true)
+            {
+                roomsInserted++;
+            }
+            else
+            {
+                Destroy(roomObject);
+            }
+
             if (roomsInserted == _maxRoomsInserted)
             {
+                
                 break;
             }
 
-            numberRoom++;
+            tries--;
         }
 
         Debug.Log($"MAP GENERATION -Final grid updated- with {roomsInserted} rooms inserted.");
@@ -778,7 +807,11 @@ public class MapGenerator : MonoBehaviour
         }
         else
         {
-            _roomsToInsert.Clear();
+            foreach (KeyValuePair<Vector3, GameObject> entry in _roomsInserted)
+            {
+                Destroy(entry.Value);
+            }
+            _roomsInserted.Clear();
             return null;
         }
     }
