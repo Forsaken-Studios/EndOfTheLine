@@ -244,6 +244,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 1926869554}
   sfxSource: {fileID: 1040317358}
+  soundFXObjectPrefab: {fileID: 0}
+  soundMusicObjectPrefab: {fileID: 0}
 --- !u!1001 &296216870
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8477,7 +8479,7 @@ PrefabInstance:
     - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: statusBar
       value: 
-      objectReference: {fileID: 912345346}
+      objectReference: {fileID: 0}
     - target: {fileID: 5970675836886858743, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: ability
       value: 
@@ -8602,17 +8604,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8031993872325086579, guid: 53b20092b9a60b44183625af7b1c1c97, type: 3}
   m_PrefabInstance: {fileID: 1119983358}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &912345346 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6740415201320302856, guid: f60280cfb481e524daff7ff0a5230a06, type: 3}
-  m_PrefabInstance: {fileID: 296216870}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &947640601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25185,6 +25176,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CanvasMenus: {fileID: 1456828064}
   gridMain: {fileID: 0}
+  loadingScreen: {fileID: 0}
+  LoadingBarFill: {fileID: 0}
+  sceneIsLoading: 0
   MAX_AMOUNT_PER_SLOT_BASE: 4
   MAX_AMOUNT_PER_SLOT_GAME: 3
 --- !u!114 &1630251719 stripped
