@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Extraction;
 using TMPro;
 using UnityEngine;
 
@@ -8,15 +9,12 @@ public class RaidTime : MonoBehaviour
 {
     [Header("UI Properties")]
     [SerializeField] private TextMeshProUGUI timerText;
-
-    [SerializeField] private float initialTime = 10;
-    
     
     private float currentTime = 5f;
     // Start is called before the first frame update
     void Start()
     { 
-        currentTime = initialTime;
+        currentTime = ExtractionManager.Instance.GetRaidTime();
         //StartCoroutine(StartCountdown());
     }
 

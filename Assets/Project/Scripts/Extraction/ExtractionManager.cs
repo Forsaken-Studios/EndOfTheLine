@@ -19,6 +19,8 @@ namespace Extraction
 
         private bool extractionArrived = false;
 
+        [SerializeField] private float raidTime;
+        
         private void Awake()
         {
             if (Instance != null)
@@ -118,6 +120,11 @@ namespace Extraction
         public void ActivateExtractionTimeLeft()
         {
 
+        }
+
+        public float GetRaidTime()
+        {
+            return raidTime;
         }
     }
 }
