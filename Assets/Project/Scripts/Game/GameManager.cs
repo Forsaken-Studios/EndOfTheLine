@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     
     [Header("Loading Screen - Not needed in trainBase")]
     public GameObject loadingScreen;
-    public Image LoadingBarFill;
+    //public Image LoadingBarFill;
     public bool sceneIsLoading;
 
 
@@ -74,8 +74,8 @@ public class GameManager : MonoBehaviour
         blackFadeEndGamePanel = CanvasMenus.gameObject.transform.Find("Black Fade End Game Panel").gameObject;
         while (sceneIsLoading)
         {
-            float newValue = LoadingBarFill.fillAmount += 0.25f;
-            LoadingBarFill.fillAmount = Mathf.Clamp(newValue, 0f, 0.80f);
+            //float newValue = LoadingBarFill.fillAmount += 0.25f;
+            //LoadingBarFill.fillAmount = Mathf.Clamp(newValue, 0f, 0.80f);
             yield return new WaitForSeconds(0.3f);
         }
         
@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         blackFadeEndGamePanel.SetActive(true);
         blackFadeEndGamePanel.GetComponent<Animator>().SetTrigger("starting");
-        LoadingBarFill.fillAmount = 1.0f;
+        //LoadingBarFill.fillAmount = 1.0f;
         loadingScreen.SetActive(false);
         GetReferences();
         GameState = GameState.OnGame;
