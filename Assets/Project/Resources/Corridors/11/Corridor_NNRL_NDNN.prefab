@@ -393,6 +393,7 @@ GameObject:
   - component: {fileID: 1057383274528952121}
   - component: {fileID: 541687847875720733}
   - component: {fileID: 3252238765902828151}
+  - component: {fileID: 9197821445850869852}
   m_Layer: 0
   m_Name: Walls
   m_TagString: Untagged
@@ -918,6 +919,22 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &9197821445850869852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544887338917869857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &6190066871292578950
 GameObject:
   m_ObjectHideFlags: 0

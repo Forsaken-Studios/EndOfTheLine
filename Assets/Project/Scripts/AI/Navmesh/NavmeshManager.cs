@@ -23,10 +23,15 @@ public class NavmeshManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    public void GenerateNavmesh()
     {
-        _NMS = GetComponent<NavMeshSurface>();
+        StartCoroutine(GenerateNavmeshCoroutine());
+    }
 
+    private IEnumerator GenerateNavmeshCoroutine()
+    {
+        yield return new WaitForEndOfFrame();
+        _NMS = GetComponent<NavMeshSurface>();
         _NMS.RemoveData();
         _NMS.BuildNavMesh();
     }

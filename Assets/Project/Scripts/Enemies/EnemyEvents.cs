@@ -9,4 +9,6 @@ public static class EnemyEvents
     public static Action<GameObject, Vector3, Vector3> OnSeenPlayer; // First self position, second player position.
     public static Action OnForgetPlayer;
     public static Action<GameObject, Vector3, bool> OnIsAtPlayerLastSeenPosition;
+    public static Action<GameObject> OnKnockDown;
+    public static Action<bool> OnIsOnBack;
 }

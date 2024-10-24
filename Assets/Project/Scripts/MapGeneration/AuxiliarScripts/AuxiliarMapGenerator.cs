@@ -132,25 +132,11 @@ public static class AuxiliarMapGenerator
 
         if (cell.State == CellState.Corridor)
         {
-            if (MapGenerator.Instance.isUsingExistingCorridors)
-            {
-                cost = 1;
-            }
-            else
-            {
-                cost = 10;
-            }
+            cost = 1;
         }
         else if (cell.State == CellState.Empty)
         {
-            if (MapGenerator.Instance.isUsingExistingCorridors)
-            {
-                cost = 10;
-            }
-            else
-            {
-                cost = 1;
-            }
+            cost = 10;
         }
         else if (cell.State == CellState.CorridorRoom || cell.State == CellState.EntranceRoom)
         {

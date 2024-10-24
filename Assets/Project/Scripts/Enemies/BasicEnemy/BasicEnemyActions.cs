@@ -28,6 +28,9 @@ public class BasicEnemyActions : MonoBehaviour
     [Header("External scripts")]
     [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
 
+    [Header("Resources")]
+    [SerializeField] private GameObject _corpsePrefab;
+
     private bool _isRotating = false;
     private Transform _player;
     private Vector3 _positionChased;
@@ -36,10 +39,25 @@ public class BasicEnemyActions : MonoBehaviour
 
     public bool isAtPlayerLastSeenPosition { get; private set; }
     public bool isAtInitialPosition { get; private set; }
-    public float timerLookForPlayer;
+    [HideInInspector] public float timerLookForPlayer;
+
+    void Awake()
+    {
+        EnemyEvents.OnKnockDown += GetKnockedDown;
+    }
+
+    void OnDestroy()
+    {
+        EnemyEvents.OnKnockDown -= GetKnockedDown;
+    }
 
     void Start()
     {
+        if (_patrolPoints == null)
+        {
+            _patrolPoints = new List<Transform>();
+        }
+
         _isChangingPatrolPoint = true;
         timerLookForPlayer = _timeToLookForPlayer;
 
@@ -161,9 +179,16 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void Patrol()
     {
-        StopRotating();
-        _agent.isStopped = false;
+        if (_patrolPoints.Count == 0)
+        {
+            RotateInPlace();
+        }
+        else
+        {
+            StopRotating();
+        }
 
+        _agent.isStopped = false;
         if (_isChangingPatrolPoint && _patrolPoints.Count > 0)
         {
             if (_isFullCircle)
@@ -223,6 +248,7 @@ public class BasicEnemyActions : MonoBehaviour
         if (Vector3.Distance(transform.position, _initialPositionSelf) <= _agent.stoppingDistance + 0.15f)
         {
             isAtInitialPosition = true;
+
             _isChangingPatrolPoint = true;
         }
         else
@@ -264,6 +290,19 @@ public class BasicEnemyActions : MonoBehaviour
         {
             DoorUI doorUI = collision.gameObject.GetComponent<DoorUI>();
             doorUI.OpenDoorAI();
+        }
+    }
+
+    private void GetKnockedDown(GameObject enemy)
+    {
+        if(enemy.GetInstanceID() == gameObject.GetInstanceID())
+        {
+            Vector3 corpsePosition = transform.position;
+            if(_corpsePrefab != null)
+            {
+                Instantiate(_corpsePrefab, corpsePosition, Quaternion.identity);
+            }
+            Destroy(gameObject.transform.parent.gameObject);
         }
     }
 }

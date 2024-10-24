@@ -39,7 +39,7 @@ public static class RoomLoader
         }
     }
 
-    public static GameObject GetRandomRoom()
+    public static GameObject GetRandomRoom(bool is3x3)
     {
         if(_roomTypes.Count <= 0)
         {
@@ -48,7 +48,15 @@ public static class RoomLoader
         }
 
         System.Random rnd = new System.Random();
-        int index = rnd.Next(0, _roomTypes.Count);
+        int index = _roomTypes.Count - 1;
+        if (is3x3)
+        {
+            index = rnd.Next(0, _roomTypes.Count - 1);
+        }
+        else
+        {
+            index = _roomTypes.Count - 1;
+        }
 
         return _roomTypes[index].GetRandomVariationRotation();
     }

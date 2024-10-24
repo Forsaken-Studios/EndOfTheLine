@@ -7,25 +7,35 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     #region Properties
+    [Header("Ajustes generales")]
+    [Tooltip("X = columns; Y = rows.")]
     [SerializeField] private Vector2Int _gridSize;
     public float cellSize = 5;
+    [Tooltip("Tamaño, en celdas, de la entrada al mapa.")]
     [SerializeField] private int _startSize = 2;
+    [Tooltip("Tamaño, en celdas, de la salida del mapa.")]
     [SerializeField] private int _exitSize = 2;
 
-    private Dictionary<Vector3, GameObject> _roomsInserted;
+    [Header("Condiciones generación")]
+    [Tooltip("Número de habitaciones 3x3 que habrá en el mapa.")]
+    [SerializeField] private int _amountRooms3x3 = 4;
+    [Tooltip("Porcentaje del grid que se quiere rellenar con habitaciones.")]
+    [Range(1, 100)]
+    [SerializeField] private int _mapPercentageOcuppied = 25;
+    [Tooltip("Representa el radio de distancia (en celdas) en el que una habitación con más de una entrada va a buscar unir esas entradas extra con un pasillo.")]
+    [SerializeField] private int _roomRadius = 5;
 
+    [Header("Opciones visuales")]
+    [SerializeField] private bool _isDrawingGizmos = true;
+
+    [Header("Extra")]
+    [SerializeField] private CorridorsDataBase corridorsDB;
 
     [HideInInspector] public Vector3 startingGridPosition = Vector3.zero;
     private Cell[,] _grid; // [row, col]
-    [SerializeField] private int _maxRoomsInserted = 4;
-    [SerializeField] private int _radius = 5;
-    [SerializeField] private bool _isTotallyGizmos = true;
-    public bool isUsingExistingCorridors = true;
-
     private System.Random _rnd;
-
-    [SerializeField] private CorridorsDataBase corridorsDB;
     private List<GameObject> _corridorsInserted;
+    private Dictionary<Vector3, GameObject> _roomsInserted;
 
     private void OnValidate()
     {
@@ -99,7 +109,8 @@ public class MapGenerator : MonoBehaviour
     {
         // Borrado y creación de la estructura de carpetas en la jerarquia de los pasillos y habitaciones.
         GameObject mapObject = GameObject.Find("Map");
-        if (mapObject == null){
+        if (mapObject == null)
+        {
             mapObject = new GameObject("Map");
         }
 
@@ -141,24 +152,45 @@ public class MapGenerator : MonoBehaviour
         PlacingStart();
         PlacingExit();
 
-        // Se crea el mapa con gizmos unicamente o con prefabs.
+        // Se crea el mapa.
         bool mapCreated = false;
-        int tries = 10;
-        while (mapCreated == false && tries > 0)
+        int tries = 1;
+        int auxMapPercentageOcuppied = _mapPercentageOcuppied;
+        while (mapCreated == false)
         {
-            if (_isTotallyGizmos == true)
+            if(tries > 0)
             {
                 mapCreated = PlacingRooms();
+                if(mapCreated == true)
+                {
+                    Debug.Log($"Map percentage: {_mapPercentageOcuppied}");
+                    _mapPercentageOcuppied = auxMapPercentageOcuppied;
+                    break;
+                }
+                else
+                {
+                    tries--;
+                }
             }
             else
             {
-                mapCreated = PlacingRoomsPrefabs();
+                _mapPercentageOcuppied -= 1;
+                tries = 1;
+
+                if (_mapPercentageOcuppied <= 1)
+                {
+                    _mapPercentageOcuppied = auxMapPercentageOcuppied;
+                    Debug.LogWarning("FINAL MAP GENERATION - No se pudo crear el mapa con los parámetros dados.");
+                    break;
+                }
             }
-            tries--;
         }
 
         // Se instancian los pasillos.
         InstantiateCorridorsPrefabs();
+
+        // Construir navmesh.
+        NavmeshManager.Instance.GenerateNavmesh();
     }
 
     private void InstantiateCorridorsPrefabs()
@@ -198,7 +230,7 @@ public class MapGenerator : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (_gridSize == Vector2Int.zero || cellSize == 0 || _grid == null)
+        if (_gridSize == Vector2Int.zero || cellSize == 0 || _grid == null || !_isDrawingGizmos)
         {
             return;
         }
@@ -427,44 +459,6 @@ public class MapGenerator : MonoBehaviour
 
             // Intentar llevar el resto de salidas al final.
             modifiedGrid = TryToReachFinal(copiedGrid);
-            if (modifiedGrid == null)
-            {
-                Debug.LogWarning("FINAL MAP GENERATION -Retrying to create map-.");
-                return false;
-            }
-            else
-            {
-                _grid = modifiedGrid;
-                // BORRAR
-                foreach (Cell cell in _grid)
-                {
-                    Debug.Log($"Celda -> [{cell.Row}, {cell.Col}]   Estado -> {cell.State}");
-                }
-                return true;
-            }
-        }
-
-
-
-    }
-
-    private bool PlacingRoomsPrefabs()
-    {
-        // Intentar crear caminos a todas las habitaciones requeridas.
-        Cell[,] copiedGrid = AuxiliarMapGenerator.CopyGrid(_grid);
-        Cell[,] modifiedGrid = TryToInsertRoomsPrefabs(copiedGrid);
-
-        if (modifiedGrid == null)
-        {
-            Debug.LogWarning("FINAL MAP GENERATION -Retrying to create map-.");
-            return false;
-        }
-        else
-        {
-            copiedGrid = AuxiliarMapGenerator.CopyGrid(modifiedGrid); ;
-
-            // Intentar llevar el resto de salidas al final.
-            modifiedGrid = TryToReachFinal(copiedGrid);
 
             if (modifiedGrid == null)
             {
@@ -541,7 +535,7 @@ public class MapGenerator : MonoBehaviour
     private Cell[,] SeekAndJoinNearCorridors(Cell startCell, Cell[,] grid)
     {
 
-        List<Cell> adjacentCellsList = GetAdjacentCells(startCell, grid, _radius);
+        List<Cell> adjacentCellsList = GetAdjacentCells(startCell, grid, _roomRadius);
         Debug.Log($"Number AdjacentCells for [{startCell.Row}, {startCell.Col}]: {adjacentCellsList.Count}");
 
         foreach (Cell adjacentCell in adjacentCellsList)
@@ -563,21 +557,6 @@ public class MapGenerator : MonoBehaviour
     private List<Cell> GetAdjacentCells(Cell cell, Cell[,] grid, int radius)
     {
         List<Cell> adjacentCells = new List<Cell>();
-
-        //for (int row = cell.Row - radius; row <= cell.Row + radius; row++)
-        //{
-        //    for (int col = cell.Col - radius; col <= cell.Col + radius; col++)
-        //    {
-        //        if ((row == cell.Row && col == cell.Col) || row >= grid.GetLength(0) || row <= 0 || col >= grid.GetLength(1) || col <= 0)
-        //        {
-        //            continue;
-        //        }
-        //        if (grid[row, col].State == CellState.Corridor)
-        //        {
-        //            adjacentCells.Add(grid[row, col]);
-        //        }
-        //    }
-        //}
 
         for (int row = 0; row < grid.GetLength(0); row++)
         {
@@ -655,92 +634,29 @@ public class MapGenerator : MonoBehaviour
 
     private Cell[,] TryToInsertRooms(Cell[,] grid)
     {
-        int roomsInserted = 0;
-        int numberRoom = 0;
-
-        int tries = 15;
-        while (tries > 0)
-        {
-            GameObject roomObject = RoomLoader.GetRandomRoom();
-            Room room = roomObject.GetComponent<Room>();
-            room.InitializeRandomRoom();
-
-            int insertionTry = 15;
-
-            while (insertionTry > 0)
-            {
-                Debug.Log($"GetPosStartEnd(): Intento número {insertionTry} en habitación {numberRoom}");
-                List<Cell> endCellList = new List<Cell>();
-
-                int initialRow = _rnd.Next(0, grid.GetLength(0));
-                int initialCol = _rnd.Next(0, grid.GetLength(1));
-
-                List<Vector2Int> possibleEndCell = room.GetPosStartEnd();
-                foreach (Vector2Int element in possibleEndCell)
-                {
-                    if (element.y + initialRow < 0 || element.y + initialRow >= grid.GetLength(0) ||
-                        element.x + initialCol < 0 || element.x + initialCol >= grid.GetLength(1))
-                    {
-                        break;
-                    }
-
-                    endCellList.Add(grid[element.y + initialRow, element.x + initialCol]);
-                    Debug.Log($"GetPosStartEnd(): grid[{element.y + initialRow}, {element.x + initialCol}]");
-                }
-
-                // Intentar insertar la habitación y obtener el grid modificado
-                Cell[,] modifiedGrid = AuxiliarMapGenerator.InsertRoom(grid, room.selfGrid, initialRow, initialCol, endCellList);
-
-                if (modifiedGrid != null)
-                {
-                    grid = modifiedGrid; // Actualizar grid con el grid modificado
-                    roomsInserted++;
-                    break;
-                }
-                else
-                {
-                    insertionTry--;
-                }
-
-            }
-
-            if (roomsInserted == _maxRoomsInserted)
-            {
-                break;
-            }
-
-            tries--;
-            numberRoom++;
-        }
-
-        Debug.Log($"MAP GENERATION -Final grid updated- with {roomsInserted} rooms inserted.");
-
-        if (roomsInserted == _maxRoomsInserted)
-        {
-            return grid;
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    private Cell[,] TryToInsertRoomsPrefabs(Cell[,] grid)
-    {
-        int roomsInserted = 0;
-        int tries = 15;
+        int currentAmountRooms3x3 = 0;
+        int tries = 5;
 
         while (tries > 0)
         {
             bool isInserted = false;
 
-            GameObject roomPrefab = RoomLoader.GetRandomRoom();
+            GameObject roomPrefab;
+            if (currentAmountRooms3x3 < _amountRooms3x3)
+            {
+                roomPrefab = RoomLoader.GetRandomRoom(true);
+            }
+            else
+            {
+                roomPrefab = RoomLoader.GetRandomRoom(false);
+            }
+            
             GameObject roomObject = Instantiate(roomPrefab, Vector3.zero, roomPrefab.transform.rotation);
             roomObject.transform.SetParent(GameObject.Find("Rooms").transform, false);
             Room room = roomObject.GetComponent<Room>();
             room.InitializeRandomRoom();
 
-            int insertionTry = 15;
+            int insertionTry = 250;
 
             while (insertionTry > 0)
             {
@@ -759,7 +675,6 @@ public class MapGenerator : MonoBehaviour
                     }
 
                     endCellList.Add(grid[element.y + initialRow, element.x + initialCol]);
-                    Debug.Log($"GetPosStartEnd(): grid[{element.y + initialRow}, {element.x + initialCol}]");
                 }
 
                 // Intentar insertar la habitación y obtener el grid modificado
@@ -781,27 +696,26 @@ public class MapGenerator : MonoBehaviour
 
             }
 
-            if(isInserted == true)
+            if (isInserted == true)
             {
-                roomsInserted++;
+                if(currentAmountRooms3x3 < _amountRooms3x3)
+                {
+                    currentAmountRooms3x3++;
+                }
             }
             else
             {
+                tries--;
                 Destroy(roomObject);
             }
 
-            if (roomsInserted == _maxRoomsInserted)
+            if(GetOccupiedMapPercentage(grid) >= _mapPercentageOcuppied && currentAmountRooms3x3 == _amountRooms3x3)
             {
-                
                 break;
             }
-
-            tries--;
         }
 
-        Debug.Log($"MAP GENERATION -Final grid updated- with {roomsInserted} rooms inserted.");
-
-        if (roomsInserted == _maxRoomsInserted)
+        if (GetOccupiedMapPercentage(grid) >= _mapPercentageOcuppied && currentAmountRooms3x3 == _amountRooms3x3)
         {
             return grid;
         }
@@ -816,179 +730,20 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    IEnumerator Test1()
+    private int GetOccupiedMapPercentage(Cell[,] currentGrid)
     {
-        List<Cell> list = new List<Cell>();
-        list.Add(_grid[8, 2]);
-        AuxiliarMapGenerator.FindPath(list, _grid);
+        int totalCells = currentGrid.GetLength(0) * currentGrid.GetLength(1);
+        int currentCellsOcuppied = 0;
 
-        // Espera 2 segundos
-        yield return new WaitForSeconds(1f);
-    }
-
-    IEnumerator Test2()
-    {
-        List<Cell> list = new List<Cell>();
-        list.Add(_grid[8, 2]);
-        Cell[,] modifiedGrid = AuxiliarMapGenerator.FindPath(list, _grid);
-        if (modifiedGrid != null)
+        foreach(Cell cell in currentGrid)
         {
-            _grid = modifiedGrid;
+            if(cell.State == CellState.Room || cell.State == CellState.EntranceRoom || cell.State == CellState.CorridorRoom || cell.State == CellState.FillingRoom)
+            {
+                currentCellsOcuppied++;
+            }
         }
 
-        // Espera 2 segundos
-        yield return new WaitForSeconds(3f);
-        Cell[,] copiedGrid = AuxiliarMapGenerator.CopyGrid(_grid);
-
-        copiedGrid[5, 2].SetCellState(CellState.Room);
-
-        List<Cell> cellsToRecalculate = new List<Cell>();
-        cellsToRecalculate.Add(copiedGrid[5, 2]);
-
-        modifiedGrid = AuxiliarMapGenerator.ReFindPath(cellsToRecalculate, copiedGrid);
-        if (modifiedGrid != null)
-        {
-            _grid = modifiedGrid;
-        }
-        else
-        {
-            Debug.LogWarning("No se ha podido regenerar el camino");
-        }
-
-        Debug.Log(_grid[5, 2].State);
-    }
-
-
-    IEnumerator Test3()
-    {
-        List<Cell> list1 = new List<Cell>();
-        list1.Add(_grid[8, 8]);
-        Cell[,] modifiedGrid = AuxiliarMapGenerator.FindPath(list1, _grid);
-        if (modifiedGrid != null)
-        {
-            _grid = modifiedGrid;
-        }
-
-        List<Cell> list2 = new List<Cell>();
-        list2.Add(_grid[2, 9]);
-        modifiedGrid = AuxiliarMapGenerator.FindPath(list2, _grid);
-        if (modifiedGrid != null)
-        {
-            _grid = modifiedGrid;
-        }
-
-        List<Cell> list3 = new List<Cell>();
-        list3.Add(_grid[5, 5]);
-        modifiedGrid = AuxiliarMapGenerator.FindPath(list3, _grid);
-        if (modifiedGrid != null)
-        {
-            _grid = modifiedGrid;
-        }
-
-        // Espera 2 segundos
-        yield return new WaitForSeconds(3f);
-
-        Cell[,] copiedGrid = AuxiliarMapGenerator.CopyGrid(_grid);
-
-        copiedGrid[2, 8].SetCellState(CellState.Room);
-        copiedGrid[2, 7].SetCellState(CellState.Room);
-        copiedGrid[2, 6].SetCellState(CellState.Room);
-        copiedGrid[2, 5].SetCellState(CellState.Room);
-        copiedGrid[2, 4].SetCellState(CellState.Room);
-        copiedGrid[2, 3].SetCellState(CellState.Room);
-        copiedGrid[2, 2].SetCellState(CellState.Room);
-        copiedGrid[2, 1].SetCellState(CellState.Room);
-        copiedGrid[2, 0].SetCellState(CellState.Room);
-
-        List<Cell> cellsToRecalculate = new List<Cell>();
-
-        cellsToRecalculate.Add(copiedGrid[2, 8]);
-        cellsToRecalculate.Add(copiedGrid[2, 7]);
-        cellsToRecalculate.Add(copiedGrid[2, 6]);
-        cellsToRecalculate.Add(copiedGrid[2, 5]);
-        cellsToRecalculate.Add(copiedGrid[2, 4]);
-        cellsToRecalculate.Add(copiedGrid[2, 3]);
-        cellsToRecalculate.Add(copiedGrid[2, 2]);
-        cellsToRecalculate.Add(copiedGrid[2, 1]);
-        cellsToRecalculate.Add(copiedGrid[2, 0]);
-
-        modifiedGrid = AuxiliarMapGenerator.ReFindPath(cellsToRecalculate, copiedGrid);
-        if (modifiedGrid != null)
-        {
-            _grid = modifiedGrid;
-        }
-        else
-        {
-            Debug.LogWarning("No se ha podido regenerar el camino");
-        }
-    }
-
-    IEnumerator Test4()
-    {
-        List<Cell> list1 = new List<Cell>();
-        list1.Add(_grid[8, 8]);
-        Cell[,] modifiedGrid = AuxiliarMapGenerator.FindPath(list1, _grid);
-        if (modifiedGrid != null)
-        {
-            _grid = modifiedGrid;
-        }
-
-        List<Cell> list2 = new List<Cell>();
-        list2.Add(_grid[2, 9]);
-        modifiedGrid = AuxiliarMapGenerator.FindPath(list2, _grid);
-        if (modifiedGrid != null)
-        {
-            _grid = modifiedGrid;
-        }
-
-        List<Cell> list3 = new List<Cell>();
-        list3.Add(_grid[5, 5]);
-        modifiedGrid = AuxiliarMapGenerator.FindPath(list3, _grid);
-        if (modifiedGrid != null)
-        {
-            _grid = modifiedGrid;
-        }
-
-        Cell cellToDebug = _grid[2, 8];
-
-        // Espera 2 segundos
-        yield return new WaitForSeconds(3f);
-
-        Cell[,] copiedGrid = AuxiliarMapGenerator.CopyGrid(_grid);
-
-        copiedGrid[2, 9].SetCellState(CellState.Room);
-        copiedGrid[2, 8].SetCellState(CellState.Room);
-        copiedGrid[2, 7].SetCellState(CellState.Room);
-        copiedGrid[2, 6].SetCellState(CellState.Room);
-        copiedGrid[2, 5].SetCellState(CellState.Room);
-        copiedGrid[2, 4].SetCellState(CellState.Room);
-        copiedGrid[2, 3].SetCellState(CellState.Room);
-        copiedGrid[2, 2].SetCellState(CellState.Room);
-        copiedGrid[2, 1].SetCellState(CellState.Room);
-        copiedGrid[2, 0].SetCellState(CellState.Room);
-
-        List<Cell> cellsToRecalculate = new List<Cell>();
-
-        cellsToRecalculate.Add(copiedGrid[2, 9]);
-        cellsToRecalculate.Add(copiedGrid[2, 8]);
-        cellsToRecalculate.Add(copiedGrid[2, 7]);
-        cellsToRecalculate.Add(copiedGrid[2, 6]);
-        cellsToRecalculate.Add(copiedGrid[2, 5]);
-        cellsToRecalculate.Add(copiedGrid[2, 4]);
-        cellsToRecalculate.Add(copiedGrid[2, 3]);
-        cellsToRecalculate.Add(copiedGrid[2, 2]);
-        cellsToRecalculate.Add(copiedGrid[2, 1]);
-        cellsToRecalculate.Add(copiedGrid[2, 0]);
-
-        modifiedGrid = AuxiliarMapGenerator.ReFindPath(cellsToRecalculate, copiedGrid);
-        if (modifiedGrid != null)
-        {
-            _grid = modifiedGrid;
-        }
-        else
-        {
-            Debug.LogWarning("No se ha podido regenerar el camino");
-        }
+        return (int)(((float)currentCellsOcuppied/totalCells) * 100);
     }
     #endregion
 }

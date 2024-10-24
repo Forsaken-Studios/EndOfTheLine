@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using static RoomData;
 
 public class Room : MonoBehaviour
 {
+    [Header("Configuración de la habitación")]
     public Vector2Int _roomSize; // Room size in cells. x = col, y = row
     private BoolMatrix _shape; // Occupation matrix (true = ocuppied, false = not ocuppied).
     [HideInInspector] public Vector3 centerPosition;
@@ -20,6 +23,12 @@ public class Room : MonoBehaviour
 
     private int _configurationSelected = 1;
     private Vector3 _positionSelected = Vector3.zero;
+
+    [Header("Configuración de enemigos")]
+    [Tooltip("Llamar 'BasicEnemies' al GameObject padre de los enemigos.")]
+    [SerializeField] private int _minAountEnemiesToSpawn = 0;
+    [Tooltip("Llamar 'BasicEnemies' al GameObject padre de los enemigos.")]
+    [SerializeField] private int _maxAountEnemiesToSpawn = 0;
 
     void Start()
     {
@@ -37,7 +46,14 @@ public class Room : MonoBehaviour
     public void InitializeRandomRoom()
     {
         rnd = new System.Random();
-        _configurationSelected = rnd.Next(0, _roomDataList.Count);
+        if(_roomDataList.Count == 1)
+        {
+            _configurationSelected = 0;
+        }
+        else
+        {
+            _configurationSelected = rnd.Next(0, _roomDataList.Count);
+        }
 
         _roomSize = _roomDataList[_configurationSelected].roomSize;
         _shape = _roomDataList[_configurationSelected].GetShape();
@@ -53,9 +69,10 @@ public class Room : MonoBehaviour
         _positionSelected = positionSelected;
         transform.position = _positionSelected;
 
+        GameObject currentConfiguration = null;
         for (int i = 1; i <= _roomDataList.Count; i++)
         {
-            GameObject currentConfiguration = transform.Find($"Configuration_{i}").gameObject;
+            currentConfiguration = transform.Find($"Configuration_{i}").gameObject;
 
             if (i - 1 == _configurationSelected)
             {
@@ -73,6 +90,48 @@ public class Room : MonoBehaviour
         gas.SetActive(true);
         GameObject gasHigh = transform.Find($"GasHigh").gameObject;
         gasHigh.SetActive(true);
+
+        if(_maxAountEnemiesToSpawn > 0)
+        {
+            GameObject EnemiesParent = null;
+            for (int i = 0; i < currentConfiguration.transform.childCount; i++)
+            {
+                GameObject child = currentConfiguration.transform.GetChild(i).gameObject;
+                if (gameObject.name == "BasicEnemies")
+                {
+                    EnemiesParent = child;
+                }
+            }
+            if(EnemiesParent == null)
+            {
+                return;
+            }
+
+            List<GameObject> allEnemiesList = new List<GameObject>();
+            for (int enemyIndex = 0; enemyIndex < EnemiesParent.transform.childCount; enemyIndex++)
+            {
+                allEnemiesList.Add(EnemiesParent.transform.GetChild(enemyIndex).gameObject);
+            }
+            if(allEnemiesList.Count == 0)
+            {
+                return;
+            }
+
+            allEnemiesList = allEnemiesList.OrderBy(x => UnityEngine.Random.value).ToList();
+            int definitiveAmountEnemies = UnityEngine.Random.Range(_minAountEnemiesToSpawn, _maxAountEnemiesToSpawn);
+            foreach (GameObject enemy in allEnemiesList)
+            {
+                if (definitiveAmountEnemies > 0)
+                {
+                    enemy.SetActive(true);
+                    definitiveAmountEnemies--;
+                }
+                else
+                {
+                    enemy.SetActive(false);
+                }
+            }
+        }
     }
 
     private void CalculateCenterPosition()
