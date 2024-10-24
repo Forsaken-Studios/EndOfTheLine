@@ -155,7 +155,7 @@ namespace Player
                     if (GameManager.Instance.GameState == GameState.OnInventory ||
                         GameManager.Instance.GameState == GameState.onLoreView)
                     {
-                        _animator.SetBool("running", false);
+                        _animator.SetBool("walking", false);
                     }
                     speedX = 0;
                     speedY = 0;
@@ -209,17 +209,18 @@ namespace Player
             }
             
 
+            // Improve method to add variation between walking and running depending on player current speed
 
             if (speedX != 0 || speedY != 0)
             {
                 HandleSprintInput();
                 HandleDashInputs();
-                _animator.SetBool("running", true);
+                _animator.SetBool("walking", true);
             }
             else
             {
                 moveSpeed = 0;
-                _animator.SetBool("running", false);
+                _animator.SetBool("walking", false);
             }
            // _animator.SetInteger("SpeedInt", (int)speedX);
         }
