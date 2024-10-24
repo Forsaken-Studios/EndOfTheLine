@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Extraction;
 using Inventory;
+using Player;
 using SaveManagerNamespace;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -37,11 +38,7 @@ public class GameManager : MonoBehaviour
     
     private bool holder1Activated = false;
     private bool holder2Activated = false;
-
-
-    // Variables to control player dead animation
-    private GameObject _player;
-    private Animator _playerAnim;
+    
 
     private GameState _gameState;
     public GameState GameState
@@ -68,14 +65,6 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(ActivateLoadingScreen());
             GameState = GameState.onLoad;
-
-            // FIXME: Revisar si esto esta bien aqui o no
-            _player = GameObject.FindGameObjectWithTag("Player");
-            if(_player != null )
-            {
-                Debug.Log("Player found");
-                _playerAnim = _player.GetComponentInChildren<Animator>();
-            }
         }
     }
 
@@ -115,6 +104,7 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
+            PlayerController.Instance.SetIfPlayerCanMove(false);
             blackFadeEndGamePanel.SetActive(true);
             blackFadeEndGamePanel.GetComponent<Animator>().SetTrigger("ending");
 
@@ -146,10 +136,13 @@ public class GameManager : MonoBehaviour
         } else if (died)
         {
             Debug.Log("[GameManager.cs] : Player has died.");
-            _playerAnim.SetBool("isDead", true);
             // TODO: Disable collider and rotation controllers to avoid problems
             // FIXME: When this line triggers, player sprite dissappears
-            //_player.GetComponentInChildren<Collider2D>().gameObject.SetActive(false);
+            PlayerAim playerAim = PlayerController.Instance.gameObject.GetComponent<PlayerAim>();
+            PlayerController.Instance.GetComponentInChildren<CircleCollider2D>().enabled = false;
+            playerAim.SetIfCanRotateAim(false);
+            playerAim.RemoveTriangle();
+            PlayerController.Instance.PlayDeathAnimation();
         }
 
         //Add one more day to game
