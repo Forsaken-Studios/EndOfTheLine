@@ -302,61 +302,33 @@ namespace Player
             return currentRadius;
         }
 
+        public void PlayDeathAnimation()
+        {
+            if(_animator != null)
+                _animator.SetBool("isDead", true);
+        }
+
         //Advanced LERP function
         private float ExpDecay(float current, float goal, float decay, float dT)
         {
             return goal + (current - goal)* Mathf.Exp(-decay * dT);
         }
         
-        public void SetIfPlayerCanMove(bool aux)
-        {
-            this.playerCanMove = aux;
-        }
+        public void SetIfPlayerCanMove(bool aux) => this.playerCanMove = aux;
 
-        public float GetMoveSpeed()
-        {
-            return moveSpeed;
-        }
+        public float GetMoveSpeed() => moveSpeed;
         
-        public float GetWalkSpeed()
-        {
-            return walkSpeed;
-        }
-        
-        public float GetRunSpeed()
-        {
-            return runSpeed;
-        }
-        
-        public float GetCurrentRadius()
-        {
-            return currentRadius;
-        }
-        
-        public NoiseCircle GetNoiseScript()
-        {
-            return noise;
-        }
-        
-        public static PlayerController PlayerControllerInstance
-        {
-            get
-            {
-                return Instance;
-            }
-        }
+        public float GetCurrentRadius() => currentRadius;
 
-        public int GetMaxWeight()
-        {
-            return maxLimitWeight;
-        }
+        public NoiseCircle GetNoiseScript() => noise;
 
-        public int GetOverweight()
-        {
-            return overWeight;
-        }
+        public static PlayerController PlayerControllerInstance => Instance;
+
+        public int GetMaxWeight() => maxLimitWeight;
+
+        public int GetOverweight() => overWeight;
         
-        
+
     }
 }
 
