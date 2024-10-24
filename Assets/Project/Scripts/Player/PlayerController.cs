@@ -12,7 +12,7 @@ namespace Player
         [SerializeField] private float runSpeed = 10f;
         [SerializeField] private float speedModifier = 0.5f;
         
-        private float moveSpeed;
+        [SerializeField] private float moveSpeed;
         private float currentSpeedValue;
         private float speedX, speedY;
 
@@ -155,7 +155,7 @@ namespace Player
                     if (GameManager.Instance.GameState == GameState.OnInventory ||
                         GameManager.Instance.GameState == GameState.onLoreView)
                     {
-                        _animator.SetBool("walking", false);
+                        _animator.SetBool("isWalking", false);
                     }
                     speedX = 0;
                     speedY = 0;
@@ -209,18 +209,26 @@ namespace Player
             }
             
 
-            // Improve method to add variation between walking and running depending on player current speed
-
             if (speedX != 0 || speedY != 0)
             {
                 HandleSprintInput();
                 HandleDashInputs();
-                _animator.SetBool("walking", true);
+                // TODO: Change method to add variation between walking and running depending on player current speed
+                if(moveSpeed >= runSpeed)
+                {
+                    _animator.SetBool("isRunning", true);
+                    _animator.SetBool("isWalking", true); // false);
+                } else
+                {
+                    _animator.SetBool("isRunning", false);
+                    _animator.SetBool("isWalking", true);
+                }
             }
             else
             {
                 moveSpeed = 0;
-                _animator.SetBool("walking", false);
+                _animator.SetBool("isWalking", false);
+                _animator.SetBool("isRunning", false);
             }
            // _animator.SetInteger("SpeedInt", (int)speedX);
         }
