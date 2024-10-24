@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject gridMain;
     private Collider2D wallCollider; 
     private Collider2D floorCollider;
-    
     [Header("Loading Screen - Not needed in trainBase")]
     public GameObject loadingScreen;
     //public Image LoadingBarFill;
@@ -136,8 +135,6 @@ public class GameManager : MonoBehaviour
         } else if (died)
         {
             Debug.Log("[GameManager.cs] : Player has died.");
-            // TODO: Disable collider and rotation controllers to avoid problems
-            // FIXME: When this line triggers, player sprite dissappears
             PlayerAim playerAim = PlayerController.Instance.gameObject.GetComponent<PlayerAim>();
             PlayerController.Instance.GetComponentInChildren<CircleCollider2D>().enabled = false;
             playerAim.SetIfCanRotateAim(false);
