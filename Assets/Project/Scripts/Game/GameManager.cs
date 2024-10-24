@@ -37,8 +37,11 @@ public class GameManager : MonoBehaviour
     
     private bool holder1Activated = false;
     private bool holder2Activated = false;
-    
-    
+
+
+    // Variables to control player dead animation
+    private GameObject _player;
+    private Animator _playerAnim;
 
     private GameState _gameState;
     public GameState GameState
@@ -64,7 +67,15 @@ public class GameManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name != trainSceneName)
         {
             StartCoroutine(ActivateLoadingScreen());
-            GameState = GameState.onLoad;  
+            GameState = GameState.onLoad;
+
+            // FIXME: Revisar si esto esta bien aqui o no
+            _player = GameObject.FindGameObjectWithTag("Player");
+            if(_player != null )
+            {
+                Debug.Log("Player found");
+                _playerAnim = _player.GetComponentInChildren<Animator>();
+            }
         }
     }
 
@@ -132,6 +143,13 @@ public class GameManager : MonoBehaviour
             PlayerInventory.Instance.HandleItemsAtEndGame();
             PlayerInventory.Instance.RemoveCoinFromInventory();
             SaveManager.Instance.SavePlayerInventoryJson();
+        } else if (died)
+        {
+            Debug.Log("[GameManager.cs] : Player has died.");
+            _playerAnim.SetBool("isDead", true);
+            // TODO: Disable collider and rotation controllers to avoid problems
+            // FIXME: When this line triggers, player sprite dissappears
+            //_player.GetComponentInChildren<Collider2D>().gameObject.SetActive(false);
         }
 
         //Add one more day to game
