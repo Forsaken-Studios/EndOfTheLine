@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 1814533395466829187}
   - component: {fileID: 3219711383272395771}
   - component: {fileID: 5970675836886858743}
+  - component: {fileID: 1116571812829633459}
   - component: {fileID: 9178930243344657456}
   - component: {fileID: 3322453539983541843}
   m_Layer: 6
@@ -102,6 +103,7 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 10
   speedModifier: 0.5
+  moveSpeed: 0
   maxLimitWeight: 2
   overWeight: 1
   moveReducerByWeight: 0.6
@@ -212,6 +214,26 @@ MonoBehaviour:
   abilityUI: {fileID: 0}
   canThrowAbility: 1
   key: 101
+--- !u!114 &1116571812829633459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3794863736478708675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 628122a9a8a1e8a4c9a43687c827716a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _detectionWidth: 1
+  _detectionHeight: 1
+  _detectionDistance: 0.5
+  _detectionLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  _HotKeyPrefab: {fileID: 4138725030148504204, guid: cc3ace6a017cf08488005d28b190cc1c, type: 3}
+  _isDrawingGizmos: 1
 --- !u!50 &9178930243344657456
 Rigidbody2D:
   serializedVersion: 4

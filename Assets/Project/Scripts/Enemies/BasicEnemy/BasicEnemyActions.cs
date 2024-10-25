@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -14,10 +16,22 @@ public class BasicEnemyActions : MonoBehaviour
     [SerializeField] private float _killPlayerDistance = 1f;
     [SerializeField] private float _timeToLookForPlayer = 5f;
 
+    [Header("Patrol")]
+    [SerializeField] private List<Transform> _patrolPoints;
+    [SerializeField] private bool _isFullCircle;
+    [SerializeField] private float _timeWaitEndPatrol = 2f;
+    private float _timerWaitEndPatrol = 2f;
+    private bool _isChangingPatrolPoint;
+    private bool _isMovingForward = true;
+    private int _newPatrolIndex = 0;
+
     [Header("External scripts")]
     [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
 
-    private bool _isRotating = true;
+    [Header("Resources")]
+    [SerializeField] private GameObject _corpsePrefab;
+
+    private bool _isRotating = false;
     private Transform _player;
     private Vector3 _positionChased;
     private NavMeshAgent _agent;
@@ -25,9 +39,28 @@ public class BasicEnemyActions : MonoBehaviour
 
     public bool isAtPlayerLastSeenPosition { get; private set; }
     public bool isAtInitialPosition { get; private set; }
+    [HideInInspector] public float timerLookForPlayer;
+
+    void Awake()
+    {
+        EnemyEvents.OnKnockDown += GetKnockedDown;
+    }
+
+    void OnDestroy()
+    {
+        EnemyEvents.OnKnockDown -= GetKnockedDown;
+    }
 
     void Start()
     {
+        if (_patrolPoints == null)
+        {
+            _patrolPoints = new List<Transform>();
+        }
+
+        _isChangingPatrolPoint = true;
+        timerLookForPlayer = _timeToLookForPlayer;
+
         _initialPositionSelf = transform.position;
         _positionChased = _initialPositionSelf;
 
@@ -36,6 +69,7 @@ public class BasicEnemyActions : MonoBehaviour
 
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateUpAxis = false;
+        _agent.stoppingDistance = 0;
 
         _player = GameObject.FindWithTag("Player").transform;
         StopChasing();
@@ -43,6 +77,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     void Update()
     {
+        Debug.Log($"--- Action : {_basicEnemyDetection.playerLastSeenPosition}");
         FixXYAxis();
         SetMovementSpeed();
 
@@ -67,14 +102,14 @@ public class BasicEnemyActions : MonoBehaviour
     {
         if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
         {
-            // DirecciÃ³n hacia el objetivo
+            // Dirección hacia el objetivo
             Vector3 direction = _player.position - transform.position;
-            direction.z = 0; // Asegurarse de que la direcciÃ³n estÃ© en el plano XY
+            direction.z = 0; // Asegurarse de que la dirección esté en el plano XY
 
-            // Calcular el Ã¡ngulo en el plano XY
+            // Calcular el ángulo en el plano XY
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            // Aplicar la rotaciÃ³n solo en el eje Z
+            // Aplicar la rotación solo en el eje Z
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
         else
@@ -85,7 +120,7 @@ public class BasicEnemyActions : MonoBehaviour
             fixedRotation.y = 0;
             transform.rotation = Quaternion.Euler(fixedRotation);
 
-            // Rotar el agente para seguir la direcciÃ³n del movimiento
+            // Rotar el agente para seguir la dirección del movimiento
             if (_agent.velocity != Vector3.zero)
             {
                 float angle = Mathf.Atan2(_agent.velocity.y, _agent.velocity.x) * Mathf.Rad2Deg;
@@ -123,6 +158,7 @@ public class BasicEnemyActions : MonoBehaviour
         StopRotating();
         _agent.isStopped = false;
         _positionChased = _initialPositionSelf;
+        EnemyEvents.OnIsAtPlayerLastSeenPosition?.Invoke(gameObject.transform.parent.gameObject, gameObject.transform.position, true);
     }
 
     public void StopChasing()
@@ -141,11 +177,79 @@ public class BasicEnemyActions : MonoBehaviour
         _isRotating = true;
     }
 
+    public void Patrol()
+    {
+        if (_patrolPoints.Count == 0)
+        {
+            RotateInPlace();
+        }
+        else
+        {
+            StopRotating();
+        }
+
+        _agent.isStopped = false;
+        if (_isChangingPatrolPoint && _patrolPoints.Count > 0)
+        {
+            if (_isFullCircle)
+            {
+                if (_newPatrolIndex + 1 < _patrolPoints.Count)
+                {
+                    _newPatrolIndex += 1;
+                }
+                else
+                {
+                    _newPatrolIndex = 0;
+                }
+                _initialPositionSelf = _patrolPoints[_newPatrolIndex].position;
+                _isChangingPatrolPoint = false;
+            }
+            else
+            {
+                if (_timerWaitEndPatrol > 0)
+                {
+                    _timerWaitEndPatrol -= Time.deltaTime;
+                }
+                else
+                {
+                    if (_isMovingForward)
+                    {
+                        if (_newPatrolIndex + 1 < _patrolPoints.Count)
+                        {
+                            _newPatrolIndex += 1;
+                        }
+                        else
+                        {
+                            _isMovingForward = false;
+                            _timerWaitEndPatrol = _timeWaitEndPatrol;
+                        }
+                    }
+                    else
+                    {
+                        if (_newPatrolIndex - 1 >= 0)
+                        {
+                            _newPatrolIndex -= 1;
+                        }
+                        else
+                        {
+                            _isMovingForward = true;
+                            _timerWaitEndPatrol = _timeWaitEndPatrol;
+                        }
+                    }
+                    _initialPositionSelf = _patrolPoints[_newPatrolIndex].position;
+                    _isChangingPatrolPoint = false;
+                }
+            }
+        }
+    }
+
     private void CheckIsAtInitialPosition()
     {
-        if (Vector3.Distance(transform.position, _initialPositionSelf) < 3f)
+        if (Vector3.Distance(transform.position, _initialPositionSelf) <= _agent.stoppingDistance + 0.15f)
         {
             isAtInitialPosition = true;
+
+            _isChangingPatrolPoint = true;
         }
         else
         {
@@ -155,10 +259,10 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void CheckIsAtPlayerLastSeenPosition()
     {
-        if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) < 3f)
+        if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) <= _agent.stoppingDistance + 0.15f)
         {
             isAtPlayerLastSeenPosition = true;
-            EnemyEvents.OnIsAtPlayerLastSeenPosition?.Invoke();
+            EnemyEvents.OnIsAtPlayerLastSeenPosition?.Invoke(gameObject.transform.parent.gameObject, gameObject.transform.position, false);
         }
         else
         {
@@ -186,6 +290,19 @@ public class BasicEnemyActions : MonoBehaviour
         {
             DoorUI doorUI = collision.gameObject.GetComponent<DoorUI>();
             doorUI.OpenDoorAI();
+        }
+    }
+
+    private void GetKnockedDown(GameObject enemy)
+    {
+        if(enemy.GetInstanceID() == gameObject.GetInstanceID())
+        {
+            Vector3 corpsePosition = transform.position;
+            if(_corpsePrefab != null)
+            {
+                Instantiate(_corpsePrefab, corpsePosition, Quaternion.identity);
+            }
+            Destroy(gameObject.transform.parent.gameObject);
         }
     }
 }

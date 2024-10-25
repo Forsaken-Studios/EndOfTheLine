@@ -24,12 +24,12 @@ public class DetectionPlayerManager : MonoBehaviour
     [SerializeField] private GameObject _detectionBarObject;
     private DetectionUI _detectionUI;
     private Transform _playerTransform;
-    
+
     private float _detectionLevel = 0f;
     private List<RaycastHit2D> _raycastHitsList = new List<RaycastHit2D>();
     private Mesh _mesh;
     private float _currentAngle;
-    
+
     private Vector3 _origin;
     private Vector3 _meshPivot;
 
@@ -52,7 +52,7 @@ public class DetectionPlayerManager : MonoBehaviour
     }
 
     void Start()
-    {        
+    {
         _mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = _mesh;
         _origin = _bodyTransform.position;
@@ -91,10 +91,12 @@ public class DetectionPlayerManager : MonoBehaviour
         if (currentState == EnemyStates.FOVState.isSeeing)
         {
             LogManager.Log("SEEING", FeatureType.FieldOfView);
-        }else if (currentState == EnemyStates.FOVState.isWatching)
+        }
+        else if (currentState == EnemyStates.FOVState.isWatching)
         {
             LogManager.Log("WATCHING", FeatureType.FieldOfView);
-        }else if (currentState == EnemyStates.FOVState.isDetecting)
+        }
+        else if (currentState == EnemyStates.FOVState.isDetecting)
         {
             LogManager.Log("DETECTING", FeatureType.FieldOfView);
         }
@@ -109,7 +111,7 @@ public class DetectionPlayerManager : MonoBehaviour
         {
             IncreaseDetection();
         }
-        else if(!playerInSight && !isPlayerDetected)
+        else if (!playerInSight && !isPlayerDetected)
         {
             DecreaseDetection();
         }
@@ -121,28 +123,32 @@ public class DetectionPlayerManager : MonoBehaviour
 
     private void UpdatePlayerLastSeenPosition()
     {
-        if(currentState == EnemyStates.FOVState.isSeeing)
+        if (currentState == EnemyStates.FOVState.isSeeing)
         {
             playerLastSeenPosition = _playerTransform.position;
-            EnemyEvents.OnSeenPlayer?.Invoke(_bodyTransform.position, playerLastSeenPosition);
+            EnemyEvents.OnSeenPlayer?.Invoke(gameObject.transform.parent.gameObject, _bodyTransform.position, playerLastSeenPosition);
         }
     }
 
-    private void CheckIfFollowPlayer(Vector3 enemySenderPosition, Vector3 newPlayerLastSeenPosition)
+    private void CheckIfFollowPlayer(GameObject enemySenderObject, Vector3 enemySenderPosition, Vector3 newPlayerLastSeenPosition)
     {
-        float distanceToEnemySender = Vector3.Distance(_bodyTransform.position, enemySenderPosition);
-
-        if (distanceToEnemySender <= _maxDistanceToNearEnemyPartner)
+        if (enemySenderObject.GetInstanceID() != gameObject.transform.parent.gameObject.GetInstanceID())
         {
-            isPlayerDetected = true;
-            _detectionLevel = 1f;
-            playerLastSeenPosition = newPlayerLastSeenPosition;
+            float distanceToEnemySender = Vector3.Distance(_bodyTransform.position, enemySenderPosition);
+
+            if (distanceToEnemySender <= _maxDistanceToNearEnemyPartner)
+            {
+                isPlayerDetected = true;
+                _detectionLevel = 1f;
+                playerLastSeenPosition = newPlayerLastSeenPosition;
+            }
         }
+        
     }
 
     private void CheckDetectionBarActive()
     {
-        if(_detectionLevel > 0)
+        if (_detectionLevel > 0)
         {
             _detectionBarObject.SetActive(true);
         }
@@ -223,7 +229,7 @@ public class DetectionPlayerManager : MonoBehaviour
     private void UpdateFieldOfViewMesh()
     {
         _raycastHitsList.Clear();
-        _currentAngle = _bodyTransform.eulerAngles.z + _FOVAngle/2;
+        _currentAngle = _bodyTransform.eulerAngles.z + _FOVAngle / 2;
         float angle = _currentAngle;
         float angleIncrease = _FOVAngle / _rayCount;
 
@@ -263,9 +269,11 @@ public class DetectionPlayerManager : MonoBehaviour
             angle -= angleIncrease;
         }
 
+        _mesh.Clear();
         _mesh.vertices = vertices;
         _mesh.uv = uv;
         _mesh.triangles = triangles;
+        _mesh.RecalculateBounds();
     }
 
     public float GetFOVAngle()
@@ -298,8 +306,25 @@ public class DetectionPlayerManager : MonoBehaviour
         return _maxDistanceToNearEnemyPartner;
     }
 
-    private void ActivateIsAtPlayerLastSeenPosition()
+    private void ActivateIsAtPlayerLastSeenPosition(GameObject enemySenderObject, Vector3 enemySenderPosition, bool restart)
     {
-        playerLastSeenPosition = _bodyTransform.position;
+        float distanceToEnemySender = Vector3.Distance(_bodyTransform.position, enemySenderPosition);
+        if (distanceToEnemySender <= _maxDistanceToNearEnemyPartner)
+        {
+            if (restart == false)
+            {
+                if (enemySenderObject.GetInstanceID() != gameObject.transform.parent.gameObject.GetInstanceID())
+                {
+                    playerLastSeenPosition = _bodyTransform.position;
+                }
+
+            }
+            else
+            {
+                playerLastSeenPosition = new Vector3(9999, 0, 0);
+            }
+        }
+        
     }
+
 }

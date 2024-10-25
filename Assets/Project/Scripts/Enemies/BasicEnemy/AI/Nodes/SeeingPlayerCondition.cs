@@ -16,7 +16,6 @@ public class SeeingPlayerCondition : Node
     {
         if (_detectionPlayer.currentState == EnemyStates.FOVState.isSeeing)
         {
-            SetData("isLookingForPlayer", false);
             return NodeState.SUCCESS;
         }
 

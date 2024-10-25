@@ -6,8 +6,6 @@ using UnityEngine;
 public class LookForPlayerAction : Node
 {
     private BasicEnemyActions _enemyActions;
-    private bool _isLookingForPlayer;
-    private float _timer;
 
     public LookForPlayerAction(BasicEnemyActions enemyActions)
     {
@@ -16,29 +14,12 @@ public class LookForPlayerAction : Node
 
     public override NodeState Evaluate()
     {
-        object isLookingForPlayer = GetData("isLookingForPlayer");
-        if(isLookingForPlayer != null)
-        {
-            _isLookingForPlayer = (bool)isLookingForPlayer;
-        }
-        else
-        {
-            _isLookingForPlayer = true;
-            SetData("isLookingForPlayer", true);
-        }
+        Debug.Log("-IA-: LookForPlayerAction action");
 
-        if(_isLookingForPlayer == false)
+        _enemyActions.timerLookForPlayer -= Time.deltaTime;
+        if (_enemyActions.timerLookForPlayer <= 0)
         {
-            _timer = _enemyActions.GetTimeToLookForPlayer();
-            _isLookingForPlayer = true;
-            SetData("isLookingForPlayer", true);
-        }
-
-        _timer -= Time.deltaTime;
-        if (_timer <= 0)
-        {
-            _isLookingForPlayer = false;
-            _timer = _enemyActions.GetTimeToLookForPlayer();
+            _enemyActions.timerLookForPlayer = _enemyActions.GetTimeToLookForPlayer();
             EnemyEvents.OnForgetPlayer?.Invoke();
             return NodeState.SUCCESS;
         }

@@ -14,8 +14,9 @@ public class ChasePlayerAction : Node
 
     public override NodeState Evaluate()
     {
+        _enemyActions.timerLookForPlayer = _enemyActions.GetTimeToLookForPlayer();
         _enemyActions.ChasePlayerLastSeenPosition();
-        Debug.Log("Chase player.");
+        Debug.Log("-IA-: Chase player action.");
         return NodeState.SUCCESS;
     }
 }

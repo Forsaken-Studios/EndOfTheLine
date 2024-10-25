@@ -16,7 +16,6 @@ public class NotInPlayerLastSeenPositionCondition : Node
     {
         if (_enemyActions.isAtPlayerLastSeenPosition == false)
         {
-            SetData("isLookingForPlayer", false);
             return NodeState.SUCCESS;
         }
 
