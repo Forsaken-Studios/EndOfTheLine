@@ -141,14 +141,14 @@ public class AbilityHolder : MonoBehaviour
                         }
                         else
                         {
-                            if (Input.GetKeyDown(key) && canThrowAbility)
+                            if (Input.GetKeyDown(KeyCode.Mouse0) && canThrowAbility)
                             {
                                 LogManager.Log("PLACING [" + ability.name + "]", FeatureType.Player);
                                 needToReactivate = true;
                                 GameManager.Instance.SetHolder(abilityHolderID, false);
                                 ActivatingAbility();
                                 //Colocar objeto en el sitio
-                            }else if (Input.GetKeyDown(KeyCode.Escape))
+                            }else if (Input.GetKeyDown(KeyCode.Mouse1))
                             {
                                 GameManager.Instance.SetHolder(abilityHolderID, false);
                                 state = AbilityState.ready;
@@ -160,6 +160,11 @@ public class AbilityHolder : MonoBehaviour
                     {
                         ActivatingAbility();
                     }
+                }else if (Input.GetKeyDown(KeyCode.Mouse1))
+                {
+                    GameManager.Instance.SetHolder(abilityHolderID, false);
+                    state = AbilityState.ready;
+                    Destroy(currentCanvasCreated);
                 }
                 break;
             case AbilityState.activating:
@@ -228,14 +233,14 @@ public class AbilityHolder : MonoBehaviour
     
     private void ActivatingAbility()
     {
-        if (Input.GetKeyDown(key))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             //Activate
             OverheatManager.Instance.IncreaseEnergy(ability.overheatCost);
             ability.Activating(gameObject, positionToThrowAbility, positionToThrowAbility2, out currentGameObjectCreated);
             GameManager.Instance.SetHolder(abilityHolderID, false);
             state = AbilityState.activating;
-        }else if (Input.GetKeyDown(KeyCode.Escape))
+        }else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             //Destroy canvas
             GameManager.Instance.SetHolder(abilityHolderID, false);

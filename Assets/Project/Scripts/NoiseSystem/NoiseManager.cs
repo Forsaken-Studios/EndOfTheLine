@@ -67,7 +67,7 @@ public class NoiseManager : MonoBehaviour
                 Destroy(worldNoiseUIPrefab);
                 PlayerController.Instance.GetNoiseScript().ResetColliderOnWorldNoise();
                 Destroy(audioSource.gameObject);
-                SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_End, null, true);
+                //SoundManager.Instance.ActivateSoundByName(SoundAction.WorldNoise_End, null, true);
                 yield return new WaitForSeconds(timeToWaitBetweenNoise);
             }
 

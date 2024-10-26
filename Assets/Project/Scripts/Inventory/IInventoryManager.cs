@@ -62,12 +62,16 @@ public abstract class IInventoryManager : MonoBehaviour
 
     public void ActivateInventory()
     {
+        if (SceneManager.GetActiveScene().name != "TrainBase")
+            PlayerController.Instance.PlayOpenInventoryAnimation();
         GameManager.Instance.GameState = GameState.OnInventory;
         inventoryHUD.SetActive(true);
     }
 
     public void DesactivateInventory()
     {
+        if (SceneManager.GetActiveScene().name != "TrainBase")
+            PlayerController.Instance.PlayCloseInventoryAnimation();
         GameManager.Instance.GameState = GameState.OnGame;
         inventoryHUD.SetActive(false);
         TryDestroyContextMenu();

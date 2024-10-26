@@ -40,7 +40,7 @@ namespace Inventory
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.I))
+            if (Input.GetKeyDown(KeyCode.Tab))
             {
                 CancelAbilities();
                 ReverseInventoryStatus();
