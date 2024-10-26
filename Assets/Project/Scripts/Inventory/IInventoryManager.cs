@@ -53,7 +53,7 @@ public abstract class IInventoryManager : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name != "TrainBase" && inventoryHUD.activeSelf)
             PlayerController.Instance.PlayCloseInventoryAnimation();
-        else
+        else if(SceneManager.GetActiveScene().name != "TrainBase")
             PlayerController.Instance.PlayOpenInventoryAnimation();
         
         inventoryHUD.SetActive(!inventoryHUD.activeSelf);
