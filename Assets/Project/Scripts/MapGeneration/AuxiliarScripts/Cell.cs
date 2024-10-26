@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 public class Cell
@@ -27,8 +28,7 @@ public class Cell
         }
     } // Suma de los dos anteriores
 
-    public bool IsOpenUp, IsOpenDown, IsOpenRight, IsOpenLeft;
-    public bool HasDoorUp, HasDoorDown, HasDoorRight, HasDoorLeft;
+    public int north, south, east, west;
 
     public Cell(int row, int col)
     {
@@ -178,96 +178,196 @@ public class Cell
         }
     }
 
-    public void SetCorridorConfiguration(Cell aboveNeighbour, Cell belowNeighbour, Cell rightNeighbour, Cell leftNeighbour)
+    // 0 -> Wall; 1 -> DoorWay; 2 -> Equal; 3 -> Rail.
+    public void SetCorridorConfiguration(Cell aboveNeighbour, Cell belowNeighbour, Cell rightNeighbour, Cell leftNeighbour, Cell[,] grid)
     {
-        // Configura las aperturas.
-        IsOpenUp = OpeningsEquivalences(aboveNeighbour);
-        IsOpenDown = OpeningsEquivalences(belowNeighbour);
-        IsOpenRight = OpeningsEquivalences(rightNeighbour);
-        IsOpenLeft = OpeningsEquivalences(leftNeighbour);
-
-        // Configura las puertas.
-        HasDoorUp = DoorsEquivalences(aboveNeighbour);
-        HasDoorDown = DoorsEquivalences(belowNeighbour);
-        HasDoorRight = DoorsEquivalences(rightNeighbour);
-        HasDoorLeft = DoorsEquivalences(leftNeighbour);
+        if(State == CellState.Corridor)
+        {
+            // Configura las aperturas y puertas.
+            north = RoomEquivalences(aboveNeighbour);
+            south = RoomEquivalences(belowNeighbour);
+            east = RoomEquivalences(rightNeighbour);
+            west = RoomEquivalences(leftNeighbour);
+        }else if (State == CellState.Start)
+        {
+            // Configura las estaciones de entrada.
+            north = StartEquivalences(aboveNeighbour);
+            south = StartEquivalences(belowNeighbour);
+            east = StartEquivalences(rightNeighbour);
+            west = StartEquivalences(leftNeighbour);
+            if (Col + 1 > grid.GetLength(1) - 1)
+            {
+                east = 0;
+            }
+            if (Col - 1 > 0)
+            {
+                west = 0;
+            }
+        }
+        else if (State == CellState.End)
+        {
+            // Configura las estaciones de salida.
+            north = EndEquivalences(aboveNeighbour);
+            south = EndEquivalences(belowNeighbour);
+            east = EndEquivalences(rightNeighbour);
+            west = EndEquivalences(leftNeighbour);
+            if (Col + 1 > grid.GetLength(1) - 1)
+            {
+                east = 0;
+            }
+            if (Col - 1 > 0)
+            {
+                west = 0;
+            }
+            if (Row + 1 > grid.GetLength(0) - 1)
+            {
+                north = 0;
+            }
+            if (Row - 1 > 0)
+            {
+                south = 0;
+            }
+        }
+        
     }
 
-    private bool OpeningsEquivalences(Cell cell)
+    private int RoomEquivalences(Cell cell)
     {
-        bool result = false;
+        int result = 0;
         
         if(cell == null)
         {
-            return false;
+            return 0;
         }
 
         switch (cell.State)
         {
             case CellState.Start:
-                result = false;
+                result = 1;
                 break;
             case CellState.End:
-                result = false;
+                result = 1;
                 break;
             case CellState.Empty:
-                result = false;
+                result = 0;
                 break;
             case CellState.Corridor:
-                result = true;
+                result = 2;
                 break;
             case CellState.Room:
-                result = false;
+                result = 0;
                 break;
             case CellState.CorridorRoom:
-                result = false;
+                result = 0;
                 break;
             case CellState.EntranceRoom:
-                result = false;
+                if(cell.IsDoorInDirection(Row, Col))
+                {
+                    result = 1;
+                }
+                else
+                {
+                    result = 0;
+                }
                 break;
             case CellState.FillingRoom:
-                result = false;
+                result = 0;
                 break;
         }
         return result;
     }
 
-    private bool DoorsEquivalences(Cell cell)
+    private int StartEquivalences(Cell cell)
     {
-        bool result = false;
+        int result = 3;
 
         if (cell == null)
         {
-            return false;
+            return 3;
         }
 
         switch (cell.State)
         {
             case CellState.Start:
-                result = true;
+                result = 2;
                 break;
             case CellState.End:
-                result = true;
+                result = 1;
                 break;
             case CellState.Empty:
-                result = false;
+                result = 0;
                 break;
             case CellState.Corridor:
-                result = false;
+                result = 1;
                 break;
             case CellState.Room:
-                result = false;
+                result = 0;
                 break;
             case CellState.CorridorRoom:
-                result = false;
+                result = 0;
                 break;
             case CellState.EntranceRoom:
-                result = cell.IsDoorInDirection(Row, Col);
+                if (cell.IsDoorInDirection(Row, Col))
+                {
+                    result = 1;
+                }
+                else
+                {
+                    result = 0;
+                }
                 break;
             case CellState.FillingRoom:
-                result = false;
+                result = 0;
                 break;
         }
+
+        return result;
+    }
+
+    private int EndEquivalences(Cell cell)
+    {
+        int result = 3;
+
+        if (cell == null)
+        {
+            return 3;
+        }
+
+        switch (cell.State)
+        {
+            case CellState.Start:
+                result = 1;
+                break;
+            case CellState.End:
+                result = 2;
+                break;
+            case CellState.Empty:
+                result = 0;
+                break;
+            case CellState.Corridor:
+                result = 1;
+                break;
+            case CellState.Room:
+                result = 0;
+                break;
+            case CellState.CorridorRoom:
+                result = 0;
+                break;
+            case CellState.EntranceRoom:
+                if (cell.IsDoorInDirection(Row, Col))
+                {
+                    result = 1;
+                }
+                else
+                {
+                    result = 0;
+                }
+                break;
+            case CellState.FillingRoom:
+                result = 0;
+                break;
+        }
+
         return result;
     }
 

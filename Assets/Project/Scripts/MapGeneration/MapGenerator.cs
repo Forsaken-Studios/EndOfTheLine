@@ -28,8 +28,9 @@ public class MapGenerator : MonoBehaviour
     [Header("Opciones visuales")]
     [SerializeField] private bool _isDrawingGizmos = true;
 
-    [Header("Extra")]
-    [SerializeField] private CorridorsDataBase corridorsDB;
+    [Header("Prefabs")]
+    [SerializeField] private GameObject corridorBase;
+    [SerializeField] private GameObject stationBase;
 
     [HideInInspector] public Vector3 startingGridPosition = Vector3.zero;
     private Cell[,] _grid; // [row, col]
@@ -82,27 +83,9 @@ public class MapGenerator : MonoBehaviour
         _roomsInserted = new Dictionary<Vector3, GameObject>();
         _corridorsInserted = new List<GameObject>();
 
-        // Inicialización de prefabs de pasillos y de habitaciones.
-        if (corridorsDB != null)
-        {
-            corridorsDB.LoadCorridors();
-            ParseAllCorridors();
-        }
-        else
-        {
-            Debug.LogError("Error cargando los prefabs de los pasillos.");
-        }
         RoomLoader.Load();
 
         BuildMap();
-    }
-
-    private void ParseAllCorridors()
-    {
-        foreach (GameObject corridor in corridorsDB.corridorPrefabs)
-        {
-            corridor.GetComponent<Corridor>().ParseCorridorData();
-        }
     }
 
     private void BuildMap()
@@ -144,6 +127,21 @@ public class MapGenerator : MonoBehaviour
             _corridorsInserted.Clear();
         }
 
+        GameObject stationsObject = GameObject.Find("Stations");
+        if (stationsObject == null)
+        {
+            stationsObject = new GameObject("Stations");
+            stationsObject.transform.SetParent(mapObject.transform, false);
+        }
+        else
+        {
+            foreach (Transform corridor in stationsObject.transform)
+            {
+                Destroy(corridor.gameObject);
+            }
+            _corridorsInserted.Clear();
+        }
+
         // Se inicializa el grid general.
         _rnd = new System.Random();
         InitializeGrid();
@@ -158,10 +156,10 @@ public class MapGenerator : MonoBehaviour
         int auxMapPercentageOcuppied = _mapPercentageOcuppied;
         while (mapCreated == false)
         {
-            if(tries > 0)
+            if (tries > 0)
             {
                 mapCreated = PlacingRooms();
-                if(mapCreated == true)
+                if (mapCreated == true)
                 {
                     Debug.Log($"Map percentage: {_mapPercentageOcuppied}");
                     _mapPercentageOcuppied = auxMapPercentageOcuppied;
@@ -187,13 +185,65 @@ public class MapGenerator : MonoBehaviour
         }
 
         // Se instancian los pasillos.
-        InstantiateCorridorsPrefabs();
+        InstantiateCorridorPrefabs();
+        InstantiateStartPrefabs();
+        InstantiateEndPrefabs();
 
         // Construir navmesh.
         NavmeshManager.Instance.GenerateNavmesh();
     }
 
-    private void InstantiateCorridorsPrefabs()
+    private void InstantiateStartPrefabs()
+    {
+        // Recorre todas las celdas cogiendo las que son Inicios.
+        foreach (Cell cell in _grid)
+        {
+            if (cell.State == CellState.Start)
+            {
+                // Configura las aperturas y puertas de la celda.
+                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _grid);
+                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _grid);
+                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _grid);
+                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _grid);
+
+                // Instancia el prefab de estación que equivalga a la configuración de la celda.
+                Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
+                GameObject stationInstance = Instantiate(stationBase, centeredPosition, stationBase.transform.rotation);
+                stationInstance.name = $"StationStart_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
+                stationInstance.transform.SetParent(GameObject.Find("Stations").transform);
+                StationController stationController = stationInstance.GetComponentInChildren<StationController>();
+                stationController.WallSelector(cell.north, cell.south, cell.east, cell.west);
+            }
+        }
+    }
+
+    private void InstantiateEndPrefabs()
+    {
+        // Recorre todas las celdas cogiendo las que son Inicios.
+        foreach (Cell cell in _grid)
+        {
+            if (cell.State == CellState.End)
+            {
+                // Configura las aperturas y puertas de la celda.
+                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _grid);
+                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _grid);
+                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _grid);
+                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _grid);
+
+                // Instancia el prefab de estación que equivalga a la configuración de la celda.
+                Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
+                GameObject stationInstance = Instantiate(stationBase, centeredPosition, stationBase.transform.rotation);
+                stationInstance.name = $"StationEnd_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
+                stationInstance.transform.SetParent(GameObject.Find("Stations").transform);
+                StationController stationController = stationInstance.GetComponentInChildren<StationController>();
+                stationController.WallSelector(cell.north, cell.south, cell.east, cell.west);
+            }
+        }
+    }
+
+    private void InstantiateCorridorPrefabs()
     {
         // Recorre todas las celdas cogiendo las que son pasillos.
         foreach (Cell cell in _grid)
@@ -205,23 +255,15 @@ public class MapGenerator : MonoBehaviour
                 Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _grid);
                 Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _grid);
                 Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
-                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _grid);
 
                 // Instancia el prefab de pasillo que equivalga a la configuración de la celda.
-                foreach (GameObject corridorPrefab in corridorsDB.corridorPrefabs)
-                {
-                    Corridor corridor = corridorPrefab.GetComponent<Corridor>();
-
-                    // Si el prefab encaja con la configuración lo instancia en la posición de la celda.
-                    if (corridor.MatchesConfig(cell.IsOpenUp, cell.IsOpenDown, cell.IsOpenRight, cell.IsOpenLeft, cell.HasDoorUp, cell.HasDoorDown, cell.HasDoorRight, cell.HasDoorLeft))
-                    {
-                        // Instanciar el prefab del pasillo
-                        Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
-                        GameObject corridorInstance = Instantiate(corridorPrefab, centeredPosition, corridorPrefab.transform.rotation);
-                        corridorInstance.transform.SetParent(GameObject.Find("Corridors").transform);
-                        _corridorsInserted.Add(corridorInstance);
-                    }
-                }
+                Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
+                GameObject corridorInstance = Instantiate(corridorBase, centeredPosition, corridorBase.transform.rotation);
+                corridorInstance.name = $"Corridor_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
+                corridorInstance.transform.SetParent(GameObject.Find("Corridors").transform);
+                CorridorController corridorController = corridorInstance.GetComponentInChildren<CorridorController>();
+                corridorController.WallSelector(cell.north, cell.south, cell.east, cell.west);
             }
         }
     }
@@ -325,12 +367,12 @@ public class MapGenerator : MonoBehaviour
     #endregion
 
     #region Placing Start and Exit
-    private void PlacingStart() // TODO: Colocar gameobject
+    private void PlacingStart()
     {
         PlacerStartExit(0, true, 0, _gridSize.x - 1, CellState.Start);
     }
 
-    private void PlacingExit() // TODO: Colocar gameobject
+    private void PlacingExit()
     {
         // 0 = Left Wall; 1 = Upper Wall; 2 = Right Wall
         int wall = _rnd.Next(0, 2 + 1);
@@ -650,7 +692,7 @@ public class MapGenerator : MonoBehaviour
             {
                 roomPrefab = RoomLoader.GetRandomRoom(false);
             }
-            
+
             GameObject roomObject = Instantiate(roomPrefab, Vector3.zero, roomPrefab.transform.rotation);
             roomObject.transform.SetParent(GameObject.Find("Rooms").transform, false);
             Room room = roomObject.GetComponent<Room>();
@@ -698,7 +740,7 @@ public class MapGenerator : MonoBehaviour
 
             if (isInserted == true)
             {
-                if(currentAmountRooms3x3 < _amountRooms3x3)
+                if (currentAmountRooms3x3 < _amountRooms3x3)
                 {
                     currentAmountRooms3x3++;
                 }
@@ -709,7 +751,7 @@ public class MapGenerator : MonoBehaviour
                 Destroy(roomObject);
             }
 
-            if(GetOccupiedMapPercentage(grid) >= _mapPercentageOcuppied && currentAmountRooms3x3 == _amountRooms3x3)
+            if (GetOccupiedMapPercentage(grid) >= _mapPercentageOcuppied && currentAmountRooms3x3 == _amountRooms3x3)
             {
                 break;
             }
@@ -735,15 +777,15 @@ public class MapGenerator : MonoBehaviour
         int totalCells = currentGrid.GetLength(0) * currentGrid.GetLength(1);
         int currentCellsOcuppied = 0;
 
-        foreach(Cell cell in currentGrid)
+        foreach (Cell cell in currentGrid)
         {
-            if(cell.State == CellState.Room || cell.State == CellState.EntranceRoom || cell.State == CellState.CorridorRoom || cell.State == CellState.FillingRoom)
+            if (cell.State == CellState.Room || cell.State == CellState.EntranceRoom || cell.State == CellState.CorridorRoom || cell.State == CellState.FillingRoom)
             {
                 currentCellsOcuppied++;
             }
         }
 
-        return (int)(((float)currentCellsOcuppied/totalCells) * 100);
+        return (int)(((float)currentCellsOcuppied / totalCells) * 100);
     }
     #endregion
 }
