@@ -308,6 +308,21 @@ namespace Player
                 _animator.SetBool("isDead", true);
         }
 
+        public void PlayOpenInventoryAnimation()
+        {
+            if (_animator != null)
+            {              
+                _animator.SetBool("isOnInventory", true);
+                _animator.SetTrigger("isOnInventoryTrigger");
+            }
+
+        }
+        
+        public void PlayCloseInventoryAnimation()
+        {
+            if(_animator != null)
+                _animator.SetBool("isOnInventory", false);
+        }
         //Advanced LERP function
         private float ExpDecay(float current, float goal, float decay, float dT)
         {

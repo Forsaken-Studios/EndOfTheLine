@@ -152,6 +152,7 @@ public class BasicEnemyActions : MonoBehaviour
 
             if (angleToPlayer < _basicEnemyDetection.GetFOVAngle() / 2)
             {
+                SoundManager.Instance.ActivateSoundByName(SoundAction.Enemy_Hit, null, true);
                 Debug.Log("Jugador muerto");
                 GameManager.Instance.EndGame();
             }
