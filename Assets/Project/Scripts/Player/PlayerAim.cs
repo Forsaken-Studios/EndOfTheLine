@@ -10,7 +10,7 @@ namespace Player
         //Not sure if it is better to use serializefield or transform.find
         private Transform aimTransform;
 
-        private bool canRotateAim;
+        private bool canRotateAim = true;
 
         private void Update()
         {

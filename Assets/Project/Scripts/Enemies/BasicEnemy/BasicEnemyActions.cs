@@ -31,6 +31,9 @@ public class BasicEnemyActions : MonoBehaviour
     [Header("Resources")]
     [SerializeField] private GameObject _corpsePrefab;
 
+    [Header("Animaciones")]
+    private Animator _animator;
+
     private bool _isRotating = false;
     private Transform _player;
     private Vector3 _positionChased;
@@ -53,6 +56,8 @@ public class BasicEnemyActions : MonoBehaviour
 
     void Start()
     {
+        _animator = GetComponentInChildren<Animator>();
+
         if (_patrolPoints == null)
         {
             _patrolPoints = new List<Transform>();
@@ -86,11 +91,18 @@ public class BasicEnemyActions : MonoBehaviour
         CheckIsAtPlayerLastSeenPosition();
 
         _agent.SetDestination(_positionChased);
-
+        
         if (_isRotating)
         {
             transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
         }
+
+        WalkAnimation();
+    }
+
+    private void WalkAnimation()
+    {
+        _animator.SetBool("isWalking", !_agent.isStopped);
     }
 
     private void SetMovementSpeed()
@@ -304,5 +316,10 @@ public class BasicEnemyActions : MonoBehaviour
             }
             Destroy(gameObject.transform.parent.gameObject);
         }
+    }
+
+    private void Dead()
+    {
+        _animator.SetBool("isDead", true);
     }
 }

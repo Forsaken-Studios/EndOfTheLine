@@ -338,13 +338,13 @@ public class MapGenerator : MonoBehaviour
         switch (wall)
         {
             case 0:
-                PlacerStartExit(0, false, _gridSize.y / 4 * 4, _gridSize.y - 1, CellState.End);
+                PlacerStartExit(0, false, _gridSize.y / 4 * 3, _gridSize.y - 1, CellState.End);
                 break;
             case 1:
                 PlacerStartExit(_gridSize.y - 1, true, 0, _gridSize.x - 1, CellState.End);
                 break;
             case 2:
-                PlacerStartExit(_gridSize.x - 1, false, _gridSize.y / 4 * 4, _gridSize.y - 1, CellState.End);
+                PlacerStartExit(_gridSize.x - 1, false, _gridSize.y / 4 * 3, _gridSize.y - 1, CellState.End);
                 break;
         }
     }
