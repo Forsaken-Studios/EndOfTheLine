@@ -90,6 +90,7 @@ public class PlayerKnockDown : MonoBehaviour
 
     private void KnockDownEnemy()
     {
+        SoundManager.Instance.ActivateSoundByName(SoundAction.Player_Hit, null, true);
         EnemyEvents.OnKnockDown?.Invoke(_enemyGameObject);
     }
 

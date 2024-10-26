@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 2728459478981473163}
   - component: {fileID: 3139008447096708301}
   - component: {fileID: 7083617778047223743}
+  - component: {fileID: 785038398975188731}
   m_Layer: 5
   m_Name: ItemSlot
   m_TagString: Untagged
@@ -292,7 +293,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2728459478981473163}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 785038398975188731}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7083617778047223743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,6 +321,18 @@ MonoBehaviour:
   isLootCrate: 1
   itemSlotImage: {fileID: 6627099898603510092}
   blackPanel: {fileID: 0}
+--- !u!114 &785038398975188731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7002466694712272600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9043921299803246024
 GameObject:
   m_ObjectHideFlags: 0
