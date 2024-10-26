@@ -19,6 +19,7 @@ public class StationController : MonoBehaviour
     public List<GameObject> DecorationWest ;
     
     Random rnd = new Random();
+
     
     [Header("Tester")]
     public int N;
