@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Inventory;
 using LootSystem;
+using Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Utils.CustomLogs;
 
@@ -48,7 +50,12 @@ public abstract class IInventoryManager : MonoBehaviour
             SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseInventory, null, true);
             TryDestroyContextMenu();
         }
-              
+
+        if (SceneManager.GetActiveScene().name != "TrainBase" && inventoryHUD.activeSelf)
+            PlayerController.Instance.PlayCloseInventoryAnimation();
+        else
+            PlayerController.Instance.PlayOpenInventoryAnimation();
+        
         inventoryHUD.SetActive(!inventoryHUD.activeSelf);
         GameManager.Instance.GameState = inventoryHUD.activeSelf ? GameState.OnInventory: GameState.OnGame;
     }
