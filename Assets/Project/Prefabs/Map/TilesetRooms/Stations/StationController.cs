@@ -79,11 +79,11 @@ public class StationController : MonoBehaviour
                     {
                         if (South == 0) //South Wall?
                         {
-                            WallConfigurationNorth[7].SetActive(true); //Conf8
+                            WallConfigurationNorth[9].SetActive(true); //Conf10
                         }
                         else
                         {
-                            WallConfigurationNorth[6].SetActive(true); //Conf7
+                            WallConfigurationNorth[8].SetActive(true); //Conf9
                         }
                     }else if (East == 2) //East adjacent Station?
                     {
@@ -91,17 +91,24 @@ public class StationController : MonoBehaviour
                         {
                             if (South == 1) //South adjacent Hallway?
                             {
-                                WallConfigurationNorth[3].SetActive(true); //Conf4
+                                WallConfigurationNorth[4].SetActive(true); //Conf5
                             }
                             else
                             {
-                                WallConfigurationNorth[4].SetActive(true); //Conf5
+                                WallConfigurationNorth[5].SetActive(true); //Conf6
                             }
                             
                         }
                         else
                         {
-                            WallConfigurationNorth[5].SetActive(true); //Conf6
+                            if (South == 1) //South adjacent Hallway?
+                            {
+                                WallConfigurationNorth[6].SetActive(true); //Conf7
+                            }
+                            else
+                            {
+                                WallConfigurationNorth[7].SetActive(true); //Conf8
+                            }
                         }
                     }else if (West == 2) //West adjacent Station?
                     {
@@ -119,12 +126,19 @@ public class StationController : MonoBehaviour
                         }
                         else
                         {
-                            WallConfigurationNorth[2].SetActive(true); //Conf3
+                            if (South == 1) //South adjacent Hallway?
+                            {
+                                WallConfigurationNorth[2].SetActive(true); //Conf3
+                            }
+                            else
+                            {
+                                WallConfigurationNorth[3].SetActive(true); //Conf4
+                            }
                         }
                     }
                     else
                     {
-                        WallConfigurationNorth[8].SetActive(true); //ConfAux
+                        WallConfigurationNorth[10].SetActive(true); //ConfAux
                         Debug.Log("[StationController.cs] Aux case: No Adjacent Station.");
                     }
                     
@@ -141,11 +155,11 @@ public class StationController : MonoBehaviour
                     {
                         if (North == 0) //North Wall?
                         {
-                            WallConfigurationSouth[7].SetActive(true); //Conf8
+                            WallConfigurationSouth[9].SetActive(true); //Conf10
                         }
                         else
                         {
-                            WallConfigurationSouth[6].SetActive(true); //Conf7
+                            WallConfigurationSouth[8].SetActive(true); //Conf9
                         }
                     }else if (West == 2) //West adjacent Station?
                     {
@@ -153,17 +167,24 @@ public class StationController : MonoBehaviour
                         {
                             if (North == 1) //North adjacent Hallway?
                             {
-                                WallConfigurationSouth[3].SetActive(true); //Conf4
+                                WallConfigurationSouth[4].SetActive(true); //Conf5
                             }
                             else
                             {
-                                WallConfigurationSouth[4].SetActive(true); //Conf5
+                                WallConfigurationSouth[5].SetActive(true); //Conf6
                             }
                             
                         }
                         else
                         {
-                            WallConfigurationSouth[5].SetActive(true); //Conf6
+                            if (North == 1) //North adjacent Hallway?
+                            {
+                                WallConfigurationSouth[6].SetActive(true); //Conf7
+                            }
+                            else
+                            {
+                                WallConfigurationSouth[7].SetActive(true); //Conf8
+                            }
                         }
                     }else if (East == 2) //East adjacent Station?
                     {
@@ -181,12 +202,19 @@ public class StationController : MonoBehaviour
                         }
                         else
                         {
-                            WallConfigurationSouth[2].SetActive(true); //Conf3
+                            if (North == 1) //North adjacent Hallway?
+                            {
+                                WallConfigurationSouth[2].SetActive(true); //Conf3
+                            }
+                            else
+                            {
+                                WallConfigurationSouth[3].SetActive(true); //Conf4
+                            }
                         }
                     }
                     else
                     {
-                        WallConfigurationSouth[8].SetActive(true); //ConfAux
+                        WallConfigurationSouth[10].SetActive(true); //ConfAux
                         Debug.Log("[StationController.cs] Aux case: No Adjacent Station.");
                     }
 
@@ -200,11 +228,11 @@ public class StationController : MonoBehaviour
                     {
                         if (West == 0) //West Wall?
                         {
-                            WallConfigurationEast[7].SetActive(true); //Conf8
+                            WallConfigurationEast[9].SetActive(true); //Conf10
                         }
                         else
                         {
-                            WallConfigurationEast[6].SetActive(true); //Conf7
+                            WallConfigurationEast[8].SetActive(true); //Conf9
                         }
                     }else if (South == 2) //South adjacent Station?
                     {
@@ -212,17 +240,24 @@ public class StationController : MonoBehaviour
                         {
                             if (West == 1) //West adjacent Hallway?
                             {
-                                WallConfigurationEast[3].SetActive(true); //Conf4
+                                WallConfigurationEast[4].SetActive(true); //Conf5
                             }
                             else
                             {
-                                WallConfigurationEast[4].SetActive(true); //Conf5
+                                WallConfigurationEast[5].SetActive(true); //Conf6
                             }
                             
                         }
                         else
                         {
-                            WallConfigurationEast[5].SetActive(true); //Conf6
+                            if (West == 1) //West adjacent Hallway?
+                            {
+                                WallConfigurationEast[6].SetActive(true); //Conf7
+                            }
+                            else
+                            {
+                                WallConfigurationEast[7].SetActive(true); //Conf8
+                            }
                         }
                     }else if (North == 2) //North adjacent Station?
                     {
@@ -240,12 +275,19 @@ public class StationController : MonoBehaviour
                         }
                         else
                         {
-                            WallConfigurationEast[2].SetActive(true); //Conf3
+                            if (West == 1) //West adjacent Hallway?
+                            {
+                                WallConfigurationEast[2].SetActive(true); //Conf3
+                            }
+                            else
+                            {
+                                WallConfigurationEast[3].SetActive(true); //Conf4
+                            }
                         }
                     }
                     else
                     {
-                        WallConfigurationEast[8].SetActive(true); //ConfAux
+                        WallConfigurationEast[10].SetActive(true); //ConfAux
                         Debug.Log("[StationController.cs] Aux case: No Adjacent Station.");
                     }
                     
@@ -258,11 +300,11 @@ public class StationController : MonoBehaviour
                     {
                         if (East == 0) //East Wall?
                         {
-                            WallConfigurationWest[7].SetActive(true); //Conf8
+                            WallConfigurationWest[9].SetActive(true); //Conf10
                         }
                         else
                         {
-                            WallConfigurationWest[6].SetActive(true); //Conf7
+                            WallConfigurationWest[8].SetActive(true); //Conf0
                         }
                     }else if (North == 2) //North adjacent Station?
                     {
@@ -270,17 +312,24 @@ public class StationController : MonoBehaviour
                         {
                             if (East == 1) //East adjacent Hallway?
                             {
-                                WallConfigurationWest[3].SetActive(true); //Conf4
+                                WallConfigurationWest[4].SetActive(true); //Conf5
                             }
                             else
                             {
-                                WallConfigurationWest[4].SetActive(true); //Conf5
+                                WallConfigurationWest[5].SetActive(true); //Conf6
                             }
                             
                         }
                         else
                         {
-                            WallConfigurationWest[5].SetActive(true); //Conf6
+                            if (East == 1) //East adjacent Hallway?
+                            {
+                                WallConfigurationWest[6].SetActive(true); //Conf7
+                            }
+                            else
+                            {
+                                WallConfigurationWest[7].SetActive(true); //Conf8
+                            }
                         }
                     }else if (South == 2) //South adjacent Station?
                     {
@@ -298,12 +347,19 @@ public class StationController : MonoBehaviour
                         }
                         else
                         {
-                            WallConfigurationWest[2].SetActive(true); //Conf3
+                            if (East == 1) //East adjacent Hallway?
+                            {
+                                WallConfigurationWest[2].SetActive(true); //Conf3
+                            }
+                            else
+                            {
+                                WallConfigurationWest[3].SetActive(true); //Conf4
+                            }
                         }
                     }
                     else
                     {
-                        WallConfigurationWest[8].SetActive(true); //ConfAux
+                        WallConfigurationWest[10].SetActive(true); //ConfAux
                         Debug.Log("[StationController.cs] Aux case: No Adjacent Station.");
                     }
                     
