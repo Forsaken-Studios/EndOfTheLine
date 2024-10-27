@@ -37,6 +37,7 @@ public class MapGenerator : MonoBehaviour
     private System.Random _rnd;
     private List<GameObject> _corridorsInserted;
     private Dictionary<Vector3, GameObject> _roomsInserted;
+    [HideInInspector] public int endWall;
 
     private void OnValidate()
     {
@@ -375,9 +376,9 @@ public class MapGenerator : MonoBehaviour
     private void PlacingExit()
     {
         // 0 = Left Wall; 1 = Upper Wall; 2 = Right Wall
-        int wall = _rnd.Next(0, 2 + 1);
+        endWall = _rnd.Next(0, 2 + 1);
 
-        switch (wall)
+        switch (endWall)
         {
             case 0:
                 PlacerStartExit(0, false, _gridSize.y / 4 * 3, _gridSize.y - 1, CellState.End);

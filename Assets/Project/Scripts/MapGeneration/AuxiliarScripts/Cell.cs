@@ -195,11 +195,11 @@ public class Cell
             south = StartEquivalences(belowNeighbour);
             east = StartEquivalences(rightNeighbour);
             west = StartEquivalences(leftNeighbour);
-            if (Col + 1 > grid.GetLength(1) - 1)
+            if (Col + 1 == grid.GetLength(1))
             {
                 east = 0;
             }
-            if (Col - 1 > 0)
+            if (Col - 1 == -1)
             {
                 west = 0;
             }
@@ -211,21 +211,28 @@ public class Cell
             south = EndEquivalences(belowNeighbour);
             east = EndEquivalences(rightNeighbour);
             west = EndEquivalences(leftNeighbour);
-            if (Col + 1 > grid.GetLength(1) - 1)
+            if (Col - 1 == -1 && Row + 1 == grid.GetLength(0))
             {
-                east = 0;
+                if (MapGenerator.Instance.endWall == 0)
+                {
+                    north = 0;
+                }
+                else if (MapGenerator.Instance.endWall == 1)
+                {
+                    west = 0;
+                }
             }
-            if (Col - 1 > 0)
+            if (Col + 1 == grid.GetLength(1) && Row + 1 == grid.GetLength(0))
             {
-                west = 0;
-            }
-            if (Row + 1 > grid.GetLength(0) - 1)
-            {
-                north = 0;
-            }
-            if (Row - 1 > 0)
-            {
-                south = 0;
+                if(MapGenerator.Instance.endWall == 1)
+                {
+                    east = 0;
+                }
+                else if(MapGenerator.Instance.endWall == 2)
+                {
+                    north = 0;
+                }
+                
             }
         }
         

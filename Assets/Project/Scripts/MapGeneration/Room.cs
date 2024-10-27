@@ -25,10 +25,11 @@ public class Room : MonoBehaviour
     private Vector3 _positionSelected = Vector3.zero;
 
     [Header("Configuración de enemigos")]
-    [Tooltip("Llamar 'BasicEnemies' al GameObject padre de los enemigos.")]
     [SerializeField] private int _minAountEnemiesToSpawn = 0;
-    [Tooltip("Llamar 'BasicEnemies' al GameObject padre de los enemigos.")]
     [SerializeField] private int _maxAountEnemiesToSpawn = 0;
+    [SerializeField] private int _minAountCamerasToSpawn = 0;
+    [SerializeField] private int _maxAountCamerasToSpawn = 0;
+    private GameObject _currentConfiguration;
 
     void Start()
     {
@@ -46,7 +47,7 @@ public class Room : MonoBehaviour
     public void InitializeRandomRoom()
     {
         rnd = new System.Random();
-        if(_roomDataList.Count == 1)
+        if (_roomDataList.Count == 1)
         {
             _configurationSelected = 0;
         }
@@ -69,18 +70,18 @@ public class Room : MonoBehaviour
         _positionSelected = positionSelected;
         transform.position = _positionSelected;
 
-        GameObject currentConfiguration = null;
+        _currentConfiguration = null;
         for (int i = 1; i <= _roomDataList.Count; i++)
         {
-            currentConfiguration = transform.Find($"Configuration_{i}").gameObject;
+            _currentConfiguration = transform.Find($"Configuration_{i}").gameObject;
 
             if (i - 1 == _configurationSelected)
             {
-                currentConfiguration.SetActive(true);
+                _currentConfiguration.SetActive(true);
             }
             else
             {
-                currentConfiguration.SetActive(false);
+                _currentConfiguration.SetActive(false);
             }
         }
 
@@ -91,45 +92,50 @@ public class Room : MonoBehaviour
         GameObject gasHigh = transform.Find($"GasHigh").gameObject;
         gasHigh.SetActive(true);
 
-        if(_maxAountEnemiesToSpawn > 0)
+        // Colocación enemigos.
+        PlaceRandomEnemies("Enemies", _minAountEnemiesToSpawn, _maxAountEnemiesToSpawn);
+        PlaceRandomEnemies("Cameras", _minAountEnemiesToSpawn, _maxAountEnemiesToSpawn);
+    }
+
+    private void PlaceRandomEnemies(string element, int minValue, int maxValue)
+    {
+        GameObject EnemiesParent = null;
+        Transform elementTransform = gameObject.transform.Find($"{element}");
+        if (elementTransform == null)
         {
-            GameObject EnemiesParent = null;
-            for (int i = 0; i < currentConfiguration.transform.childCount; i++)
-            {
-                GameObject child = currentConfiguration.transform.GetChild(i).gameObject;
-                if (gameObject.name == "BasicEnemies")
-                {
-                    EnemiesParent = child;
-                }
-            }
-            if(EnemiesParent == null)
-            {
-                return;
-            }
+            Debug.Log("-test- Ningun padre");
+            return;
+        }
+        EnemiesParent = elementTransform.gameObject;
+        
+        Debug.Log($"-test- {gameObject.name}");
+        Debug.Log($"-test- {EnemiesParent.name}");
 
-            List<GameObject> allEnemiesList = new List<GameObject>();
-            for (int enemyIndex = 0; enemyIndex < EnemiesParent.transform.childCount; enemyIndex++)
-            {
-                allEnemiesList.Add(EnemiesParent.transform.GetChild(enemyIndex).gameObject);
-            }
-            if(allEnemiesList.Count == 0)
-            {
-                return;
-            }
+        List<GameObject> allEnemiesList = new List<GameObject>();
+        for (int enemyIndex = 0; enemyIndex < EnemiesParent.transform.childCount; enemyIndex++)
+        {
+            allEnemiesList.Add(EnemiesParent.transform.GetChild(enemyIndex).gameObject);
+        }
+        if (allEnemiesList.Count == 0)
+        {
+            Debug.Log("-test- Ningun enemigo");
+            return;
+        }
 
-            allEnemiesList = allEnemiesList.OrderBy(x => UnityEngine.Random.value).ToList();
-            int definitiveAmountEnemies = UnityEngine.Random.Range(_minAountEnemiesToSpawn, _maxAountEnemiesToSpawn);
-            foreach (GameObject enemy in allEnemiesList)
+        allEnemiesList = allEnemiesList.OrderBy(x => UnityEngine.Random.value).ToList();
+        int definitiveAmountEnemies = UnityEngine.Random.Range(minValue, maxValue + 1);
+
+        foreach (GameObject enemy in allEnemiesList)
+        {
+            if (definitiveAmountEnemies > 0)
             {
-                if (definitiveAmountEnemies > 0)
-                {
-                    enemy.SetActive(true);
-                    definitiveAmountEnemies--;
-                }
-                else
-                {
-                    enemy.SetActive(false);
-                }
+                enemy.SetActive(true);
+                definitiveAmountEnemies--;
+            }
+            else
+            {
+                Debug.Log("-test- Borrado enemigo");
+                enemy.SetActive(false);
             }
         }
     }
@@ -206,7 +212,8 @@ public class Room : MonoBehaviour
                     {
                         selfGrid[row, col].SetCellState(CellState.Room);
                     }
-                }else if (_shape.GetValue(col, row) == false)
+                }
+                else if (_shape.GetValue(col, row) == false)
                 {
                     selfGrid[row, col].SetCellState(CellState.FillingRoom);
                 }
