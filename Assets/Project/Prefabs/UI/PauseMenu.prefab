@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 9094847480480292063}
   - component: {fileID: 3156340417914109860}
   - component: {fileID: 5950650802758672201}
+  - component: {fileID: 2641868609157474462}
   m_Layer: 5
   m_Name: ReturnToTrainButton
   m_TagString: Untagged
@@ -210,7 +211,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3156340417914109860}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2641868609157474462}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2641868609157474462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 494721670656134106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &572046735878099576
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,6 +323,7 @@ GameObject:
   - component: {fileID: 6153080251892820802}
   - component: {fileID: 4057227330753347548}
   - component: {fileID: 3031053219256555564}
+  - component: {fileID: 2215911795126381152}
   m_Layer: 5
   m_Name: ResumeBUTTON
   m_TagString: Untagged
@@ -406,7 +432,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4057227330753347548}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2215911795126381152}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2215911795126381152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008223774402698086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1431003470878831106
 GameObject:
   m_ObjectHideFlags: 0
@@ -2615,6 +2665,7 @@ GameObject:
   - component: {fileID: 6586839059520697780}
   - component: {fileID: 6692796133113367930}
   - component: {fileID: 1627525866117627605}
+  - component: {fileID: 2923191656878447420}
   m_Layer: 5
   m_Name: QuitBUTTON
   m_TagString: Untagged
@@ -2723,4 +2774,28 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6692796133113367930}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2923191656878447420}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2923191656878447420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9110467572500533986}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
