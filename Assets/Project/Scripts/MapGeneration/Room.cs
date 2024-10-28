@@ -25,6 +25,7 @@ public class Room : MonoBehaviour
     private Vector3 _positionSelected = Vector3.zero;
 
     [Header("Configuración de enemigos")]
+    [SerializeField] private bool _manualConfigurationEnemies = false;
     [SerializeField] private int _minAountEnemiesToSpawn = 0;
     [SerializeField] private int _maxAountEnemiesToSpawn = 0;
     [SerializeField] private int _minAountCamerasToSpawn = 0;
@@ -44,7 +45,7 @@ public class Room : MonoBehaviour
         }
     }
 
-    public void InitializeRandomRoom()
+    public bool InitializeRandomRoom()
     {
         rnd = new System.Random();
         if (_roomDataList.Count == 1)
@@ -62,7 +63,7 @@ public class Room : MonoBehaviour
         _entrancesDirections = _roomDataList[_configurationSelected].entrancesDirections;
 
         CalculateCenterPosition();
-        CreateSelfGrid();
+        return CreateSelfGrid();
     }
 
     public void MoveRoomPosition(Vector3 positionSelected)
@@ -103,13 +104,9 @@ public class Room : MonoBehaviour
         Transform elementTransform = gameObject.transform.Find($"{element}");
         if (elementTransform == null)
         {
-            Debug.Log("-test- Ningun padre");
             return;
         }
         EnemiesParent = elementTransform.gameObject;
-        
-        Debug.Log($"-test- {gameObject.name}");
-        Debug.Log($"-test- {EnemiesParent.name}");
 
         List<GameObject> allEnemiesList = new List<GameObject>();
         for (int enemyIndex = 0; enemyIndex < EnemiesParent.transform.childCount; enemyIndex++)
@@ -118,12 +115,20 @@ public class Room : MonoBehaviour
         }
         if (allEnemiesList.Count == 0)
         {
-            Debug.Log("-test- Ningun enemigo");
             return;
         }
 
         allEnemiesList = allEnemiesList.OrderBy(x => UnityEngine.Random.value).ToList();
-        int definitiveAmountEnemies = UnityEngine.Random.Range(minValue, maxValue + 1);
+        int definitiveAmountEnemies = 0;
+        if (_manualConfigurationEnemies == true)
+        {
+            definitiveAmountEnemies = UnityEngine.Random.Range(minValue, maxValue + 1);
+        }
+        else
+        {
+            definitiveAmountEnemies = UnityEngine.Random.Range(0, allEnemiesList.Count);
+        }
+        
 
         foreach (GameObject enemy in allEnemiesList)
         {
@@ -134,7 +139,6 @@ public class Room : MonoBehaviour
             }
             else
             {
-                Debug.Log("-test- Borrado enemigo");
                 enemy.SetActive(false);
             }
         }
@@ -176,7 +180,7 @@ public class Room : MonoBehaviour
         centerPosition = new Vector3(centerPosition_x, centerPosition_y, centerPosition.z);
     }
 
-    private void CreateSelfGrid()
+    private bool CreateSelfGrid()
     {
         // Creación mini grid de la habitación.
         selfGrid = new Cell[GetRows(), GetCols()];
@@ -204,7 +208,7 @@ public class Room : MonoBehaviour
             {
                 if (_shape.GetValue(col, row) == true && selfGrid[row, col].State != CellState.EntranceRoom)
                 {
-                    if (numberEntrances > 0)
+                    if (numberEntrances > 1)
                     {
                         selfGrid[row, col].SetCellState(CellState.CorridorRoom);
                     }
@@ -228,6 +232,8 @@ public class Room : MonoBehaviour
                 selfGrid[cell.Key.y, cell.Key.x].SetEntranceDirection(cell.Value);
             }
         }
+
+        return true;
     }
 
     private int GetCols()

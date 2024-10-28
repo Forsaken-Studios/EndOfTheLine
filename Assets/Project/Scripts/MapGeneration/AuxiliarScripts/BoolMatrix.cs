@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -29,5 +30,19 @@ public class BoolMatrix
     public int GetLength(int dimension)
     {
         return (dimension == 0) ? Cols : Rows;
+    }
+
+    public int CountTrue()
+    {
+        int trues = 0;
+
+        foreach (bool data in Data)
+        {
+            if (data == true)
+            {
+                trues++;
+            }
+        }
+        return trues;
     }
 }

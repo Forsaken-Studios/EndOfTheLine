@@ -185,6 +185,48 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
+        // Comprobacion hay camino hasta el final.
+        bool existFinal = false;
+        List<Cell> endCells = new List<Cell>();
+        foreach (Cell cell in _grid)
+        {
+            if (cell.State == CellState.End)
+            {
+                endCells.Add(cell);
+                List<Cell> neighbours = AuxiliarMapGenerator.GetNeighbours(cell, _grid);
+                foreach (Cell neighbor in neighbours)
+                {
+                    if (neighbor.State == CellState.Corridor)
+                    {
+                        existFinal = true;
+                        break;
+                    }
+                }
+                if (existFinal)
+                {
+                    break;
+                }
+            }
+        }
+        if (existFinal == false)
+        {
+            int indexCell = UnityEngine.Random.Range(0, endCells.Count);
+            List<Cell> neighbours = AuxiliarMapGenerator.GetNeighbours(endCells[indexCell], _grid);
+            foreach (Cell neighbor in neighbours)
+            {
+                if (neighbor.State == CellState.Empty)
+                {
+                    Cell[,] modifiedGrid = SeekAndJoinNearCorridors(neighbor, _grid);
+                    if (modifiedGrid != null)
+                    {
+                        _grid = modifiedGrid;
+                        break;
+                    }
+                    
+                }
+            }
+        }
+
         // Se instancian los pasillos.
         InstantiateCorridorPrefabs();
         InstantiateStartPrefabs();
@@ -525,7 +567,7 @@ public class MapGenerator : MonoBehaviour
 
     private Cell[,] TryToReachFinal(Cell[,] grid)
     {
-        List<Cell> restEntrancesList = GetRestEntrances(grid); ;
+        List<Cell> restEntrancesList = GetRestEntrances(grid);
         int counterRestEntrances = restEntrancesList.Count;
 
         foreach (Cell entranceCell in restEntrancesList)
@@ -697,7 +739,10 @@ public class MapGenerator : MonoBehaviour
             GameObject roomObject = Instantiate(roomPrefab, Vector3.zero, roomPrefab.transform.rotation);
             roomObject.transform.SetParent(GameObject.Find("Rooms").transform, false);
             Room room = roomObject.GetComponent<Room>();
-            room.InitializeRandomRoom();
+            if(room.InitializeRandomRoom() == false)
+            {
+                break;
+            }
 
             int insertionTry = 250;
 
