@@ -11,7 +11,7 @@ namespace Loot
     public class LooteableObjectTrigger : MonoBehaviour
     {
         private LooteableObject looteableObject;
-        
+        private GameObject shortCut;
         private void Start()
         {
             looteableObject = this.gameObject.GetComponentInParent<LooteableObject>();
@@ -22,6 +22,7 @@ namespace Loot
             if (other.CompareTag("Player"))
             {
                 looteableObject.ActivateKeyHotkeyImage();
+                shortCut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.lootCrate);
                 LooteableObjectSelector.Instance.AddOneInTrigger(looteableObject);
             }
         }
@@ -31,6 +32,7 @@ namespace Loot
             if (other.CompareTag("Player"))
             {
                 looteableObject.DesactivateKeyHotkeyImage();
+                ShortcutsUIManager.Instance.RemoveShortcut(shortCut);
                 LooteableObjectSelector.Instance.DecreaseOneInTrigger(looteableObject);
             }
         }

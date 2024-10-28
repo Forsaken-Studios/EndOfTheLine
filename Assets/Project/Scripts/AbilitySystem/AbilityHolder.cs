@@ -26,6 +26,9 @@ public class AbilityHolder : MonoBehaviour
     private GameObject currentCanvasCreated;
     private bool needToReactivate;
 
+    private GameObject placeUseShortcut;
+    private GameObject cancelShortcut;
+
     [SerializeField] private bool canThrowAbility = true;
     enum AbilityState
     {
@@ -122,6 +125,19 @@ public class AbilityHolder : MonoBehaviour
                 {
                     ability.PrepareAbility(gameObject, this, out currentCanvasCreated);
                     OverheatManager.Instance.SetHolderToPrepareAbility(abilityHolderID);
+                    if (ability.needToBeReactivated)
+                    {
+                        placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.placeAbility);
+                    }
+                    else
+                    {
+                        if (abilityHolderID == 1)
+                            placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityQ);
+                        else
+                            placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityE);
+                    }
+                    cancelShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.cancelAbility);
+                    
                     isPreparingAbility = true;
                     GameManager.Instance.SetHolder(abilityHolderID, true);
                     state = AbilityState.preparing;
@@ -152,6 +168,8 @@ public class AbilityHolder : MonoBehaviour
                             {
                                 GameManager.Instance.SetHolder(abilityHolderID, false);
                                 state = AbilityState.ready;
+                                ShortcutsUIManager.Instance.RemoveShortcut(placeUseShortcut);
+                                ShortcutsUIManager.Instance.RemoveShortcut(cancelShortcut);
                                 Destroy(currentCanvasCreated);
                             }
                         }
@@ -209,23 +227,14 @@ public class AbilityHolder : MonoBehaviour
         }
       
     }
-
-    private void CancelOtherAbility()
-    {
-        if (abilityHolderID == 1)
-        {
-            OverheatManager.Instance.GetHolder2().TryToCancelAbility();
-        }
-        else
-        {
-            OverheatManager.Instance.GetHolder1().TryToCancelAbility();
-        }
-    }
-
     
     public void ActivateAbility()
     {
         ability.Activate(gameObject, positionToThrowAbility, positionToThrowAbility2);
+        if(placeUseShortcut != null)
+            ShortcutsUIManager.Instance.RemoveShortcut(placeUseShortcut);
+        if(cancelShortcut != null)
+            ShortcutsUIManager.Instance.RemoveShortcut(cancelShortcut);
         state = AbilityState.active;
         activeTime = ability.activeTime;
         needToReactivate = false;
@@ -238,12 +247,19 @@ public class AbilityHolder : MonoBehaviour
             //Activate
             OverheatManager.Instance.IncreaseEnergy(ability.overheatCost);
             ability.Activating(gameObject, positionToThrowAbility, positionToThrowAbility2, out currentGameObjectCreated);
+            ShortcutsUIManager.Instance.RemoveShortcut(placeUseShortcut);
+            if (abilityHolderID == 1)
+                placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityQ);
+            else
+                placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityE);
             GameManager.Instance.SetHolder(abilityHolderID, false);
             state = AbilityState.activating;
         }else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             //Destroy canvas
             GameManager.Instance.SetHolder(abilityHolderID, false);
+            ShortcutsUIManager.Instance.RemoveShortcut(placeUseShortcut);
+            ShortcutsUIManager.Instance.RemoveShortcut(cancelShortcut);
             state = AbilityState.ready;
             Destroy(currentCanvasCreated);
         }
