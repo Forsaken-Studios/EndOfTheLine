@@ -11,15 +11,16 @@ using static UnityEngine.GraphicsBuffer;
 public class BasicEnemyActions : MonoBehaviour
 {
     [Header("Adjsutable properties")]
-    [SerializeField] private float _movementSpeed = 1f;
+    [SerializeField] private float _usualMovementSpeed = 1f;
+    [SerializeField] private float _chasingMovementSpeed = 2f;
     [SerializeField] private float rotationSpeed = 15f;
-    [SerializeField] private float _killPlayerDistance = 1f;
+    [SerializeField] private float _killPlayerDistance = 0.75f;
     [SerializeField] private float _timeToLookForPlayer = 5f;
 
     [Header("Patrol")]
-    [SerializeField] private List<Transform> _patrolPoints;
     [SerializeField] private bool _isFullCircle;
     [SerializeField] private float _timeWaitEndPatrol = 2f;
+    private List<Transform> _patrolPoints;
     private float _timerWaitEndPatrol = 2f;
     private bool _isChangingPatrolPoint;
     private bool _isMovingForward = true;
@@ -27,9 +28,6 @@ public class BasicEnemyActions : MonoBehaviour
 
     [Header("External scripts")]
     [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
-
-    [Header("Resources")]
-    [SerializeField] private GameObject _corpsePrefab;
 
     [Header("Animaciones")]
     private Animator _animator;
@@ -39,29 +37,18 @@ public class BasicEnemyActions : MonoBehaviour
     private Vector3 _positionChased;
     private NavMeshAgent _agent;
     private Vector3 _initialPositionSelf;
+    private bool _isDead = false;
+    private bool _isNearWallAbility = false;
 
     public bool isAtPlayerLastSeenPosition { get; private set; }
     public bool isAtInitialPosition { get; private set; }
     [HideInInspector] public float timerLookForPlayer;
 
-    void Awake()
-    {
-        EnemyEvents.OnKnockDown += GetKnockedDown;
-    }
-
-    void OnDestroy()
-    {
-        EnemyEvents.OnKnockDown -= GetKnockedDown;
-    }
-
     void Start()
     {
         _animator = GetComponentInChildren<Animator>();
 
-        if (_patrolPoints == null)
-        {
-            _patrolPoints = new List<Transform>();
-        }
+        InitializePatrolPoints();
 
         _isChangingPatrolPoint = true;
         timerLookForPlayer = _timeToLookForPlayer;
@@ -75,6 +62,7 @@ public class BasicEnemyActions : MonoBehaviour
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateUpAxis = false;
         _agent.stoppingDistance = 0;
+        SetMovementSpeed(_usualMovementSpeed);
 
         _player = GameObject.FindWithTag("Player").transform;
         StopChasing();
@@ -82,16 +70,25 @@ public class BasicEnemyActions : MonoBehaviour
 
     void Update()
     {
-        Debug.Log($"--- Action : {_basicEnemyDetection.playerLastSeenPosition}");
+        if (_isDead)
+        {
+            return;
+        }
+
+        if (_isNearWallAbility)
+        {
+            RotateInPlace();
+            return;
+        }
+
         FixXYAxis();
-        SetMovementSpeed();
 
         CheckIfKillPlayer();
         CheckIsAtInitialPosition();
         CheckIsAtPlayerLastSeenPosition();
 
         _agent.SetDestination(_positionChased);
-        
+
         if (_isRotating)
         {
             transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
@@ -100,14 +97,24 @@ public class BasicEnemyActions : MonoBehaviour
         WalkAnimation();
     }
 
+    private void InitializePatrolPoints()
+    {
+        _patrolPoints = new List<Transform>();
+        Transform patrolPointsParent = gameObject.transform.parent.Find("PatrolPoints");
+        for(int i = 0; i < patrolPointsParent.childCount; i++)
+        {
+            _patrolPoints.Add(patrolPointsParent.GetChild(i));
+        }
+    }
+
     private void WalkAnimation()
     {
         _animator.SetBool("isWalking", !_agent.isStopped);
     }
 
-    private void SetMovementSpeed()
+    private void SetMovementSpeed(float movementSpeed)
     {
-        _agent.speed = _movementSpeed;
+        _agent.speed = movementSpeed;
     }
 
     private void FixXYAxis()
@@ -161,6 +168,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void ChasePlayerLastSeenPosition()
     {
+        SetMovementSpeed(_chasingMovementSpeed);
         StopRotating();
         _agent.isStopped = false;
         _positionChased = _basicEnemyDetection.playerLastSeenPosition;
@@ -168,6 +176,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void ChaseInitialPosition()
     {
+        SetMovementSpeed(_usualMovementSpeed);
         StopRotating();
         _agent.isStopped = false;
         _positionChased = _initialPositionSelf;
@@ -195,6 +204,7 @@ public class BasicEnemyActions : MonoBehaviour
         if (_patrolPoints.Count == 0)
         {
             RotateInPlace();
+            return;
         }
         else
         {
@@ -221,10 +231,15 @@ public class BasicEnemyActions : MonoBehaviour
             {
                 if (_timerWaitEndPatrol > 0)
                 {
+                    RotateInPlace();
+
                     _timerWaitEndPatrol -= Time.deltaTime;
                 }
                 else
                 {
+                    StopRotating();
+                    _agent.isStopped = false;
+
                     if (_isMovingForward)
                     {
                         if (_newPatrolIndex + 1 < _patrolPoints.Count)
@@ -306,21 +321,43 @@ public class BasicEnemyActions : MonoBehaviour
         }
     }
 
-    private void GetKnockedDown(GameObject enemy)
+    public void GetKilled()
     {
-        if(enemy.GetInstanceID() == gameObject.GetInstanceID())
+        //Desactivación de componentes del Body y de KnockDownZone.
+        _isDead = true;
+        gameObject.GetComponent<BasicEnemyAI>().enabled = false;
+        gameObject.GetComponent<NavMeshAgent>().enabled = false;
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;
+        gameObject.transform.Find("KnockDownZone").gameObject.SetActive(false);
+
+        // Desactivación de FOV_Visualization, CanvasInWorld y PatrolPoints si hay.
+        Transform parent = gameObject.transform.parent;
+        parent.Find("FOV_Visualization").gameObject.SetActive(false);
+        parent.Find("CanvasInWorld").gameObject.SetActive(false);
+        Transform patrol = parent.Find("PatrolPoints");
+        if(patrol != null)
         {
-            Vector3 corpsePosition = transform.position;
-            if(_corpsePrefab != null)
-            {
-                Instantiate(_corpsePrefab, corpsePosition, Quaternion.identity);
-            }
-            Destroy(gameObject.transform.parent.gameObject);
+            patrol.gameObject.SetActive(false);
+        }
+
+        // Activación de la animación.
+        _animator.SetBool("isDead", true);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("WallAbility"))
+        {
+            _isNearWallAbility = true;
         }
     }
 
-    private void Dead()
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        _animator.SetBool("isDead", true);
+        if (collision.collider.CompareTag("WallAbility"))
+        {
+            Debug.Log("sss2");
+            _isNearWallAbility = false;
+        }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -31,6 +32,7 @@ public class MapGenerator : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject corridorBase;
     [SerializeField] private GameObject stationBase;
+    [SerializeField] private GameObject player;
 
     [HideInInspector] public Vector3 startingGridPosition = Vector3.zero;
     private Cell[,] _grid; // [row, col]
@@ -38,6 +40,9 @@ public class MapGenerator : MonoBehaviour
     private List<GameObject> _corridorsInserted;
     private Dictionary<Vector3, GameObject> _roomsInserted;
     [HideInInspector] public int endWall;
+    private List<Cell> startCells;
+    private List<Cell> endCells;
+    private GameObject playerInstance;
 
     private void OnValidate()
     {
@@ -143,6 +148,12 @@ public class MapGenerator : MonoBehaviour
             _corridorsInserted.Clear();
         }
 
+        if(playerInstance != null)
+        {
+            Destroy(playerInstance.gameObject);
+            playerInstance = null;
+        }
+
         // Se inicializa el grid general.
         _rnd = new System.Random();
         InitializeGrid();
@@ -231,15 +242,24 @@ public class MapGenerator : MonoBehaviour
         InstantiateCorridorPrefabs();
         InstantiateStartPrefabs();
         InstantiateEndPrefabs();
+        InstantiatePlayer();
 
         // Construir navmesh.
         NavmeshManager.Instance.GenerateNavmesh();
     }
 
+    private void InstantiatePlayer()
+    {
+        int startIndex = UnityEngine.Random.Range(0, startCells.Count);
+        Vector3 posToSpawn = new Vector3(startCells[startIndex].Position3D.x + 4, startCells[startIndex].Position3D.y + 4, startCells[startIndex].Position3D.z);
+        playerInstance = Instantiate(player, posToSpawn, Quaternion.Euler(0, 0, 90));
+        playerInstance.name = "Player";
+    }
+
     private void InstantiateStartPrefabs()
     {
         // Recorre todas las celdas cogiendo las que son Inicios.
-        foreach (Cell cell in _grid)
+        foreach (Cell cell in startCells)
         {
             if (cell.State == CellState.Start)
             {
@@ -264,7 +284,7 @@ public class MapGenerator : MonoBehaviour
     private void InstantiateEndPrefabs()
     {
         // Recorre todas las celdas cogiendo las que son Inicios.
-        foreach (Cell cell in _grid)
+        foreach (Cell cell in endCells)
         {
             if (cell.State == CellState.End)
             {
@@ -412,7 +432,7 @@ public class MapGenerator : MonoBehaviour
     #region Placing Start and Exit
     private void PlacingStart()
     {
-        PlacerStartExit(0, true, 0, _gridSize.x - 1, CellState.Start);
+        startCells = PlacerStartExit(0, true, 0, _gridSize.x - 1, CellState.Start);
     }
 
     private void PlacingExit()
@@ -423,21 +443,22 @@ public class MapGenerator : MonoBehaviour
         switch (endWall)
         {
             case 0:
-                PlacerStartExit(0, false, _gridSize.y / 4 * 3, _gridSize.y - 1, CellState.End);
+                endCells = PlacerStartExit(0, false, _gridSize.y / 4 * 3, _gridSize.y - 1, CellState.End);
                 break;
             case 1:
-                PlacerStartExit(_gridSize.y - 1, true, 0, _gridSize.x - 1, CellState.End);
+                endCells = PlacerStartExit(_gridSize.y - 1, true, 0, _gridSize.x - 1, CellState.End);
                 break;
             case 2:
-                PlacerStartExit(_gridSize.x - 1, false, _gridSize.y / 4 * 3, _gridSize.y - 1, CellState.End);
+                endCells = PlacerStartExit(_gridSize.x - 1, false, _gridSize.y / 4 * 3, _gridSize.y - 1, CellState.End);
                 break;
         }
     }
 
-    private void PlacerStartExit(int fixedValue, bool isRowFixed, int minFlexValue, int maxFlexValue, CellState newState)
+    private List<Cell> PlacerStartExit(int fixedValue, bool isRowFixed, int minFlexValue, int maxFlexValue, CellState newState)
     {
         bool isValid = false;
         int sizePlaced = newState == CellState.Start ? _startSize : _exitSize;
+        List<Cell> cellsToReturn = new List<Cell>();
 
         while (isValid == false)
         {
@@ -496,6 +517,7 @@ public class MapGenerator : MonoBehaviour
                 for (int i = 0; i < sizePlaced; i++)
                 {
                     _grid[flexValues[i], fixedValue].SetCellState(newState);
+                    cellsToReturn.Add(_grid[flexValues[i], fixedValue]);
                 }
             }
 
@@ -520,9 +542,11 @@ public class MapGenerator : MonoBehaviour
                 for (int i = 0; i < sizePlaced; i++)
                 {
                     _grid[fixedValue, flexValues[i]].SetCellState(newState);
+                    cellsToReturn.Add(_grid[fixedValue, flexValues[i]]);
                 }
             }
         }
+        return cellsToReturn;
     }
     #endregion
 

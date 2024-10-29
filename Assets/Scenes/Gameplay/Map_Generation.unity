@@ -159,9 +159,10 @@ MonoBehaviour:
   _amountRooms3x3: 4
   _mapPercentageOcuppied: 25
   _roomRadius: 5
-  _isDrawingGizmos: 1
+  _isDrawingGizmos: 0
   corridorBase: {fileID: 420726038587042630, guid: 45da6e695f70f1349b900dfd943c4dd9, type: 3}
   stationBase: {fileID: 7806689954695716217, guid: 822079e30e07d54468303b2bce15a2e5, type: 3}
+  player: {fileID: 3794863736478708675, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
   startingGridPosition: {x: 0, y: 0, z: 0}
   endWall: 0
 --- !u!4 &117816291
@@ -666,7 +667,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1901540484}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -730,7 +731,7 @@ MonoBehaviour:
   m_VoxelSize: 0.083333336
   m_BuildHeightMesh: 0
   m_HideEditorLogs: 0
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: e8fc69e29c242844db6fedef46d642cf, type: 2}
 --- !u!1 &1903327659
 GameObject:
   m_ObjectHideFlags: 0

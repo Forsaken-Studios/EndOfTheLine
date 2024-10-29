@@ -16,7 +16,8 @@ public class DetectionPlayerManager : MonoBehaviour
     private int _rayCount = 15;
 
     [Header("Detection Bar Properties")]
-    [SerializeField] private float _detectionIncreaseRate = 0.4f;
+    [SerializeField] private float _maxDetectionIncreaseRate = 1.5f;
+    [SerializeField] private float _minDetectionIncreaseRate = 0.4f;
     [SerializeField] private float _detectionDecreaseRate = 0.4f;
 
     [Header("External scripts")]
@@ -181,7 +182,10 @@ public class DetectionPlayerManager : MonoBehaviour
 
     private void IncreaseDetection()
     {
-        _detectionLevel += _detectionIncreaseRate * Time.deltaTime;
+        float distanceToPlayer = Vector3.Distance(_bodyTransform.position, _playerTransform.position);
+        float detectionIncreaseRate = Mathf.Lerp(_maxDetectionIncreaseRate, _minDetectionIncreaseRate, distanceToPlayer/_viewDistance);
+
+        _detectionLevel += detectionIncreaseRate * Time.deltaTime;
 
         currentState = EnemyStates.FOVState.isSeeing;
 

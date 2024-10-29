@@ -126,7 +126,7 @@ public class Room : MonoBehaviour
         }
         else
         {
-            definitiveAmountEnemies = UnityEngine.Random.Range(0, allEnemiesList.Count);
+            definitiveAmountEnemies = UnityEngine.Random.Range(1, allEnemiesList.Count);
         }
         
 
