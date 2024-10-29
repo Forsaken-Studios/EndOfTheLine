@@ -69,6 +69,7 @@ public class AbilityHolder : MonoBehaviour
         if (abilityEquipped1 == 0)
         {
             //No ability equipped
+            Debug.Log("NO ABILITY EQUIPPED");
             return;
         }
         int abilityIDtoEquip = 0;
@@ -87,9 +88,21 @@ public class AbilityHolder : MonoBehaviour
         
         //Get ability from ID
         Ability ability = FindAbilityID(abilityIDtoEquip);
-        this.ability = ability;
-        //Load image to ability icon
-        abilityUI.SetUpProperties(ability);
+        try
+        {
+            if (ability != null)
+            {
+                this.ability = ability;
+                //Load image to ability icon
+                abilityUI.SetUpProperties(ability);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log("ABILITY HOLDER ID: " + abilityHolderID + "NO HA CARGADO HABILIDAD");
+        }
+      
+
     }
 
     private Ability FindAbilityID(int id)

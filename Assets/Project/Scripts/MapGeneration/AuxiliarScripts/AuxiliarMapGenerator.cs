@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -235,7 +234,7 @@ public static class AuxiliarMapGenerator
 
         visitedParents.Add(currentCell);
 
-        // Si la celda no tiene padres, marcarla como vacía
+        // Si la celda no tiene padres, marcarla como vacï¿½a
         if (currentCell.Parents.Count == 0 && !roomCells.Contains(currentCell))
         {
             currentCell.SetCellState(CellState.Empty);
@@ -249,7 +248,7 @@ public static class AuxiliarMapGenerator
             }
         }
 
-        // Si no está en roomCells, marcarla como vacía
+        // Si no estï¿½ en roomCells, marcarla como vacï¿½a
         if (!roomCells.Contains(currentCell))
         {
             currentCell.SetCellState(CellState.Empty);
@@ -518,15 +517,15 @@ public static class AuxiliarMapGenerator
     //    int gridRows = originalGrid.GetLength(0);
     //    int gridCols = originalGrid.GetLength(1);
 
-    //    // Verificar si la habitación puede insertarse en la cuadrícula.
+    //    // Verificar si la habitaciï¿½n puede insertarse en la cuadrï¿½cula.
     //    for (int row = initialRow; row < initialRow + roomRows; row++)
     //    {
     //        for (int col = initialCol; col < initialCol + roomCols; col++)
     //        {
-    //            // Verificar si estamos dentro de los límites del grid.
+    //            // Verificar si estamos dentro de los lï¿½mites del grid.
     //            if (row >= 0 && row < gridRows && col >= 0 && col < gridCols)
     //            {
-    //                // Si la celda en roomGrid no está vacía y no es colocable en originalGrid.
+    //                // Si la celda en roomGrid no estï¿½ vacï¿½a y no es colocable en originalGrid.
     //                if (roomGrid[row - initialRow, col - initialCol].State != CellState.Empty && !originalGrid[row, col].IsRoomPlaceable)
     //                {
     //                    isPossible = false;
@@ -536,28 +535,28 @@ public static class AuxiliarMapGenerator
     //            }
     //            else
     //            {
-    //                // Estamos fuera de los límites del originalGrid.
+    //                // Estamos fuera de los lï¿½mites del originalGrid.
     //                Debug.Log($"-MAP GENERATION- Out of bounds: Not possible insert room in cell: [{row}, {col}]  ([row, col])");
     //                return false;
     //            }
     //        }
     //    }
 
-    //    // Verificar las celdas alrededor del área de la habitación.
+    //    // Verificar las celdas alrededor del ï¿½rea de la habitaciï¿½n.
     //    for (int row = initialRow - 1; row <= initialRow + roomRows; row++)
     //    {
     //        for (int col = initialCol - 1; col <= initialCol + roomCols; col++)
     //        {
-    //            // Verificar si estamos dentro de los límites.
+    //            // Verificar si estamos dentro de los lï¿½mites.
     //            if ((row >= 1 && row < gridRows - 1) && (col >= 1 && col < gridCols - 1))
     //            {
-    //                // Verificar si la celda está en el perímetro (no dentro del roomGrid).
+    //                // Verificar si la celda estï¿½ en el perï¿½metro (no dentro del roomGrid).
     //                if (row == initialRow - 1 || row == initialRow + roomRows || col == initialCol - 1 || col == initialCol + roomCols)
     //                {
-    //                    // Comprobar si el perímetro tiene celdas vacías o pasillos
+    //                    // Comprobar si el perï¿½metro tiene celdas vacï¿½as o pasillos
     //                    if (originalGrid[row, col].State == CellState.Empty || originalGrid[row, col].State == CellState.Corridor)
     //                    {
-    //                        isPossible = true; // Puede ser colocada si el perímetro es válido.
+    //                        isPossible = true; // Puede ser colocada si el perï¿½metro es vï¿½lido.
     //                    }
     //                    else
     //                    {
@@ -580,7 +579,7 @@ public static class AuxiliarMapGenerator
         int gridRows = originalGrid.GetLength(0);
         int gridCols = originalGrid.GetLength(1);
 
-        // Verificar que la habitación no esté en el perímetro del grid
+        // Verificar que la habitaciï¿½n no estï¿½ en el perï¿½metro del grid
         if (initialRow <= 0 || initialRow + roomRows >= gridRows ||
             initialCol <= 0 || initialCol + roomCols >= gridCols)
         {
@@ -588,15 +587,15 @@ public static class AuxiliarMapGenerator
             return false;
         }
 
-        // Verificar si la habitación puede insertarse en la cuadrícula.
+        // Verificar si la habitaciï¿½n puede insertarse en la cuadrï¿½cula.
         for (int row = initialRow; row < initialRow + roomRows; row++)
         {
             for (int col = initialCol; col < initialCol + roomCols; col++)
             {
-                // Verificar si estamos dentro de los límites del grid.
+                // Verificar si estamos dentro de los lï¿½mites del grid.
                 if (row >= 0 && row < gridRows && col >= 0 && col < gridCols)
                 {
-                    // Si la celda en roomGrid no está vacía y no es colocable en originalGrid.
+                    // Si la celda en roomGrid no estï¿½ vacï¿½a y no es colocable en originalGrid.
                     if (roomGrid[row - initialRow, col - initialCol].State != CellState.Empty && !originalGrid[row, col].IsRoomPlaceable)
                     {
                         Debug.Log($"-MAP GENERATION- Not possible to insert room in cell: [{row}, {col}]");
@@ -605,25 +604,25 @@ public static class AuxiliarMapGenerator
                 }
                 else
                 {
-                    // Estamos fuera de los límites del originalGrid.
+                    // Estamos fuera de los lï¿½mites del originalGrid.
                     Debug.Log($"-MAP GENERATION- Out of bounds: Not possible to insert room in cell: [{row}, {col}]");
                     return false;
                 }
             }
         }
 
-        // Verificar las celdas alrededor del área de la habitación.
+        // Verificar las celdas alrededor del ï¿½rea de la habitaciï¿½n.
         for (int row = initialRow - 1; row <= initialRow + roomRows; row++)
         {
             for (int col = initialCol - 1; col <= initialCol + roomCols; col++)
             {
-                // Verificar si estamos dentro de los límites.
+                // Verificar si estamos dentro de los lï¿½mites.
                 if (row >= 0 && row < gridRows && col >= 0 && col < gridCols)
                 {
-                    // Verificar si la celda está en el perímetro (no dentro del roomGrid).
+                    // Verificar si la celda estï¿½ en el perï¿½metro (no dentro del roomGrid).
                     if (row == initialRow - 1 || row == initialRow + roomRows || col == initialCol - 1 || col == initialCol + roomCols)
                     {
-                        // Comprobar si el perímetro tiene celdas vacías o pasillos
+                        // Comprobar si el perï¿½metro tiene celdas vacï¿½as o pasillos
                         if (originalGrid[row, col].State != CellState.Empty && originalGrid[row, col].State != CellState.Corridor)
                         {
                             Debug.Log($"-MAP GENERATION- Perimeter issue: Not possible to insert room near cell: [{row}, {col}]");
@@ -633,7 +632,7 @@ public static class AuxiliarMapGenerator
                 }
                 else
                 {
-                    // Estamos fuera de los límites del originalGrid.
+                    // Estamos fuera de los lï¿½mites del originalGrid.
                     Debug.Log($"-MAP GENERATION- Out of bounds: Not possible to check perimeter at cell: [{row}, {col}]");
                     return false;
                 }
@@ -653,7 +652,7 @@ public static class AuxiliarMapGenerator
             endCellListCopied.Add(copiedGrid[cell.Row, cell.Col]);
         }
 
-        // Comprobar si es posible insertar la habitación
+        // Comprobar si es posible insertar la habitaciï¿½n
         if (!IsPossibleInsertRoom(copiedGrid, roomGrid, initialRow, initialCol))
         {
             Debug.Log("MAP GENERATION - Room not possible to insert at given location.");

@@ -45,6 +45,7 @@ namespace LootSystem
     
         private void PrepareLoot()
         {
+            totalCratesAmount = cratesList.Count;
             int cratesToFill = (int)((totalCratesAmount) - (totalCratesAmount * totalEmptyCratesPercentage));
             //First we check if we need to spawn an specific item
             foreach (LooteableObject crate in cratesList)

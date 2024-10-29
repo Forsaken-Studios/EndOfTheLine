@@ -13,17 +13,22 @@ MonoBehaviour:
   m_Name: Smoke Ability
   m_EditorClassIdentifier: 
   name: Smoke Grenade
-  description: 
+  enabled: 1
+  description: "Lanza una granada de humo que, al explotar, libera una densa nube
+    de humo que cubre un \xE1rea considerable. La nube reduce la visibilidad de los
+    enemigos, desorientando a quienes se encuentren dentro. La cobertura de humo
+    dura varios segundos, brindando una oportunidad de moverse estrat\xE9gicamente
+    o preparar emboscadas."
   abilityIcon: {fileID: 21300000, guid: f3b1915e7b8ff594fbf4550c09c382a3, type: 3}
-  abilityID: 2
+  abilityID: 8
   cooldownTime: 4
   activeTime: 3
   overheatCost: 23
   needToBeReactivated: 0
   airFilterNeededToUnlock: 1
-  material1Item: {fileID: 0}
+  material1Item: {fileID: 11400000, guid: 7da282e1236b2524091e97c025d1cfc7, type: 2}
   material1NeededToUnlock: 0
-  material2Item: {fileID: 0}
+  material2Item: {fileID: 11400000, guid: c002f4e39df0e7141a4f3b4bb99ba6aa, type: 2}
   material2NeededToUnlock: 0
   smokeGrenadeCanvasPrefab: {fileID: 330460122310081696, guid: 6c53b3dd1c472be43aeb436e02252f49, type: 3}
   smokeGrenadePrefab: {fileID: 1452890939119055772, guid: 82f06827de8910940b962ce6ee7d4220, type: 3}
