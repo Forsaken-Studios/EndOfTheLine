@@ -17,6 +17,7 @@ namespace LootSystem
         public float itemWeight;
         public string itemName;
         public float itemSpawnChance;
+        [TextAreaAttribute(10, 10)]
         public string itemDescription;
         public int itemID;
     }

@@ -81,7 +81,7 @@ namespace Player
         [SerializeField] private float radiusDecay = 16f;
         
         [Header("Inputs")] 
-        private KeyCode dashInput = KeyCode.LeftControl;
+        private KeyCode dashInput = KeyCode.Space;
         
         [Header("Noise Circle")] 
         [SerializeField] private NoiseCircle noise;
