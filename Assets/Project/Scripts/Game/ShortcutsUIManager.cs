@@ -23,6 +23,7 @@ public class ShortcutsUIManager : MonoBehaviour
 
     [SerializeField] private GameObject shortCutPrefab;
     private Dictionary<ShortcutType, ShortcutSO> shortcutsDictionary;
+    private List<ShortcutDetails> shortcutDetailsList;
     private void Awake()
     {
         if (Instance != null)
@@ -37,6 +38,7 @@ public class ShortcutsUIManager : MonoBehaviour
     private void Start()
     {
         shortcutsDictionary = new Dictionary<ShortcutType, ShortcutSO>();
+        shortcutDetailsList = new List<ShortcutDetails>();
         Loadshortcuts();
     }
 
@@ -61,15 +63,22 @@ public class ShortcutsUIManager : MonoBehaviour
 
     public GameObject AddShortcuts(ShortcutType shortcutType)
     {
+        if (shortcutDetailsList.Find(t => t.GetIfIsLoot()) && shortcutType == ShortcutType.lootCrate)
+        {
+            return null;
+        }
+
         GameObject newShortcut = Instantiate(shortCutPrefab, new Vector3(0, 0, 0), Quaternion.identity,
             this.gameObject.transform);
-
-        newShortcut.GetComponent<ShortcutDetails>().SetUpProperties(shortcutsDictionary[shortcutType]);
+        ShortcutDetails details = newShortcut.GetComponent<ShortcutDetails>();
+        details.SetUpProperties(shortcutsDictionary[shortcutType]);
+        shortcutDetailsList.Add(details);
         return newShortcut;
     }
 
     public void RemoveShortcut(GameObject prefab)
     {
+        shortcutDetailsList.Remove(prefab.GetComponent<ShortcutDetails>());
         Destroy(prefab);
     }
     

@@ -12,16 +12,14 @@ namespace Extraction
         [Header("UI Properties")]
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private TextMeshProUGUI extractionText;
-        [Header("Timer properties")]
-        [SerializeField] private float timeForTrainToArrive = 5f;
-        [SerializeField] private float timeForTrainToLeave = 5f; 
+ 
         private float currentTime = 5f;
         private Animator _animator;
         private bool extractionIsLeaving = false;
 
         private void Start()
         {
-            currentTime = timeForTrainToArrive;
+            currentTime = ExtractionManager.Instance.TimeForTrainToArrive;
         }
 
         void Update()
@@ -37,7 +35,7 @@ namespace Extraction
                     extractionIsLeaving = true;
                   
                     StopAllCoroutines();
-                    currentTime = timeForTrainToLeave;
+                    currentTime = ExtractionManager.Instance.TimeForTrainToLeave;
                     extractionText.text = "Extraction will leave in: ";
                     StartCoroutine(StartCountdown());
                 }
@@ -45,7 +43,8 @@ namespace Extraction
                 {
                     //Extraction is leaving, we reset all properties
                     extractionIsLeaving = false;
-                    currentTime = timeForTrainToArrive;
+                    currentTime = ExtractionManager.Instance.TimeForTrainToArrive;
+                    ExtractionManager.Instance.StopExtractionIfTrainLeft();
                     GameManager.Instance.DesactivateExtractionZone();
                     extractionText.text = "Extraction will arrive in: ";
                     StopAllCoroutines();
@@ -76,7 +75,7 @@ namespace Extraction
         private void OnDisable()
         {
             _animator.SetBool("extracting", false);
-            currentTime = timeForTrainToArrive;
+            currentTime = ExtractionManager.Instance.TimeForTrainToArrive;
             StopAllCoroutines();
         }
     } 

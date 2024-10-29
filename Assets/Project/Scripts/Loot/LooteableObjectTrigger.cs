@@ -32,9 +32,11 @@ namespace Loot
             if (other.CompareTag("Player"))
             {
                 looteableObject.DesactivateKeyHotkeyImage();
-                ShortcutsUIManager.Instance.RemoveShortcut(shortCut);
+                if(shortCut != null)
+                    ShortcutsUIManager.Instance.RemoveShortcut(shortCut);
                 LooteableObjectSelector.Instance.DecreaseOneInTrigger(looteableObject);
             }
         }
+
     }
 }
