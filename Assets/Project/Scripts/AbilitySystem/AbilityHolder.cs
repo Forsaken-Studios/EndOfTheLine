@@ -26,6 +26,9 @@ public class AbilityHolder : MonoBehaviour
     private GameObject currentCanvasCreated;
     private bool needToReactivate;
 
+    private GameObject placeUseShortcut;
+    private GameObject cancelShortcut;
+
     [SerializeField] private bool canThrowAbility = true;
     enum AbilityState
     {
@@ -112,120 +115,40 @@ public class AbilityHolder : MonoBehaviour
 
     void Update()
     {
-
         if (GameManager.Instance.GameState == GameState.OnGame && ability != null)
         {
-        switch (state)
-        {
-            case AbilityState.ready:
-                if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost))
-                {
-                    ability.PrepareAbility(gameObject, this, out currentCanvasCreated);
-                    OverheatManager.Instance.SetHolderToPrepareAbility(abilityHolderID);
-                    isPreparingAbility = true;
-                    GameManager.Instance.SetHolder(abilityHolderID, true);
-                    state = AbilityState.preparing;
-                }
-                break;  
-            case AbilityState.preparing:
-                if (canThrowAbility)
-                {
-                    //LogManager.Log("PREPARING ABILITY [" + ability.name + "]", FeatureType.Player);
-                    if (ability.needToBeReactivated)
-                    {
-                        // needToReactivate == true -> Ya la hemos colocado y está a la espera
-                        if (needToReactivate)
-                        {
-                            LogManager.Log("WAITING [" + ability.name + "]", FeatureType.Player);
-                            ActivateAbility();
-                        }
-                        else
-                        {
-                            if (Input.GetKeyDown(KeyCode.Mouse0) && canThrowAbility)
-                            {
-                                LogManager.Log("PLACING [" + ability.name + "]", FeatureType.Player);
-                                needToReactivate = true;
-                                GameManager.Instance.SetHolder(abilityHolderID, false);
-                                ActivatingAbility();
-                                //Colocar objeto en el sitio
-                            }else if (Input.GetKeyDown(KeyCode.Mouse1))
-                            {
-                                GameManager.Instance.SetHolder(abilityHolderID, false);
-                                state = AbilityState.ready;
-                                Destroy(currentCanvasCreated);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        ActivatingAbility();
-                    }
-                }else if (Input.GetKeyDown(KeyCode.Mouse1))
-                {
-                    GameManager.Instance.SetHolder(abilityHolderID, false);
-                    state = AbilityState.ready;
-                    Destroy(currentCanvasCreated);
-                }
-                break;
-            case AbilityState.activating:
-                //To activate ability, we will need to call ActivateAbility();
-                if(!ability.needToBeReactivated)
-                    ActivateAbility();
-                else
-                {
-                    if (Input.GetKeyDown(key))
-                    {
-                        ActivateAbility();
-                    }
-                }
-                break;
-            case AbilityState.active:
-                LogManager.Log("ABILITY ACTIVATED [" + ability.name + "]", FeatureType.Player);
-                if (activeTime > 0)
-                {
-                    activeTime -= Time.deltaTime;
-                }
-                else
-                {
-                    Destroy(currentGameObjectCreated);
-                    abilityUI.StartCooldown();
-                    ability.BeginCooldown(gameObject);
-                    state = AbilityState.cooldown;
-                    cooldownTime = ability.cooldownTime;
-                }
-                break; 
-            case AbilityState.cooldown:
-                LogManager.Log("ABILITY ON COOLDOWN [" + ability.name + "]", FeatureType.Player);
-                if (cooldownTime > 0)
-                {
-                    cooldownTime -= Time.deltaTime;
-                }
-                else
-                {
-                    state = AbilityState.ready;
-                }
-                break; 
-        }
+            switch (state)
+            {
+                case AbilityState.ready: 
+                    //Primera vez que pulsamos, activamos el canvas
+                    AbilityHolderReady();
+                    break;  
+                case AbilityState.preparing:
+                    //Comprobamos dos casos, en el caso de que haya que activar una segunda vez, o lo lanzamos al instante, 
+                    // es decir, si pasamos a active o activating
+                    AbilityHolderPreparing(); 
+                    break;
+                case AbilityState.activating:
+                    //Preparamos para cuando pulsemos por segunda vez y aparezca la habilidad
+                    AbilityHolderActivating();
+                    break;
+                case AbilityState.active:
+                    //Lanzamos habilidad
+                    AbilityHolderActive();
+                    break; 
+                case AbilityState.cooldown:
+                    //Comenzamos cooldown
+                    AbilityHolderOnCooldown();
+                    break; 
+            }
         }
       
     }
-
-    private void CancelOtherAbility()
-    {
-        if (abilityHolderID == 1)
-        {
-            OverheatManager.Instance.GetHolder2().TryToCancelAbility();
-        }
-        else
-        {
-            OverheatManager.Instance.GetHolder1().TryToCancelAbility();
-        }
-    }
-
     
     public void ActivateAbility()
     {
         ability.Activate(gameObject, positionToThrowAbility, positionToThrowAbility2);
+        DestroyAllShortcuts();
         state = AbilityState.active;
         activeTime = ability.activeTime;
         needToReactivate = false;
@@ -238,22 +161,158 @@ public class AbilityHolder : MonoBehaviour
             //Activate
             OverheatManager.Instance.IncreaseEnergy(ability.overheatCost);
             ability.Activating(gameObject, positionToThrowAbility, positionToThrowAbility2, out currentGameObjectCreated);
+            ActivateShortcutsWhenActivatingAbility();
             GameManager.Instance.SetHolder(abilityHolderID, false);
             state = AbilityState.activating;
         }else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             //Destroy canvas
             GameManager.Instance.SetHolder(abilityHolderID, false);
+            DestroyAllShortcuts();
             state = AbilityState.ready;
             Destroy(currentCanvasCreated);
         }
+    }
+
+    private void DestroyAllShortcuts()
+    {
+        if(placeUseShortcut != null)
+            ShortcutsUIManager.Instance.RemoveShortcut(placeUseShortcut);
+        if(cancelShortcut != null)
+            ShortcutsUIManager.Instance.RemoveShortcut(cancelShortcut);
+    }
+    
+    private void ActivateShortcutsWhenActivatingAbility()
+    {
+        if(placeUseShortcut != null)
+            ShortcutsUIManager.Instance.RemoveShortcut(placeUseShortcut);
+        if(cancelShortcut != null)
+            ShortcutsUIManager.Instance.RemoveShortcut(cancelShortcut);
+        if (abilityHolderID == 1)
+            placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityQ);
+        else
+            placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityE);
+    }
+
+    private void ActivateShortcuts()
+    {
+        if (ability.needToBeReactivated)
+            placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.placeAbility);
+        else
+        {
+            if (abilityHolderID == 1)
+                placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityQ);
+            else
+                placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityE);
+        }
+        cancelShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.cancelAbility);
     }
 
     public void SetIfCanThrowAbility(bool aux)
     {
         this.canThrowAbility = aux;
     }
-    
+
+    private void AbilityHolderReady()
+    {
+        if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost))
+        {
+            ability.PrepareAbility(gameObject, this, out currentCanvasCreated);
+            OverheatManager.Instance.SetHolderToPrepareAbility(abilityHolderID);
+            ActivateShortcuts();
+            isPreparingAbility = true;
+            GameManager.Instance.SetHolder(abilityHolderID, true);
+            state = AbilityState.preparing;
+        }
+    }
+
+    private void AbilityHolderPreparing()
+    {
+        if (canThrowAbility)
+        {
+            //LogManager.Log("PREPARING ABILITY [" + ability.name + "]", FeatureType.Player);
+            if (ability.needToBeReactivated)
+            {
+                // needToReactivate == true -> Ya la hemos colocado y está a la espera
+                if (needToReactivate)
+                {
+                    LogManager.Log("WAITING [" + ability.name + "]", FeatureType.Player);
+                    ActivateAbility();
+                }
+                else
+                {
+                    if (Input.GetKeyDown(KeyCode.Mouse0) && canThrowAbility)
+                    {
+                        LogManager.Log("PLACING [" + ability.name + "]", FeatureType.Player);
+                        needToReactivate = true;
+                        GameManager.Instance.SetHolder(abilityHolderID, false);
+                        ActivatingAbility();
+                        //Colocar objeto en el sitio
+                    }else if (Input.GetKeyDown(KeyCode.Mouse1))
+                    {
+                        GameManager.Instance.SetHolder(abilityHolderID, false);
+                        state = AbilityState.ready;
+                        DestroyAllShortcuts();
+                        Destroy(currentCanvasCreated);
+                    }
+                }
+            }
+            else
+            {
+                ActivatingAbility();
+            }
+        }else if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            GameManager.Instance.SetHolder(abilityHolderID, false);
+            state = AbilityState.ready;
+            DestroyAllShortcuts();
+            Destroy(currentCanvasCreated);
+        }
+    }
+
+    private void AbilityHolderActivating()
+    {
+        //To activate ability, we will need to call ActivateAbility();
+        if(!ability.needToBeReactivated)
+            ActivateAbility();
+        else
+        {
+            if (Input.GetKeyDown(key))
+            {
+                ActivateAbility();
+            }
+        }
+    }
+
+    private void AbilityHolderActive()
+    {
+        LogManager.Log("ABILITY ACTIVATED [" + ability.name + "]", FeatureType.Player);
+        if (activeTime > 0)
+        {
+            activeTime -= Time.deltaTime;
+        }
+        else
+        {
+            Destroy(currentGameObjectCreated);
+            abilityUI.StartCooldown();
+            ability.BeginCooldown(gameObject);
+            state = AbilityState.cooldown;
+            cooldownTime = ability.cooldownTime;
+        }
+    }
+
+    private void AbilityHolderOnCooldown()
+    {
+        LogManager.Log("ABILITY ON COOLDOWN [" + ability.name + "]", FeatureType.Player);
+        if (cooldownTime > 0)
+        {
+            cooldownTime -= Time.deltaTime;
+        }
+        else
+        {
+            state = AbilityState.ready;
+        }
+    }
 
   
 }

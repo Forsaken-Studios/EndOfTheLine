@@ -11,18 +11,18 @@ public class MapGenerator : MonoBehaviour
     [Tooltip("X = columns; Y = rows.")]
     [SerializeField] private Vector2Int _gridSize;
     public float cellSize = 5;
-    [Tooltip("Tamaño, en celdas, de la entrada al mapa.")]
+    [Tooltip("TamaÃ±o, en celdas, de la entrada al mapa.")]
     [SerializeField] private int _startSize = 2;
-    [Tooltip("Tamaño, en celdas, de la salida del mapa.")]
+    [Tooltip("TamaÃ±o, en celdas, de la salida del mapa.")]
     [SerializeField] private int _exitSize = 2;
 
-    [Header("Condiciones generación")]
-    [Tooltip("Número de habitaciones 3x3 que habrá en el mapa.")]
+    [Header("Condiciones generaciÃ³n")]
+    [Tooltip("NÃºmero de habitaciones 3x3 que habrÃ¡ en el mapa.")]
     [SerializeField] private int _amountRooms3x3 = 4;
     [Tooltip("Porcentaje del grid que se quiere rellenar con habitaciones.")]
     [Range(1, 100)]
     [SerializeField] private int _mapPercentageOcuppied = 25;
-    [Tooltip("Representa el radio de distancia (en celdas) en el que una habitación con más de una entrada va a buscar unir esas entradas extra con un pasillo.")]
+    [Tooltip("Representa el radio de distancia (en celdas) en el que una habitaciÃ³n con mÃ¡s de una entrada va a buscar unir esas entradas extra con un pasillo.")]
     [SerializeField] private int _roomRadius = 5;
 
     [Header("Opciones visuales")]
@@ -44,14 +44,14 @@ public class MapGenerator : MonoBehaviour
         // Make sure _startSize and _exitSize are less or equal to _gridSize.
         if (_startSize > _gridSize.x)
         {
-            Debug.LogWarning($"Start Size ({_startSize}) no puede ser mayor que Grid Size.x ({_gridSize.x}). Se ajustará a {_gridSize.x}.");
+            Debug.LogWarning($"Start Size ({_startSize}) no puede ser mayor que Grid Size.x ({_gridSize.x}). Se ajustarÃ¡ a {_gridSize.x}.");
             _startSize = _gridSize.x;
         }
 
         if (_exitSize > _gridSize.x || _exitSize > _gridSize.y - 1)
         {
             int adjust = _gridSize.x < _gridSize.y - 1 ? _gridSize.x : _gridSize.y - 1;
-            Debug.LogWarning($"Exit Size ({_exitSize}) no puede ser mayor que GridSize.x ({_gridSize.x}) o GridSize.y ({_gridSize.y}). Se ajustará al menor entre GridSize.x y GridSize.y, es decir {adjust}.");
+            Debug.LogWarning($"Exit Size ({_exitSize}) no puede ser mayor que GridSize.x ({_gridSize.x}) o GridSize.y ({_gridSize.y}). Se ajustarÃ¡ al menor entre GridSize.x y GridSize.y, es decir {adjust}.");
             _exitSize = adjust;
         }
     }
@@ -80,7 +80,7 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
-        // Inicialización de listas.
+        // InicializaciÃ³n de listas.
         _roomsInserted = new Dictionary<Vector3, GameObject>();
         _corridorsInserted = new List<GameObject>();
 
@@ -91,7 +91,7 @@ public class MapGenerator : MonoBehaviour
 
     private void BuildMap()
     {
-        // Borrado y creación de la estructura de carpetas en la jerarquia de los pasillos y habitaciones.
+        // Borrado y creaciÃ³n de la estructura de carpetas en la jerarquia de los pasillos y habitaciones.
         GameObject mapObject = GameObject.Find("Map");
         if (mapObject == null)
         {
@@ -179,7 +179,7 @@ public class MapGenerator : MonoBehaviour
                 if (_mapPercentageOcuppied <= 1)
                 {
                     _mapPercentageOcuppied = auxMapPercentageOcuppied;
-                    Debug.LogWarning("FINAL MAP GENERATION - No se pudo crear el mapa con los parámetros dados.");
+                    Debug.LogWarning("FINAL MAP GENERATION - No se pudo crear el mapa con los parÃ¡metros dados.");
                     break;
                 }
             }
@@ -250,7 +250,7 @@ public class MapGenerator : MonoBehaviour
                 Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
                 cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _grid);
 
-                // Instancia el prefab de estación que equivalga a la configuración de la celda.
+                // Instancia el prefab de estaciÃ³n que equivalga a la configuraciÃ³n de la celda.
                 Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
                 GameObject stationInstance = Instantiate(stationBase, centeredPosition, stationBase.transform.rotation);
                 stationInstance.name = $"StationStart_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
@@ -275,7 +275,7 @@ public class MapGenerator : MonoBehaviour
                 Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
                 cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _grid);
 
-                // Instancia el prefab de estación que equivalga a la configuración de la celda.
+                // Instancia el prefab de estaciÃ³n que equivalga a la configuraciÃ³n de la celda.
                 Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
                 GameObject stationInstance = Instantiate(stationBase, centeredPosition, stationBase.transform.rotation);
                 stationInstance.name = $"StationEnd_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
@@ -300,7 +300,7 @@ public class MapGenerator : MonoBehaviour
                 Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
                 cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _grid);
 
-                // Instancia el prefab de pasillo que equivalga a la configuración de la celda.
+                // Instancia el prefab de pasillo que equivalga a la configuraciÃ³n de la celda.
                 Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
                 GameObject corridorInstance = Instantiate(corridorBase, centeredPosition, corridorBase.transform.rotation);
                 corridorInstance.name = $"Corridor_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
@@ -580,7 +580,7 @@ public class MapGenerator : MonoBehaviour
             {
                 if (neighbour.State == CellState.Empty)
                 {
-                    // Si es la última entrada entonces hacer que llegue al final.
+                    // Si es la Ãºltima entrada entonces hacer que llegue al final.
                     if (counterRestEntrances == 1)
                     {
                         Cell[,] modifiedGrid = ReachFinal(neighbour, grid);
@@ -596,7 +596,7 @@ public class MapGenerator : MonoBehaviour
                     }
                     else
                     {
-                        // Buscar el pasillo más cercano y unirse a él.
+                        // Buscar el pasillo mÃ¡s cercano y unirse a Ã©l.
                         Cell[,] modifiedGrid = SeekAndJoinNearCorridors(neighbour, grid);
                         if (modifiedGrid != null)
                         {
@@ -765,7 +765,7 @@ public class MapGenerator : MonoBehaviour
                     endCellList.Add(grid[element.y + initialRow, element.x + initialCol]);
                 }
 
-                // Intentar insertar la habitación y obtener el grid modificado
+                // Intentar insertar la habitaciÃ³n y obtener el grid modificado
                 Vector3 positonToInstantiate = grid[initialRow, initialCol].Position3D + room.centerPosition;
                 Cell[,] modifiedGrid = AuxiliarMapGenerator.InsertRoom(grid, room.selfGrid, initialRow, initialCol, endCellList);
 

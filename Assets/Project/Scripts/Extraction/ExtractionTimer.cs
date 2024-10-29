@@ -12,15 +12,14 @@ namespace Extraction
         [Header("Extraction timer")]
         [SerializeField] private TextMeshProUGUI timerText;
         [Header("Extraction Time")]
-        [Tooltip("Time needed for player to extract")]
-        [SerializeField] private float timeToExtract = 10f;
+
         private float currentTime = 10f;
         private Animator _animator;
 
         private bool isEnding = false;
         private void Start()
         {
-            currentTime = timeToExtract;
+            currentTime = ExtractionManager.Instance.TimeToExtract;
         }
 
         void Update()
@@ -65,7 +64,7 @@ namespace Extraction
         private void OnDisable()
         {
             _animator.SetBool("extracting", false);
-            currentTime = timeToExtract;
+            currentTime = ExtractionManager.Instance.TimeToExtract;;
             StopAllCoroutines();
         }
     }
