@@ -448,6 +448,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 296411008355172515, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.00024414062
+      objectReference: {fileID: 0}
     - target: {fileID: 2172439239278186257, guid: 0d4abce209f864241a008aecb7546c6b, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -1.5692139
@@ -3252,7 +3256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04b247f8c056e5248abbfbf1052006bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  raidTime: 900
+  raidTime: 25
   timeToExtract: 7
   timeForTrainToArrive: 20
   timeForTrainToLeave: 20
@@ -3309,6 +3313,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1608956574}
+  - {fileID: 2027661726}
   - {fileID: 1478050702}
   - {fileID: 784146519}
   - {fileID: 1362404030}
@@ -25620,6 +25626,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8222485050067830699, guid: f60280cfb481e524daff7ff0a5230a06, type: 3}
+      propertyPath: m_SortingOrder
+      value: 48
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -25735,13 +25745,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1608956572}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 373698102}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 775963516}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1611714727
 GameObject:
@@ -26871,7 +26881,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2027661725}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -26883,7 +26893,7 @@ Transform:
   - {fileID: 2120697802}
   - {fileID: 1420143188}
   - {fileID: 453304370}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 775963516}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2042277839
 GameObject:
@@ -27180,11 +27190,9 @@ SceneRoots:
   - {fileID: 468725508}
   - {fileID: 1561093581}
   - {fileID: 775963516}
-  - {fileID: 1608956574}
   - {fileID: 801568187}
   - {fileID: 1520314840}
   - {fileID: 521931545}
-  - {fileID: 2027661726}
   - {fileID: 1376441408}
   - {fileID: 362316864}
   - {fileID: 958017104}

@@ -24,8 +24,12 @@ namespace Player
 
         public void PlayerExitedGasZone()
         {
-            isPlayerInGasZone = false;
-            this.playerStamina.DesactivateEnergyDecreasing();
+            if (!GameManager.Instance.playerIsDead)
+            {
+                isPlayerInGasZone = false;
+                this.playerStamina.DesactivateEnergyDecreasing();
+            }
+
         }
         
         #region Getters Setters

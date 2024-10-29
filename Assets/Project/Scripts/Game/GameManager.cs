@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     
     [Header("End game")]
     private GameObject blackFadeEndGamePanel;
+    [HideInInspector]
+    public bool playerIsDead;
 
     [FormerlySerializedAs("inspectItemCanvas")]
     [Header("Canvas Helper")]
@@ -135,6 +137,7 @@ public class GameManager : MonoBehaviour
         } else if (died)
         {
             Debug.Log("[GameManager.cs] : Player has died.");
+            playerIsDead = true;
             PlayerAim playerAim = PlayerController.Instance.gameObject.GetComponent<PlayerAim>();
             PlayerController.Instance.GetComponentInChildren<CircleCollider2D>().enabled = false;
             playerAim.SetIfCanRotateAim(false);

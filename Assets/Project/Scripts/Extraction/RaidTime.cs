@@ -23,6 +23,23 @@ public class RaidTime : MonoBehaviour
     {
         if (GameManager.Instance.GameState == GameState.OnGame)
         {
+            switch (currentTime)
+            {
+                case float a when a <= 20:
+                    timerText.color = Color.red;
+                    break;
+                case float b when b >= 20 && b <= 120: 
+                    timerText.color = Color.yellow;
+                    break;
+                default: 
+                    timerText.color = Color.white;
+                    break;
+            }
+            if (currentTime <= 20)
+            {
+                timerText.color = Color.red;
+            }
+            
             if (currentTime <= 0)
             {
                 timerText.text = "0:00";
