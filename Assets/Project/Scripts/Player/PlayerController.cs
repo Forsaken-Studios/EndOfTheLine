@@ -252,6 +252,7 @@ namespace Player
             if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetEnergy() >= dashStaminaCost)
             {
                 StartCoroutine(Dash());
+                _animator.SetBool("isDashPressed", true);
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Movement_Dash, null, true);
             }
         }
@@ -274,6 +275,7 @@ namespace Player
 
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
+            _animator.SetBool("isDashPressed", false);
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
 
