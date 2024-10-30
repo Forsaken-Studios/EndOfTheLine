@@ -79,15 +79,12 @@ public class GameManager : MonoBehaviour
             {
                 if (hit.collider.gameObject.tag == "Floor")
                 {
-                    Debug.Log ("Target Position: " + hit.collider.gameObject);
                     if (floorCollider != wallCollider || wallCollider == null)
                     {
                         GameObject parent = hit.collider.gameObject.transform.parent.Find("Walls").gameObject;
                         wallCollider = parent.GetComponent<TilemapCollider2D>();
                         floorColliderAux = hit.collider;
                         floorCollider = floorColliderAux;
-                        Debug.Log("Collider KW " + wallCollider);
-                        Debug.Log("Collider KW2 " + floorColliderAux);
                     }
        
                 }

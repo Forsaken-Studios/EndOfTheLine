@@ -44,10 +44,6 @@ namespace LootSystem
             {
                 return;
             }
-            
-            
-            Debug.Log("KW 1: " + GameManager.Instance.sceneIsLoading);
-            Debug.Log("KW 2: " + lootInitialized);
             PrepareLoot();
                 
         }

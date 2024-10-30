@@ -6,7 +6,7 @@ namespace DebugStuff
     {
         string myLog = "*begin log";
         string filename = "debugs";
-        bool doShow = true;
+        bool doShow = false;
         int kChars = 700;
         void OnEnable() { Application.logMessageReceived += Log; }
         void OnDisable() { Application.logMessageReceived -= Log; }
@@ -14,7 +14,7 @@ namespace DebugStuff
         public void Log(string logString, string stackTrace, LogType type)
         {
             // for onscreen...
-            myLog = myLog + "" + logString;
+            myLog = myLog + "\n" + logString;
             if (myLog.Length > kChars) { myLog = myLog.Substring(myLog.Length - kChars); }
             // for the file ...
             if (filename == "")
@@ -27,7 +27,8 @@ namespace DebugStuff
             }
             try { System.IO.File.AppendAllText(filename, logString + ""); }
             catch { }
-        }void OnGUI()
+        }
+        void OnGUI()
         {
             if (!doShow) { return; }
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity,

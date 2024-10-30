@@ -2648,11 +2648,19 @@ PrefabInstance:
       objectReference: {fileID: 1476763205}
     - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: runSpeed
-      value: 6
+      value: 6.5
       objectReference: {fileID: 0}
     - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: walkSpeed
-      value: 3.5
+      value: 3.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: overWeight
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: maxLimitWeight
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: playerSpeedBar
@@ -2662,6 +2670,18 @@ PrefabInstance:
       propertyPath: statusBar
       value: 
       objectReference: {fileID: 1476763206}
+    - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: canRecoverEnergy
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: increaseEnergySpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5313576150165581887, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: valueEnergyDecrease
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 5970675836886858743, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: ability
       value: 
@@ -3076,7 +3096,7 @@ MonoBehaviour:
   canRecoverEnergy: 0
   increaseEnergySpeed: 0
   TimeCooldownBetweenRecoveries: 0
-  valueEnergyDecrease: 0.01
+  valueEnergyDecrease: 0.05
   holder1: {fileID: 1026545009}
   holder2: {fileID: 1026545008}
 --- !u!114 &1222847330 stripped
