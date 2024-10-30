@@ -213,10 +213,7 @@ public class AbilityHolder : MonoBehaviour
             placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.placeAbility);
         else
         {
-            if (abilityHolderID == 1)
-                placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityQ);
-            else
-                placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.useAbilityE);
+            placeUseShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.throwAbility);
         }
         cancelShortcut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.cancelAbility);
     }

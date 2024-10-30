@@ -69,6 +69,39 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (GameManager.Instance.GameState == GameState.OnGame && SceneManager.GetActiveScene().name != trainSceneName)
+        {
+            Collider2D floorColliderAux = null;
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if(hit.collider != null)
+            {
+                if (hit.collider.gameObject.tag == "Floor")
+                {
+                    Debug.Log ("Target Position: " + hit.collider.gameObject);
+                    if (floorCollider != wallCollider || wallCollider == null)
+                    {
+                        GameObject parent = hit.collider.gameObject.transform.parent.Find("Walls").gameObject;
+                        wallCollider = parent.GetComponent<TilemapCollider2D>();
+                        floorColliderAux = hit.collider;
+                        floorCollider = floorColliderAux;
+                        Debug.Log("Collider KW " + wallCollider);
+                        Debug.Log("Collider KW2 " + floorColliderAux);
+                    }
+       
+                }
+            }
+        }
+   
+
+    }
+    private Vector2 GetPosition()
+    {
+        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    }
+
+    
     private IEnumerator ActivateLoadingScreen()
     {
         loadingScreen.SetActive(true);
@@ -79,8 +112,6 @@ public class GameManager : MonoBehaviour
             //LoadingBarFill.fillAmount = Mathf.Clamp(newValue, 0f, 0.80f);
             yield return new WaitForSeconds(0.3f);
         }
-        
-
         yield return new WaitForSeconds(0.5f);
         blackFadeEndGamePanel.SetActive(true);
         blackFadeEndGamePanel.GetComponent<Animator>().SetTrigger("starting");
@@ -94,8 +125,8 @@ public class GameManager : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name != trainSceneName)
         {
-            wallCollider = gridMain.transform.Find("Walls").GetComponent<Collider2D>();
-            floorCollider = gridMain.transform.Find("Floor").GetComponent<Collider2D>();
+            //wallCollider = gridMain.transform.Find("Walls").GetComponent<Collider2D>();
+            //floorCollider = gridMain.transform.Find("Floor").GetComponent<Collider2D>();
             //blackFadeEndGamePanel = CanvasMenus.gameObject.transform.Find("Black Fade End Game Panel").gameObject;
             //blackFadeEndGamePanel.SetActive(false);
         }
@@ -110,7 +141,7 @@ public class GameManager : MonoBehaviour
             blackFadeEndGamePanel.GetComponent<Animator>().SetTrigger("ending");
 
             yield return new WaitForSeconds(3f);
-            SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
+            SceneManager.LoadSceneAsync(1);
             StopAllCoroutines();
             yield return null; 
         }

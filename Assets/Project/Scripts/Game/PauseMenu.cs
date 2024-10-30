@@ -62,7 +62,7 @@ public class PauseMenu : MonoBehaviour
     private void ReturnToTrain()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
+        SceneManager.LoadSceneAsync(1);
     }
 
     private bool AbilitiesNotActivated()

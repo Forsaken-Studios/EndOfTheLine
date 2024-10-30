@@ -640,7 +640,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 200
   _maxDistanceToNearEnemyPartner: 7
-  _maxDetectionIncreaseRate: 1.5
+  _maxDetectionIncreaseRate: 3
   _minDetectionIncreaseRate: 0.4
   _detectionDecreaseRate: 0.4
   _bodyTransform: {fileID: 4842490922141732761}
@@ -695,9 +695,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a944412d8088b6a49b46e913995215d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _usualMovementSpeed: 1
-  _chasingMovementSpeed: 2
-  rotationSpeed: 15
+  _usualMovementSpeed: 2
+  _chasingMovementSpeed: 5.5
+  rotationSpeed: 45
   _killPlayerDistance: 0.75
   _timeToLookForPlayer: 5
   _isFullCircle: 0

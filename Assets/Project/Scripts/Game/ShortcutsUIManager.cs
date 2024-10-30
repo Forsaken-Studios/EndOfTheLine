@@ -9,6 +9,7 @@ public enum ShortcutType
 {
     undefined,
     openInventory,
+    throwAbility,
     lootCrate,
     placeAbility,
     useAbilityE,

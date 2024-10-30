@@ -34,7 +34,7 @@ public class MissionSelector : MonoBehaviour
         {
             SaveManager.Instance.SaveGame();
             //Aqui ya tendríamos que hacer la generación o lo que sea, por ahora iniciamos test level
-            SceneManager.LoadSceneAsync(1);
+            SceneManager.LoadSceneAsync(2);
         }
     }
 }
