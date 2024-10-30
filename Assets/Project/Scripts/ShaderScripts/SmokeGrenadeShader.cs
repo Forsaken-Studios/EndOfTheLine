@@ -102,6 +102,7 @@ public class SmokeGrenadeShader : MonoBehaviour
         else
         {
             timer = smokeDuration;
+            finished = false;
             currentOffset.y = smokeVortexEffect;
             grenadeAlpha = 0f;
         }
