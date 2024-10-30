@@ -97,13 +97,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _FOVAngle: 40
-  _viewDistance: 3
+  _viewDistance: 4
   _detectionLayerMask:
     serializedVersion: 2
     m_Bits: 200
   _maxDistanceToNearEnemyPartner: 8
-  _detectionIncreaseRate: 0.4
-  _detectionDecreaseRate: 0.4
+  _maxDetectionIncreaseRate: 1.5
+  _minDetectionIncreaseRate: 1
+  _detectionDecreaseRate: 0.5
   _bodyTransform: {fileID: 7683808950541207556}
   _detectionBarObject: {fileID: 7633888110949462335}
 --- !u!1 &611122821684683796
