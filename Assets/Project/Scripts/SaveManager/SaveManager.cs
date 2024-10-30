@@ -59,7 +59,7 @@ namespace SaveManagerNamespace
             }
             catch (Exception error)
             {
-                Debug.LogWarning("ERROR: " + error);
+                Debug.LogWarning("EXPEDITIONS FILE NOT FOUND..CREATING FILE");
                 return null;
             }
             return null;
@@ -90,7 +90,6 @@ namespace SaveManagerNamespace
                 _dataDirPath = Application.persistentDataPath;
                 string fullPath = Path.Combine(_dataDirPath, "inventory", "playerInventory");
                 Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-
                 using (StreamReader streamReader = new StreamReader(fullPath))
                 {
                     string jsonFromFile = streamReader.ReadToEnd();
@@ -99,7 +98,7 @@ namespace SaveManagerNamespace
             }
             catch (Exception error)
             {
-                Debug.LogWarning("ERROR: " + error);
+                Debug.LogWarning("PLAYER INVENTORY FILE NOT FOUND..CREATING FILE");
                 return null;
             }
             return null;
@@ -139,7 +138,7 @@ namespace SaveManagerNamespace
             }
             catch (Exception error)
             {
-                Debug.LogWarning("ERROR: " + error);
+                Debug.LogWarning("STORE FILE NOT FOUND..CREATING FILE");
                 return null;
             }
             return null;
@@ -180,7 +179,7 @@ namespace SaveManagerNamespace
             }
             catch (Exception error)
             {
-                Debug.LogWarning("ERROR: " + error);
+                Debug.LogWarning("BASE INVENTORY FILE NOT FOUND..CREATING FILE");
                 return null;
             }
             return null;
