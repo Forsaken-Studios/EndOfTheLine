@@ -65,11 +65,19 @@ public class BasicEnemyActions : MonoBehaviour
         SetMovementSpeed(_usualMovementSpeed);
 
         _player = GameObject.FindWithTag("Player").transform;
-        StopChasing();
+
+        if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
+        {
+            StopChasing();
+        }
     }
 
     void Update()
     {
+        if(!(_agent.isActiveAndEnabled && _agent.isOnNavMesh)){
+            return;
+        }
+
         if (_isDead)
         {
             return;

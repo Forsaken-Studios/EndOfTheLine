@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -32,8 +31,8 @@ public class MapGenerator : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject corridorBase;
     [SerializeField] private GameObject stationBase;
-    [SerializeField] private GameObject player;
 
+    private GameObject player;
     [HideInInspector] public Vector3 startingGridPosition = Vector3.zero;
     private Cell[,] _grid; // [row, col]
     private System.Random _rnd;
@@ -73,13 +72,6 @@ public class MapGenerator : MonoBehaviour
             return;
         }
         Instance = this;
-
-        GameEventsMap.OnReBuildMap += BuildMap;
-    }
-
-    void OnDestroy()
-    {
-        GameEventsMap.OnReBuildMap -= BuildMap;
     }
     #endregion
 
@@ -92,10 +84,13 @@ public class MapGenerator : MonoBehaviour
         RoomLoader.Load();
 
         BuildMap();
+        NavmeshManager.Instance.GenerateNavmesh();
     }
 
     private void BuildMap()
     {
+        GameManager.Instance.sceneIsLoading = true;
+        //yield return null;
         // Borrado y creación de la estructura de carpetas en la jerarquia de los pasillos y habitaciones.
         GameObject mapObject = GameObject.Find("Map");
         if (mapObject == null)
@@ -242,18 +237,18 @@ public class MapGenerator : MonoBehaviour
         InstantiateCorridorPrefabs();
         InstantiateStartPrefabs();
         InstantiateEndPrefabs();
-        InstantiatePlayer();
+        InitializePlayer();
 
         // Construir navmesh.
-        NavmeshManager.Instance.GenerateNavmesh();
+        GameManager.Instance.sceneIsLoading = false;
     }
 
-    private void InstantiatePlayer()
+    private void InitializePlayer()
     {
         int startIndex = UnityEngine.Random.Range(0, startCells.Count);
         Vector3 posToSpawn = new Vector3(startCells[startIndex].Position3D.x + 4, startCells[startIndex].Position3D.y + 4, startCells[startIndex].Position3D.z);
-        playerInstance = Instantiate(player, posToSpawn, Quaternion.Euler(0, 0, 90));
-        playerInstance.name = "Player";
+        player = GameObject.Find("Player");
+        player.transform.position = posToSpawn;
     }
 
     private void InstantiateStartPrefabs()
