@@ -87,7 +87,7 @@ public class Room : MonoBehaviour
         }
 
         Transform aux = transform.Find($"AUX_Configuration_base");
-        if(aux != null )
+        if (aux != null)
         {
             aux.gameObject.SetActive(false);
         }
@@ -127,29 +127,21 @@ public class Room : MonoBehaviour
             return;
         }
 
-        allEnemiesList = allEnemiesList.OrderBy(x => UnityEngine.Random.value).ToList();
-        int definitiveAmountEnemies = 0;
-        if (_manualConfigurationEnemies == true)
-        {
-            definitiveAmountEnemies = UnityEngine.Random.Range(minValue, maxValue + 1);
-        }
-        else
-        {
-            definitiveAmountEnemies = UnityEngine.Random.Range(1, allEnemiesList.Count);
-        }
-        
+        //allEnemiesList = allEnemiesList.OrderBy(x => UnityEngine.Random.value).ToList();
+        //int definitiveAmountEnemies = 0;
+        //if (_manualConfigurationEnemies == true)
+        //{
+        //    definitiveAmountEnemies = UnityEngine.Random.Range(minValue, maxValue + 1);
+        //}
+        //else
+        //{
+        //    definitiveAmountEnemies = UnityEngine.Random.Range(1, allEnemiesList.Count);
+        //}
+
 
         foreach (GameObject enemy in allEnemiesList)
         {
-            if (definitiveAmountEnemies > 0)
-            {
-                enemy.SetActive(true);
-                definitiveAmountEnemies--;
-            }
-            else
-            {
-                enemy.SetActive(false);
-            }
+            enemy.SetActive(true);
         }
     }
 
