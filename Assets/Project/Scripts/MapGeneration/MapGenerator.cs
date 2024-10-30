@@ -83,14 +83,13 @@ public class MapGenerator : MonoBehaviour
 
         RoomLoader.Load();
 
-        BuildMap();
-        NavmeshManager.Instance.GenerateNavmesh();
+        StartCoroutine(BuildMap());
     }
 
-    private void BuildMap()
+    private IEnumerator BuildMap()
     {
         GameManager.Instance.sceneIsLoading = true;
-        //yield return null;
+        yield return null;
         // Borrado y creación de la estructura de carpetas en la jerarquia de los pasillos y habitaciones.
         GameObject mapObject = GameObject.Find("Map");
         if (mapObject == null)
@@ -240,7 +239,10 @@ public class MapGenerator : MonoBehaviour
         InitializePlayer();
 
         // Construir navmesh.
+        NavmeshManager.Instance.GenerateNavmesh();
+
         GameManager.Instance.sceneIsLoading = false;
+        
     }
 
     private void InitializePlayer()

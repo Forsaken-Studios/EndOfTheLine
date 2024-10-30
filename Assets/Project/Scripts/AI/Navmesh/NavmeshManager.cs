@@ -6,7 +6,7 @@ public class NavmeshManager : MonoBehaviour
 {
     public static NavmeshManager Instance;
 
-    private NavMeshSurface _NMS;
+    [SerializeField] private NavMeshSurface _NMS;
 
     void Awake()
     {
@@ -29,7 +29,12 @@ public class NavmeshManager : MonoBehaviour
     private IEnumerator GenerateNavmeshCoroutine()
     {
         yield return new WaitForEndOfFrame();
-        _NMS = GetComponent<NavMeshSurface>();
+        
+        if (_NMS == null)
+        {
+            Debug.LogError("NavMeshSurface reference is missing!");
+            yield break;
+        }
         _NMS.RemoveData();
         _NMS.BuildNavMesh();
     }

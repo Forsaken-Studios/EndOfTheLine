@@ -86,12 +86,21 @@ public class Room : MonoBehaviour
             }
         }
 
-        GameObject aux = transform.Find($"AUX_Configuration_base").gameObject;
-        aux.SetActive(false);
-        GameObject gas = transform.Find($"Gas").gameObject;
-        gas.SetActive(true);
-        GameObject gasHigh = transform.Find($"GasHigh").gameObject;
-        gasHigh.SetActive(true);
+        Transform aux = transform.Find($"AUX_Configuration_base");
+        if(aux != null )
+        {
+            aux.gameObject.SetActive(false);
+        }
+        Transform gas = transform.Find($"Gas");
+        if (gas != null)
+        {
+            gas.gameObject.SetActive(true);
+        }
+        Transform gasHigh = transform.Find($"GasHigh");
+        if (gasHigh != null)
+        {
+            gasHigh.gameObject.SetActive(true);
+        }
 
         // Colocación enemigos.
         PlaceRandomEnemies("Enemies", _minAountEnemiesToSpawn, _maxAountEnemiesToSpawn);

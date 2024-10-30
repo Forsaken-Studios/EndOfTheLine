@@ -7218,7 +7218,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3485546761825989776}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ObstacleVariations
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10770,7 +10770,7 @@ GameObject:
   - component: {fileID: 6790442656338413607}
   - component: {fileID: 3273393545202279563}
   - component: {fileID: 7924042332364321284}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Walls
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -13503,7 +13503,8 @@ GameObject:
   - component: {fileID: 2722514086585570043}
   - component: {fileID: 5337078339229494633}
   - component: {fileID: 1376608919361754070}
-  m_Layer: 0
+  - component: {fileID: 4947789977006974247}
+  m_Layer: 3
   m_Name: Configuration1
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
@@ -13728,7 +13729,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 8
-      m_TileSpriteIndex: 8
+      m_TileSpriteIndex: 10
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -13758,7 +13759,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 3
-      m_TileSpriteIndex: 3
+      m_TileSpriteIndex: 8
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -13778,7 +13779,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 0
-      m_TileSpriteIndex: 0
+      m_TileSpriteIndex: 3
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -14353,14 +14354,14 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: d6517dfb1c5df9646bc30d3e8ecd3887, type: 2}
   m_TileSpriteArray:
-  - m_RefCount: 1
-    m_Data: {fileID: 604365169, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: 1395872072, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
   - m_RefCount: 3
     m_Data: {fileID: 1549838831, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
   - m_RefCount: 1
-    m_Data: {fileID: 1319102301, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
+    m_Data: {fileID: 604365169, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
   - m_RefCount: 3
     m_Data: {fileID: 2012958560, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
   - m_RefCount: 1
@@ -14370,11 +14371,11 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 1302593593, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
   - m_RefCount: 1
-    m_Data: {fileID: 599172031, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
+    m_Data: {fileID: 1319102301, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: 1332183840, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 599172031, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
   - m_RefCount: 3
     m_Data: {fileID: -193996894, guid: 59eea982feb904240a5fdf989c964c94, type: 3}
   - m_RefCount: 1
@@ -14580,6 +14581,22 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &4947789977006974247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3100369979117754118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &3350245338152412264
 GameObject:
   m_ObjectHideFlags: 0
@@ -15077,6 +15094,7 @@ GameObject:
   - component: {fileID: 4698433294199579161}
   - component: {fileID: 2740838371189245312}
   - component: {fileID: 9055546633806664873}
+  - component: {fileID: 4546064516323285967}
   m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
@@ -18530,6 +18548,22 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &4546064516323285967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4328771084870094031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &4333910796942566726
 GameObject:
   m_ObjectHideFlags: 0
@@ -18704,7 +18738,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 0
-      m_TileSpriteIndex: 5
+      m_TileSpriteIndex: 7
       m_TileMatrixIndex: 3
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -19035,12 +19069,12 @@ Tilemap:
     m_Data: {fileID: 1579472358, guid: 7af9887e34ff6c247b02e75b05fd1dfe, type: 3}
   - m_RefCount: 6
     m_Data: {fileID: -448443966, guid: 7af9887e34ff6c247b02e75b05fd1dfe, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: 1438629080, guid: 7af9887e34ff6c247b02e75b05fd1dfe, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
   m_TileMatrixArray:
   - m_RefCount: 15
     m_Data:
@@ -29889,7 +29923,7 @@ GameObject:
   - component: {fileID: 1579369196992653912}
   - component: {fileID: 4214424357376792378}
   - component: {fileID: 8040992911590421232}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Walls
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -39663,6 +39697,7 @@ GameObject:
   - component: {fileID: 3346540212252652480}
   - component: {fileID: 39310265993426497}
   - component: {fileID: 3215999149710696279}
+  - component: {fileID: 2939715060708318506}
   m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
@@ -43116,6 +43151,22 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &2939715060708318506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8064209991663117815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &8318788262978534931
 GameObject:
   m_ObjectHideFlags: 0
@@ -43127,6 +43178,7 @@ GameObject:
   - component: {fileID: 914250952625698329}
   - component: {fileID: 2552695565789637583}
   - component: {fileID: 3329328645190630626}
+  - component: {fileID: 757006103790641190}
   m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
@@ -46560,6 +46612,22 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &757006103790641190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8318788262978534931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &8514634968125486996
 GameObject:
   m_ObjectHideFlags: 0
@@ -46571,6 +46639,7 @@ GameObject:
   - component: {fileID: 6684318617266143210}
   - component: {fileID: 3268136497972888444}
   - component: {fileID: 1796726588178165591}
+  - component: {fileID: 7840190204414735942}
   m_Layer: 0
   m_Name: Floor
   m_TagString: Untagged
@@ -50004,6 +50073,22 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &7840190204414735942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8514634968125486996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 0
+  m_Area: 0
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &8605900418357160571
 GameObject:
   m_ObjectHideFlags: 0
@@ -50017,7 +50102,7 @@ GameObject:
   - component: {fileID: 5888841982310357754}
   - component: {fileID: 4277487643445209958}
   - component: {fileID: 4664097542054416021}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Walls
   m_TagString: Wall
   m_Icon: {fileID: 0}
@@ -52751,7 +52836,7 @@ GameObject:
   - component: {fileID: 3725399663543047269}
   - component: {fileID: 7861204625819813309}
   - component: {fileID: 1485571149206021139}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Walls
   m_TagString: Wall
   m_Icon: {fileID: 0}
