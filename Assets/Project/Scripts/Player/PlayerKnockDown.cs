@@ -43,7 +43,7 @@ public class PlayerKnockDown : MonoBehaviour
 
         if (_isEnemyKillable)
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.C))
             {
                 KnockDownEnemy();
                 Destroy(_HotKeyInstance);
