@@ -45,6 +45,8 @@ namespace Player
                 }else if (_currentWeight >= maxLimitWeight)
                 {
                     playerCanMove = false;
+                    isOverweight = true;
+                    _animator.SetBool("isWalking", false);
                     if (OnWeightChange != null)
                         OnWeightChange(2);
                 }
@@ -135,7 +137,6 @@ namespace Player
             { 
                 return;
             }
-
             if (GameManager.Instance.GameState == GameState.OnGame)
             {
                 CalculateNoiseRadius();

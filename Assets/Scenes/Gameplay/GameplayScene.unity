@@ -2639,6 +2639,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1476763205}
     - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: overWeight
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: maxLimitWeight
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: playerSpeedBar
       value: 
       objectReference: {fileID: 1476763203}
@@ -3212,7 +3220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalCratesAmount: 5
-  totalEmptyCratesPercentage: 0.1
+  totalEmptyCratesPercentage: 0
   minNumberOfItemsToSpawn: 1
   maxNumberOfItemsToSpawn: 4
 --- !u!114 &1369419882 stripped
