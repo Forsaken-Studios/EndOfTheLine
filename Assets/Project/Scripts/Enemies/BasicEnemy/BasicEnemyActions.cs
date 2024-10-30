@@ -38,7 +38,7 @@ public class BasicEnemyActions : MonoBehaviour
     private NavMeshAgent _agent;
     private Vector3 _initialPositionSelf;
     private bool _isDead = false;
-    private bool _isNearWallAbility = false;
+    public bool IsNearWallAbility = false;
 
     public bool isAtPlayerLastSeenPosition { get; private set; }
     public bool isAtInitialPosition { get; private set; }
@@ -83,9 +83,8 @@ public class BasicEnemyActions : MonoBehaviour
             return;
         }
 
-        if (_isNearWallAbility)
+        if (IsNearWallAbility)
         {
-            RotateInPlace();
             return;
         }
 
@@ -101,8 +100,10 @@ public class BasicEnemyActions : MonoBehaviour
         {
             transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
         }
-
-        WalkAnimation();
+        if (!IsNearWallAbility)
+        {
+            WalkAnimation();
+        }
     }
 
     private void InitializePatrolPoints()
@@ -176,6 +177,11 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void ChasePlayerLastSeenPosition()
     {
+        if (IsNearWallAbility)
+        {
+            StopChasing();
+            return;
+        }
         SetMovementSpeed(_chasingMovementSpeed);
         StopRotating();
         _agent.isStopped = false;
@@ -184,6 +190,11 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void ChaseInitialPosition()
     {
+        if (IsNearWallAbility)
+        {
+            StopChasing();
+            return;
+        }
         SetMovementSpeed(_usualMovementSpeed);
         StopRotating();
         _agent.isStopped = false;
@@ -209,6 +220,11 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void Patrol()
     {
+        if (IsNearWallAbility)
+        {
+            StopChasing();
+            return;
+        }
         if (_patrolPoints.Count == 0)
         {
             RotateInPlace();
@@ -350,22 +366,5 @@ public class BasicEnemyActions : MonoBehaviour
 
         // Activación de la animación.
         _animator.SetBool("isDead", true);
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("WallAbility"))
-        {
-            _isNearWallAbility = true;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("WallAbility"))
-        {
-            Debug.Log("sss2");
-            _isNearWallAbility = false;
-        }
     }
 }
