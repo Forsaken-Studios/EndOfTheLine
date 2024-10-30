@@ -4,38 +4,35 @@ namespace DebugStuff
 {
     public class ConsoleToGUI : MonoBehaviour
     {
-        //#if !UNITY_EDITOR
-        static string myLog = "";
-        private string output;
-        private string stack;
-    
-        void OnEnable()
-        {
-            Application.logMessageReceived += Log;
-        }
-    
-        void OnDisable()
-        {
-            Application.logMessageReceived -= Log;
-        }
-    
+        string myLog = "*begin log";
+        string filename = "debugs";
+        bool doShow = true;
+        int kChars = 700;
+        void OnEnable() { Application.logMessageReceived += Log; }
+        void OnDisable() { Application.logMessageReceived -= Log; }
+        void Update() { if (Input.GetKeyDown(KeyCode.P)) { doShow = !doShow; } }
         public void Log(string logString, string stackTrace, LogType type)
         {
-            output = logString;
-            stack = stackTrace;
-            myLog = output + "\n" + myLog;
-            if (myLog.Length > 5000)
+            // for onscreen...
+            myLog = myLog + "" + logString;
+            if (myLog.Length > kChars) { myLog = myLog.Substring(myLog.Length - kChars); }
+            // for the file ...
+            if (filename == "")
             {
-                myLog = myLog.Substring(0, 4000);
+                string d = System.Environment.GetFolderPath(
+                    System.Environment.SpecialFolder.Desktop) + "/YOUR_LOGS";
+                System.IO.Directory.CreateDirectory(d);
+                string r = Random.Range(1000, 9999).ToString();
+                filename = d + "/log-" + r + ".txt";
             }
-        }
-        void OnGUI()
+            try { System.IO.File.AppendAllText(filename, logString + ""); }
+            catch { }
+        }void OnGUI()
         {
-            if (!Application.isEditor) //Do not display in editor ( or you can use the UNITY_EDITOR macro to also disable the rest)
-            {
-                myLog = GUI.TextArea(new Rect(10, 10, Screen.width - 1200, Screen.height - 700), myLog);
-            }
+            if (!doShow) { return; }
+            GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity,
+                new Vector3(Screen.width / 1200.0f, Screen.height / 800.0f, 1.0f));
+            GUI.TextArea(new Rect(10, 10, 540, 370), myLog);
         }
-        //#endif
     }
 }
