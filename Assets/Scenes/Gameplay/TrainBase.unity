@@ -530,10 +530,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b1a29b599bb09e499ac93cd473628ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerIsDead: 0
   CanvasMenus: {fileID: 1065604806}
   gridMain: {fileID: 0}
   loadingScreen: {fileID: 0}
-  LoadingBarFill: {fileID: 0}
   sceneIsLoading: 0
   MAX_AMOUNT_PER_SLOT_BASE: 4
   MAX_AMOUNT_PER_SLOT_GAME: 3
@@ -4050,6 +4050,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3966339196682450435, guid: d3d422e3495b5ab4fb3d92040a680d66, type: 3}
+      propertyPath: m_text
+      value: MECHANIC WAGON
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027599771346056943, guid: d3d422e3495b5ab4fb3d92040a680d66, type: 3}
+      propertyPath: m_text
+      value: EXPEDITION
+      objectReference: {fileID: 0}
     - target: {fileID: 5896512515510911944, guid: d3d422e3495b5ab4fb3d92040a680d66, type: 3}
       propertyPath: m_Name
       value: Canvas-General
@@ -4066,6 +4074,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1782259035}
+    - target: {fileID: 8897642480320200726, guid: d3d422e3495b5ab4fb3d92040a680d66, type: 3}
+      propertyPath: m_text
+      value: MISSION SELECTOR
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -165,6 +165,7 @@ public class MarketSystem : MonoBehaviour
                         out int remainingItemsWithoutSpace))
                 {
                     //TODO: Spend Money
+                    TrainBaseInventory.Instance.AddItemToList(itemSelected.GetItemSO(), 1);
                     TrainManager.Instance.resourceAirFilter -= itemSelected.GetItemSO().itemPriceAtMarket;
                     RemoveItemFromList(itemSelected.GetItemSO());
                     itemSelected.ClearMarketSlot();

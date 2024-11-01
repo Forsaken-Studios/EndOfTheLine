@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Inventory;
@@ -126,6 +127,13 @@ public class ExpeditionDetailsPreview : MonoBehaviour
         listOfRewards = new List<GameObject>();
         listOfBonusesItems = new List<GameObject>();
         listOfRequirementsSO = new List<RequirementSO>();
+    }
+
+    private void OnEnable()
+    {
+        Debug.Log("KW");
+       // if (listOfRequirements.Count == 0)
+        SetUpRequirements();
     }
 
     private void InitializeButtons()

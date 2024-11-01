@@ -13,7 +13,7 @@ public class TrainBaseInventory : MonoBehaviour
     public static TrainBaseInventory Instance;
 
     private int numberOfTools = -1;
-    private Dictionary<Item, int> itemsInBase;
+    private Dictionary<int, int> itemsInBase;
     [SerializeField] private List<ItemSlot> itemsSlotsList;
     [SerializeField] private GameObject splittingView;
     private void Awake()
@@ -30,7 +30,7 @@ public class TrainBaseInventory : MonoBehaviour
 
     private void Start()
     {
-        itemsInBase = new Dictionary<Item, int>();
+        itemsInBase = new Dictionary<int, int>();
 
     }
 
@@ -256,7 +256,8 @@ public class TrainBaseInventory : MonoBehaviour
     public bool GetIfItemIsInInventory(Item item, int amount)
     {
         int amountAux = -1;
-        itemsInBase.TryGetValue(item, out amountAux);
+        int itemID = item.itemID;
+        itemsInBase.TryGetValue(itemID, out amountAux);
         return amountAux >= amount;
     }
 
@@ -268,25 +269,36 @@ public class TrainBaseInventory : MonoBehaviour
     
     public void AddItemToList(Item item, int amount)
     {
-        if (itemsInBase.ContainsKey(item))
+        int itemID = item.itemID;
+        if (itemsInBase.ContainsKey(itemID))
         {
-            itemsInBase[item] += amount;
+            itemsInBase[itemID] += amount;
         }
         else
         {
-            itemsInBase.Add(item, amount);
+            itemsInBase.Add(itemID, amount);
         }
+
+        foreach (var itemCheck in itemsInBase)
+        {
+            Debug.Log("KW CHECK: " + itemCheck.Key + " " + itemCheck.Value);
+        }
+
+        int x = -1;
+        itemsInBase.TryGetValue(itemID, out x);
+        Debug.Log("KW ADD: " + item.itemName + " " + x);
     }   
     
     public void DeleteItemFromList(Item item, int amount)
     {
-        if (itemsInBase[item] > amount)
+        int itemID = item.itemID;
+        if (itemsInBase[itemID] > amount)
         {
-            itemsInBase[item] -= amount; 
+            itemsInBase[itemID] -= amount; 
         }
         else
         {
-            itemsInBase.Remove(item); 
+            itemsInBase.Remove(itemID); 
         }
     }
     

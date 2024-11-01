@@ -168,6 +168,7 @@ public class GameManager : MonoBehaviour
             playerIsDead = true;
             PlayerAim playerAim = PlayerController.Instance.gameObject.GetComponent<PlayerAim>();
             PlayerController.Instance.GetComponentInChildren<CircleCollider2D>().enabled = false;
+            PlayerController.Instance.GetComponentInChildren<Rigidbody2D>().Sleep();
             playerAim.SetIfCanRotateAim(false);
             playerAim.RemoveTriangle();
             PlayerController.Instance.PlayDeathAnimation();
