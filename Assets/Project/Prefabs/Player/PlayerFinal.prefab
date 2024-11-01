@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 1814533395466829187}
   - component: {fileID: 3219711383272395771}
   - component: {fileID: 5970675836886858743}
+  - component: {fileID: 1116571812829633459}
   - component: {fileID: 9178930243344657456}
   - component: {fileID: 3322453539983541843}
   m_Layer: 6
@@ -99,11 +100,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b602001b94399d43b9296b73b52836c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 5
-  runSpeed: 10
+  walkSpeed: 3.25
+  runSpeed: 6.5
   speedModifier: 0.5
-  maxLimitWeight: 2
-  overWeight: 1
+  moveSpeed: 0
+  maxLimitWeight: 20
+  overWeight: 16
   moveReducerByWeight: 0.6
   isOverweight: 0
   dashSpeed: 18
@@ -129,10 +131,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusBar: {fileID: 0}
   energy: 0
-  canRecoverEnergy: 0
-  increaseEnergySpeed: 0.25
+  canRecoverEnergy: 1
+  increaseEnergySpeed: 0.5
   TimeCooldownBetweenRecoveries: 0
-  valueEnergyDecrease: 5
+  valueEnergyDecrease: 15
 --- !u!114 &3878746648933132990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,6 +214,26 @@ MonoBehaviour:
   abilityUI: {fileID: 0}
   canThrowAbility: 1
   key: 101
+--- !u!114 &1116571812829633459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3794863736478708675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 628122a9a8a1e8a4c9a43687c827716a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _detectionWidth: 1
+  _detectionHeight: 1
+  _detectionDistance: 0.5
+  _detectionLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  _HotKeyPrefab: {fileID: 4138725030148504204, guid: 1949f09861352304aa8793af13a7288f, type: 3}
+  _isDrawingGizmos: 1
 --- !u!50 &9178930243344657456
 Rigidbody2D:
   serializedVersion: 4
@@ -320,7 +342,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldNoiseIsActivated: 0
-  player: {fileID: 3794863736478708675}
 --- !u!58 &8129459125278943864
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -382,8 +403,8 @@ Transform:
   m_GameObject: {fileID: 6164848175803919032}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.45, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 1}
+  m_LocalPosition: {x: 0.577, y: 0, z: 0}
+  m_LocalScale: {x: 0.07185923, y: 0.07185923, z: 0.28743693}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5155496627935072445}
@@ -429,7 +450,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ec0373ae11ea99847953202e4c5f9a53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -451,6 +472,7 @@ GameObject:
   - component: {fileID: 5735660906505135925}
   - component: {fileID: 1995887710456757510}
   - component: {fileID: 5693092614226728843}
+  - component: {fileID: 1278816071600817155}
   m_Layer: 0
   m_Name: PlayerBody
   m_TagString: Untagged
@@ -547,3 +569,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1278816071600817155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8847517223274739940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

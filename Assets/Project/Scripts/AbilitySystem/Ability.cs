@@ -8,6 +8,7 @@ public class Ability : ScriptableObject
 {
 
     public new string name;
+    public bool enabled;
     [TextAreaAttribute(10, 10)]
     public new string description;
     public Sprite abilityIcon;

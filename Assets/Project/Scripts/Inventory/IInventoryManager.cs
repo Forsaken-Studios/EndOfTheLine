@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Inventory;
 using LootSystem;
+using Player;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Utils.CustomLogs;
 
@@ -48,19 +50,28 @@ public abstract class IInventoryManager : MonoBehaviour
             SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseInventory, null, true);
             TryDestroyContextMenu();
         }
-              
+
+        if (SceneManager.GetActiveScene().name != "TrainBase" && inventoryHUD.activeSelf)
+            PlayerController.Instance.PlayCloseInventoryAnimation();
+        else if(SceneManager.GetActiveScene().name != "TrainBase")
+            PlayerController.Instance.PlayOpenInventoryAnimation();
+        
         inventoryHUD.SetActive(!inventoryHUD.activeSelf);
         GameManager.Instance.GameState = inventoryHUD.activeSelf ? GameState.OnInventory: GameState.OnGame;
     }
 
     public void ActivateInventory()
     {
+        if (SceneManager.GetActiveScene().name != "TrainBase")
+            PlayerController.Instance.PlayOpenInventoryAnimation();
         GameManager.Instance.GameState = GameState.OnInventory;
         inventoryHUD.SetActive(true);
     }
 
     public void DesactivateInventory()
     {
+        if (SceneManager.GetActiveScene().name != "TrainBase")
+            PlayerController.Instance.PlayCloseInventoryAnimation();
         GameManager.Instance.GameState = GameState.OnGame;
         inventoryHUD.SetActive(false);
         TryDestroyContextMenu();
@@ -71,7 +82,7 @@ public abstract class IInventoryManager : MonoBehaviour
         //Lo pongo para que haya diferentes mejoras
         if (PlayerPrefs.GetInt("UpgradeUnlocked_1") == 1)
         {
-            expandedInventory.transform.parent = inventoryHUD.transform;
+            expandedInventory.transform.SetParent(inventoryHUD.transform);
             for (int i = 0; i < 3; i++)
             {
                 itemSlotList.Add(expanded1ItemSlotsList[i]);
@@ -84,7 +95,7 @@ public abstract class IInventoryManager : MonoBehaviour
         }
         if (PlayerPrefs.GetInt("UpgradeUnlocked_3") == 1)
         {
-            expandedInventory2.transform.parent = inventoryHUD.transform;
+            expandedInventory2.transform.SetParent(inventoryHUD.transform);
             for (int i = 3; i < 6; i++)
             {
                 itemSlotList.Add(expanded2ItemSlotsList[i]);
@@ -97,7 +108,7 @@ public abstract class IInventoryManager : MonoBehaviour
         }
         if (PlayerPrefs.GetInt("UpgradeUnlocked_4") == 1)
         {
-            expandedInventory3.transform.parent = inventoryHUD.transform;
+            expandedInventory3.transform.SetParent(inventoryHUD.transform);
             for (int i = 6; i <= 10; i++)
             {
                 itemSlotList.Add(expanded2ItemSlotsList[i]);

@@ -13,17 +13,21 @@ MonoBehaviour:
   m_Name: Wall Ability
   m_EditorClassIdentifier: 
   name: Wall
-  description: pos un muro, que mas quieres
+  enabled: 1
+  description: Deploys a reinforced wall that extends between two nearby walls, creating
+    a protective barrier in the selected area. The wall restricts passage, providing
+    strategic cover and allowing to prepare behind it. The wall remains active for
+    a short time before disintegrating.
   abilityIcon: {fileID: 21300000, guid: dbf5e8e8227f4ac449a32cd497ec6774, type: 3}
-  abilityID: 3
+  abilityID: 7
   cooldownTime: 3
   activeTime: 3
   overheatCost: 35
   needToBeReactivated: 1
-  airFilterNeededToUnlock: 1
-  material1Item: {fileID: 0}
+  airFilterNeededToUnlock: 0
+  material1Item: {fileID: 11400000, guid: 7da282e1236b2524091e97c025d1cfc7, type: 2}
   material1NeededToUnlock: 0
-  material2Item: {fileID: 0}
+  material2Item: {fileID: 11400000, guid: c002f4e39df0e7141a4f3b4bb99ba6aa, type: 2}
   material2NeededToUnlock: 0
   wallCanvasPrefab: {fileID: 5752502180560749708, guid: b9d9fddaa858719469d27be1c98ad5d4, type: 3}
   wallPlacerPrefab: {fileID: 400860397893125375, guid: 297efd33c0951ba4c855730cf6ad1975, type: 3}

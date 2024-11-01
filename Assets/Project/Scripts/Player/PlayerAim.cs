@@ -10,10 +10,11 @@ namespace Player
         //Not sure if it is better to use serializefield or transform.find
         private Transform aimTransform;
 
+        private bool canRotateAim = true;
 
         private void Update()
         {
-            if (GameManager.Instance.GameState == GameState.OnGame)
+            if (GameManager.Instance.GameState == GameState.OnGame && canRotateAim)
             {
                 HandleAim();
             }
@@ -36,6 +37,17 @@ namespace Player
             Vector3 vec = GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
             vec.z = 0f;
             return vec;
+        }
+
+        public void SetIfCanRotateAim(bool canRotate)
+        {
+            canRotateAim = canRotate;
+        }
+
+        public void RemoveTriangle()
+        {
+            Transform triangle = PlayerController.Instance.transform.Find("PlayerAim/Triangle").transform;
+            triangle.gameObject.SetActive(false);
         }
 
         private static Vector3 GetMouseWorldPositionWithZ(Vector3 screenPosition, Camera worldCamera)

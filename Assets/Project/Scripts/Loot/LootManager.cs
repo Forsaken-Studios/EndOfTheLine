@@ -14,8 +14,8 @@ namespace LootSystem
         [SerializeField] private float totalEmptyCratesPercentage = 0.3f;
         [SerializeField] private int minNumberOfItemsToSpawn = 1; 
         [SerializeField] private int maxNumberOfItemsToSpawn = 4; //6 = MAX SLOT
-    
-    
+
+        private bool lootInitialized = false;
         public List<LooteableObject> cratesList { get; private set; }
 
 
@@ -35,7 +35,17 @@ namespace LootSystem
 
         private void Start()
         {
+            
+        }
+
+        private void Update()
+        {
+            if (GameManager.Instance.sceneIsLoading || lootInitialized)
+            {
+                return;
+            }
             PrepareLoot();
+                
         }
 
         public int GetRandomAmount()
@@ -45,8 +55,11 @@ namespace LootSystem
     
         private void PrepareLoot()
         {
+            totalCratesAmount = cratesList.Count;
             int cratesToFill = (int)((totalCratesAmount) - (totalCratesAmount * totalEmptyCratesPercentage));
             //First we check if we need to spawn an specific item
+            //Debug.Log("COUNT KW: " + totalCratesAmount);
+            //Debug.Log("COUNT KW2: " + cratesToFill);
             foreach (LooteableObject crate in cratesList)
             {
                 if (crate.CheckIfNeedToSpawnXObject)
@@ -66,6 +79,7 @@ namespace LootSystem
                     }
                 }
             }
+            lootInitialized = true;
         }
 
 

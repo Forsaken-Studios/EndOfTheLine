@@ -105,7 +105,7 @@ namespace Resources.Scripts.Menu
 
         private void PlayGame()
         {
-            SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
+            SceneManager.LoadSceneAsync(1);
         }
 
         private void QuitGame()

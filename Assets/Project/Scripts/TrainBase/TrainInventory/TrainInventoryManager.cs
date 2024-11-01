@@ -112,31 +112,38 @@ public class TrainInventoryManager : IInventoryManager
     public void LoadPlayerInventory()
     {
         ItemsDiccionarySave data = SaveManager.Instance.TryLoadPlayerInventoryInBaseJson();
-        Dictionary<Item, int> inventory = new Dictionary<Item, int>();
-        inventory = GetItemsFromID(data.GetInventory());
-        PlayerInventory.Instance.SetInventoryDictionary(inventory);
-        if (inventory.Count != 0)
+        if (data != null)
         {
-            LoadItemsInPlayerInventory(inventory);
+            Dictionary<Item, int> inventory = new Dictionary<Item, int>();
+            inventory = GetItemsFromID(data.GetInventory());
+            PlayerInventory.Instance.SetInventoryDictionary(inventory);
+            if (inventory.Count != 0)
+            {
+                LoadItemsInPlayerInventory(inventory);
+            }     
         }
     }
 
     private void LoadBaseInventory()
     {
         DataBaseInventory dataBase = SaveManager.Instance.TryLoadInventoryInBaseJson();
-        Dictionary<int, ItemInBaseDataSave> baseInventory = new Dictionary<int, ItemInBaseDataSave>();
-        baseInventory = dataBase.GetInventory();
-        List<Item> itemsList = GetItemList();
-        foreach (var itemPair in baseInventory)
+        if (dataBase != null)
         {
-            if (itemPair.Value.itemID != 0)
+            Dictionary<int, ItemInBaseDataSave> baseInventory = new Dictionary<int, ItemInBaseDataSave>();
+            baseInventory = dataBase.GetInventory();
+            List<Item> itemsList = GetItemList();
+            foreach (var itemPair in baseInventory)
             {
-                Item item = GetItemFromID(itemPair.Value.itemID, itemsList);
-                TrainBaseInventory.Instance.AddItemInXSlot(itemPair.Key, item,
-                    itemPair.Value.itemSlotAmount);
-                TrainBaseInventory.Instance.AddItemToList(item, itemPair.Value.itemSlotAmount);
+                if (itemPair.Value.itemID != 0)
+                {
+                    Item item = GetItemFromID(itemPair.Value.itemID, itemsList);
+                    TrainBaseInventory.Instance.AddItemInXSlot(itemPair.Key, item,
+                        itemPair.Value.itemSlotAmount);
+                    TrainBaseInventory.Instance.AddItemToList(item, itemPair.Value.itemSlotAmount);
+                }
             }
         }
+
     }
 
 

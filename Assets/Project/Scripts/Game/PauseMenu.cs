@@ -62,7 +62,7 @@ public class PauseMenu : MonoBehaviour
     private void ReturnToTrain()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
+        SceneManager.LoadSceneAsync(1);
     }
 
     private bool AbilitiesNotActivated()
@@ -72,32 +72,35 @@ public class PauseMenu : MonoBehaviour
     
     private void Update()
      {
-         if (Input.GetKeyDown(KeyCode.Escape))
+         if (!GameManager.Instance.sceneIsLoading)
          {
-             if (InventoryManager.Instance.GetInspectViewList().Count == 0 
-                 && !LoreManager.Instance.GetIfPlayerIsReadingLore())
+             if (Input.GetKeyDown(KeyCode.Escape))
              {
-                 if (AbilitiesNotActivated())
+                 if (InventoryManager.Instance.GetInspectViewList().Count == 0 
+                     && !LoreManager.Instance.GetIfPlayerIsReadingLore())
                  {
-                     PauseGame();
+                     if (AbilitiesNotActivated())
+                     {
+                         PauseGame();
+                     }
                  }
-             }
-             else
-             {
-                 if (LoreManager.Instance.GetIfPlayerIsReadingLore())
+                 else
                  {
-                     GameManager.Instance.GameState = GameState.OnGame;
-                     LoreManager.Instance.SetIfPlayerIsReadingLore(false);
-                     LoreManager.Instance.DestroyCurrentExpandedView(); 
-                     LoreManager.Instance.SetCurrentLoreView(null);
-                 }else
-                 {
-                     List<GameObject> inspectList = InventoryManager.Instance.GetInspectViewList();
-                     GameObject mostRecentInspectView = inspectList[inspectList.Count - 1];
-                     Destroy(mostRecentInspectView);
-                     InventoryManager.Instance.RemoveInspectView(mostRecentInspectView);
+                     if (LoreManager.Instance.GetIfPlayerIsReadingLore())
+                     {
+                         GameManager.Instance.GameState = GameState.OnGame;
+                         LoreManager.Instance.SetIfPlayerIsReadingLore(false);
+                         LoreManager.Instance.DestroyCurrentExpandedView(); 
+                         LoreManager.Instance.SetCurrentLoreView(null);
+                     }else
+                     {
+                         List<GameObject> inspectList = InventoryManager.Instance.GetInspectViewList();
+                         GameObject mostRecentInspectView = inspectList[inspectList.Count - 1];
+                         Destroy(mostRecentInspectView);
+                         InventoryManager.Instance.RemoveInspectView(mostRecentInspectView);
+                     }
                  }
-             }
+             } 
          }
      }
      

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5986133065146298164}
   m_Layer: 0
   m_Name: WallPlacers
-  m_TagString: Untagged
+  m_TagString: WallAbility
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -327,6 +327,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: WallAbility
       objectReference: {fileID: 0}
+    - target: {fileID: 1907446414583425664, guid: bebac8a97f1ecfd4bba95d1bb68987fc, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 6231036948723705115, guid: bebac8a97f1ecfd4bba95d1bb68987fc, type: 3}
+      propertyPath: m_TagString
+      value: WallAbility
+      objectReference: {fileID: 0}
     - target: {fileID: 8619965584412988551, guid: bebac8a97f1ecfd4bba95d1bb68987fc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -367,7 +375,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6598296195756136070, guid: bebac8a97f1ecfd4bba95d1bb68987fc, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

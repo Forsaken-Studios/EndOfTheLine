@@ -15,7 +15,7 @@ public class ChaseInitialPositionAction : Node
     public override NodeState Evaluate()
     {
         _enemyActions.ChaseInitialPosition();
-        Debug.Log("Chase initial position.");
+        Debug.Log("-IA-: Chase initial position action.");
         return NodeState.SUCCESS;
     }
 }

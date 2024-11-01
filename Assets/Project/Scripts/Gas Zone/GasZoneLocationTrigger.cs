@@ -20,7 +20,8 @@ public class GasZoneLocationTrigger : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Destroy(audioSource.gameObject);
+            if(audioSource != null)
+                Destroy(audioSource.gameObject);
             other.gameObject.GetComponent<PlayerManager>().PlayerExitedGasZone();
         }
     }

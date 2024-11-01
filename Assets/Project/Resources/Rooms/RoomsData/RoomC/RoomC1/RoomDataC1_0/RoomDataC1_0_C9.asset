@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a4229a659fd7044299b4242c50c8ca9, type: 3}
+  m_Name: RoomDataC1_0_C9
+  m_EditorClassIdentifier: 
+  roomSize: {x: 1, y: 3}
+  _shape:
+    Data: 010101
+    Cols: 1
+    Rows: 3
+  _entrances:
+    Data: 010001
+    Cols: 1
+    Rows: 3
+  _serializableRoomEntrances:
+  - position: {x: 0, y: 2}
+    directionFlags: 3
+  - position: {x: 0, y: 0}
+    directionFlags: 3

@@ -183,9 +183,6 @@ namespace LootSystem
                     {
                         PrepareLoot(remainingItems); 
                     }
-                    else
-                    {
-                    } 
                 }
             
             }
@@ -240,6 +237,7 @@ namespace LootSystem
                         else
                         {
                             itemsInLootableObject.Add(item.Key, randomQuantity);
+                            //Debug.Log("KW3: ADDED: " + item.Key + " " + this.gameObject.transform.position) ;
                         }
                         intervalAcount = GenerateNewIntervalCount(item.Key, remainingItems);
                         break;

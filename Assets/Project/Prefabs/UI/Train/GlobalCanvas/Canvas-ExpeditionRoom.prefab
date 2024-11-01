@@ -1479,6 +1479,7 @@ GameObject:
   - component: {fileID: 4536840925494808304}
   - component: {fileID: 6611884859538594894}
   - component: {fileID: 1309042587915341559}
+  - component: {fileID: 5003559604721165882}
   m_Layer: 5
   m_Name: Start Expedition
   m_TagString: Untagged
@@ -1587,7 +1588,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6611884859538594894}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5003559604721165882}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &5003559604721165882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4706564083516950011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5103050843476159474
 GameObject:
   m_ObjectHideFlags: 0
@@ -2085,6 +2110,7 @@ GameObject:
   - component: {fileID: 8240114828182120111}
   - component: {fileID: 5783917447091088016}
   - component: {fileID: 2906206228833762449}
+  - component: {fileID: 3093009812827283040}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -2193,7 +2219,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5783917447091088016}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3093009812827283040}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &3093009812827283040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6055712045617297204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6100252504904268661
 GameObject:
   m_ObjectHideFlags: 0

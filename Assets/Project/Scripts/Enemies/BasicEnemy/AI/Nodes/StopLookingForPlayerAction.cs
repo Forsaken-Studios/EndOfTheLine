@@ -16,7 +16,7 @@ public class StopLookingForPlayerAction : Node
     {
         _enemyActions.StopRotating();
         _enemyActions.StopChasing();
-        Debug.Log("Stop look for player.");
+        Debug.Log("-IA-: Stop look for player action");
         return NodeState.SUCCESS;
     }
 }

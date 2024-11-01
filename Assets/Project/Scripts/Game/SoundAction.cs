@@ -9,6 +9,12 @@ public enum SoundAction
     GasZone_Geiger, 
     Movement_Dash,
     WorldNoise_Start,
+    WorldNoise_Start2,
     WorldNoise_End,
+    Steps,
+    Click,
+    Enemy_Hit,
+    Player_Hit,
+    UpgradeSound
 }
 

@@ -6,7 +6,9 @@ using UnityEngine.UIElements;
 
 public static class EnemyEvents
 {
-    public static Action<Vector3, Vector3> OnSeenPlayer; // First self position, second player position.
+    public static Action<GameObject, Vector3, Vector3> OnSeenPlayer; // First self position, second player position.
     public static Action OnForgetPlayer;
-    public static Action OnIsAtPlayerLastSeenPosition;
+    public static Action<GameObject, Vector3, bool> OnIsAtPlayerLastSeenPosition;
+    public static Action<GameObject> OnKnockDown;
+    public static Action<bool> OnIsOnBack;
 }

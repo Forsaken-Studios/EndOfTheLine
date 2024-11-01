@@ -13,8 +13,6 @@ namespace Player
     [Header("RADIUS")]
 
     [SerializeField] private bool worldNoiseIsActivated;
-
-    [SerializeField] private GameObject player;
     
     void Start()
     { 
@@ -23,7 +21,7 @@ namespace Player
 
     private void Update()
     {
-        currentRadius = player.GetComponent<PlayerController>().GetCurrentRadius();
+        currentRadius = PlayerController.Instance.GetCurrentRadius();
         this.circleCollider.radius = currentRadius;
     }
     

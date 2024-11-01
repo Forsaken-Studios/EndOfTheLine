@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9068522536902542962}
   - component: {fileID: 6146543976770934502}
   - component: {fileID: 7511134358244664132}
+  - component: {fileID: 1282235046928213289}
   m_Layer: 5
   m_Name: BuyPanelButton
   m_TagString: Untagged
@@ -120,7 +121,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6146543976770934502}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1282235046928213289}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1282235046928213289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 55354109813260856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &94638950039132149
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,6 +1083,7 @@ GameObject:
   - component: {fileID: 5705101638663128042}
   - component: {fileID: 6833490612497300817}
   - component: {fileID: 2226077270190199262}
+  - component: {fileID: 2164170072604708789}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1166,7 +1192,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6833490612497300817}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2164170072604708789}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &2164170072604708789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3485709636052027824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4133864735937791163
 GameObject:
   m_ObjectHideFlags: 0
@@ -1440,6 +1490,7 @@ GameObject:
   - component: {fileID: 6293781455524734784}
   - component: {fileID: 1289544542214549304}
   - component: {fileID: 6914628328600029517}
+  - component: {fileID: 1992269293208880398}
   m_Layer: 5
   m_Name: TradePanelButton
   m_TagString: Untagged
@@ -1548,7 +1599,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1289544542214549304}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1992269293208880398}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1992269293208880398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5370166436078146250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5728719480356642363
 GameObject:
   m_ObjectHideFlags: 0
@@ -1562,6 +1637,7 @@ GameObject:
   - component: {fileID: 3691923645572567333}
   - component: {fileID: 2371128726591914598}
   - component: {fileID: 402042102634818817}
+  - component: {fileID: 6427471662319943961}
   m_Layer: 5
   m_Name: Buy Button
   m_TagString: Untagged
@@ -1670,7 +1746,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3691923645572567333}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6427471662319943961}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!95 &402042102634818817
 Animator:
   serializedVersion: 5
@@ -1692,6 +1780,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6427471662319943961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5728719480356642363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5845333323507712119
 GameObject:
   m_ObjectHideFlags: 0
@@ -2257,6 +2357,7 @@ GameObject:
   - component: {fileID: 8021867787531163791}
   - component: {fileID: 3918199270468083230}
   - component: {fileID: 8062809296424604357}
+  - component: {fileID: 1282118200921078670}
   m_Layer: 5
   m_Name: SellPanelButton
   m_TagString: Untagged
@@ -2365,7 +2466,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3918199270468083230}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1282118200921078670}
+        m_TargetAssemblyTypeName: PlaySpecificSound, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Click
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1282118200921078670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8067892855148482653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &728474667391662282
 PrefabInstance:
   m_ObjectHideFlags: 0

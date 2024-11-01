@@ -13,17 +13,21 @@ MonoBehaviour:
   m_Name: Smoke Ability
   m_EditorClassIdentifier: 
   name: Smoke Grenade
-  description: 
+  enabled: 1
+  description: Throws a smoke grenade that, upon detonation, releases a dense cloud
+    of smoke covering a significant area. The smoke reduces visibility for enemies,
+    disorienting those within it. The smoke cover lasts for several seconds, providing
+    an opportunity to move strategically or set up ambushes.
   abilityIcon: {fileID: 21300000, guid: f3b1915e7b8ff594fbf4550c09c382a3, type: 3}
-  abilityID: 2
+  abilityID: 8
   cooldownTime: 4
   activeTime: 3
   overheatCost: 23
   needToBeReactivated: 0
-  airFilterNeededToUnlock: 1
-  material1Item: {fileID: 0}
+  airFilterNeededToUnlock: 0
+  material1Item: {fileID: 11400000, guid: 7da282e1236b2524091e97c025d1cfc7, type: 2}
   material1NeededToUnlock: 0
-  material2Item: {fileID: 0}
+  material2Item: {fileID: 11400000, guid: c002f4e39df0e7141a4f3b4bb99ba6aa, type: 2}
   material2NeededToUnlock: 0
   smokeGrenadeCanvasPrefab: {fileID: 330460122310081696, guid: 6c53b3dd1c472be43aeb436e02252f49, type: 3}
   smokeGrenadePrefab: {fileID: 1452890939119055772, guid: 82f06827de8910940b962ce6ee7d4220, type: 3}

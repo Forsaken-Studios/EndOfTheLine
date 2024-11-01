@@ -119,12 +119,15 @@ public class AbilityShop : MonoBehaviour
         
         foreach (var ability in abilityList)
         {
-            GameObject abilityPanel = Instantiate(abilityPanelPrefab, Vector2.zero, Quaternion.identity,
-                this.gameObject.transform);
+            if (ability.enabled)
+            {
+                GameObject abilityPanel = Instantiate(abilityPanelPrefab, Vector2.zero, Quaternion.identity,
+                    this.gameObject.transform);
 
-            int abilityStatus = PlayerPrefs.GetInt("AbilityUnlocked_" + ability.abilityID);
-            abilitiesPanelList.Add(abilityPanel);
-            abilityPanel.GetComponent<AbilityPanel>().SetUpProperties(ability, abilityStatus);
+                int abilityStatus = PlayerPrefs.GetInt("AbilityUnlocked_" + ability.abilityID);
+                abilitiesPanelList.Add(abilityPanel);
+                abilityPanel.GetComponent<AbilityPanel>().SetUpProperties(ability, abilityStatus);
+            }
         }
     }
 }

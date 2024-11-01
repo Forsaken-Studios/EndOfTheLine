@@ -45,6 +45,8 @@ namespace Player
                 }else if (_currentWeight >= maxLimitWeight)
                 {
                     playerCanMove = false;
+                    isOverweight = true;
+                    _animator.SetBool("isWalking", false);
                     if (OnWeightChange != null)
                         OnWeightChange(2);
                 }
@@ -81,7 +83,7 @@ namespace Player
         [SerializeField] private float radiusDecay = 16f;
         
         [Header("Inputs")] 
-        private KeyCode dashInput = KeyCode.LeftControl;
+        private KeyCode dashInput = KeyCode.Space;
         
         [Header("Noise Circle")] 
         [SerializeField] private NoiseCircle noise;
@@ -135,7 +137,6 @@ namespace Player
             { 
                 return;
             }
-
             if (GameManager.Instance.GameState == GameState.OnGame)
             {
                 CalculateNoiseRadius();
@@ -252,6 +253,7 @@ namespace Player
             if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetEnergy() >= dashStaminaCost)
             {
                 StartCoroutine(Dash());
+                _animator.SetBool("isDashPressed", true);
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Movement_Dash, null, true);
             }
         }
@@ -274,6 +276,7 @@ namespace Player
 
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
+            _animator.SetBool("isDashPressed", false);
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
 
@@ -302,61 +305,48 @@ namespace Player
             return currentRadius;
         }
 
+        public void PlayDeathAnimation()
+        {
+            if(_animator != null)
+                _animator.SetBool("isDead", true);
+        }
+
+        public void PlayOpenInventoryAnimation()
+        {
+            if (_animator != null)
+            {              
+                _animator.SetBool("isOnInventory", true);
+                _animator.SetTrigger("isOnInventoryTrigger");
+            }
+
+        }
+        
+        public void PlayCloseInventoryAnimation()
+        {
+            if(_animator != null)
+                _animator.SetBool("isOnInventory", false);
+        }
         //Advanced LERP function
         private float ExpDecay(float current, float goal, float decay, float dT)
         {
             return goal + (current - goal)* Mathf.Exp(-decay * dT);
         }
         
-        public void SetIfPlayerCanMove(bool aux)
-        {
-            this.playerCanMove = aux;
-        }
+        public void SetIfPlayerCanMove(bool aux) => this.playerCanMove = aux;
 
-        public float GetMoveSpeed()
-        {
-            return moveSpeed;
-        }
+        public float GetMoveSpeed() => moveSpeed;
         
-        public float GetWalkSpeed()
-        {
-            return walkSpeed;
-        }
-        
-        public float GetRunSpeed()
-        {
-            return runSpeed;
-        }
-        
-        public float GetCurrentRadius()
-        {
-            return currentRadius;
-        }
-        
-        public NoiseCircle GetNoiseScript()
-        {
-            return noise;
-        }
-        
-        public static PlayerController PlayerControllerInstance
-        {
-            get
-            {
-                return Instance;
-            }
-        }
+        public float GetCurrentRadius() => currentRadius;
 
-        public int GetMaxWeight()
-        {
-            return maxLimitWeight;
-        }
+        public NoiseCircle GetNoiseScript() => noise;
 
-        public int GetOverweight()
-        {
-            return overWeight;
-        }
+        public static PlayerController PlayerControllerInstance => Instance;
+
+        public int GetMaxWeight() => maxLimitWeight;
+
+        public int GetOverweight() => overWeight;
         
-        
+
     }
 }
 

@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
@@ -9,25 +11,48 @@ using static UnityEngine.GraphicsBuffer;
 public class BasicEnemyActions : MonoBehaviour
 {
     [Header("Adjsutable properties")]
-    [SerializeField] private float _movementSpeed = 1f;
+    [SerializeField] private float _usualMovementSpeed = 1f;
+    [SerializeField] private float _chasingMovementSpeed = 2f;
     [SerializeField] private float rotationSpeed = 15f;
-    [SerializeField] private float _killPlayerDistance = 1f;
+    [SerializeField] private float _killPlayerDistance = 0.75f;
     [SerializeField] private float _timeToLookForPlayer = 5f;
+
+    [Header("Patrol")]
+    [SerializeField] private bool _isFullCircle;
+    [SerializeField] private float _timeWaitEndPatrol = 2f;
+    private List<Transform> _patrolPoints;
+    private float _timerWaitEndPatrol = 2f;
+    private bool _isChangingPatrolPoint;
+    private bool _isMovingForward = true;
+    private int _newPatrolIndex = 0;
 
     [Header("External scripts")]
     [SerializeField] private DetectionPlayerManager _basicEnemyDetection;
 
-    private bool _isRotating = true;
+    [Header("Animaciones")]
+    private Animator _animator;
+
+    private bool _isRotating = false;
     private Transform _player;
     private Vector3 _positionChased;
     private NavMeshAgent _agent;
     private Vector3 _initialPositionSelf;
+    private bool _isDead = false;
+    public bool IsNearWallAbility = false;
 
     public bool isAtPlayerLastSeenPosition { get; private set; }
     public bool isAtInitialPosition { get; private set; }
+    [HideInInspector] public float timerLookForPlayer;
 
     void Start()
     {
+        _animator = GetComponentInChildren<Animator>();
+
+        InitializePatrolPoints();
+
+        _isChangingPatrolPoint = true;
+        timerLookForPlayer = _timeToLookForPlayer;
+
         _initialPositionSelf = transform.position;
         _positionChased = _initialPositionSelf;
 
@@ -36,15 +61,34 @@ public class BasicEnemyActions : MonoBehaviour
 
         _agent = GetComponent<NavMeshAgent>();
         _agent.updateUpAxis = false;
+        _agent.stoppingDistance = 0;
+        SetMovementSpeed(_usualMovementSpeed);
 
         _player = GameObject.FindWithTag("Player").transform;
-        StopChasing();
+
+        if (_agent.isActiveAndEnabled && _agent.isOnNavMesh)
+        {
+            StopChasing();
+        }
     }
 
     void Update()
     {
+        if(!(_agent.isActiveAndEnabled && _agent.isOnNavMesh)){
+            return;
+        }
+
+        if (_isDead)
+        {
+            return;
+        }
+
+        if (IsNearWallAbility)
+        {
+            return;
+        }
+
         FixXYAxis();
-        SetMovementSpeed();
 
         CheckIfKillPlayer();
         CheckIsAtInitialPosition();
@@ -56,25 +100,44 @@ public class BasicEnemyActions : MonoBehaviour
         {
             transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
         }
+        if (!IsNearWallAbility)
+        {
+            WalkAnimation();
+        }
     }
 
-    private void SetMovementSpeed()
+    private void InitializePatrolPoints()
     {
-        _agent.speed = _movementSpeed;
+        _patrolPoints = new List<Transform>();
+        Transform patrolPointsParent = gameObject.transform.parent.Find("PatrolPoints");
+        for(int i = 0; i < patrolPointsParent.childCount; i++)
+        {
+            _patrolPoints.Add(patrolPointsParent.GetChild(i));
+        }
+    }
+
+    private void WalkAnimation()
+    {
+        _animator.SetBool("isWalking", !_agent.isStopped);
+    }
+
+    private void SetMovementSpeed(float movementSpeed)
+    {
+        _agent.speed = movementSpeed;
     }
 
     private void FixXYAxis()
     {
         if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
         {
-            // DirecciÃ³n hacia el objetivo
+            // Dirección hacia el objetivo
             Vector3 direction = _player.position - transform.position;
-            direction.z = 0; // Asegurarse de que la direcciÃ³n estÃ© en el plano XY
+            direction.z = 0; // Asegurarse de que la dirección esté en el plano XY
 
-            // Calcular el Ã¡ngulo en el plano XY
+            // Calcular el ángulo en el plano XY
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            // Aplicar la rotaciÃ³n solo en el eje Z
+            // Aplicar la rotación solo en el eje Z
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
         else
@@ -85,7 +148,7 @@ public class BasicEnemyActions : MonoBehaviour
             fixedRotation.y = 0;
             transform.rotation = Quaternion.Euler(fixedRotation);
 
-            // Rotar el agente para seguir la direcciÃ³n del movimiento
+            // Rotar el agente para seguir la dirección del movimiento
             if (_agent.velocity != Vector3.zero)
             {
                 float angle = Mathf.Atan2(_agent.velocity.y, _agent.velocity.x) * Mathf.Rad2Deg;
@@ -105,6 +168,7 @@ public class BasicEnemyActions : MonoBehaviour
 
             if (angleToPlayer < _basicEnemyDetection.GetFOVAngle() / 2)
             {
+                SoundManager.Instance.ActivateSoundByName(SoundAction.Enemy_Hit, null, true);
                 Debug.Log("Jugador muerto");
                 GameManager.Instance.EndGame();
             }
@@ -113,6 +177,12 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void ChasePlayerLastSeenPosition()
     {
+        if (IsNearWallAbility)
+        {
+            StopChasing();
+            return;
+        }
+        SetMovementSpeed(_chasingMovementSpeed);
         StopRotating();
         _agent.isStopped = false;
         _positionChased = _basicEnemyDetection.playerLastSeenPosition;
@@ -120,9 +190,16 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void ChaseInitialPosition()
     {
+        if (IsNearWallAbility)
+        {
+            StopChasing();
+            return;
+        }
+        SetMovementSpeed(_usualMovementSpeed);
         StopRotating();
         _agent.isStopped = false;
         _positionChased = _initialPositionSelf;
+        EnemyEvents.OnIsAtPlayerLastSeenPosition?.Invoke(gameObject.transform.parent.gameObject, gameObject.transform.position, true);
     }
 
     public void StopChasing()
@@ -141,11 +218,90 @@ public class BasicEnemyActions : MonoBehaviour
         _isRotating = true;
     }
 
+    public void Patrol()
+    {
+        if (IsNearWallAbility)
+        {
+            StopChasing();
+            return;
+        }
+        if (_patrolPoints.Count == 0)
+        {
+            RotateInPlace();
+            return;
+        }
+        else
+        {
+            StopRotating();
+        }
+
+        _agent.isStopped = false;
+        if (_isChangingPatrolPoint && _patrolPoints.Count > 0)
+        {
+            if (_isFullCircle)
+            {
+                if (_newPatrolIndex + 1 < _patrolPoints.Count)
+                {
+                    _newPatrolIndex += 1;
+                }
+                else
+                {
+                    _newPatrolIndex = 0;
+                }
+                _initialPositionSelf = _patrolPoints[_newPatrolIndex].position;
+                _isChangingPatrolPoint = false;
+            }
+            else
+            {
+                if (_timerWaitEndPatrol > 0)
+                {
+                    RotateInPlace();
+
+                    _timerWaitEndPatrol -= Time.deltaTime;
+                }
+                else
+                {
+                    StopRotating();
+                    _agent.isStopped = false;
+
+                    if (_isMovingForward)
+                    {
+                        if (_newPatrolIndex + 1 < _patrolPoints.Count)
+                        {
+                            _newPatrolIndex += 1;
+                        }
+                        else
+                        {
+                            _isMovingForward = false;
+                            _timerWaitEndPatrol = _timeWaitEndPatrol;
+                        }
+                    }
+                    else
+                    {
+                        if (_newPatrolIndex - 1 >= 0)
+                        {
+                            _newPatrolIndex -= 1;
+                        }
+                        else
+                        {
+                            _isMovingForward = true;
+                            _timerWaitEndPatrol = _timeWaitEndPatrol;
+                        }
+                    }
+                    _initialPositionSelf = _patrolPoints[_newPatrolIndex].position;
+                    _isChangingPatrolPoint = false;
+                }
+            }
+        }
+    }
+
     private void CheckIsAtInitialPosition()
     {
-        if (Vector3.Distance(transform.position, _initialPositionSelf) < 3f)
+        if (Vector3.Distance(transform.position, _initialPositionSelf) <= _agent.stoppingDistance + 0.15f)
         {
             isAtInitialPosition = true;
+
+            _isChangingPatrolPoint = true;
         }
         else
         {
@@ -155,10 +311,10 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void CheckIsAtPlayerLastSeenPosition()
     {
-        if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) < 3f)
+        if (Vector3.Distance(transform.position, _basicEnemyDetection.playerLastSeenPosition) <= _agent.stoppingDistance + 0.15f)
         {
             isAtPlayerLastSeenPosition = true;
-            EnemyEvents.OnIsAtPlayerLastSeenPosition?.Invoke();
+            EnemyEvents.OnIsAtPlayerLastSeenPosition?.Invoke(gameObject.transform.parent.gameObject, gameObject.transform.position, false);
         }
         else
         {
@@ -187,5 +343,28 @@ public class BasicEnemyActions : MonoBehaviour
             DoorUI doorUI = collision.gameObject.GetComponent<DoorUI>();
             doorUI.OpenDoorAI();
         }
+    }
+
+    public void GetKilled()
+    {
+        //Desactivación de componentes del Body y de KnockDownZone.
+        _isDead = true;
+        gameObject.GetComponent<BasicEnemyAI>().enabled = false;
+        gameObject.GetComponent<NavMeshAgent>().enabled = false;
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;
+        gameObject.transform.Find("KnockDownZone").gameObject.SetActive(false);
+
+        // Desactivación de FOV_Visualization, CanvasInWorld y PatrolPoints si hay.
+        Transform parent = gameObject.transform.parent;
+        parent.Find("FOV_Visualization").gameObject.SetActive(false);
+        parent.Find("CanvasInWorld").gameObject.SetActive(false);
+        Transform patrol = parent.Find("PatrolPoints");
+        if(patrol != null)
+        {
+            patrol.gameObject.SetActive(false);
+        }
+
+        // Activación de la animación.
+        _animator.SetBool("isDead", true);
     }
 }

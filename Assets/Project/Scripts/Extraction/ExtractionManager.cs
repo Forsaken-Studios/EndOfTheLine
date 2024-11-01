@@ -18,9 +18,18 @@ namespace Extraction
         private bool playerInExtractionPoint = false;
 
         private bool extractionArrived = false;
-
+        [Header("Raid Time")]
         [SerializeField] private float raidTime;
-        
+        [field: Tooltip("Time needed for player to extract")]
+        [Header("Time need To Extract")]
+        [SerializeField] private float timeToExtract;
+        public float TimeToExtract { get => timeToExtract; }
+        [field: Header("Timer properties")]
+        [SerializeField] private float timeForTrainToArrive;
+        public float TimeForTrainToArrive { get => timeForTrainToArrive; }
+        [SerializeField] private float timeForTrainToLeave;
+        public float TimeForTrainToLeave { get => timeForTrainToLeave; }
+
         private void Awake()
         {
             if (Instance != null)
@@ -49,7 +58,6 @@ namespace Extraction
 
         private void Update()
         {
-            //TODO: Depende de si queremos movernos con el inventario abierto o no, deberíamos de poner onGame o != de pause
             if (Input.GetKeyDown(KeyCode.Z) && GameManager.Instance.GameState == GameState.OnGame)
             {
                 //START COUNTDOWN FOR TRAIN TO ARRIVE
@@ -89,7 +97,7 @@ namespace Extraction
         }
 
 
-        public void StopExtractionIfExtractionLeft()
+        public void StopExtractionIfTrainLeft()
         {
             if (playerInExtractionPoint)
             {

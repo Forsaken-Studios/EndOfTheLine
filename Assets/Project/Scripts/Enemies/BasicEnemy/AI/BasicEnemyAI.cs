@@ -57,7 +57,7 @@ public class BasicEnemyAI : BTree
         // Enemigo Idle
         Node idleSequence = new NodeSequence(new List<Node>
         {
-            new NotAlertCondition(_detectionPlayer),
+            new NotAlertCondition(_detectionPlayer, _enemyActions),
             new NodeSelector(new List<Node>
             {
                 new NodeSequence(new List<Node>
