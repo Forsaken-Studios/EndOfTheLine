@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Player
@@ -11,24 +8,24 @@ namespace Player
         private bool isPlayerInGasZone = false;
         private bool isPlayerInExtractionPoint = false;
 
-        private PlayerStamina playerStamina;
+        private PlayerRadiation playerStamina;
 
 
         private void Awake()
         {
-            this.playerStamina = GetComponent<PlayerStamina>();
+            this.playerStamina = GetComponent<PlayerRadiation>();
         }
 
         public void PlayerEnteredGasZone()
         {
             isPlayerInGasZone = true;
-            this.playerStamina.ActivateStaminaDecreasing();
+            this.playerStamina.ActivateEnergyDecreasing();
         }
 
         public void PlayerExitedGasZone()
         {
             isPlayerInGasZone = false;
-            this.playerStamina.DesactivateStaminaDecreasing();
+            this.playerStamina.DesactivateEnergyDecreasing();
         }
         
         #region Getters Setters

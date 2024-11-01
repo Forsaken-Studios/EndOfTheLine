@@ -1,0 +1,919 @@
+fileFormatVersion: 2
+guid: ba3123dd142321442b155485e39d5b89
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 256
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_0
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 1664
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed2bdef20efda504c85791ec4faec2d0
+      internalID: 1048079246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_1
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1664
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -64, y: 70}
+        - {x: -62, y: 72}
+        - {x: -62, y: 120}
+        - {x: -64, y: 122}
+        - {x: -70, y: 122}
+        - {x: -70, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -72, y: 62}
+        - {x: -70, y: 64}
+        - {x: -70, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: df2e3aef1b8f10e46b7df81a4131d941
+      internalID: 1871784562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_2
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 1664
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -64, y: 70}
+        - {x: -62, y: 72}
+        - {x: -62, y: 120}
+        - {x: -64, y: 122}
+        - {x: -70, y: 122}
+        - {x: -70, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -72, y: 62}
+        - {x: -70, y: 64}
+        - {x: -70, y: 70}
+      - - {x: 128, y: 128}
+        - {x: 70, y: 128}
+        - {x: 70, y: 122}
+        - {x: 64, y: 122}
+        - {x: 62, y: 120}
+        - {x: 62, y: 72}
+        - {x: 64, y: 70}
+        - {x: 70, y: 70}
+        - {x: 70, y: 64}
+        - {x: 72, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 065b54510d1becc4a94fad768722f6b3
+      internalID: -1185948006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_3
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1664
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 122, y: -64}
+        - {x: 120, y: -62}
+        - {x: 72, y: -62}
+        - {x: 70, y: -64}
+        - {x: 70, y: -70}
+        - {x: 64, y: -70}
+        - {x: 62, y: -72}
+        - {x: 62, y: -120}
+        - {x: 64, y: -122}
+        - {x: 70, y: -122}
+        - {x: 70, y: -128}
+        - {x: 128, y: -128}
+        - {x: 128, y: -70}
+        - {x: 122, y: -70}
+      - - {x: -64, y: 70}
+        - {x: -62, y: 72}
+        - {x: -62, y: 120}
+        - {x: -64, y: 122}
+        - {x: -70, y: 122}
+        - {x: -70, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -72, y: 62}
+        - {x: -70, y: 64}
+        - {x: -70, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 894926f1a03f0c84a99c8170ab5d8ce4
+      internalID: -1341177366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_4
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 1664
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 122, y: -64}
+        - {x: 120, y: -62}
+        - {x: 72, y: -62}
+        - {x: 70, y: -64}
+        - {x: 70, y: -70}
+        - {x: 64, y: -70}
+        - {x: 62, y: -72}
+        - {x: 62, y: -120}
+        - {x: 64, y: -122}
+        - {x: 70, y: -122}
+        - {x: 70, y: -128}
+        - {x: 128, y: -128}
+        - {x: 128, y: -70}
+        - {x: 122, y: -70}
+      - - {x: -64, y: 70}
+        - {x: -62, y: 72}
+        - {x: -62, y: 120}
+        - {x: -64, y: 122}
+        - {x: -70, y: 122}
+        - {x: -70, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -72, y: 62}
+        - {x: -70, y: 64}
+        - {x: -70, y: 70}
+      - - {x: 128, y: 128}
+        - {x: 70, y: 128}
+        - {x: 70, y: 122}
+        - {x: 64, y: 122}
+        - {x: 62, y: 120}
+        - {x: 62, y: 72}
+        - {x: 64, y: 70}
+        - {x: 70, y: 70}
+        - {x: 70, y: 64}
+        - {x: 72, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 2ff0103d58c324d4da51ef4a3e07e8e7
+      internalID: -1107480779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -62, y: -72}
+        - {x: -64, y: -70}
+        - {x: -70, y: -70}
+        - {x: -70, y: -64}
+        - {x: -72, y: -62}
+        - {x: -120, y: -62}
+        - {x: -122, y: -64}
+        - {x: -122, y: -70}
+        - {x: -128, y: -70}
+        - {x: -128, y: -128}
+        - {x: -70, y: -128}
+        - {x: -70, y: -122}
+        - {x: -64, y: -122}
+        - {x: -62, y: -120}
+      - - {x: 122, y: -64}
+        - {x: 120, y: -62}
+        - {x: 72, y: -62}
+        - {x: 70, y: -64}
+        - {x: 70, y: -70}
+        - {x: 64, y: -70}
+        - {x: 62, y: -72}
+        - {x: 62, y: -120}
+        - {x: 64, y: -122}
+        - {x: 70, y: -122}
+        - {x: 70, y: -128}
+        - {x: 128, y: -128}
+        - {x: 128, y: -70}
+        - {x: 122, y: -70}
+      - - {x: -64, y: 70}
+        - {x: -62, y: 72}
+        - {x: -62, y: 120}
+        - {x: -64, y: 122}
+        - {x: -70, y: 122}
+        - {x: -70, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -72, y: 62}
+        - {x: -70, y: 64}
+        - {x: -70, y: 70}
+      - - {x: 128, y: 128}
+        - {x: 70, y: 128}
+        - {x: 70, y: 122}
+        - {x: 64, y: 122}
+        - {x: 62, y: 120}
+        - {x: 62, y: 72}
+        - {x: 64, y: 70}
+        - {x: 70, y: 70}
+        - {x: 70, y: 64}
+        - {x: 72, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 815b3802113d53d4181299649f487a75
+      internalID: 403556605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_6
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 6, y: 64}
+        - {x: 8, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+        - {x: 128, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -8, y: 62}
+        - {x: -6, y: 64}
+        - {x: -6, y: 70}
+        - {x: 6, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 23726fcb8c4b01848a8e5aad94bbe7eb
+      internalID: -967396861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_7
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 122, y: -64}
+        - {x: 120, y: -62}
+        - {x: 72, y: -62}
+        - {x: 70, y: -64}
+        - {x: 70, y: -70}
+        - {x: 64, y: -70}
+        - {x: 62, y: -72}
+        - {x: 62, y: -120}
+        - {x: 64, y: -122}
+        - {x: 70, y: -122}
+        - {x: 70, y: -128}
+        - {x: 128, y: -128}
+        - {x: 128, y: -70}
+        - {x: 122, y: -70}
+      - - {x: 6, y: 64}
+        - {x: 8, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+        - {x: 128, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -8, y: 62}
+        - {x: -6, y: 64}
+        - {x: -6, y: 70}
+        - {x: 6, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: cbbb3002cc7cf04428929ba5a0c41f83
+      internalID: -1430832688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_8
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -62, y: -72}
+        - {x: -64, y: -70}
+        - {x: -70, y: -70}
+        - {x: -70, y: -64}
+        - {x: -72, y: -62}
+        - {x: -120, y: -62}
+        - {x: -122, y: -64}
+        - {x: -122, y: -70}
+        - {x: -128, y: -70}
+        - {x: -128, y: -128}
+        - {x: -70, y: -128}
+        - {x: -70, y: -122}
+        - {x: -64, y: -122}
+        - {x: -62, y: -120}
+      - - {x: 6, y: 64}
+        - {x: 8, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+        - {x: 128, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -8, y: 62}
+        - {x: -6, y: 64}
+        - {x: -6, y: 70}
+        - {x: 6, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 3bec63f5647fa7f4f90bd508ff94e76d
+      internalID: 423895141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_9
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 1280
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -62, y: -72}
+        - {x: -64, y: -70}
+        - {x: -70, y: -70}
+        - {x: -70, y: -64}
+        - {x: -72, y: -62}
+        - {x: -120, y: -62}
+        - {x: -122, y: -64}
+        - {x: -122, y: -70}
+        - {x: -128, y: -70}
+        - {x: -128, y: -128}
+        - {x: -70, y: -128}
+        - {x: -70, y: -122}
+        - {x: -64, y: -122}
+        - {x: -62, y: -120}
+      - - {x: 122, y: -64}
+        - {x: 120, y: -62}
+        - {x: 72, y: -62}
+        - {x: 70, y: -64}
+        - {x: 70, y: -70}
+        - {x: 64, y: -70}
+        - {x: 62, y: -72}
+        - {x: 62, y: -120}
+        - {x: 64, y: -122}
+        - {x: 70, y: -122}
+        - {x: 70, y: -128}
+        - {x: 128, y: -128}
+        - {x: 128, y: -70}
+        - {x: 122, y: -70}
+      - - {x: 6, y: 64}
+        - {x: 8, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+        - {x: 128, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -8, y: 62}
+        - {x: -6, y: 64}
+        - {x: -6, y: 70}
+        - {x: 6, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 0e9e9676a5e00c94487820aa7f3e359b
+      internalID: 1212820745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_10
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 896
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 122, y: -64}
+        - {x: 120, y: -62}
+        - {x: 8, y: -62}
+        - {x: 6, y: -64}
+        - {x: 6, y: -70}
+        - {x: -6, y: -70}
+        - {x: -6, y: -64}
+        - {x: -8, y: -62}
+        - {x: -120, y: -62}
+        - {x: -122, y: -64}
+        - {x: -122, y: -70}
+        - {x: -128, y: -70}
+        - {x: -128, y: -128}
+        - {x: 128, y: -128}
+        - {x: 128, y: -70}
+        - {x: 122, y: -70}
+      - - {x: 6, y: 64}
+        - {x: 8, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+        - {x: 128, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -8, y: 62}
+        - {x: -6, y: 64}
+        - {x: -6, y: 70}
+        - {x: 6, y: 70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 29ac758bacccf3642b8311019b00b98c
+      internalID: -1389659437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_11
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 896
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -62, y: -120}
+        - {x: -62, y: -8}
+        - {x: -64, y: -6}
+        - {x: -70, y: -6}
+        - {x: -70, y: 6}
+        - {x: -64, y: 6}
+        - {x: -62, y: 8}
+        - {x: -62, y: 56}
+        - {x: -64, y: 58}
+        - {x: -70, y: 58}
+        - {x: -70, y: 62}
+        - {x: -8, y: 62}
+        - {x: -6, y: 64}
+        - {x: -6, y: 70}
+        - {x: 6, y: 70}
+        - {x: 6, y: 64}
+        - {x: 8, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+        - {x: 128, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: -128}
+        - {x: -70, y: -128}
+        - {x: -70, y: -122}
+        - {x: -64, y: -122}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 1b6713d8e34d8cf4d8b3aef8449ae540
+      internalID: -691917530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_12
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 896
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -62, y: -120}
+        - {x: -62, y: -8}
+        - {x: -64, y: -6}
+        - {x: -70, y: -6}
+        - {x: -70, y: 6}
+        - {x: -64, y: 6}
+        - {x: -62, y: 8}
+        - {x: -62, y: 56}
+        - {x: -64, y: 58}
+        - {x: -70, y: 58}
+        - {x: -70, y: 62}
+        - {x: -8, y: 62}
+        - {x: -6, y: 64}
+        - {x: -6, y: 70}
+        - {x: 6, y: 70}
+        - {x: 6, y: 64}
+        - {x: 8, y: 62}
+        - {x: 120, y: 62}
+        - {x: 122, y: 64}
+        - {x: 122, y: 70}
+        - {x: 128, y: 70}
+        - {x: 128, y: 128}
+        - {x: -128, y: 128}
+        - {x: -128, y: -128}
+        - {x: -70, y: -128}
+        - {x: -70, y: -122}
+        - {x: -64, y: -122}
+      - - {x: 122, y: -64}
+        - {x: 120, y: -62}
+        - {x: 72, y: -62}
+        - {x: 70, y: -64}
+        - {x: 70, y: -70}
+        - {x: 64, y: -70}
+        - {x: 62, y: -72}
+        - {x: 62, y: -120}
+        - {x: 64, y: -122}
+        - {x: 70, y: -122}
+        - {x: 70, y: -128}
+        - {x: 128, y: -128}
+        - {x: 128, y: -70}
+        - {x: 122, y: -70}
+      tessellationDetail: 1
+      bones: []
+      spriteID: fb7ec29fef5652147a46a07d6fad1a68
+      internalID: -625164032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_13
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 896
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -128, y: 128}
+        - {x: -128, y: 70}
+        - {x: -122, y: 70}
+        - {x: -122, y: 64}
+        - {x: -120, y: 62}
+        - {x: -8, y: 62}
+        - {x: -6, y: 64}
+        - {x: -6, y: 70}
+        - {x: 6, y: 70}
+        - {x: 6, y: 64}
+        - {x: 8, y: 62}
+        - {x: 70, y: 62}
+        - {x: 70, y: 58}
+        - {x: 64, y: 58}
+        - {x: 62, y: 56}
+        - {x: 62, y: -56}
+        - {x: 64, y: -58}
+        - {x: 70, y: -58}
+        - {x: 70, y: -62}
+        - {x: 8, y: -62}
+        - {x: 6, y: -64}
+        - {x: 6, y: -70}
+        - {x: -6, y: -70}
+        - {x: -6, y: -64}
+        - {x: -8, y: -62}
+        - {x: -120, y: -62}
+        - {x: -122, y: -64}
+        - {x: -122, y: -70}
+        - {x: -128, y: -70}
+        - {x: -128, y: -128}
+        - {x: 128, y: -128}
+        - {x: 128, y: 128}
+      tessellationDetail: 1
+      bones: []
+      spriteID: c3ad72368a9a8ff42827ec2af2a42cd4
+      internalID: 70384625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WallRuleTilesV3_GapFilled_14
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 896
+        width: 256
+        height: 256
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -128, y: 128}
+        - {x: -128, y: -128}
+        - {x: 128, y: -128}
+        - {x: 128, y: 128}
+      - - {x: -69, y: -59}
+        - {x: -64, y: -59}
+        - {x: -61, y: -56}
+        - {x: -61, y: 56}
+        - {x: -64, y: 59}
+        - {x: -69, y: 59}
+        - {x: -69, y: 69}
+        - {x: -59, y: 69}
+        - {x: -59, y: 64}
+        - {x: -56, y: 61}
+        - {x: 56, y: 61}
+        - {x: 59, y: 64}
+        - {x: 59, y: 69}
+        - {x: 69, y: 69}
+        - {x: 69, y: 59}
+        - {x: 64, y: 59}
+        - {x: 61, y: 56}
+        - {x: 61, y: -56}
+        - {x: 64, y: -59}
+        - {x: 69, y: -59}
+        - {x: 69, y: -69}
+        - {x: 59, y: -69}
+        - {x: 59, y: -64}
+        - {x: 56, y: -61}
+        - {x: -56, y: -61}
+        - {x: -59, y: -64}
+        - {x: -59, y: -69}
+        - {x: -69, y: -69}
+      tessellationDetail: 1
+      bones: []
+      spriteID: 4011a04598647c24d94562113476646d
+      internalID: -746647049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      WallRuleTilesV3_GapFilled_0: 1048079246
+      WallRuleTilesV3_GapFilled_1: 1871784562
+      WallRuleTilesV3_GapFilled_10: -1389659437
+      WallRuleTilesV3_GapFilled_11: -691917530
+      WallRuleTilesV3_GapFilled_12: -625164032
+      WallRuleTilesV3_GapFilled_13: 70384625
+      WallRuleTilesV3_GapFilled_14: -746647049
+      WallRuleTilesV3_GapFilled_15: -1372237184
+      WallRuleTilesV3_GapFilled_16: -1033717725
+      WallRuleTilesV3_GapFilled_17: 1688022313
+      WallRuleTilesV3_GapFilled_18: 1370614636
+      WallRuleTilesV3_GapFilled_19: -1064262252
+      WallRuleTilesV3_GapFilled_2: -1185948006
+      WallRuleTilesV3_GapFilled_20: 1526813534
+      WallRuleTilesV3_GapFilled_21: 1707858974
+      WallRuleTilesV3_GapFilled_22: 2048111079
+      WallRuleTilesV3_GapFilled_23: -1546489109
+      WallRuleTilesV3_GapFilled_24: 847954612
+      WallRuleTilesV3_GapFilled_3: -1341177366
+      WallRuleTilesV3_GapFilled_4: -1107480779
+      WallRuleTilesV3_GapFilled_5: 403556605
+      WallRuleTilesV3_GapFilled_6: -967396861
+      WallRuleTilesV3_GapFilled_7: -1430832688
+      WallRuleTilesV3_GapFilled_8: 423895141
+      WallRuleTilesV3_GapFilled_9: 1212820745
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

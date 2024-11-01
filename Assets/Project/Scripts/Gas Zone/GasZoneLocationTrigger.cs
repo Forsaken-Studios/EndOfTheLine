@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class GasZoneLocationTrigger : MonoBehaviour
 {
+    private AudioSource audioSource;
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Debug.Log("GAS ZONE");
-            SoundManager.Instance.ActivateSoundByName(SoundAction.GasZone_Geiger);
+            audioSource = SoundManager.Instance.ActivateSoundByName(SoundAction.GasZone_Geiger, null, true);
             other.gameObject.GetComponent<PlayerManager>().PlayerEnteredGasZone();
         }
     }
@@ -19,7 +20,7 @@ public class GasZoneLocationTrigger : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            SoundManager.Instance.StopSound();
+            Destroy(audioSource.gameObject);
             other.gameObject.GetComponent<PlayerManager>().PlayerExitedGasZone();
         }
     }

@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum ItemType
+namespace LootSystem
 {
-    Unkown, Resources, Scrap, Lore, Key
+    public enum ItemType
+    {
+        Unknown, Resources_Material, Resources_Food, Scrap, Lore, Key
+    }
 }

@@ -8,9 +8,12 @@ public class Train : MonoBehaviour
 
     private float timeMoving = 5f;
 
-    private Vector2 missionSelectorPosition = new Vector2(-1908, 0); 
-    private Vector2 controlRoomPosition = new Vector2(0, 0); 
-    private Vector2 extraRoomPosition = new Vector2(1908, 0);
+    private Vector2 missionSelectorPosition = new Vector2(-1908, -88); 
+    private Vector2 controlRoomPosition = new Vector2(0, -88); 
+    private Vector2 extraRoomPosition = new Vector2(1908, -88);
+    private Vector2 extraRoom2Position = new Vector2(3816, -88);
+
+    private float trainFloorTransformValue = -88;
 
     private int currentIndex = 0;
     private int previousIndex = 0;
@@ -24,7 +27,7 @@ public class Train : MonoBehaviour
                     timeMoving * Time.deltaTime);
                 if (Vector2.Distance(positionToArrive, this.gameObject.transform.localPosition) <= 3)
                 {
-                    this.gameObject.transform.localPosition = new Vector3(positionToArrive.x, 0, 0);
+                    this.gameObject.transform.localPosition = new Vector3(positionToArrive.x, trainFloorTransformValue, 0);
                     previousIndex = currentIndex;
                 }
         }
@@ -45,6 +48,10 @@ public class Train : MonoBehaviour
             case 2:
                 //Extra Room
                 positionToArrive = extraRoomPosition;
+                break;        
+            case 3:
+                //Extra Room 2
+                positionToArrive = extraRoom2Position;
                 break; 
         }
         previousIndex = currentIndex;

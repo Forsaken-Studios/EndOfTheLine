@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b63c69974941344eb2f14d8af92b302, type: 3}
+  m_Name: EXP2_Mission_2
+  m_EditorClassIdentifier: 
+  id: 5
+  missionName: Search for items
+  requirements:
+  - requirement: {fileID: 11400000, guid: d733acf1985216b468837fa476ad47b9, type: 2}
+  - requirement: {fileID: 11400000, guid: cbe71e25629c9d340aade9c008bec659, type: 2}
+  rewards:
+  - reward: {fileID: 11400000, guid: a84f5791a223ec44ab6f8b5b4409725f, type: 2}
+  - reward: {fileID: 11400000, guid: 8105136d4b6dcaa488c3e6b31166d7c4, type: 2}
+  - reward: {fileID: 11400000, guid: 75560f01b5a0d3448a0b25f6fa12abd1, type: 2}
+  bonusItems:
+  - bonusItems: {fileID: 11400000, guid: 265082d0d40351447b790bb0988099b9, type: 2}
+  basicChanceOfSuccess: 36
+  daysToComplete: 2
+  expeditionMapID: 22

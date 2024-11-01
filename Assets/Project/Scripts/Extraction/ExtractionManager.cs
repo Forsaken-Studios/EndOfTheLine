@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Extraction
 {
@@ -9,15 +10,17 @@ namespace Extraction
     {
         public static ExtractionManager Instance;
 
-        [Tooltip("GameObject with the text to make the animation")] [SerializeField]
-        private GameObject extractionGameObject;
+        [Tooltip("GameObject with the text to make the animation")]
+        private GameObject currentTimeLeftToExtractGameObject;
 
-        [SerializeField] private GameObject extractionArriveGameObject;
+        private GameObject extractionTimeLeftToArrive;
         private Animator extractionAnimator;
         private bool playerInExtractionPoint = false;
 
         private bool extractionArrived = false;
 
+        [SerializeField] private float raidTime;
+        
         private void Awake()
         {
             if (Instance != null)
@@ -27,11 +30,21 @@ namespace Extraction
             }
 
             Instance = this;
+       
         }
 
-        void Start()
+        private void Start()
         {
-            extractionAnimator = extractionGameObject.GetComponent<Animator>();
+            GetReferences();
+        }
+
+        private void GetReferences()
+        {
+            currentTimeLeftToExtractGameObject =
+                GameManager.Instance.GetMenuCanvas().transform.Find("Extraction/CurrentTimeLeftToExtractGameObject").gameObject;
+            extractionTimeLeftToArrive =
+                GameManager.Instance.GetMenuCanvas().transform.Find("Extraction/ExtractionTimeLeftToArrive").gameObject;
+            extractionAnimator = currentTimeLeftToExtractGameObject.GetComponent<Animator>();
         }
 
         private void Update()
@@ -46,7 +59,7 @@ namespace Extraction
 
         public void StartExtractionArriveCountdown()
         {
-            extractionArriveGameObject.SetActive(true);
+            extractionTimeLeftToArrive.SetActive(true);
         }
 
 
@@ -55,7 +68,7 @@ namespace Extraction
             if (extractionArrived)
             {
                 SetPlayerInExtractionPoint(true);
-                extractionGameObject.SetActive(true);
+                currentTimeLeftToExtractGameObject.SetActive(true);
             }
         }
 
@@ -65,7 +78,7 @@ namespace Extraction
             {
                 if (extractionArrived)
                 {
-                    extractionGameObject.SetActive(false);
+                    currentTimeLeftToExtractGameObject.SetActive(false);
                     playerInExtractionPoint = false;
                 }
             }
@@ -107,6 +120,11 @@ namespace Extraction
         public void ActivateExtractionTimeLeft()
         {
 
+        }
+
+        public float GetRaidTime()
+        {
+            return raidTime;
         }
     }
 }

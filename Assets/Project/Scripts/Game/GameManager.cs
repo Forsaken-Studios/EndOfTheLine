@@ -2,25 +2,56 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Extraction;
+using Inventory;
+using SaveManagerNamespace;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
 
     public static GameManager Instance;
-
+    
     [Header("End game")]
-    [SerializeField] private GameObject blackFade;
+    private GameObject blackFadeEndGamePanel;
 
-    [Header("Extraction Properties")] 
+    [FormerlySerializedAs("inspectItemCanvas")]
+    [Header("Canvas Helper")]
+    [Tooltip("We use this reference, to link inspect item to this parent")]
+    [SerializeField] private GameObject CanvasMenus;
+    private string trainSceneName = "TrainBase";
+    [SerializeField] private GameObject gridMain;
+    private Collider2D wallCollider; 
+    private Collider2D floorCollider;
+    
+    [Header("Loading Screen - Not needed in trainBase")]
+    public GameObject loadingScreen;
+    //public Image LoadingBarFill;
+    public bool sceneIsLoading;
+
+
+    
+    private bool holder1Activated = false;
+    private bool holder2Activated = false;
+
+
+    // Variables to control player dead animation
+    private GameObject _player;
+    private Animator _playerAnim;
+
     private GameState _gameState;
     public GameState GameState
     {
         get { return _gameState; }
         set { _gameState = value; }
     }
+    [Header("Inventory Slot Size Properties")] 
+    [SerializeField] private int MAX_AMOUNT_PER_SLOT_BASE = 4;
+    [SerializeField] private int MAX_AMOUNT_PER_SLOT_GAME = 3;
     
     private void Awake()
     {
@@ -31,22 +62,64 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
     }
-    
     void Start()
     {
-        GameState = GameState.OnGame;
-        blackFade.SetActive(false);
+        if (SceneManager.GetActiveScene().name != trainSceneName)
+        {
+            StartCoroutine(ActivateLoadingScreen());
+            GameState = GameState.onLoad;
+
+            // FIXME: Revisar si esto esta bien aqui o no
+            _player = GameObject.FindGameObjectWithTag("Player");
+            if(_player != null )
+            {
+                Debug.Log("Player found");
+                _playerAnim = _player.GetComponentInChildren<Animator>();
+            }
+        }
     }
-    
+
+    private IEnumerator ActivateLoadingScreen()
+    {
+        loadingScreen.SetActive(true);
+        blackFadeEndGamePanel = CanvasMenus.gameObject.transform.Find("Black Fade End Game Panel").gameObject;
+        while (sceneIsLoading)
+        {
+            //float newValue = LoadingBarFill.fillAmount += 0.25f;
+            //LoadingBarFill.fillAmount = Mathf.Clamp(newValue, 0f, 0.80f);
+            yield return new WaitForSeconds(0.3f);
+        }
+        
+
+        yield return new WaitForSeconds(0.5f);
+        blackFadeEndGamePanel.SetActive(true);
+        blackFadeEndGamePanel.GetComponent<Animator>().SetTrigger("starting");
+        //LoadingBarFill.fillAmount = 1.0f;
+        loadingScreen.SetActive(false);
+        GetReferences();
+        GameState = GameState.OnGame;
+    }
+
+    private void GetReferences()
+    {
+        if (SceneManager.GetActiveScene().name != trainSceneName)
+        {
+            wallCollider = gridMain.transform.Find("Walls").GetComponent<Collider2D>();
+            floorCollider = gridMain.transform.Find("Floor").GetComponent<Collider2D>();
+            //blackFadeEndGamePanel = CanvasMenus.gameObject.transform.Find("Black Fade End Game Panel").gameObject;
+            //blackFadeEndGamePanel.SetActive(false);
+        }
+    }
+
     private IEnumerator EndGameCorroutine()
     {
         while (true)
         {
-            blackFade.SetActive(true);
-            blackFade.GetComponent<Animator>().SetTrigger("ending");
+            blackFadeEndGamePanel.SetActive(true);
+            blackFadeEndGamePanel.GetComponent<Animator>().SetTrigger("ending");
 
             yield return new WaitForSeconds(3f);
-            SceneManager.LoadSceneAsync("Scenes/Menu/MainMenu");
+            SceneManager.LoadSceneAsync("Scenes/Gameplay/TrainBase");
             StopAllCoroutines();
             yield return null; 
         }
@@ -62,13 +135,103 @@ public class GameManager : MonoBehaviour
         ExtractionManager.Instance.SetIfExtractionArrived(false);
     }
     
-    public void EndGame()
+    public void EndGame(bool died=true)
     {
+        //Sell scrap Items && Save items for train base
+        if (!died)
+        {
+            PlayerInventory.Instance.HandleItemsAtEndGame();
+            PlayerInventory.Instance.RemoveCoinFromInventory();
+            SaveManager.Instance.SavePlayerInventoryJson();
+        } else if (died)
+        {
+            Debug.Log("[GameManager.cs] : Player has died.");
+            _playerAnim.SetBool("isDead", true);
+            // TODO: Disable collider and rotation controllers to avoid problems
+            // FIXME: When this line triggers, player sprite dissappears
+            //_player.GetComponentInChildren<Collider2D>().gameObject.SetActive(false);
+        }
+
+        //Add one more day to game
+        int currentDay = PlayerPrefs.GetInt("CurrentDay");
+        PlayerPrefs.SetInt("PreviousDay", currentDay);
+        PlayerPrefs.SetInt("CurrentDay", currentDay + 1);
+        
+        //End Game
         StartCoroutine(EndGameCorroutine());
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (SceneManager.GetActiveScene().name == "TrainBase" || SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            SaveManager.Instance.SaveGame();
+        }
+        else
+        { 
+            //SaveManager.Instance.EmptyDictionaryIfDisconnectInRaid();
+        }
+    }
+    
+    public int GetMaxAmountPerSlot()
+    {
+        if (SceneManager.GetActiveScene().name == trainSceneName)
+        {
+            return MAX_AMOUNT_PER_SLOT_BASE;
+        }
+        else
+        {
+          return MAX_AMOUNT_PER_SLOT_GAME;  
+        }
     }
 
     private void OnDestroy()
     {
         StopAllCoroutines();
+    }
+
+    public GameObject GetCanvasParent()
+    {
+        return CanvasMenus;
+    }
+
+    public string GetNameTrainScene()
+    {
+        return trainSceneName;
+    }
+    
+    public Collider2D GetWallCollider()
+    {
+        return wallCollider;
+    } 
+    public Collider2D GetFloorCollider()
+    {
+        return floorCollider;
+    }
+    
+    public void SetHolder(int id, bool aux)
+    {
+        if (id == 1)
+        {
+            this.holder1Activated = aux;
+        }
+        else
+        {
+            this.holder2Activated = aux;
+        }
+    }
+    
+    public bool GetHolder1Status()
+    {
+        return holder1Activated;
+    }
+    public bool GetHolder2Status()
+    {
+        return holder2Activated;
+    }
+
+    public GameObject GetMenuCanvas()
+    {
+        return CanvasMenus;
     }
 }

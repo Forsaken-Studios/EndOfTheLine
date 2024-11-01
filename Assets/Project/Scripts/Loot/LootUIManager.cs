@@ -6,109 +6,194 @@ using Inventory;
 using Loot;
 using Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils.CustomLogs;
 
-public class LootUIManager : MonoBehaviour
+namespace LootSystem
 {
-    public static LootUIManager Instance;
-    
-    
-    [SerializeField] private GameObject lootUIPanel;
-    private List<ItemSlot> itemsSlotsList;
-    private LooteableObject currentCrateLooting;
-    private bool getIfCrateIsOpened;
-    private float distanceNeededToClosePanel = 2f;
-    [SerializeField] private GameObject splittingView;
-    [SerializeField] private GameObject hotkeyPrefab;
-    private void Awake()
+    public class LootUIManager : MonoBehaviour
     {
-        if (Instance != null)
+        public static LootUIManager Instance;
+
+        [SerializeField] private KeyCode lootAllKey;
+        [SerializeField] private GameObject canvasInventory; 
+        private GameObject lootUIPanel;
+        private GameObject splittingView;
+    
+    
+        private List<ItemSlot> itemsSlotsList;
+        private LooteableObject currentCrateLooting;
+        private bool getIfCrateIsOpened;
+        private float distanceNeededToClosePanel = 2f;
+        [SerializeField] private GameObject hotkeyPrefab;
+
+        [FormerlySerializedAs("CRATE_NO_ITEMS_SPRITE")]
+        [Header("Sprites Properties")] 
+        [SerializeField] private Sprite CRATE_EMPTY_SPRITE;
+        public Sprite CrateEmptySprite { get { return CRATE_EMPTY_SPRITE; } }
+        [SerializeField] private Sprite CRATE_LOOTED_SPRITE; 
+        public Sprite CrateLootedSprite { get { return CRATE_LOOTED_SPRITE; } }
+        [HideInInspector]
+        [SerializeField] private Sprite CRATE_NOT_LOOTED_ITEMS_SPRITE;
+        public Sprite CrateNotLootedItemsSprite { get { return CRATE_NOT_LOOTED_ITEMS_SPRITE; } }
+    
+        [Space(10)]
+        [SerializeField] private Sprite CHEST_EMPTY_SPRITE;
+        public Sprite ChestEmptySprite { get { return CHEST_EMPTY_SPRITE; } }
+        [SerializeField] private Sprite CHEST_LOOTED_SPRITE;
+        public Sprite ChestLootedSprite { get { return CHEST_LOOTED_SPRITE; } }
+        [HideInInspector]
+        [SerializeField] private Sprite CHEST_NOT_LOOTED_SPRITE; 
+        public Sprite ChestNotLootedSprite { get { return CHEST_NOT_LOOTED_SPRITE; } }
+    
+        private void Awake()
         {
-            Debug.LogError("There's more than one LootUIManager! " + transform + " - " + Instance);
-            Destroy(gameObject);
-            return;
+            if (Instance != null)
+            {
+                Debug.LogError("There's more than one LootUIManager! " + transform + " - " + Instance);
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            GetReferences();
         }
 
-        Instance = this;
-    }
-
-    private void Start()
-    {
-        itemsSlotsList = new List<ItemSlot>();
-        itemsSlotsList = lootUIPanel.GetComponentsInChildren<ItemSlot>().ToList();
-        lootUIPanel.SetActive(false);
-    }
-
-    private void Update()
-    {
-        if (lootUIPanel.activeSelf)
+        private void Start()
         {
-            //Check if we want to take all items pressing E Button
-            if (Input.GetKeyDown(KeyCode.E))
+            itemsSlotsList = new List<ItemSlot>();
+            itemsSlotsList = lootUIPanel.GetComponentsInChildren<ItemSlot>().ToList();
+            lootUIPanel.SetActive(false);
+     
+        }
+
+        private void GetReferences()
+        {
+            lootUIPanel = canvasInventory.transform.Find("Loot UI Panel").gameObject;
+            splittingView = canvasInventory.transform.Find("Splitting View").gameObject;
+        }
+
+        private void Update()
+        {
+            if (lootUIPanel.activeSelf)
             {
-                LootAllItemsInCrate();
+                //Check if we want to take all items pressing E Button
+                if (Input.GetKeyDown(lootAllKey))
+                {
+                    LootAllItemsInCrate();
+                }
             }
         }
-    }
 
-    public void LootAllItemsInCrate()
-    {
-        currentCrateLooting.LootAllItems();
-        DesactivateLootUIPanel();
-        InventoryManager.Instance.DesactivateInventory();
-        currentCrateLooting = null;
-    }
-    
-    public void LoadItemsInSlots(Dictionary<Item, int> itemsInLootableObject)
-    {
-        foreach (var item in itemsInLootableObject)
+        public void LootAllItemsInCrate()
         {
-             int remainingItems = 0;
-             int nextRemainingItems = 0;
-             if (!itemsSlotsList[GetFirstIndexSlotAvailable()]
-                 .TrySetItemSlotPropertiesForManager(item.Key, item.Value, out remainingItems))
-             { 
-                 itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
-                     remainingItems, out  nextRemainingItems);
-                 while (nextRemainingItems > 0)
-                 {
-                     remainingItems = nextRemainingItems;
-                     itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
-                         remainingItems, out nextRemainingItems);
-                 }
-             }
+            currentCrateLooting.LootAllItems();
+            DesactivateLootUIPanel();
+            InventoryManager.Instance.DesactivateInventory();
+            currentCrateLooting = null;
         }
-    }
-
-    public void UnloadItemsInSlots()
-    {
-        foreach (var itemSlot in itemsSlotsList)
+    
+        public void LoadItemsInSlots(Dictionary<Item, int> itemsInLootableObject)
         {
-            itemSlot.ClearItemSlot();
-        } 
-    }
-    
-    
-    public void ActivateLootUIPanel()
-    {
-        SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenCrate);
-        lootUIPanel.SetActive(true);
-        getIfCrateIsOpened = true;
-    }
+            foreach (var item in itemsInLootableObject)
+            {
+                int remainingItems = 0;
+                int nextRemainingItems = 0;
+                if (!itemsSlotsList[GetFirstIndexSlotAvailable()]
+                        .TrySetItemSlotPropertiesForManager(item.Key, item.Value, out remainingItems))
+                { 
+                    itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
+                        remainingItems, out  nextRemainingItems);
+                    while (nextRemainingItems > 0)
+                    {
+                        remainingItems = nextRemainingItems;
+                        itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
+                            remainingItems, out nextRemainingItems);
+                    }
+                }
+            }
+        }
 
-    public void DesactivateLootUIPanel()
-    {
-        SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseCrate);
-        lootUIPanel.SetActive(false);
-        getIfCrateIsOpened = false;
-    }
+        public void UnloadItemsInSlots()
+        {
+            foreach (var itemSlot in itemsSlotsList)
+            {
+                itemSlot.ClearItemSlot();
+            } 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status">1 - Full items (not looted) | 1 - Mid items | 3 - No items</param>
+        /// <returns></returns>
+        public Sprite GetLootSprite(LootSpriteContainer id, LootSpriteType status)
+        {
+            switch (id)
+            {
+                case LootSpriteContainer.Crate:
+                    return GetCrateSprite(status);
+                    break;
+                case LootSpriteContainer.Chest:
+                    return GetChestSprite(status);
+                    break;
+            }
+
+            return CHEST_NOT_LOOTED_SPRITE;
+        }
+        /// <param name="status">1 - Full items (not looted) | 1 - Mid items | 3 - No items</param>
+        private Sprite GetChestSprite(LootSpriteType status)
+        {
+            switch (status)
+            {
+                case LootSpriteType.NotLooted:
+                    return CHEST_NOT_LOOTED_SPRITE;
+                case LootSpriteType.Looted:
+                    return CHEST_LOOTED_SPRITE;
+                case LootSpriteType.Empty:
+                    return CHEST_EMPTY_SPRITE;
+            }
+
+            return CHEST_NOT_LOOTED_SPRITE;
+        }
+
+        private Sprite GetCrateSprite(LootSpriteType status)
+        {
+            switch (status)
+            {
+                case LootSpriteType.NotLooted:
+                    return CRATE_NOT_LOOTED_ITEMS_SPRITE;
+                case LootSpriteType.Looted:
+                    return CRATE_LOOTED_SPRITE;
+                case LootSpriteType.Empty:
+                    return CRATE_EMPTY_SPRITE;
+            }
+
+            return CRATE_NOT_LOOTED_ITEMS_SPRITE;
+        }
+
+
+        public void ActivateLootUIPanel()
+        {
+            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenCrate, null, true);
+            lootUIPanel.SetActive(true);
+            getIfCrateIsOpened = true;
+        }
+
+        public void DesactivateLootUIPanel()
+        {
+            SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseCrate, null, true);
+            lootUIPanel.SetActive(false);
+            getIfCrateIsOpened = false;
+        }
     
-    public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
-    {
-        this.splittingView.SetActive(true);
-        this.splittingView.GetComponent<SplittingView>().SetUpProperties(maxAmount, draggableItem, itemSlot, previousItemSlot);
-    }
-    public bool TryAddItemCrateToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
+        public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
+        {
+            this.splittingView.SetActive(true);
+            this.splittingView.GetComponent<SplittingView>().SetUpProperties(maxAmount, draggableItem, itemSlot, previousItemSlot);
+        }
+        public bool TryAddItemCrateToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
         {
             int availableIndex = 0;
             int MAX_AMOUNT_PER_SLOT = InventoryManager.Instance.GetMaxItemsForSlots();
@@ -164,44 +249,55 @@ public class LootUIManager : MonoBehaviour
                 return false;
             }
         }
-    private int GetFirstIndexSlotAvailable()
-    {
-        for (int i = 0; i < itemsSlotsList.Count; i++)
+        private int GetFirstIndexSlotAvailable()
         {
-            if (itemsSlotsList[i].itemID == 0)
+            for (int i = 0; i < itemsSlotsList.Count; i++)
             {
-                return i;
+                if (itemsSlotsList[i].itemID == 0)
+                {
+                    return i;
+                }
             }
+            return -1;
         }
-        return -1;
-    }
     
-    public bool GetIfCrateIsOpened()
-    {
-        return getIfCrateIsOpened;
-    }
+        public bool GetIfCrateIsOpened()
+        {
+            return getIfCrateIsOpened;
+        }
 
-    public LooteableObject GetCurrentLootableObject()
-    {
-        return currentCrateLooting;
-    }
+        public LooteableObject GetCurrentLootableObject()
+        {
+            return currentCrateLooting;
+        }
 
-    public void SetCurrentCrateLooting(LooteableObject aux)
-    {
-        this.currentCrateLooting = aux;
-    }
+        public void SetCurrentCrateLooting(LooteableObject aux)
+        {
+            this.currentCrateLooting = aux;
+        }
     
-    public void SetPropertiesAndLoadPanel(LooteableObject looteableObject, Dictionary<Item, int> itemsInLootableObject)
-    {
-        LootUIManager.Instance.UnloadItemsInSlots();
-        LootUIManager.Instance.SetCurrentCrateLooting(looteableObject);
-        LootUIManager.Instance.LoadItemsInSlots(itemsInLootableObject);
-        LootUIManager.Instance.ActivateLootUIPanel();
-    }
+        public void SetPropertiesAndLoadPanel(LooteableObject looteableObject, Dictionary<Item, int> itemsInLootableObject)
+        {
+            LootUIManager.Instance.UnloadItemsInSlots();
+            LootUIManager.Instance.SetCurrentCrateLooting(looteableObject);
+            LootUIManager.Instance.LoadItemsInSlots(itemsInLootableObject);
+            LootUIManager.Instance.ActivateLootUIPanel();
+        }
 
-    public GameObject GetHotkeyPrefab()
-    {
-        return hotkeyPrefab;
-    }
+        public GameObject GetHotkeyPrefab()
+        {
+            return hotkeyPrefab;
+        }
     
+    }
+}
+
+public enum LootSpriteType
+{
+    Looted, NotLooted, Empty
+}
+
+public enum LootSpriteContainer
+{
+    Crate, Chest
 }

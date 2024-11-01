@@ -44,7 +44,7 @@ public class LogManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("LOG NOT WORKING PROPERTLY");
+            //Debug.Log("LOG NOT WORKING PROPERTLY");
         }
     }
 

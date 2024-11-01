@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b63c69974941344eb2f14d8af92b302, type: 3}
+  m_Name: EXP1_Mission_2
+  m_EditorClassIdentifier: 
+  id: 2
+  missionName: Search for purple minerals
+  requirements:
+  - requirement: {fileID: 11400000, guid: f0c1697e40ae0f940b01fee197682d36, type: 2}
+  - requirement: {fileID: 11400000, guid: 5890589dad04b5b4cb54b4efd7ca8f9b, type: 2}
+  rewards:
+  - reward: {fileID: 11400000, guid: c76a47eb9c9341a4a8af38351b432481, type: 2}
+  - reward: {fileID: 11400000, guid: bd64d2aa70496d84e90b5e5a94ddb36e, type: 2}
+  bonusItems:
+  - bonusItems: {fileID: 11400000, guid: d90a268d32df4874db6fde890b702132, type: 2}
+  basicChanceOfSuccess: 23
+  daysToComplete: 2
+  expeditionMapID: 12

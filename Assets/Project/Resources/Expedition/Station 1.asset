@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfc68c08c25107b44a0864bebed56df7, type: 3}
+  m_Name: Station 1
+  m_EditorClassIdentifier: 
+  stationID: 1
+  stationName: PETROVSKO
+  stationDescription: 'By the year 2033, approximately 120 people lived in the station
+    and their main occupation was farming - growing mushrooms and breeding pigs,
+    two common food commodities in the Metro. When the harvest was good, inhabitants
+    of PETROVSKO traded their products with the rest of the Metro, but the population
+    of animals and fungi was regularly plagued with diseases, which often resulted
+    in lowered production, only barely able to feed the people living in the station.
+
+
+
+    In
+    November 2033, PETROVSKO and VDNKh signed an agreement and formed a VDNKh Commonwealth,
+    which was later also joined by Riga station. This noticeably improved conditions
+    for the inhabitants of PETROVSKO, as lighting was installed in the tunnel leading
+    to VDNKh, allowing for a safe connection between the two stations. A law enforcement
+    unit was also established (which is described by Artyom in the Metro 2033 novel
+    as "militia in simple uniforms with an "A" painted on the back"). Furthermore,
+    the station received telephone connection with other stations in the Commonwealth.'
+  expeditionImage: {fileID: 21300000, guid: 2d661919fce882a41ac8075d505f8415, type: 3}
+  stationDifficulty: 0
+  missionAvailableInStation:
+  - statModifier: {fileID: 11400000, guid: 5b803e2541f0a514a9d9f158bb5dbf7f, type: 2}
+    minChance: 15
+  - statModifier: {fileID: 11400000, guid: f6d8fc3c51b732f488721de718fff673, type: 2}
+    minChance: 25
+  - statModifier: {fileID: 11400000, guid: 2de505d7a2254f2448c7f81ad7a71c77, type: 2}
+    minChance: 35
