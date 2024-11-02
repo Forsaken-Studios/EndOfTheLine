@@ -45,6 +45,31 @@ public class TrainInventoryManager : IInventoryManager
                 ReverseInventoryStatus();
             }
         }
+        
+        if (inventoryIsOpen)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (GetInspectViewList().Count != 0)
+                {
+
+                    GameObject mostRecentInspectView = inspectListViewList[inspectListViewList.Count - 1];
+                    Destroy(mostRecentInspectView);
+                    RemoveInspectView(mostRecentInspectView);
+                }else if (splittingViewActivated)
+                {
+                    if(splittingView != null)
+                        splittingView.gameObject.SetActive(false);
+                    splittingViewActivated = false;
+                }
+                else
+                {
+                    ReverseInventoryStatus();
+                    if(LootUIManager.Instance.GetIfCrateIsOpened())
+                        LootUIManager.Instance.DesactivateLootUIPanel(); 
+                }
+            }
+        }
     }
 
     private bool WagonScreen()

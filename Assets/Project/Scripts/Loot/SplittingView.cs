@@ -34,10 +34,6 @@ namespace LootSystem
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                this.gameObject.SetActive(false);
-            }
             currentAmount.text = slider.value.ToString();
         }
 

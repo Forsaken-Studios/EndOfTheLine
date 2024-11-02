@@ -20,7 +20,7 @@ namespace Inventory
         [Header("Inventory Panels")]
         [SerializeField] private TextMeshProUGUI weightText;
         [SerializeField] private GameObject looteableObjectPrefab;
-        
+
         private void Awake()
         {
             if (Instance != null)
@@ -46,6 +46,31 @@ namespace Inventory
                 ReverseInventoryStatus();
                 if(LootUIManager.Instance.GetIfCrateIsOpened())
                     LootUIManager.Instance.DesactivateLootUIPanel();
+            }
+
+            if (inventoryIsOpen)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    if (GetInspectViewList().Count != 0)
+                    {
+
+                        GameObject mostRecentInspectView = inspectListViewList[inspectListViewList.Count - 1];
+                        Destroy(mostRecentInspectView);
+                        RemoveInspectView(mostRecentInspectView);
+                    }else if (splittingViewActivated)
+                    {
+                        if(splittingView != null)
+                            splittingView.gameObject.SetActive(false);
+                        splittingViewActivated = false;
+                    }
+                    else
+                    {
+                        ReverseInventoryStatus();
+                        if(LootUIManager.Instance.GetIfCrateIsOpened())
+                            LootUIManager.Instance.DesactivateLootUIPanel(); 
+                    }
+                }
             }
         }
 

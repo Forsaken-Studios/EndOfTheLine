@@ -192,6 +192,8 @@ namespace LootSystem
         {
             this.splittingView.SetActive(true);
             this.splittingView.GetComponent<SplittingView>().SetUpProperties(maxAmount, draggableItem, itemSlot, previousItemSlot);
+            InventoryManager.Instance.splittingView = this.splittingView.GetComponent<SplittingView>();
+            InventoryManager.Instance.splittingViewActivated = true;
         }
         public bool TryAddItemCrateToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
         {

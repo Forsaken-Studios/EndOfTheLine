@@ -26,8 +26,11 @@ public abstract class IInventoryManager : MonoBehaviour
     [SerializeField] private GameObject expandedInventory;
     [SerializeField] private GameObject expandedInventory2;
     [SerializeField] private GameObject expandedInventory3;
-
-
+    public bool inventoryIsOpen => inventoryHUD.activeSelf;
+    [HideInInspector]
+    public bool splittingViewActivated;
+    [HideInInspector]
+    public SplittingView splittingView;
 
     public virtual void Start()
     {

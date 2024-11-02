@@ -61,6 +61,8 @@ public class TrainBaseInventory : MonoBehaviour
     {
         this.splittingView.SetActive(true);
         this.splittingView.GetComponent<SplittingView>().SetUpProperties(maxAmount, draggableItem, itemSlot, previousItemSlot);
+        TrainInventoryManager.Instance.splittingView = this.splittingView.GetComponent<SplittingView>();
+        TrainInventoryManager.Instance.splittingViewActivated = true;
     }
     public bool TryAddItemCrateToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
     {
@@ -278,15 +280,8 @@ public class TrainBaseInventory : MonoBehaviour
         {
             itemsInBase.Add(itemID, amount);
         }
-
-        foreach (var itemCheck in itemsInBase)
-        {
-            Debug.Log("KW CHECK: " + itemCheck.Key + " " + itemCheck.Value);
-        }
-
         int x = -1;
         itemsInBase.TryGetValue(itemID, out x);
-        Debug.Log("KW ADD: " + item.itemName + " " + x);
     }   
     
     public void DeleteItemFromList(Item item, int amount)
