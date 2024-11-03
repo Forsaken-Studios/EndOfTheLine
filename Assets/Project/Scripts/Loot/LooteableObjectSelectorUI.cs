@@ -82,13 +82,13 @@ public class LooteableObjectSelectorUI : MonoBehaviour
         
         switch (originalName)
         {
-            case "TemporalBoxPrefab(Clone)":
+            case string a when a.Contains("TemporalBoxPrefab(Clone)"):
                 return "Temporal Crate";
                 break;
             case "Tool Box":
                 return "Tool Box"; 
                 break;  
-            case "Crate":
+            case string c when c.Contains("Crate"):
                 return "Crate"; 
                 break;  
         }

@@ -31,9 +31,17 @@ namespace LootSystem
     public class LooteableObject : MonoBehaviour
     {
         [SerializeField] private LootSpriteContainer chestType;
+        public LootSpriteContainer ChestType
+        {
+            get { return chestType; }
+        }
         private SpriteRenderer chestSprite;
         private GameObject currentHotkeyGameObject;
         private Dictionary<Item, int> itemsInLootableObject;
+        public Dictionary<Item, int> itemsInLootCrate
+        {
+            get { return itemsInLootableObject; }
+        }
         private bool chestOpened = false;
         [Header("Need to spawn an specific item")]
         [SerializeField] private bool onlyOneItemInBag;
@@ -331,6 +339,47 @@ namespace LootSystem
                 itemsInLootableObject.Add(item, amount);
             }
         }
+
+        public bool CheckIfSlotAvailable()
+        {
+            int slotAvailable = maxSlotsInCrate;
+            foreach (var itemPair in itemsInLootableObject)
+            {
+                Debug.Log("KW:  for item" + itemPair.Key.itemName + " reducer = " + Reducer(itemPair.Value));
+                slotAvailable -= Reducer(itemPair.Value);
+            }
+            return slotAvailable > 0;
+        }
+
+        private int Reducer(float value)
+        {
+            int reducerValue = 1;
+            int max = GameManager.Instance.GetMaxAmountPerSlot();
+            switch (value)
+            {
+                //This means that object has more than 1 slot in use
+                case float a when (a / max) > 1 && (a / max) <= 2:
+                    Debug.Log("KW REDUCER CASE 2");
+                    reducerValue = 2;
+                    break;
+                case float b when (b / max) > 2 && (b / max) <= 3:
+                    reducerValue = 3;
+                    break;
+                case float c when (c / max) > 3 && (c / max) <= 4:
+                    reducerValue = 4;
+                    break;
+                case float d when (d / max) > 4 && (d / max) <= 5:
+                    reducerValue = 5;
+                    break;
+                case float d when (d / max) > 5 && (d / max) <= 6:
+                    reducerValue = 6;
+                    break;
+                default: reducerValue = 1;
+                    break;
+            }
+            return reducerValue;
+        }
+        
         
         public void DeleteItemFromList(Item item, int amount)
         {

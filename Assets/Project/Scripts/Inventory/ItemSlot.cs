@@ -674,12 +674,22 @@ namespace Inventory
              //We create new box
              if (SceneManager.GetActiveScene().name != GameManager.Instance.GetNameTrainScene())
              {
-                 GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
-                     PlayerInventory.Instance.transform.position, Quaternion.identity);
-                 LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
-                 lootObject.SetIfItIsTemporalBox(true);
-                 lootObject.ClearLooteableObject();
-                 lootObject.AddItemToList(GetItemInSlot(), amount);
+                 LooteableObject temporalBox = LooteableObjectSelector.Instance.GetClosestTemporalBox();
+
+                 if (temporalBox != null && temporalBox.CheckIfSlotAvailable())
+                 {
+                     Debug.Log(temporalBox.itemsInLootCrate.Count);
+                     temporalBox.AddItemToList(GetItemInSlot(), amount);
+                 }
+                 else
+                 {
+                     GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
+                         PlayerInventory.Instance.transform.position, Quaternion.identity);
+                     LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
+                     lootObject.SetIfItIsTemporalBox(true);
+                     lootObject.ClearLooteableObject();
+                     lootObject.AddItemToList(GetItemInSlot(), amount);  
+                 }
              }
 
              ClearItemSlot();

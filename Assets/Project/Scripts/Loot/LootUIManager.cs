@@ -29,6 +29,7 @@ namespace LootSystem
 
         [FormerlySerializedAs("CRATE_NO_ITEMS_SPRITE")]
         [Header("Sprites Properties")] 
+        [Header("CRATE")]
         [SerializeField] private Sprite CRATE_EMPTY_SPRITE;
         public Sprite CrateEmptySprite { get { return CRATE_EMPTY_SPRITE; } }
         [SerializeField] private Sprite CRATE_LOOTED_SPRITE; 
@@ -37,6 +38,18 @@ namespace LootSystem
         [SerializeField] private Sprite CRATE_NOT_LOOTED_ITEMS_SPRITE;
         public Sprite CrateNotLootedItemsSprite { get { return CRATE_NOT_LOOTED_ITEMS_SPRITE; } }
     
+
+        [Header("TemporalBox")] 
+        [Space(10)]
+        [SerializeField] private Sprite TEMPORALBOX_EMPTY_SPRITE;
+        public Sprite TemporalBoxEmptySprite { get { return TEMPORALBOX_EMPTY_SPRITE; } }
+        [SerializeField] private Sprite TEMPORALBOX_LOOTED_SPRITE; 
+        public Sprite TemporalBoxLootedSprite { get { return TEMPORALBOX_LOOTED_SPRITE; } }
+        [HideInInspector]
+        [SerializeField] private Sprite TEMPORALBOX_NOT_LOOTED_ITEMS_SPRITE;
+        public Sprite TemporalBoxLootedItemsSprite { get { return TEMPORALBOX_NOT_LOOTED_ITEMS_SPRITE; } }
+        
+        [Header("Chest")] 
         [Space(10)]
         [SerializeField] private Sprite CHEST_EMPTY_SPRITE;
         public Sprite ChestEmptySprite { get { return CHEST_EMPTY_SPRITE; } }
@@ -137,6 +150,8 @@ namespace LootSystem
                     break;
                 case LootSpriteContainer.Chest:
                     return GetChestSprite(status);
+                case LootSpriteContainer.TemporalBox: 
+                    return GetTemporalBoxSprite(status);
                     break;
             }
 
@@ -153,6 +168,21 @@ namespace LootSystem
                     return CHEST_LOOTED_SPRITE;
                 case LootSpriteType.Empty:
                     return CHEST_EMPTY_SPRITE;
+            }
+
+            return CHEST_NOT_LOOTED_SPRITE;
+        }
+        
+        private Sprite GetTemporalBoxSprite(LootSpriteType status)
+        {
+            switch (status)
+            {
+                case LootSpriteType.NotLooted:
+                    return TEMPORALBOX_NOT_LOOTED_ITEMS_SPRITE;
+                case LootSpriteType.Looted:
+                    return TEMPORALBOX_LOOTED_SPRITE;
+                case LootSpriteType.Empty:
+                    return TEMPORALBOX_EMPTY_SPRITE;
             }
 
             return CHEST_NOT_LOOTED_SPRITE;
@@ -301,5 +331,5 @@ public enum LootSpriteType
 
 public enum LootSpriteContainer
 {
-    Crate, Chest
+    Crate, Chest, TemporalBox
 }
