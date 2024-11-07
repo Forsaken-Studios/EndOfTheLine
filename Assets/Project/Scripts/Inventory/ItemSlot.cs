@@ -21,6 +21,7 @@ namespace Inventory
         private int ItemID;
 
         [SerializeField] private GameObject blackPanel;
+        [SerializeField] private GameObject searchPanel;
         private bool canThrowItemAway;
         private Item itemInSlot;
         public int itemID
@@ -71,7 +72,7 @@ namespace Inventory
             
         }
   
-        public bool TrySetItemSlotPropertiesForManager(Item item, int itemSlotAmount, out int remainingItems)
+        public bool TrySetItemSlotPropertiesForManagerLootUI(Item item, int itemSlotAmount, out int remainingItems)
         {
             int MAX_ITEMS_SLOT = GameManager.Instance.GetMaxAmountPerSlot();
             if (itemSlotAmount > MAX_ITEMS_SLOT)
@@ -786,6 +787,20 @@ namespace Inventory
             {
                 canThrowItemAway = false;
             }
+        }
+
+        public void HideSearchPanel()
+        {
+            this.searchPanel.SetActive(false);
+            this.gameObject.GetComponentInChildren<Animator>(true).SetBool("StartLoading", false);
+        }
+        public void ActivateSearchLoadingAnimation()
+        {
+            this.gameObject.GetComponentInChildren<Animator>(true).SetBool("StartLoading", true);
+        }
+        public void ShowSearchPanel()
+        {
+            this.searchPanel.SetActive(true);
         }
     }
 }

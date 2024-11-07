@@ -24,9 +24,13 @@ namespace LootSystem
         private List<ItemSlot> itemsSlotsList;
         private LooteableObject currentCrateLooting;
         private bool getIfCrateIsOpened;
+        private bool isSearching = false;
         private float distanceNeededToClosePanel = 2f;
         [SerializeField] private GameObject hotkeyPrefab;
 
+        [Header("Loot Properties")] 
+        [SerializeField] private float timeBetweenSearches = 0.5f;
+        private int lastIndexChecked = 0;
         [FormerlySerializedAs("CRATE_NO_ITEMS_SPRITE")]
         [Header("Sprites Properties")] 
         [Header("CRATE")]
@@ -90,12 +94,82 @@ namespace LootSystem
         {
             if (lootUIPanel.activeSelf)
             {
-                //Check if we want to take all items pressing E Button
-                if (Input.GetKeyDown(lootAllKey))
+                if (currentCrateLooting.AlreadyChecked)
                 {
-                    LootAllItemsInCrate();
+                    
+                    //Check if we want to take all items pressing E Button
+                    if (Input.GetKeyDown(lootAllKey))
+                    {
+                        LootAllItemsInCrate();
+                    }
+                }
+                else
+                {
+                    if (!isSearching)
+                    {
+                        StartCoroutine(StartUnhidingItemSlots());
+                        isSearching = true;
+                    }
+                       
                 }
             }
+        }
+
+        private IEnumerator StartUnhidingItemSlots()
+        {
+            //Start from position 0
+            if (currentCrateLooting.ItemIndexChecked == -1)
+            {
+                foreach (var itemSlot in itemsSlotsList)
+                {
+                    if (itemSlot.GetItemInSlot() != null)
+                    {
+                        itemSlot.ActivateSearchLoadingAnimation();
+                        yield return new WaitForSeconds(timeBetweenSearches);
+                        itemSlot.HideSearchPanel();
+                    }
+                    else
+                    {
+                        currentCrateLooting.AlreadyChecked = true;
+                 
+                        break;
+                    }
+                    lastIndexChecked = itemsSlotsList.IndexOf(itemSlot);
+                }
+                yield return null;
+            }
+            else //start from last know position
+            {
+                int lastIndexCheckedFromLoot = currentCrateLooting.ItemIndexChecked;
+                Debug.Log("KW LAST INDEX CHECKED: " + lastIndexCheckedFromLoot);
+                for (int j = 0; j <= lastIndexCheckedFromLoot; j++)
+                {
+                    itemsSlotsList[j].HideSearchPanel();
+                }
+                
+                for (int i = lastIndexCheckedFromLoot + 1; i < itemsSlotsList.Count; i++)
+                {
+                    if (itemsSlotsList[i].GetItemInSlot() != null)
+                    {
+                        itemsSlotsList[i].ActivateSearchLoadingAnimation();
+                        yield return new WaitForSeconds(timeBetweenSearches);
+                        itemsSlotsList[i].HideSearchPanel();
+                    }
+                    else
+                    {
+                        currentCrateLooting.AlreadyChecked = true;
+                        break;
+                    } 
+                    lastIndexChecked = itemsSlotsList.IndexOf(itemsSlotsList[i]);
+                }
+            }
+            
+            for (int i = 0; i < itemsSlotsList.Count; i++)
+            {
+                itemsSlotsList[i].HideSearchPanel();
+            }
+
+
         }
 
         public void LootAllItemsInCrate()
@@ -113,14 +187,14 @@ namespace LootSystem
                 int remainingItems = 0;
                 int nextRemainingItems = 0;
                 if (!itemsSlotsList[GetFirstIndexSlotAvailable()]
-                        .TrySetItemSlotPropertiesForManager(item.Key, item.Value, out remainingItems))
+                        .TrySetItemSlotPropertiesForManagerLootUI(item.Key, item.Value, out remainingItems))
                 { 
-                    itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
+                    itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManagerLootUI(item.Key,
                         remainingItems, out  nextRemainingItems);
                     while (nextRemainingItems > 0)
                     {
                         remainingItems = nextRemainingItems;
-                        itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManager(item.Key,
+                        itemsSlotsList[GetFirstIndexSlotAvailable()].TrySetItemSlotPropertiesForManagerLootUI(item.Key,
                             remainingItems, out nextRemainingItems);
                     }
                 }
@@ -207,6 +281,10 @@ namespace LootSystem
         public void ActivateLootUIPanel()
         {
             SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_OpenCrate, null, true);
+            if (currentCrateLooting.AlreadyChecked)
+            {
+                HideAllSearchPanelsAgain();
+            }
             lootUIPanel.SetActive(true);
             getIfCrateIsOpened = true;
         }
@@ -215,9 +293,28 @@ namespace LootSystem
         {
             SoundManager.Instance.ActivateSoundByName(SoundAction.Inventory_CloseCrate, null, true);
             lootUIPanel.SetActive(false);
+            StopAllCoroutines();
+            currentCrateLooting.ItemIndexChecked = lastIndexChecked;
+            ActivateAllSearchPanelsAgain();
+            isSearching = false;
             getIfCrateIsOpened = false;
         }
-    
+
+        private void ActivateAllSearchPanelsAgain()
+        {
+            foreach (var itemSlot in itemsSlotsList)
+            {
+                itemSlot.ShowSearchPanel();
+            }
+        }
+        private void HideAllSearchPanelsAgain()
+        {
+            foreach (var itemSlot in itemsSlotsList)
+            {
+                itemSlot.HideSearchPanel();
+            }
+        }
+        
         public void ActivateSplittingView(int maxAmount, DraggableItem draggableItem, ItemSlot itemSlot, ItemSlot previousItemSlot)
         {
             this.splittingView.SetActive(true);

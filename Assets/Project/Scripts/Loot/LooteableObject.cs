@@ -38,6 +38,20 @@ namespace LootSystem
         private SpriteRenderer chestSprite;
         private GameObject currentHotkeyGameObject;
         private Dictionary<Item, int> itemsInLootableObject;
+        private bool alreadyChecked = false;
+        public bool AlreadyChecked
+        {
+            get { return alreadyChecked; }
+            set { this.alreadyChecked = value; }
+        }
+        private int itemIndexChecked = -1;
+
+        public int ItemIndexChecked
+        {
+            get { return itemIndexChecked; }
+            set { this.itemIndexChecked = value; }
+        }
+
         public Dictionary<Item, int> itemsInLootCrate
         {
             get { return itemsInLootableObject; }
