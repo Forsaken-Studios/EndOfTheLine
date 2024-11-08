@@ -15,6 +15,8 @@ public abstract class IInventoryManager : MonoBehaviour
     [SerializeField] protected List<ItemSlot> itemSlotList;
     protected int nextIndexSlotAvailable = 0;
     [SerializeField] protected GameObject rightClickInterfacePrefab;
+    [SerializeField] private GameObject hoverItemPrefab;
+    public GameObject HoverItemPrefab => hoverItemPrefab;
     protected GameObject currentRightClickInterface; 
     protected List<GameObject> inspectListViewList;
 

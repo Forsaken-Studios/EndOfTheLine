@@ -1,4 +1,5 @@
 
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,6 +20,7 @@ namespace Inventory
         [SerializeField] private Image itemSlotImage;
         private TextMeshProUGUI itemSlotAmountText;
         private int ItemID;
+        private GameObject hoverGameObject;
 
         [SerializeField] private GameObject blackPanel;
         [SerializeField] private GameObject searchPanel;
@@ -767,10 +769,32 @@ namespace Inventory
         
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (this.itemID != 0)
+            if (this.itemID != 0 && !isLootCrate)
             {
                 canThrowItemAway = true;
+                StartCoroutine(StartHoverCountdown());
             }
+        }
+
+        private IEnumerator StartHoverCountdown()
+        {
+            yield return new WaitForSeconds(0.4f); 
+            Vector2 offsetPosition = new Vector2(75, 35);
+            if (SceneManager.GetActiveScene().name == "TrainBase")
+            {
+               hoverGameObject =  Instantiate(TrainInventoryManager.Instance.HoverItemPrefab, (Vector2)
+                  this.transform.position + offsetPosition,
+                    Quaternion.identity, GameManager.Instance.GetMenuCanvas().transform);
+            }
+            else
+            { 
+                hoverGameObject = Instantiate(InventoryManager.Instance.HoverItemPrefab, (Vector2)
+                    this.transform.position + offsetPosition,
+                    Quaternion.identity, GameManager.Instance.GetMenuCanvas().transform);
+            }
+            
+            hoverGameObject.GetComponentInChildren<HoverItem>().SetUpHoverView(this.GetItemInSlot());
+            Debug.Log("KW: START HOVER" );
         }
 
         public void ShowBlackPanel()
@@ -786,7 +810,12 @@ namespace Inventory
             if (this.itemID != 0)
             {
                 canThrowItemAway = false;
+                if (hoverGameObject != null)
+                {
+                    Destroy(hoverGameObject);
+                }
             }
+            StopAllCoroutines();
         }
 
         public void HideSearchPanel()
