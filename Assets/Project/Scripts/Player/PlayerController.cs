@@ -15,7 +15,8 @@ namespace Player
         [SerializeField] private float moveSpeed;
         private float currentSpeedValue;
         private float speedX, speedY;
-
+        private bool isSprinting;
+        public bool IsSprinting => isSprinting;
         [Header("Weight Properties")]
         [SerializeField] private int maxLimitWeight = 35;
         [SerializeField] private int overWeight = 25;
@@ -227,6 +228,7 @@ namespace Player
             }
             else
             {
+                isSprinting = false;
                 moveSpeed = 0;
                 _animator.SetBool("isWalking", false);
                 _animator.SetBool("isRunning", false);
@@ -236,13 +238,15 @@ namespace Player
 
         private void HandleSprintInput()
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift) && PlayerSprintStamina.Instance.PlayerCanSprint())
             {
+                isSprinting = true;
                 moveSpeed = runSpeed;
                 playerSpeedBar.UpdateImage((moveSpeed / walkSpeed) - 1);
             }
             else
             {
+                isSprinting = false;
                 moveSpeed = currentSpeedValue;
                 playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
             }

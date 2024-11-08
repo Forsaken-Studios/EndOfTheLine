@@ -13,6 +13,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
 
     [Header("Expedition Properties Text")]
     [SerializeField] private TextMeshProUGUI chanceOfSuccessText;
+    [SerializeField] private TextMeshProUGUI descriptionText;
     private float rewardsMultiplier = 1;
     [Header("Requirements Needed")] 
     [SerializeField] private GameObject requirementPrefab;
@@ -41,6 +42,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
         //PlayerPrefs.SetInt("ExpeditionInProgress", 0);
         this.currentMissionSelected = mission;
         this.missionPanel = missionPanel;
+        this.descriptionText.text = mission.missionDescription;
         ClearExpedition();
         InitializeList();
         InitializeButtons();
@@ -109,6 +111,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
     private void SetUpProperties()
     {
         UpdateChanceOfSuccess(currentMissionSelected.basicChanceOfSuccess);
+        
         //Set up requirements if needed
         SetUpRequirements();
         //Check if we meet the requirements

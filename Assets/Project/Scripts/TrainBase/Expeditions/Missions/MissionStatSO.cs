@@ -8,6 +8,8 @@ public class MissionStatSO : ScriptableObject
 {
     public int id;
     public string missionName;
+    [TextArea(10, 10)]
+    public string missionDescription;
     public List<Requirements> requirements;
     public List<MissionRewards> rewards;
     public List<MissionBonusItems> bonusItems;
