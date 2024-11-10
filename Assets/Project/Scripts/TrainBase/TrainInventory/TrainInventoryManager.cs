@@ -65,8 +65,6 @@ public class TrainInventoryManager : IInventoryManager
                 else
                 {
                     ReverseInventoryStatus();
-                    if(LootUIManager.Instance.GetIfCrateIsOpened())
-                        LootUIManager.Instance.DesactivateLootUIPanel(); 
                 }
             }
         }
@@ -89,6 +87,44 @@ public class TrainInventoryManager : IInventoryManager
         textSwap.text = "Items To Sell";
     }
 
+    public void OpenInventoryInMarketRoom()
+    {
+        inventoryHUD.SetActive(true);
+        inventoryHUD.transform.Find("BaseInventory").gameObject.SetActive(true);
+        inventoryHUD.transform.Find("PlayerInventory").gameObject.SetActive(false);
+
+        Transform expanded1 = inventoryHUD.transform.Find("ExpandedInventory1");
+        if(expanded1 != null)
+            expanded1.gameObject.SetActive(false);
+        
+        Transform expanded2 = inventoryHUD.transform.Find("ExpandedInventory2");
+        if(expanded2 != null)
+            expanded2.gameObject.SetActive(false);
+        
+        Transform expanded3 = inventoryHUD.transform.Find("ExpandedInventory3");
+        if(expanded3 != null)
+            expanded3.gameObject.SetActive(false);
+    }
+    public void CloseInventoryInMarketRoom()
+    {
+        inventoryHUD.SetActive(false);
+        inventoryHUD.transform.Find("BaseInventory").gameObject.SetActive(true);
+        inventoryHUD.transform.Find("PlayerInventory").gameObject.SetActive(true);
+
+        Transform expanded1 = inventoryHUD.transform.Find("ExpandedInventory1");
+        if(expanded1 != null)
+            expanded1.gameObject.SetActive(true);
+        
+        Transform expanded2 = inventoryHUD.transform.Find("ExpandedInventory2");
+        if(expanded2 != null)
+            expanded2.gameObject.SetActive(true);
+        
+        Transform expanded3 = inventoryHUD.transform.Find("ExpandedInventory3");
+        if(expanded3 != null)
+            expanded3.gameObject.SetActive(true);
+    }
+    
+    
     public void CloseSellingInventory()
     {
         if (PlayerInventory.Instance.GetInventoryItems().Count > 0)
