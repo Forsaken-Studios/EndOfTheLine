@@ -11,9 +11,6 @@ public class OverheatManager : IPlayer_Bar
     
     [SerializeField] private AbilityHolder holder1;
     [SerializeField] private AbilityHolder holder2;
-
-    private bool holder1IsPreparing = false;
-    private bool holder2IsPreparing = false;
     
     private void Awake()
     {
@@ -58,15 +55,11 @@ public class OverheatManager : IPlayer_Bar
     {
         if (holder == 1)
         {
-            holder1IsPreparing = true;
             holder2.TryToCancelAbility();
-            holder2IsPreparing = false;
         }
         else
         {
-            holder2IsPreparing = true;
             holder1.TryToCancelAbility();
-            holder1IsPreparing = false;
         }
     }
     

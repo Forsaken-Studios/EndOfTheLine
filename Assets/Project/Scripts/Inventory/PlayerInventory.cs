@@ -18,14 +18,11 @@ namespace Inventory
         public static PlayerInventory Instance;
 
         [SerializeField] private GameObject floatingTextPrefab;
-
-        private int numberOfTools = -1;
-
+        
         private Dictionary<Item, int> inventoryItemDictionary;
         private float currentWeight;
         private float MAX_WEIGHT = 34.5f;
         private int MAX_INVENTORY_SLOTS = 10;
-        private int MAX_STACK_PER_SLOT = 4;
 
         [Header("Player Prefs")] 
         private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter";

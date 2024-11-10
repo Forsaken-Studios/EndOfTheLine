@@ -67,7 +67,6 @@ namespace LootSystem
         public bool AlreadyLoadedWithLoot { get; private set; }
         [SerializeField] private List<string> itemsToSpawn;
         private List<Item> itemsNeededToSpawn;
-        private bool isLooting = false;
         [Header("Hotkey Prefab offset ")]
         [SerializeField] private float verticalOffset = 0.5f;
         private Dictionary<Item, ItemInterval> itemsIntervalSpawn;

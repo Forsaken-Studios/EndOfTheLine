@@ -54,7 +54,6 @@ public class TrainManager : MonoBehaviour
     private int RESOURCES_AIR_FILTER; 
 
     private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter";
-    private bool isMoving = false;
     [Header("Buy Wagon UI Prefab")] 
     [SerializeField] private GameObject buyWagonPrefab;
     private bool isShowingWagonBuyUI = false;

@@ -25,7 +25,6 @@ namespace LootSystem
         private LooteableObject currentCrateLooting;
         private bool getIfCrateIsOpened;
         private bool isSearching = false;
-        private float distanceNeededToClosePanel = 2f;
         [SerializeField] private GameObject hotkeyPrefab;
 
         [Header("Loot Properties")] 

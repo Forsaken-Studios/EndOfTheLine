@@ -34,7 +34,6 @@ public class ExpeditionDetailsPreview : MonoBehaviour
     private MissionPanel missionPanel;
     [Header("Start Expedition Bonus")]
     [SerializeField] private Button startExpeditionButton;
-    private bool canStartExpedition = true;
     private bool expeditionInProgress = false;
     
     public void SetUpProperties(MissionStatSO mission, MissionPanel missionPanel)
