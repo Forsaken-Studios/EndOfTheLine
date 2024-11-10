@@ -78,10 +78,15 @@ public class TrainBasePauseMenu : MonoBehaviour
          {
              if (TrainInventoryManager.Instance.GetInspectViewList().Count == 0)
              {
-                 if (!TrainInventoryManager.Instance.inventoryIsOpen)
+                 if (TrainManager.Instance.canvasActivated)
+                 {
+                     TrainManager.Instance.CloseWagonCanvas();
+                 }  
+                 else if (!TrainInventoryManager.Instance.inventoryIsOpen)
                  {
                      PauseGame();
                  }
+
              }
          }
      }

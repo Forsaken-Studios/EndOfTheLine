@@ -46,7 +46,8 @@ public class TrainManager : MonoBehaviour
     [Header("Lock Icon")]
     [SerializeField] private GameObject lockIcon;
     private GameObject currentCanvas;
-
+    public bool canvasActivated => currentCanvas.activeSelf;
+    
     [SerializeField] private TraderPanel tradePanel;
 
     [Header("Resources In Train")] 
@@ -80,10 +81,7 @@ public class TrainManager : MonoBehaviour
             }
         }
     }    
-    public bool canvasActivated
-    {
-        get { return currentCanvas.activeSelf;  }
-    }
+
     
     private void Awake()
     {
@@ -163,6 +161,7 @@ public class TrainManager : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.D))
             {
+
                 //Check if we are already on top right
                 if (TrainStatus != TrainStatus.onMissionSelector)
                 {
@@ -176,19 +175,22 @@ public class TrainManager : MonoBehaviour
     {
             if (movingToLeft)
             {
-                    //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
-                    currentIndex++;
-                    UpdateRoomInfo();
-                    trainPanelsScript.HideTrainRoom(currentIndex - 1);
-                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
-                
+                if (TrainStatus == TrainStatus.onMarketRoom) TrainArrows.Instance.HideLeftArrow();
+                if (TrainStatus == TrainStatus.onMissionSelector) TrainArrows.Instance.ShowRightArrow();
+                //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
+                currentIndex++;
+                UpdateRoomInfo();
+                trainPanelsScript.HideTrainRoom(currentIndex - 1);
+                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
             }
             else
             {
-                    //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
-                    currentIndex--;
-                    trainPanelsScript.HideTrainRoom(currentIndex + 1);
-                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                if (TrainStatus == TrainStatus.onMechanicRoom) TrainArrows.Instance.HideRightArrow();
+                if (TrainStatus == TrainStatus.onExpeditionRoom) TrainArrows.Instance.ShowLeftArrow();
+                //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
+                currentIndex--;
+                trainPanelsScript.HideTrainRoom(currentIndex + 1);
+                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
             }
             UpdateRoomInfo();
             train.MoveTrain(currentIndex);  
@@ -250,22 +252,13 @@ public class TrainManager : MonoBehaviour
     
     private void HandleButtonPressed()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             if (unlockedWagonsList[currentIndex])
             {
                 if (currentCanvas.activeSelf)
                 {
-                    //Check if we need to disable some screen before
-                    if (screensDisplayed.Count == 0)
-                    {
-                        currentCanvas.SetActive(false);
-                    }
-                    else
-                    {
-                        RemoveScreenFromList(screensDisplayed.Last());
-                    }
-                    
+                    CloseWagonCanvas();
                 }
                 else
                 {
@@ -288,6 +281,19 @@ public class TrainManager : MonoBehaviour
                 }
             }
         } 
+    }
+
+    public void CloseWagonCanvas()
+    {
+        //Check if we need to disable some screen before
+        if (screensDisplayed.Count == 0)
+        {
+            currentCanvas.SetActive(false);
+        }
+        else
+        {
+            RemoveScreenFromList(screensDisplayed.Last());
+        }
     }
     
 

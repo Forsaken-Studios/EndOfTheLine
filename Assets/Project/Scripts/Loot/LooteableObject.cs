@@ -56,7 +56,6 @@ namespace LootSystem
         {
             get { return itemsInLootableObject; }
         }
-        private bool chestOpened = false;
         [Header("Need to spawn an specific item")]
         [SerializeField] private bool onlyOneItemInBag;
         [SerializeField] private bool needToSpawnXObject;
