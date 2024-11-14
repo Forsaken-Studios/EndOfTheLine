@@ -9,7 +9,9 @@ namespace Player
         public static PlayerController Instance;
  
         [SerializeField] private float walkSpeed = 5f;
+        public float GetMinSpeed => walkSpeed;
         [SerializeField] private float runSpeed = 10f;
+        public float GetMaxSpeed => runSpeed;
         [SerializeField] private float speedModifier = 0.5f;
         
         [SerializeField] private float moveSpeed;
@@ -108,7 +110,7 @@ namespace Player
             _rb = GetComponent<Rigidbody2D>();
             _animator = GetComponentInChildren<Animator>();
             currentSpeedValue = walkSpeed;
-            playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
+            playerSpeedBar.UpdateImage(walkSpeed);
 
             SetWeightProperties();
         }
@@ -141,7 +143,7 @@ namespace Player
             if (GameManager.Instance.GameState == GameState.OnGame)
             {
                 CalculateNoiseRadius();
-                playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
+                playerSpeedBar.UpdateImage(currentSpeedValue);
                 HandleMouseWheelSpeed();
                 if (GameManager.Instance.GameState == GameState.OnGame && playerCanMove)
                 {
@@ -242,13 +244,13 @@ namespace Player
             {
                 isSprinting = true;
                 moveSpeed = runSpeed;
-                playerSpeedBar.UpdateImage((moveSpeed / walkSpeed) - 1);
+                playerSpeedBar.UpdateImage(moveSpeed);
             }
             else
             {
                 isSprinting = false;
                 moveSpeed = currentSpeedValue;
-                playerSpeedBar.UpdateImage((currentSpeedValue / walkSpeed) - 1);
+                playerSpeedBar.UpdateImage(moveSpeed);
             }
         }
         

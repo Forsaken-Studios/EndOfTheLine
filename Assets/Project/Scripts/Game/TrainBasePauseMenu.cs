@@ -81,7 +81,10 @@ public class TrainBasePauseMenu : MonoBehaviour
                  if (TrainManager.Instance.canvasActivated)
                  {
                      TrainManager.Instance.CloseWagonCanvas();
-                 }  
+                 }else if (TrainManager.Instance.IsShowingWagonBuyUI)
+                 {
+                     TrainManager.Instance.BuyWagonScript.CancelBuy();
+                 }
                  else if (!TrainInventoryManager.Instance.inventoryIsOpen)
                  {
                      PauseGame();

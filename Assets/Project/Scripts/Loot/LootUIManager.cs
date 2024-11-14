@@ -29,6 +29,7 @@ namespace LootSystem
 
         [Header("Loot Properties")] 
         [SerializeField] private float timeBetweenSearches = 0.5f;
+        [SerializeField] private float timeBetweenSearchesWithNoItem = 0.2f;
         private int lastIndexChecked = 0;
         [FormerlySerializedAs("CRATE_NO_ITEMS_SPRITE")]
         [Header("Sprites Properties")] 
@@ -129,9 +130,10 @@ namespace LootSystem
                     }
                     else
                     {
-                        currentCrateLooting.AlreadyChecked = true;
-                 
-                        break;
+                        itemSlot.ActivateSearchLoadingAnimation();
+                        yield return new WaitForSeconds(timeBetweenSearchesWithNoItem);
+                        itemSlot.HideSearchPanel();
+
                     }
                     lastIndexChecked = itemsSlotsList.IndexOf(itemSlot);
                 }
@@ -162,13 +164,11 @@ namespace LootSystem
                     lastIndexChecked = itemsSlotsList.IndexOf(itemsSlotsList[i]);
                 }
             }
-            
+            currentCrateLooting.AlreadyChecked = true;
             for (int i = 0; i < itemsSlotsList.Count; i++)
             {
                 itemsSlotsList[i].HideSearchPanel();
             }
-
-
         }
 
         public void LootAllItemsInCrate()

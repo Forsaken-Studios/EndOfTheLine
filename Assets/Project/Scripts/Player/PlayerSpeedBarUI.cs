@@ -12,7 +12,10 @@ namespace Player
 
         public void UpdateImage(float speed)
         {
-            this.fillAmountImage.fillAmount = speed;
+            float min = PlayerController.Instance.GetMinSpeed;
+            float max = PlayerController.Instance.GetMaxSpeed;
+            float value = (speed - min) / (max - min);
+            this.fillAmountImage.fillAmount = value;
         }
     }
 }

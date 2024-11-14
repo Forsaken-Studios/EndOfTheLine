@@ -36,6 +36,8 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private Train train;
     private TrainPanels trainPanelsScript;
     private List<GameObject> screensDisplayed;
+    private BuyWagon buyWagon;
+    public BuyWagon BuyWagonScript => buyWagon;
     [Header("Canvas for different wagons")]
     [SerializeField] private GameObject missionSelectorCanvas;
     [SerializeField] private GameObject controlRoomCanvas;
@@ -49,7 +51,7 @@ public class TrainManager : MonoBehaviour
     public bool canvasActivated => currentCanvas.activeSelf;
     
     [SerializeField] private TraderPanel tradePanel;
-
+    
     [Header("Resources In Train")] 
     private int RESOURCES_AIR_FILTER; 
 
@@ -57,6 +59,7 @@ public class TrainManager : MonoBehaviour
     [Header("Buy Wagon UI Prefab")] 
     [SerializeField] private GameObject buyWagonPrefab;
     private bool isShowingWagonBuyUI = false;
+    public bool IsShowingWagonBuyUI => isShowingWagonBuyUI;
     [SerializeField] private GameObject generalCanvas; 
     /// <summary>
     /// 0 - Food
@@ -275,7 +278,7 @@ public class TrainManager : MonoBehaviour
                     
                     Vector2 initialPosition = new Vector2(960, 540);
                     GameObject buyWagonUI = Instantiate(buyWagonPrefab, initialPosition, Quaternion.identity, generalCanvas.transform);
-                
+                    buyWagon = buyWagonUI.GetComponent<BuyWagon>();
                     buyWagonUI.GetComponent<BuyWagon>().SetUpProperties(wagonPrice.foodNeeded, wagonPrice.materialNeeded, wagonPrice.goldNeeded);
                 }
             }
