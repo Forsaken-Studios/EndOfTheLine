@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using LootSystem;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -130,14 +131,14 @@ public class BasicEnemyActions : MonoBehaviour
     {
         if (_basicEnemyDetection.currentState == EnemyStates.FOVState.isSeeing)
         {
-            // Dirección hacia el objetivo
+            // Direcciï¿½n hacia el objetivo
             Vector3 direction = _player.position - transform.position;
-            direction.z = 0; // Asegurarse de que la dirección esté en el plano XY
+            direction.z = 0; // Asegurarse de que la direcciï¿½n estï¿½ en el plano XY
 
-            // Calcular el ángulo en el plano XY
+            // Calcular el ï¿½ngulo en el plano XY
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            // Aplicar la rotación solo en el eje Z
+            // Aplicar la rotaciï¿½n solo en el eje Z
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
         else
@@ -148,7 +149,7 @@ public class BasicEnemyActions : MonoBehaviour
             fixedRotation.y = 0;
             transform.rotation = Quaternion.Euler(fixedRotation);
 
-            // Rotar el agente para seguir la dirección del movimiento
+            // Rotar el agente para seguir la direcciï¿½n del movimiento
             if (_agent.velocity != Vector3.zero)
             {
                 float angle = Mathf.Atan2(_agent.velocity.y, _agent.velocity.x) * Mathf.Rad2Deg;
@@ -347,14 +348,18 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void GetKilled()
     {
-        //Desactivación de componentes del Body y de KnockDownZone.
+        //Desactivaciï¿½n de componentes del Body y de KnockDownZone.
         _isDead = true;
         gameObject.GetComponent<BasicEnemyAI>().enabled = false;
         gameObject.GetComponent<NavMeshAgent>().enabled = false;
         gameObject.GetComponent<CircleCollider2D>().enabled = false;
         gameObject.transform.Find("KnockDownZone").gameObject.SetActive(false);
 
-        // Desactivación de FOV_Visualization, CanvasInWorld y PatrolPoints si hay.
+        //Activate Loot
+        gameObject.GetComponent<LooteableObject>().enabled = true;
+        gameObject.transform.Find("LooteableZone").gameObject.SetActive(true);
+
+        // Desactivaciï¿½n de FOV_Visualization, CanvasInWorld y PatrolPoints si hay.
         Transform parent = gameObject.transform.parent;
         parent.Find("FOV_Visualization").gameObject.SetActive(false);
         parent.Find("CanvasInWorld").gameObject.SetActive(false);
@@ -364,7 +369,7 @@ public class BasicEnemyActions : MonoBehaviour
             patrol.gameObject.SetActive(false);
         }
 
-        // Activación de la animación.
+        // Activaciï¿½n de la animaciï¿½n.
         _animator.SetBool("isDead", true);
     }
 }

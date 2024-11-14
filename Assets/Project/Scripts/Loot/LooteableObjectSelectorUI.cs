@@ -79,7 +79,7 @@ public class LooteableObjectSelectorUI : MonoBehaviour
         {
             originalName = "Tool Box";
         }
-        
+        Debug.Log("KW: " + originalName);
         switch (originalName)
         {
             case string a when a.Contains("TemporalBoxPrefab(Clone)"):
@@ -87,7 +87,10 @@ public class LooteableObjectSelectorUI : MonoBehaviour
                 break;
             case "Tool Box":
                 return "Tool Box"; 
-                break;  
+                break;
+            case string c when c.Contains("Body"):
+                return "Enemy Body";
+                break;
             case string c when c.Contains("Crate"):
                 return "Crate"; 
                 break;  

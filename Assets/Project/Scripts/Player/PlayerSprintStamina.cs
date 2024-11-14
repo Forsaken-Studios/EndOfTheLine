@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Inventory;
 using Player;
 using UnityEngine;
 using UnityEngine.UI;
@@ -49,7 +50,7 @@ public class PlayerSprintStamina : MonoBehaviour
     {
         if (!staminaDrained)
         {
-            if (isSprinting)
+            if (isSprinting && !InventoryManager.Instance.inventoryIsOpen)
             {
                 currentStamina -= staminaRecoveryValue;
                 staminaFillImage.fillAmount -= staminaRecoveryValue;

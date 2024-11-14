@@ -1,15 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
-using LootSystem;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Internal;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
-using Utils.CustomLogs;
 using Object = System.Object;
 using Random = UnityEngine.Random;
 
@@ -143,13 +135,16 @@ namespace LootSystem
 
         private void HandleCrateSprite()
         {
-            if (itemsInLootableObject.Count > 0)
+            if (chestType != LootSpriteContainer.Enemy)
             {
-                this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Looted);
-            }
-            else
-            {
-                this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Empty);
+                if (itemsInLootableObject.Count > 0)
+                {
+                    this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Looted);
+                }
+                else
+                {
+                    this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Empty);
+                } 
             }
         }
 
@@ -183,7 +178,15 @@ namespace LootSystem
             }
             else
             {
-                InitializeLootObject(null);  
+                if (chestType == LootSpriteContainer.Enemy)
+                {
+                    PrepareLootForEnemyBody(2);
+                }
+                else
+                {
+                    InitializeLootObject(null);  
+                }
+                
             }
         }
 
@@ -224,6 +227,7 @@ namespace LootSystem
                 itemsInLootableObject.Add(itemSO, 1);
             }
         }
+        
 
         private void PrepareLoot(int remainingSlotsInCrate)
         {
@@ -266,7 +270,48 @@ namespace LootSystem
             
             }
         }
-
+        
+        private void PrepareLootForEnemyBody(int remainingSlotsInCrate)
+        {
+            List<Item> allItems = UnityEngine.Resources.LoadAll<Item>("Items/Scrap").ToList();
+            List<Item> remainingItems = allItems;
+            float intervalAcount = 0;
+            foreach (var item in allItems)
+            {
+                ItemInterval itemInverval = new ItemInterval(intervalAcount, intervalAcount + item.itemSpawnChance);
+                itemsIntervalSpawn.Add(item, itemInverval);
+                intervalList.Add(itemInverval);
+                intervalAcount += item.itemSpawnChance + 1;
+            }
+            int itemsToLoot = 1;
+            if (!onlyOneItemInBag)
+                itemsToLoot = remainingSlotsInCrate;
+            
+            for (int i = 0; i < itemsToLoot; i++)
+            {
+                int value = (int) Random.Range(0, intervalAcount);
+                
+                foreach (var item in itemsIntervalSpawn)
+                {
+                    if (item.Value.minNumber <= value && item.Value.maxNumber >= value)
+                    {
+                        int randomQuantity = Random.Range(1, 4);
+                        if (itemsInLootableObject.ContainsKey(item.Key))
+                        {
+                            itemsInLootableObject[item.Key] += randomQuantity;
+                        }
+                        else
+                        {
+                            itemsInLootableObject.Add(item.Key, randomQuantity);
+                            //Debug.Log("KW3: ADDED: " + item.Key + " " + this.gameObject.transform.position) ;
+                        }
+                        intervalAcount = GenerateNewIntervalCount(item.Key, remainingItems);
+                        break;
+                    }
+                }
+            
+            }
+        }
         private int GenerateNewIntervalCount(Item itemToDelete, List<Item> remainingItems)
         {
             int intervalAcount = 0;

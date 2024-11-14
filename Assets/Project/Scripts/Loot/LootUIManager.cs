@@ -30,7 +30,7 @@ namespace LootSystem
         [Header("Loot Properties")] 
         [SerializeField] private float timeBetweenSearches = 0.5f;
         [SerializeField] private float timeBetweenSearchesWithNoItem = 0.2f;
-        private int lastIndexChecked = 0;
+        private int lastIndexChecked =-1;
         [FormerlySerializedAs("CRATE_NO_ITEMS_SPRITE")]
         [Header("Sprites Properties")] 
         [Header("CRATE")]
@@ -96,7 +96,6 @@ namespace LootSystem
             {
                 if (currentCrateLooting.AlreadyChecked)
                 {
-                    
                     //Check if we want to take all items pressing E Button
                     if (Input.GetKeyDown(lootAllKey))
                     {
@@ -110,39 +109,42 @@ namespace LootSystem
                         StartCoroutine(StartUnhidingItemSlots());
                         isSearching = true;
                     }
-                       
                 }
             }
         }
 
         private IEnumerator StartUnhidingItemSlots()
         {
+            Debug.Log("KW LAST INDEX: " + currentCrateLooting.ItemIndexChecked);
             //Start from position 0
             if (currentCrateLooting.ItemIndexChecked == -1)
             {
-                foreach (var itemSlot in itemsSlotsList)
+                int lastIndexCheckedFromLoot = 0;
+                for (int i = lastIndexCheckedFromLoot; i < itemsSlotsList.Count; i++)
                 {
-                    if (itemSlot.GetItemInSlot() != null)
+                    if (itemsSlotsList[i].GetItemInSlot() != null)
                     {
-                        itemSlot.ActivateSearchLoadingAnimation();
+                        itemsSlotsList[i].ActivateSearchLoadingAnimation();
                         yield return new WaitForSeconds(timeBetweenSearches);
-                        itemSlot.HideSearchPanel();
+                        lastIndexChecked = itemsSlotsList.IndexOf(itemsSlotsList[i]);
+                        itemsSlotsList[i].HideSearchPanel();
                     }
                     else
                     {
-                        itemSlot.ActivateSearchLoadingAnimation();
+                        itemsSlotsList[i].ActivateSearchLoadingAnimation();
                         yield return new WaitForSeconds(timeBetweenSearchesWithNoItem);
-                        itemSlot.HideSearchPanel();
-
+                        itemsSlotsList[i].HideSearchPanel();
                     }
-                    lastIndexChecked = itemsSlotsList.IndexOf(itemSlot);
+                    if (i == itemsSlotsList.Count - 1)
+                    {
+                        currentCrateLooting.AlreadyChecked = true;
+                    }
                 }
-                yield return null;
+                currentCrateLooting.ItemIndexChecked = -1;
             }
             else //start from last know position
             {
                 int lastIndexCheckedFromLoot = currentCrateLooting.ItemIndexChecked;
-                Debug.Log("KW LAST INDEX CHECKED: " + lastIndexCheckedFromLoot);
                 for (int j = 0; j <= lastIndexCheckedFromLoot; j++)
                 {
                     itemsSlotsList[j].HideSearchPanel();
@@ -158,13 +160,19 @@ namespace LootSystem
                     }
                     else
                     {
-                        currentCrateLooting.AlreadyChecked = true;
-                        break;
+                        itemsSlotsList[i].ActivateSearchLoadingAnimation();
+                        yield return new WaitForSeconds(timeBetweenSearchesWithNoItem);
+                        itemsSlotsList[i].HideSearchPanel();
                     } 
+                    
+                    if (i == itemsSlotsList.Count - 1)
+                    {
+                        currentCrateLooting.AlreadyChecked = true;
+                    }
                     lastIndexChecked = itemsSlotsList.IndexOf(itemsSlotsList[i]);
                 }
+                
             }
-            currentCrateLooting.AlreadyChecked = true;
             for (int i = 0; i < itemsSlotsList.Count; i++)
             {
                 itemsSlotsList[i].HideSearchPanel();
@@ -295,6 +303,8 @@ namespace LootSystem
             StopAllCoroutines();
             currentCrateLooting.ItemIndexChecked = lastIndexChecked;
             ActivateAllSearchPanelsAgain();
+            
+            Debug.Log("KW2: " +  currentCrateLooting.ItemIndexChecked) ;
             isSearching = false;
             getIfCrateIsOpened = false;
         }
@@ -427,5 +437,5 @@ public enum LootSpriteType
 
 public enum LootSpriteContainer
 {
-    Crate, Chest, TemporalBox
+    Crate, Chest, Enemy, TemporalBox
 }
