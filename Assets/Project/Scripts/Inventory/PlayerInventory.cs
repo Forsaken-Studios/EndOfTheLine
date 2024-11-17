@@ -223,7 +223,7 @@ namespace Inventory
                     case ItemType.Scrap:
                         if (item.Key.itemID == gasFilterID)
                         {
-                            currentAirFilter += item.Value * item.Key.itemValue;
+                            currentAirFilter += item.Value * item.Key.itemPriceAtMarket;
                         }
                         break;
                 }

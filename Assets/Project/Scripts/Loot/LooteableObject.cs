@@ -232,9 +232,9 @@ namespace LootSystem
         private void PrepareLoot(int remainingSlotsInCrate)
         {
             List<Item> allItems = UnityEngine.Resources.LoadAll<Item>("Items/Scrap").ToList();
-            List<Item> remainingItems = allItems;
+            List<Item> remainingItems = allItems.FindAll(item => item.canSpawnInCrates);
             float intervalAcount = 0;
-            foreach (var item in allItems)
+            foreach (var item in remainingItems)
             {
                 ItemInterval itemInverval = new ItemInterval(intervalAcount, intervalAcount + item.itemSpawnChance);
                 itemsIntervalSpawn.Add(item, itemInverval);
@@ -274,9 +274,10 @@ namespace LootSystem
         private void PrepareLootForEnemyBody(int remainingSlotsInCrate)
         {
             List<Item> allItems = UnityEngine.Resources.LoadAll<Item>("Items/Scrap").ToList();
-            List<Item> remainingItems = allItems;
+            List<Item> remainingItems = allItems.FindAll(item => item.canSpawnInEnemyBodies);
+
             float intervalAcount = 0;
-            foreach (var item in allItems)
+            foreach (var item in remainingItems)
             {
                 ItemInterval itemInverval = new ItemInterval(intervalAcount, intervalAcount + item.itemSpawnChance);
                 itemsIntervalSpawn.Add(item, itemInverval);
@@ -295,18 +296,21 @@ namespace LootSystem
                 {
                     if (item.Value.minNumber <= value && item.Value.maxNumber >= value)
                     {
-                        int randomQuantity = Random.Range(1, 4);
-                        if (itemsInLootableObject.ContainsKey(item.Key))
+                        if (item.Key.itemName != "EmptyItem")
                         {
-                            itemsInLootableObject[item.Key] += randomQuantity;
+                            int randomQuantity = Random.Range(1, 4);
+                            if (itemsInLootableObject.ContainsKey(item.Key))
+                            {
+                                itemsInLootableObject[item.Key] += randomQuantity;
+                            }
+                            else
+                            {
+                                itemsInLootableObject.Add(item.Key, randomQuantity);
+                                //Debug.Log("KW3: ADDED: " + item.Key + " " + this.gameObject.transform.position) ;
+                            }
+                            intervalAcount = GenerateNewIntervalCount(item.Key, remainingItems);
+                            break;
                         }
-                        else
-                        {
-                            itemsInLootableObject.Add(item.Key, randomQuantity);
-                            //Debug.Log("KW3: ADDED: " + item.Key + " " + this.gameObject.transform.position) ;
-                        }
-                        intervalAcount = GenerateNewIntervalCount(item.Key, remainingItems);
-                        break;
                     }
                 }
             
