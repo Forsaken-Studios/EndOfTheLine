@@ -5691,6 +5691,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: AxeEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 2636381174238085955, guid: 9dd872dfafcd85345ab1ad4fa87749a5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5118049485586319712, guid: 9dd872dfafcd85345ab1ad4fa87749a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 19.50481
@@ -5976,6 +5980,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1623403364}
     m_Modifications:
+    - target: {fileID: 5332866364636433274, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: isCrateForTutorial
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5332866364636433274, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: itemsToSpawnForTutorial.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5332866364636433274, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: itemsToSpawnForTutorial.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5332866364636433274, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: itemsToSpawnForTutorial.Array.data[1]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5332866364636433274, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: itemsToSpawnForTutorial.Array.data[2]
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5332866364636433274, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
+      propertyPath: itemsToSpawnForTutorial.Array.data[3]
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7512406211256044260, guid: 28c6b38898a7c1243be231f5e1ddf29e, type: 3}
       propertyPath: m_Name
       value: Crate

@@ -19,6 +19,28 @@ namespace LootSystem
             
         }
     }
+
+    public enum ItemsEnum
+    {
+       None,  
+       Battery,
+       Coin_AirFilter, 
+       EmptyFoodCan,
+       EmptyItem, 
+       Flashlight,
+       FoodcanHam,
+       FoodCanTomSauce, 
+       MetalPlate, 
+       MineralGreen, 
+       MineralPurple, 
+       MineralRed,
+       Pickaxe,
+       Scrap, 
+       Screws,
+       Shovel, 
+       Sickle, 
+       Tools
+    }
     
     public class LooteableObject : MonoBehaviour
     {
@@ -48,16 +70,20 @@ namespace LootSystem
         {
             get { return itemsInLootableObject; }
         }
-        [Header("Need to spawn an specific item")]
+        [Header("Need to spawn an specific item (Only for keycards)")]
         [SerializeField] private bool onlyOneItemInBag;
         [SerializeField] private bool needToSpawnXObject;
-        public bool CheckIfNeedToSpawnXObject
-        {
-            get { return needToSpawnXObject; }
-        }
-
-        public bool AlreadyLoadedWithLoot { get; private set; }
         [SerializeField] private List<string> itemsToSpawn;
+        public bool CheckIfNeedToSpawnXObject => needToSpawnXObject;
+
+        
+
+        [Header("Spawn For tutorial MAX 6")] 
+        [SerializeField] private bool isCrateForTutorial;
+        public bool CheckIfItIsTutorial => isCrateForTutorial;
+        [SerializeField] private List<ItemsEnum> itemsToSpawnForTutorial;
+        public bool AlreadyLoadedWithLoot { get; private set; }
+
         private List<Item> itemsNeededToSpawn;
         [Header("Hotkey Prefab offset ")]
         [SerializeField] private float verticalOffset = 0.5f;
@@ -175,9 +201,13 @@ namespace LootSystem
             if (needToSpawnXObject)
             {
                 InitializeLootObject(itemsToSpawn);  
+            }else if (isCrateForTutorial)
+            {
+                PrepareLootForTutorial();
             }
             else
             {
+                
                 if (chestType == LootSpriteContainer.Enemy)
                 {
                     PrepareLootForEnemyBody(2);
@@ -186,8 +216,21 @@ namespace LootSystem
                 {
                     InitializeLootObject(null);  
                 }
-                
             }
+            AlreadyLoadedWithLoot = true;
+        }
+
+        private void PrepareLootForTutorial()
+        {
+            List<string> itemsToSpawn = new List<string>();
+
+            foreach (var tutorialItem in itemsToSpawnForTutorial)
+            {
+                itemsToSpawn.Add(tutorialItem.ToString());
+            }
+            Debug.Log("KW: " + itemsToSpawn[0]);
+            PrepareItemsNeededToSpawnForTutorial(itemsToSpawn);
+   
         }
 
         private void InitializeLootObject(List<string> itemsList)
@@ -207,7 +250,6 @@ namespace LootSystem
                         PrepareLoot(remainingItems); 
                     }
                 }
-            
             }
             else
             {
@@ -226,8 +268,18 @@ namespace LootSystem
                 itemsNeededToSpawn.Add(itemSO);
                 itemsInLootableObject.Add(itemSO, 1);
             }
+            AlreadyLoadedWithLoot = true;
         }
-        
+        private void PrepareItemsNeededToSpawnForTutorial(List<string> itemsList)
+        {
+            foreach (var itemName in itemsList)
+            {
+                Object itemNeeded = UnityEngine.Resources.Load("Items/Scrap/" + itemName.ToString());
+                Item itemSO = itemNeeded as Item;
+                itemsNeededToSpawn.Add(itemSO);
+                itemsInLootableObject.Add(itemSO, 1);
+            }
+        }
 
         private void PrepareLoot(int remainingSlotsInCrate)
         {
