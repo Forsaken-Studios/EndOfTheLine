@@ -56,6 +56,7 @@ public class AbilityHolder : MonoBehaviour
         if (state == AbilityState.preparing)
         {
             Destroy(currentCanvasCreated);
+            DestroyAllShortcuts();
             this.state = AbilityState.ready;
         }
     }

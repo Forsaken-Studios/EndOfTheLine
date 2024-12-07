@@ -242,6 +242,7 @@ namespace Player
         {
             if (Input.GetKey(KeyCode.LeftShift) && PlayerSprintStamina.Instance.PlayerCanSprint())
             {
+                CancelAbilities();
                 isSprinting = true;
                 moveSpeed = runSpeed;
                 playerSpeedBar.UpdateImage(moveSpeed);
@@ -253,6 +254,12 @@ namespace Player
                 playerSpeedBar.UpdateImage(moveSpeed);
             }
         }
+        private void CancelAbilities()
+        {
+            AbilityManager.Instance.Holder1.TryToCancelAbility();
+            AbilityManager.Instance.Holder2.TryToCancelAbility();
+        }
+        
         
         private void HandleDashInputs()
         {
