@@ -30,6 +30,9 @@ Shader "Unlit/FloorFXShader"
         [Space(10)]
         _Prio ("Merge Priority",Range(0,1)) = 0
         
+        [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend("Src Blend mode", float) = 1
+        [Enum(UnityEngine.Rendering.BlendMode)] _DstBlend("Dst Blend mode", float) = 0
+        
         
         
         
@@ -38,8 +41,8 @@ Shader "Unlit/FloorFXShader"
     {
         Tags { "Queue" = "Transparent" "RenderType"="Transparent" }
         ZWrite Off
-        Blend SrcAlpha OneMinusSrcAlpha
-        //Blend[_SrcBlend][_DstBlend]
+        //Blend SrcAlpha OneMinusSrcAlpha
+        Blend[_SrcBlend][_DstBlend]
         LOD 100
 
         Pass
