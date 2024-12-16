@@ -60,7 +60,10 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private GameObject buyWagonPrefab;
     private bool isShowingWagonBuyUI = false;
     public bool IsShowingWagonBuyUI => isShowingWagonBuyUI;
-    [SerializeField] private GameObject generalCanvas; 
+    [SerializeField] private GameObject generalCanvas;
+
+    [Header("Music Mixer Check")]
+    [SerializeField] MusicManager musicManager;
     /// <summary>
     /// 0 - Food
     /// 1 - Material
@@ -135,6 +138,8 @@ public class TrainManager : MonoBehaviour
         unlockedWagonsList[0] = true;
         //Home always unlocked
         unlockedWagonsList[1] = true;
+        //Activates the mechanic tune
+        musicManager.StartFadeFunction(0);
         //TODO: Just for testing
         //PlayerPrefs.SetInt("Wagon 3", -1);
         // -1 = Locked | 0 = Not defined | 1 = Unlocked
@@ -143,8 +148,10 @@ public class TrainManager : MonoBehaviour
         if (PlayerPrefs.GetInt("Wagon 4") == 0)
             PlayerPrefs.SetInt("Wagon 4", -1);
         
-        unlockedWagonsList[2] = PlayerPrefs.GetInt("Wagon 3") == 1; 
+        unlockedWagonsList[2] = PlayerPrefs.GetInt("Wagon 3") == 1;
+        if (unlockedWagonsList[2]) musicManager.StartFadeFunction(1); //TODO: change to correct number in call when all wagons are set properly
         unlockedWagonsList[3] = PlayerPrefs.GetInt("Wagon 4") == 1;
+        if (unlockedWagonsList[3]) musicManager.StartFadeFunction(2); //TODO: change to correct number in call when all wagons are set properly
 
 
     }
@@ -321,6 +328,7 @@ public class TrainManager : MonoBehaviour
             PlayerPrefs.SetInt("Wagon " + (currentIndex + 1), 1);
             isShowingWagonBuyUI = false;
             lockIcon.SetActive(false);
+            musicManager.StartFadeFunction(currentIndex-1);
             return true;
         }
         else
