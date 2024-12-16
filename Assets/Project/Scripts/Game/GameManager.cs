@@ -156,28 +156,45 @@ public class GameManager : MonoBehaviour
     
     public void EndGame(bool died=true)
     {
-        //Sell scrap Items && Save items for train base
-        if (!died)
+        if (SceneManager.GetActiveScene().name == "TutorialScene")
         {
-            PlayerInventory.Instance.HandleItemsAtEndGame();
-            PlayerInventory.Instance.RemoveCoinFromInventory();
-            SaveManager.Instance.SavePlayerInventoryJson();
-        } else if (died)
-        {
-            Debug.Log("[GameManager.cs] : Player has died.");
-            playerIsDead = true;
-            PlayerAim playerAim = PlayerController.Instance.gameObject.GetComponent<PlayerAim>();
-            PlayerController.Instance.GetComponentInChildren<CircleCollider2D>().enabled = false;
-            PlayerController.Instance.GetComponentInChildren<Rigidbody2D>().Sleep();
-            playerAim.SetIfCanRotateAim(false);
-            playerAim.RemoveTriangle();
-            PlayerController.Instance.PlayDeathAnimation();
+            if (died)
+            {
+                SceneManager.LoadSceneAsync(3); 
+            }
+            else
+            {
+                PlayerPrefs.SetInt("TutorialPlayed", 1);
+                StartCoroutine(EndGameCorroutine());
+            }
         }
+        else
+        {
+            //Sell scrap Items && Save items for train base
+            if (!died) // si queremos que el tutorial de los objetos, pasamos esto a general
+            {
+                PlayerInventory.Instance.HandleItemsAtEndGame();
+                PlayerInventory.Instance.RemoveCoinFromInventory();
+                SaveManager.Instance.SavePlayerInventoryJson();
+            } else if (died)
+            {
+                Debug.Log("[GameManager.cs] : Player has died.");
+                playerIsDead = true;
+                PlayerAim playerAim = PlayerController.Instance.gameObject.GetComponent<PlayerAim>();
+                PlayerController.Instance.GetComponentInChildren<CircleCollider2D>().enabled = false;
+                PlayerController.Instance.GetComponentInChildren<Rigidbody2D>().Sleep();
+                playerAim.SetIfCanRotateAim(false);
+                playerAim.RemoveTriangle();
+                PlayerController.Instance.PlayDeathAnimation();
+            }
 
-        //Add one more day to game
-        int currentDay = PlayerPrefs.GetInt("CurrentDay");
-        PlayerPrefs.SetInt("PreviousDay", currentDay);
-        PlayerPrefs.SetInt("CurrentDay", currentDay + 1);
+            //Add one more day to game
+            int currentDay = PlayerPrefs.GetInt("CurrentDay");
+            PlayerPrefs.SetInt("PreviousDay", currentDay);
+            PlayerPrefs.SetInt("CurrentDay", currentDay + 1);
+        }
+        
+  
         
         //End Game
         StartCoroutine(EndGameCorroutine());
@@ -188,10 +205,6 @@ public class GameManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "TrainBase" || SceneManager.GetActiveScene().name == "MainMenu")
         {
             SaveManager.Instance.SaveGame();
-        }
-        else
-        { 
-            //SaveManager.Instance.EmptyDictionaryIfDisconnectInRaid();
         }
     }
     

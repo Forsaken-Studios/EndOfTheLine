@@ -25,6 +25,8 @@ public class RaidTime : MonoBehaviour
     { 
         currentTime = ExtractionManager.Instance.GetRaidTime();
         timerGameObject = this.transform.Find("Timer").gameObject;
+        timerGameObject.SetActive(true); //Si queremos lo de pulsar un boton, quitar esta linea
+
         raidTimeAnimator = GetComponent<Animator>();
         //StartCoroutine(StartCountdown());
     }
