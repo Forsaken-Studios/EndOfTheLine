@@ -15,10 +15,16 @@ namespace Player
         [SerializeField] private float speedModifier = 0.5f;
         
         [SerializeField] private float moveSpeed;
+        [SerializeField, Range(0.8f, 1.5f)] private float animSpeed = 0.8f;
         private float currentSpeedValue;
         private float speedX, speedY;
         private bool isSprinting;
         public bool IsSprinting => isSprinting;
+
+        [Header("2D Models")]
+        [SerializeField] private GameObject upperBody;
+        [SerializeField] private GameObject lowerBody;
+
         [Header("Weight Properties")]
         [SerializeField] private int maxLimitWeight = 35;
         [SerializeField] private int overWeight = 25;
@@ -182,6 +188,9 @@ namespace Player
             }
             _rb.MovePosition(_rb.position + new Vector2(speedX, speedY) * (moveSpeed * Time.fixedDeltaTime));
         }
+        void RotateLowerBody() {
+            
+        }
 
         private void HandleMouseWheelSpeed()
         {
@@ -226,6 +235,9 @@ namespace Player
                 {
                     _animator.SetBool("isRunning", false);
                     _animator.SetBool("isWalking", true);
+                    // TODO Mario - Calcular correctamente el valor a pasarle al parámetro animSpeed 
+                    // El rango de valores que parece estar bien es entre 0'8 y 1'25
+                    _animator.SetFloat("animWalkSpeed", animSpeed);
                 }
             }
             else
