@@ -15,6 +15,8 @@ public class TrainInventoryManager : IInventoryManager
     private int numberOfTools = -1;
     [SerializeField] private GameObject canvasInventory;
     [SerializeField] private TextMeshProUGUI textSwap;
+    public bool isSellingItems { get; private set; }
+
     private void Awake()
     {
         if (Instance != null)
@@ -77,6 +79,7 @@ public class TrainInventoryManager : IInventoryManager
 
     public void OpenInventoryStatusToSell()
     {
+        isSellingItems = true;
         inventoryHUD.SetActive(true);
         SaveManager.Instance.SavePlayerInventoryJson();
         foreach (var itemSlot in itemSlotList)
@@ -84,9 +87,12 @@ public class TrainInventoryManager : IInventoryManager
             itemSlot.ClearItemSlot();
         }
         PlayerInventory.Instance.GetInventoryItems().Clear();
-        textSwap.text = "Items To Sell";
     }
 
+    public void IsNotSellingItems()
+    {
+        isSellingItems = false;
+    }
     public void OpenInventoryInMarketRoom()
     {
         inventoryHUD.SetActive(true);

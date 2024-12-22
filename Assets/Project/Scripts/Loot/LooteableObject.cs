@@ -66,6 +66,8 @@ namespace LootSystem
             set { this.itemIndexChecked = value; }
         }
 
+        public bool canLootAllItems;
+
         public Dictionary<Item, int> itemsInLootCrate
         {
             get { return itemsInLootableObject; }

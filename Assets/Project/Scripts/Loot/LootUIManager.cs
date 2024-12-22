@@ -181,10 +181,13 @@ namespace LootSystem
 
         public void LootAllItemsInCrate()
         {
-            currentCrateLooting.LootAllItems();
-            DesactivateLootUIPanel();
-            InventoryManager.Instance.DesactivateInventory();
-            currentCrateLooting = null;
+            if (currentCrateLooting.AlreadyChecked)
+            {
+                currentCrateLooting.LootAllItems();
+                DesactivateLootUIPanel();
+                InventoryManager.Instance.DesactivateInventory();
+                currentCrateLooting = null;
+            }
         }
     
         public void LoadItemsInSlots(Dictionary<Item, int> itemsInLootableObject)

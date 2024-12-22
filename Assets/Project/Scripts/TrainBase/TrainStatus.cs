@@ -2,6 +2,8 @@ public enum TrainStatus
 {
     onMechanicRoom, 
     onMissionSelector, 
+    onLoreRoom, 
+    onBarmanRoom,
     onMarketRoom, 
     onExpeditionRoom, 
     usingWagon,

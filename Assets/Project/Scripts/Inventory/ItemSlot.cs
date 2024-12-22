@@ -26,6 +26,7 @@ namespace Inventory
         [SerializeField] private GameObject searchPanel;
         private bool canThrowItemAway;
         private Item itemInSlot;
+        private GameObject hoverInfo;
         public int itemID
         {
             get { return ItemID; }
@@ -714,7 +715,7 @@ namespace Inventory
                     // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM CRATE TO INVENTORY", FeatureType.Loot);
                     DoubleClickOnItemFromCrateToInventory();
                 }
-                
+                Destroy(hoverGameObject);
                 if (SceneManager.GetActiveScene().name != GameManager.Instance.GetNameTrainScene())
                     CheckIfWeNeedToHideHUD();
             }
@@ -723,9 +724,10 @@ namespace Inventory
             {
                 if (itemID != 0)
                 {
+                    Destroy(hoverGameObject);
                     if(SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
                     {
-                        if (TrainManager.Instance.TrainStatus == TrainStatus.onMarketScreen)
+                        if (TrainManager.Instance.TrainStatus == TrainStatus.onMarketScreen && TrainInventoryManager.Instance.isSellingItems)
                         {
                             SellItem();
                         }
@@ -775,6 +777,8 @@ namespace Inventory
                 StartCoroutine(StartHoverCountdown());
             }
         }
+        
+        
 
         private IEnumerator StartHoverCountdown()
         {

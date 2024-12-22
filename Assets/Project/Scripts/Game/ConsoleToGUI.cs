@@ -10,7 +10,7 @@ namespace DebugStuff
         int kChars = 700;
         void OnEnable() { Application.logMessageReceived += Log; }
         void OnDisable() { Application.logMessageReceived -= Log; }
-        void Update() { if (Input.GetKeyDown(KeyCode.P)) { doShow = !doShow; } }
+        void Update() { if (Input.GetKeyDown(KeyCode.P)) { doShow = false; } } //!doShow
         public void Log(string logString, string stackTrace, LogType type)
         {
             // for onscreen...

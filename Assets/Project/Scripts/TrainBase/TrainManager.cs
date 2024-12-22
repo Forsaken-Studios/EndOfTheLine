@@ -42,6 +42,8 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private GameObject missionSelectorCanvas;
     [SerializeField] private GameObject controlRoomCanvas;
     [SerializeField] private GameObject marketRoomCanvas;
+    [SerializeField] private GameObject loreRoomRoomCanvas;
+    [SerializeField] private GameObject barmanRoomCanvas;
     [SerializeField] private GameObject expeditionRoomCanvas;
     [Header("Wagon Lock List")] 
     private bool[] unlockedWagonsList; //True -> Unlocked, False -> Locked
@@ -138,20 +140,24 @@ public class TrainManager : MonoBehaviour
         unlockedWagonsList[0] = true;
         //Home always unlocked
         unlockedWagonsList[1] = true;
+        //lore room always unlocked
+        unlockedWagonsList[2] = true;
+        //bar room always unlocked
+        unlockedWagonsList[3] = true;
         //Activates the mechanic tune
         musicManager.StartFadeFunction(0);
         //TODO: Just for testing
         //PlayerPrefs.SetInt("Wagon 3", -1);
         // -1 = Locked | 0 = Not defined | 1 = Unlocked
-        if (PlayerPrefs.GetInt("Wagon 3") == 0)
-            PlayerPrefs.SetInt("Wagon 3", -1);     
-        if (PlayerPrefs.GetInt("Wagon 4") == 0)
-            PlayerPrefs.SetInt("Wagon 4", -1);
+        if (PlayerPrefs.GetInt("Wagon 5") == 0)
+            PlayerPrefs.SetInt("Wagon 5", -1);     
+        if (PlayerPrefs.GetInt("Wagon 6") == 0)
+            PlayerPrefs.SetInt("Wagon 6", -1);
         
-        unlockedWagonsList[2] = PlayerPrefs.GetInt("Wagon 3") == 1;
-        if (unlockedWagonsList[2]) musicManager.StartFadeFunction(1); //TODO: change to correct number in call when all wagons are set properly
-        unlockedWagonsList[3] = PlayerPrefs.GetInt("Wagon 4") == 1;
-        if (unlockedWagonsList[3]) musicManager.StartFadeFunction(2); //TODO: change to correct number in call when all wagons are set properly
+        unlockedWagonsList[4] = PlayerPrefs.GetInt("Wagon 5") == 1;
+        if (unlockedWagonsList[4]) musicManager.StartFadeFunction(1); //TODO: change to correct number in call when all wagons are set properly
+        unlockedWagonsList[5] = PlayerPrefs.GetInt("Wagon 6") == 1;
+        if (unlockedWagonsList[5]) musicManager.StartFadeFunction(2); //TODO: change to correct number in call when all wagons are set properly
 
 
     }
@@ -249,10 +255,18 @@ public class TrainManager : MonoBehaviour
                 currentCanvas = controlRoomCanvas;
                 break; 
             case 2:
-                TrainStatus = TrainStatus.onMarketRoom;
-                currentCanvas = marketRoomCanvas;
+                TrainStatus = TrainStatus.onLoreRoom;
+                currentCanvas = loreRoomRoomCanvas;
                 break;    
             case 3:
+                TrainStatus = TrainStatus.onBarmanRoom;
+                currentCanvas = barmanRoomCanvas;
+                break;
+            case 4: 
+                TrainStatus = TrainStatus.onMarketRoom;
+                currentCanvas = marketRoomCanvas;
+                break;
+            case 5: 
                 TrainStatus = TrainStatus.onExpeditionRoom;
                 currentCanvas = expeditionRoomCanvas;
                 break;

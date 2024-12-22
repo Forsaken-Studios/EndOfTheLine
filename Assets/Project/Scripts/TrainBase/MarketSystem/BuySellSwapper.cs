@@ -15,7 +15,6 @@ public class BuySellSwapper : MonoBehaviour
     [SerializeField] private Button tradePanelButton;
 
     private bool isSelling = false;
-
     private void OnEnable()
     {
         TrainManager.Instance.TrainStatus = TrainStatus.onMarketScreen;
@@ -67,8 +66,8 @@ public class BuySellSwapper : MonoBehaviour
             TrainInventoryManager.Instance.LoadPlayerInventory();
             isSelling = false;
         }
-        
         TrainInventoryManager.Instance.OpenInventoryInMarketRoom();
+        TrainInventoryManager.Instance.IsNotSellingItems();
         this.buyPanel.SetActive(true);  
         this.tradePanel.SetActive(false);
         this.sellPanel.SetActive(false);
@@ -85,6 +84,7 @@ public class BuySellSwapper : MonoBehaviour
             TrainInventoryManager.Instance.LoadPlayerInventory();
             isSelling = false;
         }
+        TrainInventoryManager.Instance.IsNotSellingItems();
         TrainInventoryManager.Instance.OpenInventoryInMarketRoom();
         this.buyPanel.SetActive(false);
         this.tradePanel.SetActive(true);

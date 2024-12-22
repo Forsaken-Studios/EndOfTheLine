@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using LootSystem;
@@ -12,7 +13,15 @@ public class HoverItem : MonoBehaviour
 
     public void SetUpHoverView(Item item)
     {
-        this.itemNameText.text = item.itemName.ToString();
-        this.itemWeightText.text = item.itemWeight.ToString() + " KG";
+        try
+        {
+            this.itemNameText.text = item.itemName.ToString();
+            this.itemWeightText.text = item.itemWeight.ToString() + " KG";
+        }
+        catch (Exception e)
+        {
+            Destroy(this.gameObject);
+        }
+
     }
 }
