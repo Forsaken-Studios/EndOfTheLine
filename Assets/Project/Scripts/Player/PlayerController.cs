@@ -208,25 +208,19 @@ namespace Player
         }
 
         void Rotate() {
-
-            //Vector3 filteredTransform = new Vector3(legsModel.transform.forward.x, legsModel.transform.forward.y, 0f);
-            //Vector3 moveVector3D = new Vector3(moveVector.x, moveVector.y, 0f);
-
-            //Vector3 desiredForward = Vector3.RotateTowards(filteredTransform, moveVector, rotSpeed * Time.deltaTime, 0f);
-            //walkDirection = Quaternion.LookRotation(desiredForward);
-
-            float vectorOrientation = Mathf.Atan2(-moveVector.x, moveVector.y) * Mathf.Rad2Deg;
+            float movementOrientation = Mathf.Atan2(-moveVector.x, moveVector.y) * Mathf.Rad2Deg;
+            
             if (isRunning)
             {
                 float currentOrientation = torsoModel.transform.eulerAngles.z;
-                float orientation = Mathf.LerpAngle(currentOrientation, vectorOrientation, rotSpeed * Time.fixedDeltaTime);
+                float orientation = Mathf.LerpAngle(currentOrientation, movementOrientation, rotSpeed * Time.fixedDeltaTime);
 
                 torsoModel.transform.rotation = Quaternion.Euler(0f, 0f, orientation);
             }
             else
             {
                 float currentOrientation = legsModel.transform.eulerAngles.z;
-                float orientation = Mathf.LerpAngle(currentOrientation, vectorOrientation, rotSpeed * Time.fixedDeltaTime);
+                float orientation = Mathf.LerpAngle(currentOrientation, movementOrientation, rotSpeed * Time.fixedDeltaTime);
 
                 legsModel.transform.rotation = Quaternion.Euler(0f, 0f, orientation);
             }
@@ -405,6 +399,30 @@ namespace Player
             if(_animTorso != null)
                 _animTorso.SetBool("isOnInventory", false);
         }
+
+        public void PlayAimAnim()
+        {
+            if (_animTorso != null)
+                _animTorso.SetBool("isAiming",true);
+        }
+
+        public void PlayShootAnim()
+        {
+            if(_animTorso != null)
+            {
+                _animTorso.SetBool("isAiming", false);
+                _animTorso.SetTrigger("shootTrigger");
+            }
+        }
+
+        public void PlayCancelShootAnim()
+        {
+            if(_animTorso != null){
+                _animTorso.SetBool("isAiming", false);
+                _animTorso.SetTrigger("cancelAimingTrigger");
+            }
+        }
+
         //Advanced LERP function
         private float ExpDecay(float current, float goal, float decay, float dT)
         {
