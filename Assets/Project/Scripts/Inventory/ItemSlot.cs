@@ -771,11 +771,24 @@ namespace Inventory
         
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (this.itemID != 0 && !isLootCrate)
+            if (SceneManager.GetActiveScene().name == "TrainBase")
             {
-                canThrowItemAway = true;
-                StartCoroutine(StartHoverCountdown());
+                if (this.ItemID != 0)
+                {
+                    canThrowItemAway = true;
+                    StartCoroutine(StartHoverCountdown());
+                }
             }
+            else
+            {
+                if (this.itemID != 0 && !isLootCrate)
+                {
+                    canThrowItemAway = true;
+                    StartCoroutine(StartHoverCountdown());
+                }
+            }
+
+         
         }
         
         
