@@ -1,4 +1,5 @@
 using System.Collections;
+using Inventory;
 using UnityEngine;
 namespace Player
 {
@@ -157,7 +158,12 @@ namespace Player
         private void Update()
         {
             if (!playerCanMove)
-            { 
+            {
+                if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.D)
+                    || Input.GetKeyDown(KeyCode.S))
+                {
+                    PlayerInventory.Instance.ShowPlayerHasTooMuchWeight();
+                }
                 return;
             }
             if (GameManager.Instance.GameState == GameState.OnGame)

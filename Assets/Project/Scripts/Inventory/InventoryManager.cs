@@ -114,6 +114,7 @@ namespace Inventory
             if (PlayerController.Instance.CurrentWeight >= PlayerController.Instance.GetMaxWeight())
             {
                 weightText.color = Color.red;
+                //TODO SHOW POP UP
             }else if (PlayerController.Instance.CurrentWeight >= PlayerController.Instance.GetOverweight())
             {
                 weightText.color = Color.yellow;

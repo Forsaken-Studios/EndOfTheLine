@@ -211,6 +211,15 @@ namespace Inventory
             }
         }
 
+        public void ShowPlayerHasTooMuchWeight()
+        {
+            if (floatingTextPrefab)
+            {
+                GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity);
+                prefab.GetComponentInChildren<TextMeshProUGUI>().text = "You can't handle to much weight, drop something";
+            } 
+        }
+
         public void HandleItemsAtEndGame()
         {
             int currentAirFilter = PlayerPrefs.GetInt(RESOURCES_AIR_FILTER_NAME);
