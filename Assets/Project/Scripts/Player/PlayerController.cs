@@ -15,10 +15,23 @@ namespace Player
         [SerializeField] private float speedModifier = 0.5f;
         
         [SerializeField] private float moveSpeed;
+        [SerializeField, Range(0.8f, 1.25f)] private float animSpeedWalk = 0.8f;
+        [SerializeField, Range(1f, 1.3f)] private float animSpeedRun = 1f;
         private float currentSpeedValue;
         private float speedX, speedY;
         private bool isSprinting;
         public bool IsSprinting => isSprinting;
+
+        [Header("Animation Properties")]
+        [SerializeField] private GameObject torsoModel;
+        [SerializeField] private GameObject legsModel;
+        [SerializeField] private float rotSpeed;
+        [SerializeField] private float minAnimSpeedWalk;
+        [SerializeField] private float maxAnimSpeedWalk;
+        public bool isRunning = false;
+        //[SerializeField] private float minAnimSpeedRun;
+        //[SerializeField] private float maxAnimSpeedRun;
+
         [Header("Weight Properties")]
         [SerializeField] private int maxLimitWeight = 35;
         [SerializeField] private int overWeight = 25;
@@ -49,7 +62,7 @@ namespace Player
                 {
                     playerCanMove = false;
                     isOverweight = true;
-                    _animator.SetBool("isWalking", false);
+                    _animTorso.SetBool("isWalking", false);
                     if (OnWeightChange != null)
                         OnWeightChange(2);
                 }
@@ -66,7 +79,12 @@ namespace Player
         
         [Header("Properties")]
         private Rigidbody2D _rb;
-        private Animator _animator;
+        [SerializeField] private Animator _animTorso;
+        [SerializeField] private Animator _animLegs;
+        private Vector2 moveVector;
+        //private Quaternion walkDirection;
+        //private Animator _animator;
+        //[SerializeField] private Animator _animator;
 
         [Header("Dash Settings")] 
         [SerializeField] private float dashSpeed = 10f;
@@ -102,13 +120,15 @@ namespace Player
                 Destroy(this);
             }
             Instance = this;
+            _animTorso = torsoModel.GetComponent<Animator>();
+            _animLegs = legsModel.GetComponent<Animator>();
         }
 
         // Start is called before the first frame update
         void Start()
         {
             _rb = GetComponent<Rigidbody2D>();
-            _animator = GetComponentInChildren<Animator>();
+            _animTorso = GetComponentInChildren<Animator>();
             currentSpeedValue = walkSpeed;
             playerSpeedBar.UpdateImage(walkSpeed);
 
@@ -159,7 +179,9 @@ namespace Player
                     if (GameManager.Instance.GameState == GameState.OnInventory ||
                         GameManager.Instance.GameState == GameState.onLoreView)
                     {
-                        _animator.SetBool("isWalking", false);
+                        _animTorso.SetBool("isWalking", false);
+                        _animTorso.SetBool("isRunning", false);
+                        _animLegs.SetBool("isWalking", false);
                     }
                     speedX = 0;
                     speedY = 0;
@@ -180,7 +202,28 @@ namespace Player
             {
                 return;
             }
-            _rb.MovePosition(_rb.position + new Vector2(speedX, speedY) * (moveSpeed * Time.fixedDeltaTime));
+            moveVector = new Vector2(speedX, speedY);
+            _rb.MovePosition(_rb.position + moveVector * (moveSpeed * Time.fixedDeltaTime));
+            Rotate();
+        }
+
+        void Rotate() {
+            float movementOrientation = Mathf.Atan2(-moveVector.x, moveVector.y) * Mathf.Rad2Deg;
+            
+            if (isRunning)
+            {
+                float currentOrientation = torsoModel.transform.eulerAngles.z;
+                float orientation = Mathf.LerpAngle(currentOrientation, movementOrientation, rotSpeed * Time.fixedDeltaTime);
+
+                torsoModel.transform.rotation = Quaternion.Euler(0f, 0f, orientation);
+            }
+            else
+            {
+                float currentOrientation = legsModel.transform.eulerAngles.z;
+                float orientation = Mathf.LerpAngle(currentOrientation, movementOrientation, rotSpeed * Time.fixedDeltaTime);
+
+                legsModel.transform.rotation = Quaternion.Euler(0f, 0f, orientation);
+            }
         }
 
         private void HandleMouseWheelSpeed()
@@ -206,36 +249,60 @@ namespace Player
         {
             speedX = Input.GetAxisRaw("Horizontal");
             speedY = Input.GetAxisRaw("Vertical");
+            isRunning = false;
+
             if (isOverweight)
             {
                 speedX *= moveReducerByWeight;
                 speedY *= moveReducerByWeight;
             }
-            
 
             if (speedX != 0 || speedY != 0)
             {
                 HandleSprintInput();
                 HandleDashInputs();
-                // TODO: Change method to add variation between walking and running depending on player current speed
+
                 if(moveSpeed >= runSpeed)
                 {
-                    _animator.SetBool("isRunning", true);
-                    _animator.SetBool("isWalking", true); // false);
-                } else
+                    isSprinting = true;
+                    isRunning = true;
+                    _animTorso.SetBool("isRunning", isRunning);
+                    _animTorso.SetBool("isWalking", !isRunning);
+                    _animTorso.SetFloat("animWalkSpeed", minAnimSpeedWalk);
+
+                    _animLegs.SetBool("isWalking", !isRunning);
+                    _animLegs.SetFloat("animWalkSpeed", minAnimSpeedWalk);
+                }
+                else
                 {
-                    _animator.SetBool("isRunning", false);
-                    _animator.SetBool("isWalking", true);
+                    float animSpeed = GetAnimationSpeed(moveSpeed, walkSpeed, runSpeed);
+                    _animTorso.SetBool("isRunning", isRunning);
+                    _animTorso.SetBool("isWalking", !isRunning);
+                    _animTorso.SetFloat("animWalkSpeed", animSpeed);
+
+                    _animLegs.SetBool("isWalking", !isRunning);
+                    _animLegs.SetFloat("animWalkSpeed", animSpeed);
                 }
             }
             else
             {
                 isSprinting = false;
                 moveSpeed = 0;
-                _animator.SetBool("isWalking", false);
-                _animator.SetBool("isRunning", false);
+                _animTorso.SetBool("isRunning", false);
+                _animTorso.SetBool("isWalking", false);
+                _animTorso.SetFloat("animWalkSpeed", 0);
+
+                _animLegs.SetBool("isWalking", false);
+                _animLegs.SetFloat("animWalkSpeed", 0);
             }
-           // _animator.SetInteger("SpeedInt", (int)speedX);
+        }
+
+        private float GetAnimationSpeed(float currentSpeed, float minSpeed, float maxSpeed)
+        {
+            // Pillamos en que porcentaje esta la vel actual entre el min y max
+            float percentage = Mathf.InverseLerp(minSpeed, maxSpeed, currentSpeed);
+            float animSpeed = Mathf.Lerp(minAnimSpeedWalk, maxAnimSpeedWalk, percentage);
+            return animSpeed;
         }
 
         private void HandleSprintInput()
@@ -266,7 +333,7 @@ namespace Player
             if (Input.GetKeyDown(dashInput) && canDash && PlayerOverheating.Instance.GetEnergy() >= dashStaminaCost)
             {
                 StartCoroutine(Dash());
-                _animator.SetBool("isDashPressed", true);
+                _animTorso.SetBool("isDashPressed", true);
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Movement_Dash, null, true);
             }
         }
@@ -289,7 +356,7 @@ namespace Player
 
             yield return new WaitForSeconds(dashDuration);
             isDashing = false;
-            _animator.SetBool("isDashPressed", false);
+            _animTorso.SetBool("isDashPressed", false);
             yield return new WaitForSeconds(dashCooldown);
             canDash = true;
 
@@ -320,25 +387,49 @@ namespace Player
 
         public void PlayDeathAnimation()
         {
-            if(_animator != null)
-                _animator.SetBool("isDead", true);
+            if(_animTorso != null)
+                _animTorso.SetBool("isDead", true);
         }
 
         public void PlayOpenInventoryAnimation()
         {
-            if (_animator != null)
+            if (_animTorso != null)
             {              
-                _animator.SetBool("isOnInventory", true);
-                _animator.SetTrigger("isOnInventoryTrigger");
+                _animTorso.SetBool("isOnInventory", true);
+                _animTorso.SetTrigger("isOnInventoryTrigger");
             }
 
         }
         
         public void PlayCloseInventoryAnimation()
         {
-            if(_animator != null)
-                _animator.SetBool("isOnInventory", false);
+            if(_animTorso != null)
+                _animTorso.SetBool("isOnInventory", false);
         }
+
+        public void PlayAimAnim()
+        {
+            if (_animTorso != null)
+                _animTorso.SetBool("isAiming",true);
+        }
+
+        public void PlayShootAnim()
+        {
+            if(_animTorso != null)
+            {
+                _animTorso.SetBool("isAiming", false);
+                _animTorso.SetTrigger("shootTrigger");
+            }
+        }
+
+        public void PlayCancelShootAnim()
+        {
+            if(_animTorso != null){
+                _animTorso.SetBool("isAiming", false);
+                _animTorso.SetTrigger("cancelAimingTrigger");
+            }
+        }
+
         //Advanced LERP function
         private float ExpDecay(float current, float goal, float decay, float dT)
         {
