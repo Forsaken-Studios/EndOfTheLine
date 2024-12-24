@@ -144,8 +144,10 @@ public class TrainManager : MonoBehaviour
         unlockedWagonsList[2] = true;
         //bar room always unlocked
         unlockedWagonsList[3] = true;
-        //Activates the mechanic tune
+        //Activates the mechanic, lore and barman tune
         musicManager.StartFadeFunction(0);
+        musicManager.StartFadeFunction(1);
+        musicManager.StartFadeFunction(2);
         //TODO: Just for testing
         //PlayerPrefs.SetInt("Wagon 3", -1);
         // -1 = Locked | 0 = Not defined | 1 = Unlocked
@@ -155,9 +157,9 @@ public class TrainManager : MonoBehaviour
             PlayerPrefs.SetInt("Wagon 6", -1);
         
         unlockedWagonsList[4] = PlayerPrefs.GetInt("Wagon 5") == 1;
-        if (unlockedWagonsList[4]) musicManager.StartFadeFunction(1); //TODO: change to correct number in call when all wagons are set properly
+        if (unlockedWagonsList[4]) musicManager.StartFadeFunction(3); //TODO: change to correct number in call when all wagons are set properly
         unlockedWagonsList[5] = PlayerPrefs.GetInt("Wagon 6") == 1;
-        if (unlockedWagonsList[5]) musicManager.StartFadeFunction(2); //TODO: change to correct number in call when all wagons are set properly
+        if (unlockedWagonsList[5]) musicManager.StartFadeFunction(4); //TODO: change to correct number in call when all wagons are set properly
 
 
     }
