@@ -170,6 +170,7 @@ public class BasicEnemyActions : MonoBehaviour
             if (angleToPlayer < _basicEnemyDetection.GetFOVAngle() / 2)
             {
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Enemy_Hit, null, true);
+                //TODO Mario: Añadir animacion de pegar aqui
                 Debug.Log("Jugador muerto");
                 GameManager.Instance.EndGame();
             }
