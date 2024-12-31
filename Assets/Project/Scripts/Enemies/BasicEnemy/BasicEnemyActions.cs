@@ -171,6 +171,7 @@ public class BasicEnemyActions : MonoBehaviour
             {
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Enemy_Hit, null, true);
                 //TODO Mario: Añadir animacion de pegar aqui
+                _animator.SetTrigger("attackTrigger");
                 Debug.Log("Jugador muerto");
                 GameManager.Instance.EndGame();
             }
