@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Inventory;
@@ -439,7 +440,15 @@ namespace LootSystem
         {
             if (itemsInLootableObject.Count == 0)
             {
-                this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Empty);
+                try
+                {
+                    this.chestSprite.sprite =
+                        LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Empty);
+                }
+                catch (Exception e)
+                {
+                    
+                }
             }   
         }
         
