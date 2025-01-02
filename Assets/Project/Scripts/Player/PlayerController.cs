@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Inventory;
 using UnityEngine;
@@ -22,6 +23,7 @@ namespace Player
         private float speedX, speedY;
         private bool isSprinting;
         public bool IsSprinting => isSprinting;
+        private bool isAiming;
 
         [Header("Animation Properties")]
         [SerializeField] private GameObject torsoModel;
@@ -112,7 +114,7 @@ namespace Player
 
         [Header("Player Speed Bar")] 
         [SerializeField] private PlayerSpeedBarUI playerSpeedBar;
-        
+
         private void Awake()
         {
             if (Instance != null)
@@ -265,29 +267,41 @@ namespace Player
 
             if (speedX != 0 || speedY != 0)
             {
-                HandleSprintInput();
                 HandleDashInputs();
+                
 
-                if(moveSpeed >= runSpeed)
+                if (isAiming)
                 {
-                    isSprinting = true;
-                    isRunning = true;
-                    _animTorso.SetBool("isRunning", isRunning);
-                    _animTorso.SetBool("isWalking", !isRunning);
-                    _animTorso.SetFloat("animWalkSpeed", minAnimSpeedWalk);
-
-                    _animLegs.SetBool("isWalking", !isRunning);
-                    _animLegs.SetFloat("animWalkSpeed", minAnimSpeedWalk);
-                }
-                else
+                    float aimingAnimSpeed = GetAnimationSpeed(moveSpeed, walkSpeed, runSpeed);
+                    // Limitar moveSpeed a una velocidad
+                    moveSpeed = GetMinSpeed;
+                    _animLegs.SetBool("isWalking", true);
+                    _animLegs.SetFloat("animWalkSpeed", aimingAnimSpeed);
+                } else
                 {
-                    float animSpeed = GetAnimationSpeed(moveSpeed, walkSpeed, runSpeed);
-                    _animTorso.SetBool("isRunning", isRunning);
-                    _animTorso.SetBool("isWalking", !isRunning);
-                    _animTorso.SetFloat("animWalkSpeed", animSpeed);
+                    HandleSprintInput();
 
-                    _animLegs.SetBool("isWalking", !isRunning);
-                    _animLegs.SetFloat("animWalkSpeed", animSpeed);
+                    if (moveSpeed >= runSpeed)
+                    {
+                        isSprinting = true;
+                        isRunning = true;
+                        _animTorso.SetBool("isRunning", isRunning);
+                        _animTorso.SetBool("isWalking", !isRunning);
+                        _animTorso.SetFloat("animWalkSpeed", minAnimSpeedWalk);
+
+                        _animLegs.SetBool("isWalking", !isRunning);
+                        _animLegs.SetFloat("animWalkSpeed", minAnimSpeedWalk);
+                    }
+                    else
+                    {
+                        float animSpeed = GetAnimationSpeed(moveSpeed, walkSpeed, runSpeed);
+                        _animTorso.SetBool("isRunning", isRunning);
+                        _animTorso.SetBool("isWalking", !isRunning);
+                        _animTorso.SetFloat("animWalkSpeed", animSpeed);
+
+                        _animLegs.SetBool("isWalking", !isRunning);
+                        _animLegs.SetFloat("animWalkSpeed", animSpeed);
+                    }
                 }
             }
             else
@@ -416,7 +430,11 @@ namespace Player
         public void PlayAimAnim()
         {
             if (_animTorso != null)
+            {
                 _animTorso.SetBool("isAiming",true);
+                isAiming = true;
+                Debug.Log($"START AIM ANIMATION");
+            }
         }
 
         public void PlayShootAnim()
@@ -434,6 +452,11 @@ namespace Player
                 _animTorso.SetBool("isAiming", false);
                 _animTorso.SetTrigger("cancelAimingTrigger");
             }
+        }
+
+        public void SetIsAimingValue(bool value)
+        {
+            isAiming = value;
         }
 
         //Advanced LERP function
