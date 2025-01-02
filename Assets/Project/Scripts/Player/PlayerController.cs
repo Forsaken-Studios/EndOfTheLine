@@ -164,7 +164,8 @@ namespace Player
                 if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.D)
                     || Input.GetKeyDown(KeyCode.S))
                 {
-                    PlayerInventory.Instance.ShowPlayerHasTooMuchWeight();
+                    if(!GameManager.Instance.playerIsDead)
+                        PlayerInventory.Instance.ShowPlayerHasTooMuchWeight();
                 }
                 return;
             }

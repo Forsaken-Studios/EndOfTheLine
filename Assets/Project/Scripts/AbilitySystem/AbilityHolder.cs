@@ -266,6 +266,7 @@ public class AbilityHolder : MonoBehaviour
                         //Colocar objeto en el sitio
                     }else if (Input.GetKeyDown(KeyCode.Mouse1))
                     {
+                        PlayerController.Instance.PlayCancelShootAnim();
                         GameManager.Instance.SetHolder(abilityHolderID, false);
                         state = AbilityState.ready;
                         DestroyAllShortcuts();
@@ -279,6 +280,7 @@ public class AbilityHolder : MonoBehaviour
             }
         }else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
+            PlayerController.Instance.PlayCancelShootAnim();
             GameManager.Instance.SetHolder(abilityHolderID, false);
             state = AbilityState.ready;
             DestroyAllShortcuts();
