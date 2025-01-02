@@ -299,12 +299,12 @@ MonoBehaviour:
   animSpeedRun: 1
   torsoModel: {fileID: 8847517223274739940}
   legsModel: {fileID: 1527667565782436425}
-  rotSpeed: 10
+  rotSpeed: 8.5
   minAnimSpeedWalk: 0.8
   maxAnimSpeedWalk: 1.25
   isRunning: 0
-  maxLimitWeight: 20
-  overWeight: 17
+  maxLimitWeight: 2
+  overWeight: 1
   moveReducerByWeight: 0.6
   isOverweight: 0
   _animTorso: {fileID: 0}
@@ -774,6 +774,7 @@ GameObject:
   - component: {fileID: 1995887710456757510}
   - component: {fileID: 5693092614226728843}
   - component: {fileID: 1278816071600817155}
+  - component: {fileID: 895630334960585992}
   m_Layer: 0
   m_Name: PlayerBody
   m_TagString: Untagged
@@ -789,7 +790,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8847517223274739940}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -797,7 +798,7 @@ Transform:
   - {fileID: 5155496627935072445}
   - {fileID: 8733010246244318254}
   m_Father: {fileID: 8238964837576844618}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1995887710456757510
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -881,5 +882,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc712fc84c2a100428198dcf4511332b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &895630334960585992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8847517223274739940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f85ff381c2f738845860c23a13c7f5af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
