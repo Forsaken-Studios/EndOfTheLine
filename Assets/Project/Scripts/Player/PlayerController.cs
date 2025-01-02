@@ -267,9 +267,7 @@ namespace Player
 
             if (speedX != 0 || speedY != 0)
             {
-                HandleDashInputs();
                 
-
                 if (isAiming)
                 {
                     float aimingAnimSpeed = GetAnimationSpeed(moveSpeed, walkSpeed, runSpeed);
@@ -279,6 +277,7 @@ namespace Player
                     _animLegs.SetFloat("animWalkSpeed", aimingAnimSpeed);
                 } else
                 {
+                    HandleDashInputs();
                     HandleSprintInput();
 
                     if (moveSpeed >= runSpeed)
