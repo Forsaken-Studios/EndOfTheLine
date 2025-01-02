@@ -160,6 +160,8 @@ public class GameManager : MonoBehaviour
         {
             if (died)
             {
+                PlayerController.Instance.GameObject().transform.Find("PlayerBody").GetComponent<SpriteRenderer>()
+                    .sortingOrder = 2;
                 SceneManager.LoadSceneAsync(3); 
             }
             else
@@ -171,7 +173,7 @@ public class GameManager : MonoBehaviour
         else
         {
             //Sell scrap Items && Save items for train base
-            if (!died) // si queremos que el tutorial de los objetos, pasamos esto a general
+            if (!died) // si queremos que el tutorial dé los objetos, pasamos esto a general
             {
                 PlayerInventory.Instance.HandleItemsAtEndGame();
                 PlayerInventory.Instance.RemoveCoinFromInventory();
@@ -179,6 +181,8 @@ public class GameManager : MonoBehaviour
             } else if (died)
             {
                 Debug.Log("[GameManager.cs] : Player has died.");
+                PlayerController.Instance.GameObject().transform.Find("PlayerBody").GetComponent<SpriteRenderer>()
+                    .sortingOrder = 2;
                 playerIsDead = true;
                 PlayerAim playerAim = PlayerController.Instance.gameObject.GetComponent<PlayerAim>();
                 PlayerController.Instance.GetComponentInChildren<CircleCollider2D>().enabled = false;

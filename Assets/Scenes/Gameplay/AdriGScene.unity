@@ -223,7 +223,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!156049354 &176931570
 Grid:
   m_ObjectHideFlags: 0
@@ -469,7 +469,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &362316864
 Transform:
   m_ObjectHideFlags: 0
@@ -3169,6 +3169,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CCTV_R Small
       objectReference: {fileID: 0}
+    - target: {fileID: 335354589450577221, guid: 28ec060541cfd76409eb05d0e993401c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1437970354773814909, guid: 28ec060541cfd76409eb05d0e993401c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 32
@@ -5340,6 +5344,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CCTV_D Small
       objectReference: {fileID: 0}
+    - target: {fileID: 274952007632368352, guid: 53b20092b9a60b44183625af7b1c1c97, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8031993872325086579, guid: 53b20092b9a60b44183625af7b1c1c97, type: 3}
       propertyPath: m_LocalPosition.x
       value: 33.5
@@ -5805,10 +5813,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: AxeEnemy
       objectReference: {fileID: 0}
-    - target: {fileID: 2636381174238085955, guid: 9dd872dfafcd85345ab1ad4fa87749a5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5118049485586319712, guid: 9dd872dfafcd85345ab1ad4fa87749a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 19.50481
@@ -5876,6 +5880,10 @@ PrefabInstance:
     - target: {fileID: 2510996561691311260, guid: 348266d5e3e461c45a6a21f0628ac71d, type: 3}
       propertyPath: m_Name
       value: CCTV_L Small
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510996561691311260, guid: 348266d5e3e461c45a6a21f0628ac71d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6147418024775122178, guid: 348266d5e3e461c45a6a21f0628ac71d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6050,6 +6058,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1995887710456757510, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3219711383272395771, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: ability
       value: 
@@ -6066,6 +6078,10 @@ PrefabInstance:
       propertyPath: statusBar
       value: 
       objectReference: {fileID: 1476763205}
+    - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
+      propertyPath: runSpeed
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 4727135507886263358, guid: b49dd1cae3d253d4a812f1e5c4ea54cd, type: 3}
       propertyPath: playerSpeedBar
       value: 
@@ -6375,7 +6391,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &958017103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13938,6 +13954,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CCTV_U Small
       objectReference: {fileID: 0}
+    - target: {fileID: 3760322956566417740, guid: 1db8408f3b6d1e5478fe0f5b328abb47, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14432,7 +14452,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!156049354 &1623403363
 Grid:
   m_ObjectHideFlags: 0
