@@ -1,11 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using static RoomData;
 
 public class Room : MonoBehaviour
 {
@@ -26,10 +20,10 @@ public class Room : MonoBehaviour
 
     [Header("Configuración de enemigos")]
     [SerializeField] private bool _manualConfigurationEnemies = false;
-    [SerializeField] private int _minAountEnemiesToSpawn = 0;
-    [SerializeField] private int _maxAountEnemiesToSpawn = 0;
-    [SerializeField] private int _minAountCamerasToSpawn = 0;
-    [SerializeField] private int _maxAountCamerasToSpawn = 0;
+    [SerializeField] private int _minAmountEnemiesToSpawn = 0;
+    [SerializeField] private int _maxAmountEnemiesToSpawn = 0;
+    [SerializeField] private int _minAmountCamerasToSpawn = 0;
+    [SerializeField] private int _maxAmountCamerasToSpawn = 0;
     private GameObject _currentConfiguration;
 
     void Start()
@@ -44,23 +38,24 @@ public class Room : MonoBehaviour
             Debug.LogError("El ScriptableObject 'roomData' no ha sido asignado.");
         }
     }
-
-    public bool InitializeRandomRoom()
+    public int GetCountRoomData()
     {
-        rnd = new System.Random();
-        if (_roomDataList.Count == 1)
-        {
-            _configurationSelected = 0;
-        }
-        else
-        {
-            _configurationSelected = rnd.Next(0, _roomDataList.Count);
-        }
+        return _roomDataList.Count;
+    }
+
+    public void SetRoomData(int roomDataSelected)
+    {
+        _configurationSelected = roomDataSelected;
 
         _roomSize = _roomDataList[_configurationSelected].roomSize;
         _shape = _roomDataList[_configurationSelected].GetShape();
         _entrances = _roomDataList[_configurationSelected].GetEntrances();
         _entrancesDirections = _roomDataList[_configurationSelected].entrancesDirections;
+    }
+
+    public bool InitializeRandomRoom()
+    {
+        SetRoomData(_configurationSelected);
 
         CalculateCenterPosition();
         return CreateSelfGrid();
@@ -103,8 +98,8 @@ public class Room : MonoBehaviour
         }
 
         // Colocación enemigos.
-        PlaceRandomEnemies("Enemies", _minAountEnemiesToSpawn, _maxAountEnemiesToSpawn);
-        PlaceRandomEnemies("Cameras", _minAountEnemiesToSpawn, _maxAountEnemiesToSpawn);
+        PlaceRandomEnemies("Enemies", _minAmountEnemiesToSpawn, _maxAmountEnemiesToSpawn);
+        PlaceRandomEnemies("Cameras", _minAmountEnemiesToSpawn, _maxAmountEnemiesToSpawn);
     }
 
     private void PlaceRandomEnemies(string element, int minValue, int maxValue)
@@ -283,4 +278,8 @@ public class Room : MonoBehaviour
         return positionsToReturn;
     }
 
+    public Dictionary<Vector2Int, DirectionFlag> GetEntrancesDirections()
+    {
+        return _entrancesDirections;
+    }
 }

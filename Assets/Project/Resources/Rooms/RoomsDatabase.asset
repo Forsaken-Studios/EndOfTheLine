@@ -1,0 +1,680 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2581e80bd3f89334d980309ba0d3e010, type: 3}
+  m_Name: RoomsDatabase
+  m_EditorClassIdentifier: 
+  serializedRoomsPrefabs:
+  - direction: 2
+    rooms:
+    - roomPrefab: {fileID: 7806689954695716217, guid: 791d3be374293274ca8cc87ca63d6d1d, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 791d3be374293274ca8cc87ca63d6d1d, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 548a7e361f0dc1b44adee13a8531a1c5, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 548a7e361f0dc1b44adee13a8531a1c5, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: d372a0a8db0467d41b6d209d09a3bbbb, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: d372a0a8db0467d41b6d209d09a3bbbb, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: e7ffecd79cbea9f4398f8d52994ffbf0, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: e7ffecd79cbea9f4398f8d52994ffbf0, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 8781989749148049214, guid: 4fb08b4c7154cb24483d6a4223e07860, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 8781989749148049214, guid: 4fb08b4c7154cb24483d6a4223e07860, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 8781989749148049214, guid: 4fb08b4c7154cb24483d6a4223e07860, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 8781989749148049214, guid: 4fb08b4c7154cb24483d6a4223e07860, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 6248175530281537363, guid: 9162871a3df48f64e83e2bf9b9f00f4d, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 6248175530281537363, guid: 9162871a3df48f64e83e2bf9b9f00f4d, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 4643262041721078779, guid: 87106a2ccf68daf41a08a30458f9dad8, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 4643262041721078779, guid: 87106a2ccf68daf41a08a30458f9dad8, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 606387706753288290, guid: 69cd0532fbf4c564bae9759ef56a5f5e, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 606387706753288290, guid: 69cd0532fbf4c564bae9759ef56a5f5e, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 606387706753288290, guid: 69cd0532fbf4c564bae9759ef56a5f5e, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7350021489133498377, guid: fda1b95a3dbdd1340b7a3b6418f1de56, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7563707388592842210, guid: 3a53da60d8ebce042bc024d67789695a, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 5975034501801097794, guid: b74b0bbd058329a42940e8e3c152b8eb, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 5975034501801097794, guid: b74b0bbd058329a42940e8e3c152b8eb, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7663626338670006285, guid: 9961e35b9173b0e409ed0e9cdd24c644, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7358301778453208868, guid: 22855d2ec95c9f24fb1c5f7ece2a64ae, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7358301778453208868, guid: 22855d2ec95c9f24fb1c5f7ece2a64ae, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 6892978463553422341, guid: 5287f5ce4a0205848907b4ddeafece35, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 6892978463553422341, guid: 5287f5ce4a0205848907b4ddeafece35, type: 3}
+      configurationIndex: 2
+  - direction: 3
+    rooms:
+    - roomPrefab: {fileID: 7806689954695716217, guid: 791d3be374293274ca8cc87ca63d6d1d, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 791d3be374293274ca8cc87ca63d6d1d, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 548a7e361f0dc1b44adee13a8531a1c5, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 548a7e361f0dc1b44adee13a8531a1c5, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: d372a0a8db0467d41b6d209d09a3bbbb, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: d372a0a8db0467d41b6d209d09a3bbbb, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: e7ffecd79cbea9f4398f8d52994ffbf0, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: e7ffecd79cbea9f4398f8d52994ffbf0, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 8781989749148049214, guid: 4fb08b4c7154cb24483d6a4223e07860, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 8781989749148049214, guid: 4fb08b4c7154cb24483d6a4223e07860, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 4149749003813017829, guid: 0691232e0c943b944b11403127abc114, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 4149749003813017829, guid: 0691232e0c943b944b11403127abc114, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 6248175530281537363, guid: 9162871a3df48f64e83e2bf9b9f00f4d, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 6248175530281537363, guid: 9162871a3df48f64e83e2bf9b9f00f4d, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 6248175530281537363, guid: 9162871a3df48f64e83e2bf9b9f00f4d, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 6248175530281537363, guid: 9162871a3df48f64e83e2bf9b9f00f4d, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 485757830933013325, guid: 9da06becbb3244548ba95d92c1412f8b, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 485757830933013325, guid: 9da06becbb3244548ba95d92c1412f8b, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 485757830933013325, guid: 9da06becbb3244548ba95d92c1412f8b, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7350021489133498377, guid: fda1b95a3dbdd1340b7a3b6418f1de56, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7563707388592842210, guid: 3a53da60d8ebce042bc024d67789695a, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 5975034501801097794, guid: b74b0bbd058329a42940e8e3c152b8eb, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 5975034501801097794, guid: b74b0bbd058329a42940e8e3c152b8eb, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7663626338670006285, guid: 9961e35b9173b0e409ed0e9cdd24c644, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7663626338670006285, guid: 9961e35b9173b0e409ed0e9cdd24c644, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7358301778453208868, guid: 22855d2ec95c9f24fb1c5f7ece2a64ae, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7358301778453208868, guid: 22855d2ec95c9f24fb1c5f7ece2a64ae, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 6892978463553422341, guid: 5287f5ce4a0205848907b4ddeafece35, type: 3}
+      configurationIndex: 0
+  - direction: 4
+    rooms:
+    - roomPrefab: {fileID: 7806689954695716217, guid: 791d3be374293274ca8cc87ca63d6d1d, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 791d3be374293274ca8cc87ca63d6d1d, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 548a7e361f0dc1b44adee13a8531a1c5, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 548a7e361f0dc1b44adee13a8531a1c5, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: d372a0a8db0467d41b6d209d09a3bbbb, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: d372a0a8db0467d41b6d209d09a3bbbb, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: e7ffecd79cbea9f4398f8d52994ffbf0, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: e7ffecd79cbea9f4398f8d52994ffbf0, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 8781989749148049214, guid: 4fb08b4c7154cb24483d6a4223e07860, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 8781989749148049214, guid: 4fb08b4c7154cb24483d6a4223e07860, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 4149749003813017829, guid: 0691232e0c943b944b11403127abc114, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 4149749003813017829, guid: 0691232e0c943b944b11403127abc114, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 4643262041721078779, guid: 87106a2ccf68daf41a08a30458f9dad8, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 4643262041721078779, guid: 87106a2ccf68daf41a08a30458f9dad8, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 4643262041721078779, guid: 87106a2ccf68daf41a08a30458f9dad8, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 4643262041721078779, guid: 87106a2ccf68daf41a08a30458f9dad8, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 3461220531031767310, guid: db0bd8cec2881624586179f9ee1dc07f, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 3461220531031767310, guid: db0bd8cec2881624586179f9ee1dc07f, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 3461220531031767310, guid: db0bd8cec2881624586179f9ee1dc07f, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7350021489133498377, guid: fda1b95a3dbdd1340b7a3b6418f1de56, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7563707388592842210, guid: 3a53da60d8ebce042bc024d67789695a, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 5975034501801097794, guid: b74b0bbd058329a42940e8e3c152b8eb, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 5975034501801097794, guid: b74b0bbd058329a42940e8e3c152b8eb, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7663626338670006285, guid: 9961e35b9173b0e409ed0e9cdd24c644, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7663626338670006285, guid: 9961e35b9173b0e409ed0e9cdd24c644, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7358301778453208868, guid: 22855d2ec95c9f24fb1c5f7ece2a64ae, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 6892978463553422341, guid: 5287f5ce4a0205848907b4ddeafece35, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 6892978463553422341, guid: 5287f5ce4a0205848907b4ddeafece35, type: 3}
+      configurationIndex: 2
+  - direction: 1
+    rooms:
+    - roomPrefab: {fileID: 7806689954695716217, guid: 791d3be374293274ca8cc87ca63d6d1d, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 791d3be374293274ca8cc87ca63d6d1d, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 548a7e361f0dc1b44adee13a8531a1c5, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 548a7e361f0dc1b44adee13a8531a1c5, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: d372a0a8db0467d41b6d209d09a3bbbb, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: d372a0a8db0467d41b6d209d09a3bbbb, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: e7ffecd79cbea9f4398f8d52994ffbf0, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: e7ffecd79cbea9f4398f8d52994ffbf0, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: ce84bb891ac78c648bfd40d7b6935d92, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 07428fd733c00ea45b96d6a0d6071a81, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 7fd662c54099da248b4453391905ec1a, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 6514a0428c54fc74894dc94fccd83811, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 901c853247491fd479d213a5e6e3323b, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1376aabaee23145429e162fe7f215b5b, type: 3}
+      configurationIndex: 5
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2b4cf2a64f785b841b990045d66f8033, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 1658e880dfeb0e642a94fb48d2eecb2a, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 7
+    - roomPrefab: {fileID: 7806689954695716217, guid: 2213c3a98ab7c524ba47ba209ee85c38, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 4
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 6
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 8
+    - roomPrefab: {fileID: 7806689954695716217, guid: 25e06c056168e70439c30f9a96ff4747, type: 3}
+      configurationIndex: 9
+    - roomPrefab: {fileID: 4149749003813017829, guid: 0691232e0c943b944b11403127abc114, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 4149749003813017829, guid: 0691232e0c943b944b11403127abc114, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 4149749003813017829, guid: 0691232e0c943b944b11403127abc114, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 4149749003813017829, guid: 0691232e0c943b944b11403127abc114, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 6248175530281537363, guid: 9162871a3df48f64e83e2bf9b9f00f4d, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 6248175530281537363, guid: 9162871a3df48f64e83e2bf9b9f00f4d, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 4643262041721078779, guid: 87106a2ccf68daf41a08a30458f9dad8, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 4643262041721078779, guid: 87106a2ccf68daf41a08a30458f9dad8, type: 3}
+      configurationIndex: 3
+    - roomPrefab: {fileID: 4294951129834203525, guid: 2f433f0b4e9fefa42bbd5bc0fbac546f, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 4294951129834203525, guid: 2f433f0b4e9fefa42bbd5bc0fbac546f, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 4294951129834203525, guid: 2f433f0b4e9fefa42bbd5bc0fbac546f, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7350021489133498377, guid: fda1b95a3dbdd1340b7a3b6418f1de56, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7563707388592842210, guid: 3a53da60d8ebce042bc024d67789695a, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 5975034501801097794, guid: b74b0bbd058329a42940e8e3c152b8eb, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7663626338670006285, guid: 9961e35b9173b0e409ed0e9cdd24c644, type: 3}
+      configurationIndex: 0
+    - roomPrefab: {fileID: 7663626338670006285, guid: 9961e35b9173b0e409ed0e9cdd24c644, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 7358301778453208868, guid: 22855d2ec95c9f24fb1c5f7ece2a64ae, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 7358301778453208868, guid: 22855d2ec95c9f24fb1c5f7ece2a64ae, type: 3}
+      configurationIndex: 2
+    - roomPrefab: {fileID: 6892978463553422341, guid: 5287f5ce4a0205848907b4ddeafece35, type: 3}
+      configurationIndex: 1
+    - roomPrefab: {fileID: 6892978463553422341, guid: 5287f5ce4a0205848907b4ddeafece35, type: 3}
+      configurationIndex: 2
+  _isRefreshed: 1
