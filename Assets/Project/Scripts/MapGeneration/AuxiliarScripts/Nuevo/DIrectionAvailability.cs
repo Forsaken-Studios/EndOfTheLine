@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public enum DirectionAvailability
 {
+    Closed,
     Free,
-    Open,
-    Closed
+    Open
 }

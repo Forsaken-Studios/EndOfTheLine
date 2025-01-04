@@ -61,6 +61,15 @@ public class RoomsDataBase : ScriptableObject
                 room.SetRoomData(i);
                 Dictionary<Vector2Int, DirectionFlag> entrancesDirections = room.GetEntrancesDirections();
 
+                List<DirectionFlag> openDirections = new List<DirectionFlag>();
+                foreach (KeyValuePair<Vector2Int, DirectionFlag> directionEntry in entrancesDirections)
+                {
+                    if (!openDirections.Contains(directionEntry.Value))
+                    {
+                        openDirections.Add(directionEntry.Value);
+                    }
+                }
+
                 foreach (KeyValuePair<Vector2Int, DirectionFlag> entry in entrancesDirections)
                 {
                     DirectionFlag direction = entry.Value;
@@ -72,7 +81,8 @@ public class RoomsDataBase : ScriptableObject
                     roomsPrefabs[direction].Add(new RoomWithConfiguration
                     {
                         roomPrefab = roomPrefab,
-                        configurationIndex = i
+                        configurationIndex = i,
+                        openDirections = openDirections
                     });
                 }
             }

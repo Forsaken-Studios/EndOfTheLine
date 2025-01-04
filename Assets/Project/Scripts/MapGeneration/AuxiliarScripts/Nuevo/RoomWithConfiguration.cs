@@ -7,4 +7,5 @@ public class RoomWithConfiguration
 {
     public GameObject roomPrefab = null;
     public int configurationIndex = -1;
+    public List<DirectionFlag> openDirections = new List<DirectionFlag>();
 }
