@@ -237,13 +237,17 @@ Shader "Universal Render Pipeline/2D/FloorFX-Sprite-Lit-Custom"
 
                     nadeCol = SAMPLE_TEXTURE2D(_SmokeTex, sampler_SmokeTex, nadeBackCart/*i.worldPos * _SmokeTex_ST.xy + _SmokeTex_ST.zw*/) * _SGColor;
                     half4 alphaMask = SAMPLE_TEXTURE2D(_SGMaskTex, sampler_SGMaskTex, nadeCart/2* _SGMaskTex_ST.xy/_SGRadius + 0.5);
-                    nadeCol.a *= alphaMask.a;
-                    nadeCol.a *= _SGAlpha;
+                    //nadeCol.a *= alphaMask.a;
+                    //nadeCol.a *= _SGAlpha;
 
                     InitializeSurfaceData(nadeCol.rgb, nadeCol.a, surfaceData);
                     InitializeInputData(nadeBackCart, i.lightingUV, inputData);
 
                     nadeCol = CombinedShapeLightShared(surfaceData, inputData);
+
+                    nadeCol.a *= alphaMask.a;
+                    nadeCol.a *= _SGAlpha;
+
                     
                 }
 
