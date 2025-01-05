@@ -17,9 +17,9 @@ public class Subsection
 
     private RoomFinder _roomFinder;
 
-    public Subsection(Vector2Int subsectionCell, int rowSection, int colSection, RoomsDataBase roomDataBase)
+    public Subsection(Vector2Int firstCellSubsection, int rowSection, int colSection, RoomsDataBase roomDataBase)
     {
-        this._subsectionCell = subsectionCell;
+        this._subsectionCell = firstCellSubsection;
         _typeSubsection = TypeSubsection.Empty;
         _currentRoom = new RoomWithConfiguration();
         _amountParentsRoom = 0;
@@ -33,6 +33,16 @@ public class Subsection
             DirectionAvailability.Free, // west
             DirectionAvailability.Free  // east
         };
+    }
+
+    public int GetSubsectionRow()
+    {
+        return _subsectionRow;
+    }
+
+    public int GetSubsectionCol()
+    {
+        return _subsectionCol;
     }
 
     public TypeSubsection GetTypeSubsection()
@@ -357,6 +367,22 @@ public class Subsection
         _typeSubsection = TypeSubsection.Room;
 
         return true;
+    }
+
+    public void SetAsStart(DirectionAvailability north, DirectionAvailability east, DirectionAvailability west)
+    {
+        _typeSubsection = TypeSubsection.Start;
+
+        _northAvailability = north;
+        _southAvailability = DirectionAvailability.Closed;
+        _eastAvailability = east;
+        _westAvailability = west;
+
+    }
+
+    public void SetAsEnd()
+    {
+        _typeSubsection = TypeSubsection.End;
     }
 
     // Actualiza el estado de DirectionAvailability según las subsecciones adyacentes.
