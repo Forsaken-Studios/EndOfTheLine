@@ -6,6 +6,7 @@ public enum CellState
 {
     Empty,
     Corridor,
+    InternalCorridor,
 
     Start,
     End,

@@ -96,7 +96,7 @@ public class MapGenerator : MonoBehaviour
     private void PlaceStart()
     {
         // Se obtiene una columna aleatoria y se selecciona la subsección aleatoria en la fila 0.
-        int randomColumn = _rnd.Next(0, _SubsectionsGridSize.x);
+        int randomColumn = _rnd.Next(0, _SubsectionsGridSize.y);
         Subsection randomSubsection = _subsectionsGrid[0, randomColumn];
 
         // Se escogen las direcciones al azar.
@@ -111,7 +111,7 @@ public class MapGenerator : MonoBehaviour
             east = DirectionAvailability.Open;
         }
         // Si está en la esquina inferior derecha.
-        else if (randomColumn == _SubsectionsGridSize.x - 1)
+        else if (randomColumn == _SubsectionsGridSize.y - 1)
         {
             north = DirectionAvailability.Open;
             west = DirectionAvailability.Open;
@@ -139,6 +139,8 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+
+        Debug.Log($"subsection start = [{0}, {randomColumn}]; {north}, {east}, {west}");
 
         // Se marca la subsection como Start.
         randomSubsection.SetAsStart(north, east, west);
@@ -271,21 +273,21 @@ public class MapGenerator : MonoBehaviour
     private void PlaceExit()
     {
         // Recorrer las filas desde la última hacia abajo.
-        for (int row = _SubsectionsGridSize.y - 1; row >= 0; row--)
+        for (int row = _SubsectionsGridSize.x - 1; row >= 0; row--)
         {
             // Se crea una lista de subsecciones de la fila actual.
             List<Subsection> roomSubsections = new List<Subsection>();
 
-            for (int col = 0; col < _SubsectionsGridSize.x; col++)
+            for (int col = 0; col < _SubsectionsGridSize.y; col++)
             {
                 Subsection subsection = _subsectionsGrid[row, col];
-                if (subsection.GetTypeSubsection() == TypeSubsection.Room)
+                if (subsection.GetTypeSubsection() == TypeSubsection.Room || subsection.GetTypeSubsection() == TypeSubsection.Corridor)
                 {
                     roomSubsections.Add(subsection);
                 }
             }
 
-            // Si se encuentran subsecciones marcadas como Room se selecciona una aleatoriamente.
+            // Si se encuentran subsecciones marcadas como Room o Corridor se selecciona una aleatoriamente.
             if (roomSubsections.Count > 0)
             {
                 roomSubsections = roomSubsections.OrderBy(x => _rnd.Next()).ToList();
@@ -404,6 +406,7 @@ public class MapGenerator : MonoBehaviour
         }
         if (subsection.GetSouthAvailability() == DirectionAvailability.Open)
         {
+            Debug.Log($"[{centerCell.x}, {centerCell.y}]");
             _cellsGrid[centerCell.x - 1, centerCell.y].SetCellState(CellState.Corridor);
             _cellsGrid[centerCell.x - 2, centerCell.y].SetCellState(CellState.Corridor);
         }
@@ -539,6 +542,7 @@ public class MapGenerator : MonoBehaviour
         _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.Start);
     }
 
+    // TODO: borrar estado de celdas de la habitacion previa.
     private void ConfigureEnd(Subsection subsection)
     {
         Vector2Int baseCell = new Vector2Int(0, 0);
@@ -558,6 +562,7 @@ public class MapGenerator : MonoBehaviour
         if (subsection.GetWestAvailability() == DirectionAvailability.Open)
         {
             baseCell = subsection.GetGlobalCell(2, 0);
+            Debug.Log($"[{baseCell.x}, {baseCell.y}]");
             _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.Corridor);
         }
 
@@ -578,9 +583,13 @@ public class MapGenerator : MonoBehaviour
 
         for (int row = 0; row < totalRows; row++)
         {
-            for (int column = 0; column < totalCols; column++)
+            for (int col = 0; col < totalCols; col++)
             {
-                _cellsGrid[row, column] = new Cell(row, column);
+                _cellsGrid[row, col] = new Cell(row, col);
+                if ((row + 1) % 4 == 0 && (col + 1) % 4 == 0)
+                {
+                    _cellsGrid[row, col].SetCellState(CellState.InternalCorridor);
+                }
             }
         }
     }
@@ -607,6 +616,124 @@ public class MapGenerator : MonoBehaviour
                     );
             }
         }
+
+        // Filas
+        for (int row = 0; row < _subsectionsGrid.GetLength(0) - 1; row++)
+        {
+            for (int col = 0; col < _subsectionsGrid.GetLength(1); col++)
+            {
+                Subsection currentSubsection = _subsectionsGrid[row, col];
+                Vector2Int startingCell = currentSubsection.GetGlobalCell(3, 0);
+
+                for (int cellCol = startingCell.y; cellCol < startingCell.y + 3; cellCol++)
+                {
+                    Cell cell = _cellsGrid[startingCell.x, cellCol];
+                    cell.SetCellState(CellState.InternalCorridor);
+                }
+            }
+        }
+
+        // Columnas
+        for (int col = 0; col < _subsectionsGrid.GetLength(1) - 1; col++)
+        {
+            for (int row = 0; row < _subsectionsGrid.GetLength(0); row++)
+            {
+                Subsection currentSubsection = _subsectionsGrid[row, col];
+                Vector2Int startingCell = currentSubsection.GetGlobalCell(0, 3);
+
+                for (int cellRow = startingCell.x; cellRow < startingCell.x + 3; cellRow++)
+                {
+                    Cell cell = _cellsGrid[cellRow, startingCell.y];
+                    cell.SetCellState(CellState.InternalCorridor);
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region Gizmos
+
+    private void OnDrawGizmos()
+    {
+        if (_SubsectionsGridSize == Vector2Int.zero || cellSize == 0 || _cellsGrid == null || !_isDrawingGizmos)
+        {
+            return;
+        }
+
+        foreach (var cell in GetGridPositions())
+        {
+            DrawCellGizmos(cell);
+        }
+    }
+
+    private IEnumerable<Cell> GetGridPositions()
+    {
+        for (int row = 0; row < _cellsGrid.GetLength(0); row++)
+        {
+            for (int col = 0; col < _cellsGrid.GetLength(1); col++)
+            {
+                yield return _cellsGrid[row, col];
+            }
+        }
+    }
+
+    private void DrawCellGizmos(Cell cellToDraw)
+    {
+        Gizmos.color = UnityEngine.Color.green;
+
+        switch (cellToDraw.State)
+        {
+            case CellState.Empty:
+                Gizmos.color = UnityEngine.Color.green;
+                break;
+            case CellState.Room:
+                Gizmos.color = UnityEngine.Color.yellow;
+                break;
+            case CellState.CorridorRoom:
+                Gizmos.color = UnityEngine.Color.cyan;
+                break;
+            case CellState.FillingRoom:
+                Gizmos.color = UnityEngine.Color.magenta;
+                break;
+            case CellState.Corridor:
+                Gizmos.color = UnityEngine.Color.blue;
+                break;
+            case CellState.InternalCorridor:
+                Gizmos.color = UnityEngine.Color.black;
+                break;
+            case CellState.Start:
+                Gizmos.color = UnityEngine.Color.white;
+                break;
+            case CellState.End:
+                Gizmos.color = UnityEngine.Color.white;
+                break;
+            case CellState.EntranceRoom:
+                Gizmos.color = UnityEngine.Color.red;
+                break;
+        }
+
+        // Margen entre celda y celda.
+        float margin = 1f;
+
+        // Defining all 4 vertex. Empezando desde el centro de la celda
+        //Vector3 topLeft = cellToDraw.Position3D + new Vector3(-(cellSize / 2 - margin), cellSize / 2 - margin, 0);
+        //Vector3 topRight = cellToDraw.Position3D + new Vector3(cellSize / 2 - margin, cellSize / 2 - margin, 0);
+        //Vector3 bottomRight = cellToDraw.Position3D + new Vector3(cellSize / 2 - margin, -cellSize / 2 + margin, 0);
+        //Vector3 bottomLeft = cellToDraw.Position3D + new Vector3(-(cellSize / 2 - margin), -cellSize / 2 + margin, 0);
+
+        // Defining all 4 vertex. Empezando desde la esquina inferior izquieda de la celda.
+        Vector3 topLeft = cellToDraw.Position3D + new Vector3(+margin, cellSize - margin, 0);
+        Vector3 topRight = cellToDraw.Position3D + new Vector3(cellSize - margin, cellSize - margin, 0);
+        Vector3 bottomRight = cellToDraw.Position3D + new Vector3(cellSize - margin, +margin, 0);
+        Vector3 bottomLeft = cellToDraw.Position3D + new Vector3(+margin, +margin, 0);
+
+
+
+        // Draw square lines.
+        Gizmos.DrawLine(topLeft, topRight); // Up
+        Gizmos.DrawLine(topRight, bottomRight); // Right
+        Gizmos.DrawLine(bottomRight, bottomLeft); // Bottom
+        Gizmos.DrawLine(bottomLeft, topLeft); // Left
     }
     #endregion
 }

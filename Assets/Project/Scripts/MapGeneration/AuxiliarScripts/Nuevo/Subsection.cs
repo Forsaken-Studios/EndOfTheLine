@@ -169,6 +169,8 @@ public class Subsection
             }
         }
 
+        Debug.Log($"north = {_northAvailability}; south = {_southAvailability}; east = {_eastAvailability}; west = {_westAvailability}");
+
         _typeSubsection = TypeSubsection.Room;
         nextSubsections = GetNextSubsections(subsectionsGrid);
         foreach (Subsection subsection in nextSubsections)
@@ -411,7 +413,7 @@ public class Subsection
     public void UpdateDirectionAvailability(Subsection[,] subsectionsGrid)
     {
         // Norte
-        int northRow = _subsectionRow - 1;
+        int northRow = _subsectionRow + 1;
         int northCol = _subsectionCol;
         if (IsInGrid(subsectionsGrid, northRow, northCol))
         {
@@ -424,7 +426,7 @@ public class Subsection
         }
 
         // Sur
-        int southRow = _subsectionRow + 1;
+        int southRow = _subsectionRow - 1;
         int southCol = _subsectionCol;
         if (IsInGrid(subsectionsGrid, southRow, southCol))
         {
