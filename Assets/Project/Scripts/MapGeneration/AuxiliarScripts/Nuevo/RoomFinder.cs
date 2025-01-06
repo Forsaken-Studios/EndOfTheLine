@@ -9,7 +9,7 @@ public class RoomFinder
 
     public RoomFinder(RoomsDataBase roomDataBase)
     {
-        Dictionary<DirectionFlag, List<RoomWithConfiguration>> roomsPrefabs = roomDataBase.GetRoomsPrefabs();
+        roomsPrefabs = roomDataBase.GetRoomsPrefabs();
     }
 
     public RoomWithConfiguration FindRoomPrefab(Dictionary<DirectionFlag, DirectionAvailability> entrances) 

@@ -10,22 +10,22 @@ public class Subsection
     private RoomWithConfiguration _currentRoom;
     private DirectionAvailability _northAvailability, _southAvailability, _eastAvailability, _westAvailability;
     private int _amountParentsRoom;
-    private Vector2Int _subsectionCell;
+    private Vector2Int _startingCell; // [row, col] Esquina inferior izquierda
     private int _subsectionRow;
     private int _subsectionCol;
     private List<DirectionAvailability> _directionRequirement;
 
     private RoomFinder _roomFinder;
 
-    public Subsection(Vector2Int firstCellSubsection, int rowSection, int colSection, RoomsDataBase roomDataBase)
+    public Subsection(Vector2Int startingCell, int rowSection, int colSection, RoomFinder roomFinder)
     {
-        this._subsectionCell = firstCellSubsection;
+        this._startingCell = startingCell;
         _typeSubsection = TypeSubsection.Empty;
         _currentRoom = new RoomWithConfiguration();
         _amountParentsRoom = 0;
         this._subsectionRow = rowSection;
         this._subsectionCol = colSection;
-        this._roomFinder = new RoomFinder(roomDataBase);
+        this._roomFinder = roomFinder;
         _directionRequirement = new List<DirectionAvailability>
         {
             DirectionAvailability.Free, // north
@@ -33,6 +33,23 @@ public class Subsection
             DirectionAvailability.Free, // west
             DirectionAvailability.Free  // east
         };
+
+        _northAvailability = DirectionAvailability.Closed;
+        _southAvailability = DirectionAvailability.Closed;
+        _eastAvailability = DirectionAvailability.Closed;
+        _westAvailability = DirectionAvailability.Closed;
+    }
+
+    public Vector3 GetPositionCell()
+    {
+        Vector3 positionCell = new Vector3(_startingCell.x * MapGenerator.Instance.cellSize, _startingCell.y * MapGenerator.Instance.cellSize, 0);
+        return positionCell;
+    }
+
+    public Vector2Int GetGlobalCell(int localRow, int localCol)
+    {
+        Vector2Int globalCell = new Vector2Int(_startingCell.x + localRow, _startingCell.y + localCol);
+        return globalCell;
     }
 
     public int GetSubsectionRow()
@@ -101,7 +118,7 @@ public class Subsection
 
     public Vector2Int GetSubsectionCell()
     {
-        return _subsectionCell;
+        return _startingCell;
     }
 
     public RoomWithConfiguration GetCurrentRoom()
@@ -152,6 +169,7 @@ public class Subsection
             }
         }
 
+        _typeSubsection = TypeSubsection.Room;
         nextSubsections = GetNextSubsections(subsectionsGrid);
         foreach (Subsection subsection in nextSubsections)
         {
@@ -314,22 +332,26 @@ public class Subsection
         // Norte
         if(_northAvailability == DirectionAvailability.Open)
         {
-            nextSubsections.Add(subsectionsGrid[_subsectionRow + 1, _subsectionCol]);
+            if (_subsectionRow + 1 < subsectionsGrid.GetLength(0))
+                nextSubsections.Add(subsectionsGrid[_subsectionRow + 1, _subsectionCol]);
         }
         // Sur
         if (_southAvailability == DirectionAvailability.Open)
         {
-            nextSubsections.Add(subsectionsGrid[_subsectionRow - 1, _subsectionCol]);
+            if(_subsectionRow - 1 >= 0)
+                nextSubsections.Add(subsectionsGrid[_subsectionRow - 1, _subsectionCol]);
         }
         // Este
         if (_eastAvailability == DirectionAvailability.Open)
         {
-            nextSubsections.Add(subsectionsGrid[_subsectionRow, _subsectionCol + 1]);
+            if (_subsectionCol + 1 < subsectionsGrid.GetLength(1))
+                nextSubsections.Add(subsectionsGrid[_subsectionRow, _subsectionCol + 1]);
         }
         // Oeste
         if (_westAvailability == DirectionAvailability.Open)
         {
-            nextSubsections.Add(subsectionsGrid[_subsectionRow, _subsectionCol - 1]);
+            if (_subsectionCol - 1 >= 0)
+                nextSubsections.Add(subsectionsGrid[_subsectionRow, _subsectionCol - 1]);
         }
 
         return nextSubsections;

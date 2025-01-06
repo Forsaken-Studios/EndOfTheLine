@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -27,6 +28,7 @@ public class MapGenerator : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _corridorBase;
+    [SerializeField] private GameObject _stationsBase;
     [SerializeField] private RoomsDataBase _roomsDataBase;
 
     [HideInInspector] public Vector3 startingGridPosition = Vector3.zero;
@@ -35,6 +37,7 @@ public class MapGenerator : MonoBehaviour
     private System.Random _rnd;
     private Subsection[,] _subsectionsGrid; // [row, col] GetLength(0), GetLength(1)
     private List<Subsection> _nextSubsections;
+    private RoomFinder _roomFinder;
     #endregion
 
     #region Singleton and Events
@@ -55,6 +58,7 @@ public class MapGenerator : MonoBehaviour
     {
         _rnd = new System.Random();
         _nextSubsections = new List<Subsection>();
+        _roomFinder = new RoomFinder(_roomsDataBase);
 
         _subsectionMapPercentage = 100 / (_SubsectionsGridSize.x * _SubsectionsGridSize.y);
 
@@ -69,6 +73,7 @@ public class MapGenerator : MonoBehaviour
     {
         // GameManager.Instance.sceneIsLoading = true;  // TODO
         yield return null;
+        // TODO: hacer que se guarde en subcarpetas como en la anterior MapGenerator
 
         PlaceStart();
 
@@ -138,7 +143,7 @@ public class MapGenerator : MonoBehaviour
         // Se marca la subsection como Start.
         randomSubsection.SetAsStart(north, east, west);
         AddPercentage();
-        if(north == DirectionAvailability.Open)
+        if (north == DirectionAvailability.Open)
         {
             Subsection newSubsection = _subsectionsGrid[randomSubsection.GetSubsectionRow() + 1, randomSubsection.GetSubsectionCol()];
             _nextSubsections.Add(newSubsection);
@@ -292,6 +297,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    #region Instantiation
     private void InstantiateAll()
     {
         foreach (Subsection subsection in _subsectionsGrid)
@@ -299,24 +305,268 @@ public class MapGenerator : MonoBehaviour
             switch (subsection.GetTypeSubsection())
             {
                 case TypeSubsection.Room:
-                    InstantiateRoom();
+                    InstantiateRoom(subsection);
                     break;
                 case TypeSubsection.Corridor:
-                    InstantiateCorridor();
+                    ConfigureCorridor(subsection);
                     break;
+                case TypeSubsection.Start:
+                    ConfigureStart(subsection);
+                    break;
+                case TypeSubsection.End:
+                    ConfigureEnd(subsection);
+                    break;
+            }
+        }
+
+        ConfigureInternCorridors();
+
+        foreach (Cell cell in _cellsGrid)
+        {
+            if (cell.State == CellState.Start)
+            {
+                // Configura las aperturas y puertas de la celda.
+                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _cellsGrid);
+                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _cellsGrid);
+                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _cellsGrid);
+                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _cellsGrid);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _cellsGrid);
+
+                // Instancia el prefab de estación que equivalga a la configuración de la celda.
+                Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
+                GameObject stationInstance = Instantiate(_stationsBase, centeredPosition, _stationsBase.transform.rotation);
+                stationInstance.name = $"StationStart_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
+                // stationInstance.transform.SetParent(GameObject.Find("Stations").transform);
+                StationController stationController = stationInstance.GetComponentInChildren<StationController>();
+                stationController.WallSelector(cell.north, cell.south, cell.east, cell.west);
+            }
+
+            if (cell.State == CellState.End)
+            {
+                // Configura las aperturas y puertas de la celda.
+                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _cellsGrid);
+                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _cellsGrid);
+                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _cellsGrid);
+                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _cellsGrid);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _cellsGrid);
+
+                // Instancia el prefab de estación que equivalga a la configuración de la celda.
+                Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
+                GameObject stationInstance = Instantiate(_stationsBase, centeredPosition, _stationsBase.transform.rotation);
+                stationInstance.name = $"StationEnd_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
+                // stationInstance.transform.SetParent(GameObject.Find("Stations").transform);
+                StationController stationController = stationInstance.GetComponentInChildren<StationController>();
+                stationController.WallSelector(cell.north, cell.south, cell.east, cell.west);
+            }
+
+            if (cell.State == CellState.Corridor)
+            {
+                // Configura las aperturas y puertas de la celda.
+                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _cellsGrid);
+                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _cellsGrid);
+                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _cellsGrid);
+                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _cellsGrid);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _cellsGrid);
+
+                // Instancia el prefab de pasillo que equivalga a la configuración de la celda.
+                Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
+                GameObject corridorInstance = Instantiate(_corridorBase, centeredPosition, _corridorBase.transform.rotation);
+                corridorInstance.name = $"Corridor_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
+                //corridorInstance.transform.SetParent(GameObject.Find("Corridors").transform);
+                CorridorController corridorController = corridorInstance.GetComponentInChildren<CorridorController>();
+                corridorController.WallSelector(cell.north, cell.south, cell.east, cell.west);
             }
         }
     }
 
-    private void InstantiateRoom()
+    // TODO: hacer que se genere una celda de pasillo en frente de la entrada.
+    private void InstantiateRoom(Subsection subsection)
     {
+        RoomWithConfiguration currentRoomWithConfiguration = subsection.GetCurrentRoom();
+        GameObject roomPrefab = currentRoomWithConfiguration.roomPrefab;
+
+        GameObject roomObject = Instantiate(roomPrefab, Vector3.zero, roomPrefab.transform.rotation);
+        // roomObject.transform.SetParent(GameObject.Find("Rooms").transform, false);  
+        Room room = roomObject.GetComponent<Room>();
+        room.InitializeRoom(currentRoomWithConfiguration.configurationIndex);
+        room.MoveRoomPosition(subsection.GetPositionCell());
+    }
+
+    private void ConfigureCorridor(Subsection subsection)
+    {
+        Vector2Int centerCell = subsection.GetGlobalCell(1, 1);
+        _cellsGrid[centerCell.x, centerCell.y].SetCellState(CellState.Corridor);
+
+        if (subsection.GetNorthAvailability() == DirectionAvailability.Open)
+        {
+            _cellsGrid[centerCell.x + 1, centerCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[centerCell.x + 2, centerCell.y].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetSouthAvailability() == DirectionAvailability.Open)
+        {
+            _cellsGrid[centerCell.x - 1, centerCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[centerCell.x - 2, centerCell.y].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetEastAvailability() == DirectionAvailability.Open)
+        {
+            _cellsGrid[centerCell.x, centerCell.y + 1].SetCellState(CellState.Corridor);
+            _cellsGrid[centerCell.x, centerCell.y + 2].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetWestAvailability() == DirectionAvailability.Open)
+        {
+            _cellsGrid[centerCell.x, centerCell.y - 1].SetCellState(CellState.Corridor);
+            _cellsGrid[centerCell.x, centerCell.y - 2].SetCellState(CellState.Corridor);
+        }
+    }
+
+    private void ConfigureInternCorridors()
+    {
+        // Filas
+        for (int row = 0; row < _subsectionsGrid.GetLength(0) - 1; row++)
+        {
+            for (int col = 0; col < _subsectionsGrid.GetLength(1); col++)
+            {
+                Subsection currentSubsection = _subsectionsGrid[row, col];
+                Vector2Int startingCell = currentSubsection.GetGlobalCell(3, 0);
+                List<Cell> cellsToConnect = new List<Cell>();
+
+                for (int cellCol = startingCell.y; cellCol < startingCell.y + 3; cellCol++)
+                {
+                    Cell cell = _cellsGrid[startingCell.x, cellCol];
+                    if (cell.State == CellState.Corridor)
+                    {
+                        cellsToConnect.Add(cell);
+                    }
+                }
+
+                ConnectCells(cellsToConnect);
+                cellsToConnect.Clear();
+            }
+        }
+
+        // Columnas
+        for (int col = 0; col < _subsectionsGrid.GetLength(1) - 1; col++)
+        {
+            for (int row = 0; row < _subsectionsGrid.GetLength(0); row++)
+            {
+                Subsection currentSubsection = _subsectionsGrid[row, col];
+                Vector2Int startingCell = currentSubsection.GetGlobalCell(0, 3);
+                List<Cell> cellsToConnect = new List<Cell>();
+
+                for (int cellRow = startingCell.x; cellRow < startingCell.x + 3; cellRow++)
+                {
+                    Cell cell = _cellsGrid[cellRow, startingCell.y];
+                    if (cell.State == CellState.Corridor)
+                    {
+                        cellsToConnect.Add(cell);
+                    }
+                }
+
+                ConnectCells(cellsToConnect);
+                cellsToConnect.Clear();
+            }
+        }
 
     }
 
-    private void InstantiateCorridor()
+    private void ConnectCells(List<Cell> cellsToConnect)
     {
+        if (cellsToConnect.Count < 2)
+        {
+            return;
+        }
 
+        bool isSameCol = false;
+        int prevCol = -1;
+
+        foreach (Cell cell in cellsToConnect)
+        {
+            if (prevCol == -1)
+            {
+                prevCol = cell.Col;
+            }
+            else if (prevCol == cell.Col)
+            {
+                isSameCol = true;
+            }
+            else
+            {
+                isSameCol = false;
+            }
+        }
+
+        if (isSameCol)
+        {
+            for (int row = cellsToConnect[0].Row; row < cellsToConnect[cellsToConnect.Count() - 1].Row; row++)
+            {
+                _cellsGrid[row, cellsToConnect[0].Col].SetCellState(CellState.Corridor);
+            }
+        }
+        else
+        {
+            for (int col = cellsToConnect[0].Col; col < cellsToConnect[cellsToConnect.Count() - 1].Col; col++)
+            {
+                _cellsGrid[cellsToConnect[0].Row, col].SetCellState(CellState.Corridor);
+            }
+        }
     }
+
+    private void ConfigureStart(Subsection subsection)
+    {
+        Vector2Int baseCell = new Vector2Int(0, 0);
+
+        if (subsection.GetNorthAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(1, 1);
+            _cellsGrid[baseCell.x, baseCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[baseCell.x + 1, baseCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[baseCell.x + 2, baseCell.y].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetEastAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(0, 2);
+            _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetWestAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(0, 0);
+            _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.Corridor);
+        }
+
+        baseCell = subsection.GetGlobalCell(0, 1);
+        _cellsGrid[baseCell.x, baseCell.y].SetCellState(CellState.Start);
+        _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.Start);
+        _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.Start);
+    }
+
+    private void ConfigureEnd(Subsection subsection)
+    {
+        Vector2Int baseCell = new Vector2Int(0, 0);
+
+        if (subsection.GetSouthAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(1, 1);
+            _cellsGrid[baseCell.x, baseCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[baseCell.x - 1, baseCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[baseCell.x - 2, baseCell.y].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetEastAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(2, 2);
+            _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetWestAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(2, 0);
+            _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.Corridor);
+        }
+
+        baseCell = subsection.GetGlobalCell(2, 1);
+        _cellsGrid[baseCell.x, baseCell.y].SetCellState(CellState.End);
+        _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.End);
+        _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.End);
+    }
+    #endregion
 
     #region Grids Initialization
     private void InitializeGrid()
@@ -344,16 +594,16 @@ public class MapGenerator : MonoBehaviour
             for (int col = 0; col < _SubsectionsGridSize.x; col++)
             {
                 // Se calcula la posición inicial de cada subsección, considerando el perímetro compartido.
-                Vector2Int startingPosition = new Vector2Int(
+                Vector2Int startingCell = new Vector2Int(
                     row * (3 + 1),
                     col * (3 + 1)
                 );
 
                 _subsectionsGrid[row, col] = new Subsection(
-                    startingPosition,
+                    startingCell,
                     row,
                     col,
-                    _roomsDataBase
+                    _roomFinder
                     );
             }
         }

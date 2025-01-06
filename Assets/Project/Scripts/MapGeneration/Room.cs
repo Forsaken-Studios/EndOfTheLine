@@ -53,9 +53,9 @@ public class Room : MonoBehaviour
         _entrancesDirections = _roomDataList[_configurationSelected].entrancesDirections;
     }
 
-    public bool InitializeRandomRoom()
+    public bool InitializeRoom(int configurationSelected)
     {
-        SetRoomData(_configurationSelected);
+        SetRoomData(configurationSelected);
 
         CalculateCenterPosition();
         return CreateSelfGrid();
