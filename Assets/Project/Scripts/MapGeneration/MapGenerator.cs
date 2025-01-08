@@ -67,67 +67,7 @@ public class MapGenerator : MonoBehaviour
         InitializeSubsections();
 
         StartCoroutine(GenerateMap());
-        //Test();
     }
-
-
-    #region Test
-    public void Test()
-    {
-        // Simular un conjunto de entradas con direcciones y disponibilidades
-        Dictionary<DirectionFlag, DirectionAvailability> testEntrances = new Dictionary<DirectionFlag, DirectionAvailability>
-    {
-        { DirectionFlag.Up, DirectionAvailability.Closed },
-        { DirectionFlag.Down, DirectionAvailability.Free },
-        { DirectionFlag.Left, DirectionAvailability.Free },
-        { DirectionFlag.Right, DirectionAvailability.Open }
-    };
-
-        // Imprimir las entradas de prueba
-        Debug.Log("-test- Testing FindRoomPrefab with the following entrances:");
-        foreach (var entrance in testEntrances)
-        {
-            Debug.Log($"-test- Direction: {entrance.Key}, Availability: {entrance.Value}");
-        }
-
-        // Llamar a FindRoomPrefab
-        RoomWithConfiguration room = _roomFinder.FindRoomPrefab(testEntrances);
-
-        // Verificar el resultado
-        if (room != null)
-        {
-            Debug.Log($"-test- Found Room Prefab: {room.roomPrefab.name}, Configuration Index: {room.configurationIndex}");
-
-            // Instanciar la habitación encontrada
-            GameObject roomObject = Instantiate(room.roomPrefab, Vector3.zero, room.roomPrefab.transform.rotation);
-            Room roomComponent = roomObject.GetComponent<Room>();
-
-            if (roomComponent != null)
-            {
-                // Configurar la habitación utilizando su índice de configuración
-                roomComponent.InitializeRoom(room.configurationIndex);
-                roomComponent.MoveRoomPosition(Vector3.zero); // Cambiar la posición si es necesario
-
-                // Mostrar nombre del archivo y configuración
-                string prefabPath = UnityEditor.AssetDatabase.GetAssetPath(room.roomPrefab);
-                Debug.Log($"-test- Instantiated Room Prefab File: {prefabPath}, Configuration Index: {room.configurationIndex}");
-            }
-            else
-            {
-                Debug.LogWarning("-test- The instantiated prefab does not have a Room component.");
-            }
-        }
-        else
-        {
-            Debug.Log("-test- No suitable room prefab found.");
-        }
-    }
-
-
-
-
-    #endregion
-
 
     #region Generation
     private IEnumerator GenerateMap()
@@ -476,6 +416,40 @@ public class MapGenerator : MonoBehaviour
         room.InitializeRoom(currentRoomWithConfiguration.configurationIndex);
         room.MoveRoomPosition(subsection.GetCenterPosition());
 
+        // Se cambia el tipo de celda segun la Room.
+        Vector2Int currentCell;
+        for (int row = 0; row < 3; row++)
+        {
+            for (int col = 0; col < 3; col++)
+            {
+                currentCell = subsection.GetGlobalCell(row, col);
+                _cellsGrid[currentCell.x, currentCell.y].SetCellState(room.selfGrid[row, col].State);
+            }
+        }
+        
+        foreach (var entry in room.GetEntrancesDirections())
+        {
+            switch (entry.Value)
+            {
+                case DirectionFlag.Up:
+                    currentCell = subsection.GetGlobalCell(entry.Key.y + 1, entry.Key.x);
+                    _cellsGrid[currentCell.x, currentCell.y].SetCellState(CellState.Corridor);
+                    break;
+                case DirectionFlag.Down:
+                    currentCell = subsection.GetGlobalCell(entry.Key.y - 1, entry.Key.x);
+                    _cellsGrid[currentCell.x, currentCell.y].SetCellState(CellState.Corridor);
+                    break;
+                case DirectionFlag.Right:
+                    currentCell = subsection.GetGlobalCell(entry.Key.y, entry.Key.x + 1);
+                    _cellsGrid[currentCell.x, currentCell.y].SetCellState(CellState.Corridor);
+                    break;
+                case DirectionFlag.Left:
+                    currentCell = subsection.GetGlobalCell(entry.Key.y, entry.Key.x - 1);
+                    _cellsGrid[currentCell.x, currentCell.y].SetCellState(CellState.Corridor);
+                    break;
+            }
+        }
+
         Debug.Log($"-test- Room name = {roomObject.name} [{subsection.GetSubsectionRow()}, {subsection.GetSubsectionCol()}]");
     }
 
@@ -631,6 +605,15 @@ public class MapGenerator : MonoBehaviour
     private void ConfigureEnd(Subsection subsection)
     {
         Vector2Int baseCell = new Vector2Int(0, 0);
+
+        //for(int row = 0; row < 3; row++)
+        //{
+        //    for (int col = 0; col < 3; col++)
+        //    {
+        //        Vector2Int currentCell = subsection.GetGlobalCell(row, col);
+        //        _cellsGrid[currentCell.x, currentCell.y].SetCellState(CellState.Empty);
+        //    }
+        //}
 
         if (subsection.GetSouthAvailability() == DirectionAvailability.Open)
         {
