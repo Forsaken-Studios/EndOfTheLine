@@ -138,7 +138,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5118049485586319712
 Transform:
   m_ObjectHideFlags: 0
@@ -946,6 +946,7 @@ GameObject:
   - component: {fileID: 2605294868126812452}
   - component: {fileID: 1175609746544893343}
   - component: {fileID: 385434002596219762}
+  - component: {fileID: 7616395812378199457}
   m_Layer: 8
   m_Name: Body
   m_TagString: Enemy
@@ -1114,6 +1115,19 @@ MonoBehaviour:
   itemsToSpawnForTutorial: 
   verticalOffset: 0.5
   maxSlotsInCrate: 6
+--- !u!114 &7616395812378199457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7875479994501341861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ce8f46304127fb488bfce62d3cc8932, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _detectionPlayer: {fileID: 5438913027256853994}
 --- !u!1 &8636218661569194102
 GameObject:
   m_ObjectHideFlags: 0

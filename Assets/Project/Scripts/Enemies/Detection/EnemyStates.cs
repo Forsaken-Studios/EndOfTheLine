@@ -6,7 +6,7 @@ public class EnemyStates
 {
     public enum FOVState
     {
-        isWatching,
+        isUnaware,
         isDetecting,
         isSeeing,
     }
