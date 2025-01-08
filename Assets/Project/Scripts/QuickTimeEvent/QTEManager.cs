@@ -26,7 +26,7 @@ public class QTEManager : MonoBehaviour
     private Animator _enemyAnimator;
     private Transform _enemyTransform;
 
-    private bool _isInQTE = false;
+    public bool isInQTE = false;
     private bool _challengePassed = false;
 
     public static QTEManager Instance { get; private set; }
@@ -43,9 +43,10 @@ public class QTEManager : MonoBehaviour
 
     public void ActivateQTE(Animator enemyAnimator, Transform enemyTransform)
     {
-        if (_isInQTE)
+        if (isInQTE)
             return;
 
+        isInQTE = true;
         EnemyEvents.OnIsOnQTE?.Invoke();
         _challengePassed = false;
 
@@ -83,7 +84,6 @@ public class QTEManager : MonoBehaviour
 
     private IEnumerator HandleQTE()
     {
-        _isInQTE = true;
         float timeElapsed = 0f;
 
         while (timeElapsed < _qteDuration)
@@ -130,7 +130,7 @@ public class QTEManager : MonoBehaviour
     {
         QTETimes++;
         _playerObject.GetComponent<PlayerController>().enabled = true;
-        _isInQTE = false;
+        isInQTE = false;
         EnemyEvents.OnActivateNMAgent?.Invoke(_pushDistance, _pushForce, _timeStunned);
     }
 

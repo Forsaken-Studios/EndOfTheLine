@@ -18,6 +18,10 @@ public class ReactionSound : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        if (_enemyActions.GetIsDead())
+        {
+            return;
+        }
         if (collision.CompareTag("Sound") && _enemyActions != null && collision.gameObject.layer == LayerMask.NameToLayer("Sound"))
         {
             // Se recoge la posición del sonido en el momento del impacto y se hace girar al enemigo hacia este.
