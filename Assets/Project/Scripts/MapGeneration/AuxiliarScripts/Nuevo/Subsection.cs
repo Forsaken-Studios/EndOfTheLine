@@ -40,9 +40,9 @@ public class Subsection
         _westAvailability = DirectionAvailability.Closed;
     }
 
-    public Vector3 GetPositionCell()
+    public Vector3 GetCenterPosition()
     {
-        Vector3 positionCell = new Vector3(_startingCell.x * MapGenerator.Instance.cellSize, _startingCell.y * MapGenerator.Instance.cellSize, 0);
+        Vector3 positionCell = new Vector3((_startingCell.y + 1) * MapGenerator.Instance.cellSize + MapGenerator.Instance.cellSize / 2, (_startingCell.x + 1) * MapGenerator.Instance.cellSize + MapGenerator.Instance.cellSize / 2, 0);
         return positionCell;
     }
 
@@ -131,6 +131,10 @@ public class Subsection
 
     public List<Subsection> SetCurrentRoom(Subsection[,] subsectionsGrid)
     {
+        if(_typeSubsection != TypeSubsection.Empty)
+        {
+            return new List<Subsection>();
+        }
         UpdateDirectionAvailability(subsectionsGrid);
         List<Subsection> nextSubsections = new List<Subsection>();
 
@@ -149,6 +153,11 @@ public class Subsection
             else
                 return null;
         }
+
+        _northAvailability = DirectionAvailability.Closed;
+        _southAvailability = DirectionAvailability.Closed;
+        _eastAvailability = DirectionAvailability.Closed;
+        _westAvailability = DirectionAvailability.Closed;
 
         foreach (DirectionFlag direction in _currentRoom.openDirections)
         {
@@ -169,8 +178,6 @@ public class Subsection
             }
         }
 
-        Debug.Log($"north = {_northAvailability}; south = {_southAvailability}; east = {_eastAvailability}; west = {_westAvailability}");
-
         _typeSubsection = TypeSubsection.Room;
         nextSubsections = GetNextSubsections(subsectionsGrid);
         foreach (Subsection subsection in nextSubsections)
@@ -178,12 +185,20 @@ public class Subsection
             subsection.IncrementAmountParentsRoom(_amountParentsRoom);
         }
 
+        Debug.Log($"-test limite- Subsection room [{_subsectionRow}, {_subsectionCol}]; norte = {_directionRequirement[0]}; sur = {_directionRequirement[1]}; este = {_directionRequirement[2]}; oeste = {_directionRequirement[3]}");
+        Debug.Log($"-test limite- Subsection room [{_subsectionRow}, {_subsectionCol}]; norte = {_northAvailability}; sur = {_southAvailability}; este = {_eastAvailability}; oeste = {_westAvailability}");
+
         return nextSubsections;
     }
 
-    public List<Subsection> SetCurrentCorridor(Subsection[,] subsectionsGrid)
+    public List<Subsection> SetCurrentCorridor(Subsection[,] subsectionsGrid, bool isClosing = false)
     {
-        UpdateDirectionAvailability(subsectionsGrid);
+        if (_typeSubsection != TypeSubsection.Empty)
+        {
+            return new List<Subsection>();
+        }
+        if (!isClosing)
+            UpdateDirectionAvailability(subsectionsGrid);
         List<Subsection> nextSubsections = new List<Subsection>();
 
         int amountOpen = 0;
@@ -193,17 +208,20 @@ public class Subsection
         {
             _northAvailability = DirectionAvailability.Open;
             amountOpen++;
-        }else if(_directionRequirement[0] == DirectionAvailability.Closed)
+        }
+        else if (_directionRequirement[0] == DirectionAvailability.Closed)
         {
             _northAvailability = DirectionAvailability.Closed;
-        }else if (_directionRequirement[0] == DirectionAvailability.Free)
+        }
+        else if (_directionRequirement[0] == DirectionAvailability.Free && !isClosing)
         {
             int randomNumber = Random.Range(1, 3);
-            if(randomNumber == 1)
+            if (randomNumber == 1)
             {
                 _northAvailability = DirectionAvailability.Open;
                 amountOpen++;
-            }else if(randomNumber == 2)
+            }
+            else if (randomNumber == 2)
             {
                 _northAvailability = DirectionAvailability.Closed;
                 directionsFree.Add(0);
@@ -219,7 +237,7 @@ public class Subsection
         {
             _southAvailability = DirectionAvailability.Closed;
         }
-        else if (_directionRequirement[1] == DirectionAvailability.Free)
+        else if (_directionRequirement[1] == DirectionAvailability.Free && !isClosing)
         {
             int randomNumber = Random.Range(1, 3);
             if (randomNumber == 1)
@@ -243,7 +261,7 @@ public class Subsection
         {
             _eastAvailability = DirectionAvailability.Closed;
         }
-        else if (_directionRequirement[2] == DirectionAvailability.Free)
+        else if (_directionRequirement[2] == DirectionAvailability.Free && !isClosing)
         {
             int randomNumber = Random.Range(1, 3);
             if (randomNumber == 1)
@@ -267,7 +285,7 @@ public class Subsection
         {
             _westAvailability = DirectionAvailability.Closed;
         }
-        else if (_directionRequirement[3] == DirectionAvailability.Free)
+        else if (_directionRequirement[3] == DirectionAvailability.Free && !isClosing)
         {
             int randomNumber = Random.Range(1, 3);
             if (randomNumber == 1)
@@ -282,16 +300,17 @@ public class Subsection
             }
         }
 
-        if(amountOpen < 2)
+        if (amountOpen == 1)
         {
-            if(directionsFree.Count == 0)
+            if (directionsFree.Count == 0)
             {
                 bool result = SetCloseRoom(subsectionsGrid, false);
-                if(result == true)
+                if (result == true)
                 {
                     return new List<Subsection>();
                 }
-                else{
+                else
+                {
                     return null;
                 }
             }
@@ -324,6 +343,13 @@ public class Subsection
             subsection.ResetAmountParentsRoom();
         }
 
+        Debug.Log($"-test limite- Subsection corridor [{_subsectionRow}, {_subsectionCol}]; norte = {_directionRequirement[0]}; sur = {_directionRequirement[1]}; este = {_directionRequirement[2]}; oeste = {_directionRequirement[3]}");
+        Debug.Log($"-test limite- Subsection corridor [{_subsectionRow}, {_subsectionCol}]; norte = {_northAvailability}; sur = {_southAvailability}; este = {_eastAvailability}; oeste = {_westAvailability}");
+        _directionRequirement[0] = _northAvailability;
+        _directionRequirement[1] = _southAvailability;
+        _directionRequirement[2] = _eastAvailability;
+        _directionRequirement[3] = _westAvailability;
+
         return nextSubsections;
     }
 
@@ -332,7 +358,7 @@ public class Subsection
         List<Subsection> nextSubsections = new List<Subsection>();
 
         // Norte
-        if(_northAvailability == DirectionAvailability.Open)
+        if (_northAvailability == DirectionAvailability.Open)
         {
             if (_subsectionRow + 1 < subsectionsGrid.GetLength(0))
                 nextSubsections.Add(subsectionsGrid[_subsectionRow + 1, _subsectionCol]);
@@ -340,7 +366,7 @@ public class Subsection
         // Sur
         if (_southAvailability == DirectionAvailability.Open)
         {
-            if(_subsectionRow - 1 >= 0)
+            if (_subsectionRow - 1 >= 0)
                 nextSubsections.Add(subsectionsGrid[_subsectionRow - 1, _subsectionCol]);
         }
         // Este
@@ -362,34 +388,69 @@ public class Subsection
     // Asigna una habitación de clausura.
     public bool SetCloseRoom(Subsection[,] subsectionsGrid, bool updateDirections = true)
     {
+        if (_typeSubsection != TypeSubsection.Empty)
+        {
+            return true;
+        }
         if (updateDirections)
             UpdateDirectionAvailability(subsectionsGrid);
 
-        Dictionary<DirectionFlag, DirectionAvailability> entrances = new Dictionary<DirectionFlag, DirectionAvailability>();
         // NORTE
-        if (_northAvailability == DirectionAvailability.Open)
-            entrances.Add(DirectionFlag.Up, DirectionAvailability.Open);
-        // SUR
-        if (_southAvailability == DirectionAvailability.Open)
-            entrances.Add(DirectionFlag.Down, DirectionAvailability.Open);
-        // ESTE
-        if (_eastAvailability == DirectionAvailability.Open)
-            entrances.Add(DirectionFlag.Right, DirectionAvailability.Open);
-        // OESTE
-        if (_westAvailability == DirectionAvailability.Open)
-            entrances.Add(DirectionFlag.Left, DirectionAvailability.Open);
-
-        if (entrances.Count == 0)
+        if (_directionRequirement[0] == DirectionAvailability.Free || _directionRequirement[0] == DirectionAvailability.Closed)
         {
-            return false;
+            _directionRequirement[0] = DirectionAvailability.Closed;
+            _northAvailability = DirectionAvailability.Closed;
+        }
+        else
+        {
+            _northAvailability = _directionRequirement[0];
+        }
+        // SUR
+        if (_directionRequirement[1] == DirectionAvailability.Free || _directionRequirement[1] == DirectionAvailability.Closed)
+        {
+            _directionRequirement[1] = DirectionAvailability.Closed;
+            _southAvailability = DirectionAvailability.Closed;
+        }
+        else
+        {
+            _southAvailability = _directionRequirement[1];
+        }
+        // ESTE
+        if (_directionRequirement[2] == DirectionAvailability.Free || _directionRequirement[2] == DirectionAvailability.Closed)
+        {
+            _directionRequirement[2] = DirectionAvailability.Closed;
+            _eastAvailability = DirectionAvailability.Closed;
+        }
+        else
+        {
+            _eastAvailability = _directionRequirement[2];
+        }
+        // OESTE
+        if (_directionRequirement[3] == DirectionAvailability.Free || _directionRequirement[3] == DirectionAvailability.Closed)
+        {
+            _directionRequirement[3] = DirectionAvailability.Closed;
+            _westAvailability = DirectionAvailability.Closed;
+        }
+        else
+        {
+            _westAvailability = _directionRequirement[3];
         }
 
-        _currentRoom = _roomFinder.FindRoomPrefab(entrances);
+        Dictionary<DirectionFlag, DirectionAvailability> roomRequirements = new Dictionary<DirectionFlag, DirectionAvailability>();
+        roomRequirements.Add(DirectionFlag.Up, _directionRequirement[0]);
+        roomRequirements.Add(DirectionFlag.Down, _directionRequirement[1]);
+        roomRequirements.Add(DirectionFlag.Right, _directionRequirement[2]);
+        roomRequirements.Add(DirectionFlag.Left, _directionRequirement[3]);
+        _currentRoom = _roomFinder.FindRoomPrefab(roomRequirements);
         if (_currentRoom == null)
-            return false;
+        {
+            SetCurrentCorridor(subsectionsGrid, true);
+            return true;
+        }
 
         _typeSubsection = TypeSubsection.Room;
-
+        Debug.Log($"-test limite- Subsection close[{_subsectionRow}, {_subsectionCol}]; norte = {_directionRequirement[0]}; sur = {_directionRequirement[1]}; este = {_directionRequirement[2]}; oeste = {_directionRequirement[3]}");
+        Debug.Log($"-test limite- Subsection close [{_subsectionRow}, {_subsectionCol}]; norte = {_northAvailability}; sur = {_southAvailability}; este = {_eastAvailability}; oeste = {_westAvailability}");
         return true;
     }
 
@@ -407,6 +468,12 @@ public class Subsection
     public void SetAsEnd()
     {
         _typeSubsection = TypeSubsection.End;
+        _northAvailability = _directionRequirement[0];
+        _southAvailability = _directionRequirement[1];
+        _eastAvailability = _directionRequirement[2];
+        _westAvailability = _directionRequirement[3];
+        Debug.Log($"-test limite- Subsection end[{_subsectionRow}, {_subsectionCol}]; norte = {_directionRequirement[0]}; sur = {_directionRequirement[1]}; este = {_directionRequirement[2]}; oeste = {_directionRequirement[3]}");
+        Debug.Log($"-test limite- Subsection end [{_subsectionRow}, {_subsectionCol}]; norte = {_northAvailability}; sur = {_southAvailability}; este = {_eastAvailability}; oeste = {_westAvailability}");
     }
 
     // Actualiza el estado de DirectionAvailability según las subsecciones adyacentes.

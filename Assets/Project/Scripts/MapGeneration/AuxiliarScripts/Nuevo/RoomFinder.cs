@@ -1,66 +1,56 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class RoomFinder
 {
-    Dictionary<DirectionFlag, List<RoomWithConfiguration>> roomsPrefabs;
+    List<RoomWithConfiguration> roomsPrefabs;
 
     public RoomFinder(RoomsDataBase roomDataBase)
     {
-        roomsPrefabs = roomDataBase.GetRoomsPrefabs();
+        roomsPrefabs = roomDataBase.GetRoomsList();
     }
 
-    public RoomWithConfiguration FindRoomPrefab(Dictionary<DirectionFlag, DirectionAvailability> entrances) 
+    public RoomWithConfiguration FindRoomPrefab(Dictionary<DirectionFlag, DirectionAvailability> entrances)
     {
         // Lista para almacenar posibles candidatos
         List<RoomWithConfiguration> candidates = new List<RoomWithConfiguration>();
 
-        // Filtrar por condiciones `Open`
-        foreach (KeyValuePair<DirectionFlag, DirectionAvailability> entry in entrances)
+        foreach(RoomWithConfiguration room in roomsPrefabs)
         {
-            if (entry.Value == DirectionAvailability.Open)
+            bool isValid = true;
+            foreach (var entrance in entrances)
             {
-                if (roomsPrefabs.ContainsKey(entry.Key))
+                switch (entrance.Value)
                 {
-                    // Si está abierta, los prefabs de esta dirección son candidatos iniciales
-                    candidates = candidates.Count == 0
-                        ? new List<RoomWithConfiguration>(roomsPrefabs[entry.Key])
-                        : new List<RoomWithConfiguration>(candidates.Intersect(roomsPrefabs[entry.Key]));
-                }
-                else
-                {
-                    // Si no hay prefabs en esta dirección, no hay candidatos posibles
-                    return null;
+                    case DirectionAvailability.Open:
+                        // Debe tener entrada en esta dirección
+                        if (!room.openDirections.Contains(entrance.Key))
+                            isValid = false;
+                        break;
+
+                    case DirectionAvailability.Closed:
+                        // No debe tener entrada en esta dirección
+                        if (room.openDirections.Contains(entrance.Key))
+                            isValid = false;
+                        break;
+
+                    case DirectionAvailability.Free:
+                        // Puede o no tener entrada, no afecta
+                        break;
                 }
             }
+            if (isValid)
+                candidates.Add(room);
         }
 
-        // Excluir candidatos que estén en `Closed`
-        foreach (KeyValuePair<DirectionFlag, DirectionAvailability> entry in entrances)
-        {
-            if (entry.Value == DirectionAvailability.Closed)
-            {
-                if (roomsPrefabs.ContainsKey(entry.Key))
-                {
-                    candidates.RemoveAll(room => roomsPrefabs[entry.Key].Contains(room));
-                }
-            }
-        }
-
-        // Retornar aleatoriamente un candidato válido si existe
+        // Seleccionar aleatoriamente un candidato válido si existe
         if (candidates.Count > 0)
         {
             System.Random rnd = new System.Random();
-
-            // Ordenar aleatoriamente
-            List<RoomWithConfiguration> shuffledRooms = candidates.OrderBy(x => rnd.Next()).ToList();
-
-            RoomWithConfiguration selectedPrefab = candidates[0];
+            RoomWithConfiguration selectedPrefab = candidates[rnd.Next(candidates.Count)];
             return selectedPrefab;
         }
-
         return null;
     }
 }

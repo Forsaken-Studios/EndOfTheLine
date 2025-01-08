@@ -5,20 +5,15 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "RoomsDatabase", menuName = "ScriptableObjects/MapGenerator/RoomsDB")]
 public class RoomsDataBase : ScriptableObject
 {
-    [SerializeField] private List<DirectionRoomsPair> serializedRoomsPrefabs;
-    private Dictionary<DirectionFlag, List<RoomWithConfiguration>> roomsPrefabs;
+    [SerializeField] private List<RoomWithConfiguration> roomsList;
 
     [SerializeField] private bool _isRefreshed = false;
 
     private void OnEnable()
     {
-        if (roomsPrefabs == null)
+        if (roomsList == null || roomsList.Count == 0)
         {
-            roomsPrefabs = new Dictionary<DirectionFlag, List<RoomWithConfiguration>>();
-            foreach (DirectionRoomsPair pair in serializedRoomsPrefabs)
-            {
-                roomsPrefabs[pair.direction] = pair.rooms;
-            }
+            roomsList = new List<RoomWithConfiguration>();
         }
 
         if (!_isRefreshed)
@@ -29,21 +24,11 @@ public class RoomsDataBase : ScriptableObject
 
     public void LoadRooms()
     {
-        roomsPrefabs = new Dictionary<DirectionFlag, List<RoomWithConfiguration>>();
+        roomsList = new List<RoomWithConfiguration>();
         string path = $"Rooms/AllRooms";
 
         GameObject[] loadedRooms = UnityEngine.Resources.LoadAll<GameObject>(path);
         SortRooms(loadedRooms);
-
-        serializedRoomsPrefabs = new List<DirectionRoomsPair>();
-        foreach (var entry in roomsPrefabs)
-        {
-            serializedRoomsPrefabs.Add(new DirectionRoomsPair
-            {
-                direction = entry.Key,
-                rooms = entry.Value
-            });
-        }
 
         _isRefreshed = true;
     }
@@ -70,30 +55,21 @@ public class RoomsDataBase : ScriptableObject
                     }
                 }
 
-                foreach (KeyValuePair<Vector2Int, DirectionFlag> entry in entrancesDirections)
+                // Se agrega una nueva configuración de habitación a la lista general
+                roomsList.Add(new RoomWithConfiguration
                 {
-                    DirectionFlag direction = entry.Value;
-
-                    if (!roomsPrefabs.ContainsKey(direction))
-                    {
-                        roomsPrefabs[direction] = new List<RoomWithConfiguration>();
-                    }
-                    roomsPrefabs[direction].Add(new RoomWithConfiguration
-                    {
-                        roomPrefab = roomPrefab,
-                        configurationIndex = i,
-                        openDirections = openDirections
-                    });
-                }
+                    roomPrefab = roomPrefab,
+                    configurationIndex = i,
+                    openDirections = openDirections
+                });
             }
 
             DestroyImmediate(roomObject);
         }
     }
 
-    public Dictionary<DirectionFlag, List<RoomWithConfiguration>>  GetRoomsPrefabs()
+    public List<RoomWithConfiguration> GetRoomsList()
     {
-        return roomsPrefabs;
+        return roomsList;
     }
 }
-

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -66,7 +67,67 @@ public class MapGenerator : MonoBehaviour
         InitializeSubsections();
 
         StartCoroutine(GenerateMap());
+        //Test();
     }
+
+
+    #region Test
+    public void Test()
+    {
+        // Simular un conjunto de entradas con direcciones y disponibilidades
+        Dictionary<DirectionFlag, DirectionAvailability> testEntrances = new Dictionary<DirectionFlag, DirectionAvailability>
+    {
+        { DirectionFlag.Up, DirectionAvailability.Closed },
+        { DirectionFlag.Down, DirectionAvailability.Free },
+        { DirectionFlag.Left, DirectionAvailability.Free },
+        { DirectionFlag.Right, DirectionAvailability.Open }
+    };
+
+        // Imprimir las entradas de prueba
+        Debug.Log("-test- Testing FindRoomPrefab with the following entrances:");
+        foreach (var entrance in testEntrances)
+        {
+            Debug.Log($"-test- Direction: {entrance.Key}, Availability: {entrance.Value}");
+        }
+
+        // Llamar a FindRoomPrefab
+        RoomWithConfiguration room = _roomFinder.FindRoomPrefab(testEntrances);
+
+        // Verificar el resultado
+        if (room != null)
+        {
+            Debug.Log($"-test- Found Room Prefab: {room.roomPrefab.name}, Configuration Index: {room.configurationIndex}");
+
+            // Instanciar la habitación encontrada
+            GameObject roomObject = Instantiate(room.roomPrefab, Vector3.zero, room.roomPrefab.transform.rotation);
+            Room roomComponent = roomObject.GetComponent<Room>();
+
+            if (roomComponent != null)
+            {
+                // Configurar la habitación utilizando su índice de configuración
+                roomComponent.InitializeRoom(room.configurationIndex);
+                roomComponent.MoveRoomPosition(Vector3.zero); // Cambiar la posición si es necesario
+
+                // Mostrar nombre del archivo y configuración
+                string prefabPath = UnityEditor.AssetDatabase.GetAssetPath(room.roomPrefab);
+                Debug.Log($"-test- Instantiated Room Prefab File: {prefabPath}, Configuration Index: {room.configurationIndex}");
+            }
+            else
+            {
+                Debug.LogWarning("-test- The instantiated prefab does not have a Room component.");
+            }
+        }
+        else
+        {
+            Debug.Log("-test- No suitable room prefab found.");
+        }
+    }
+
+
+
+
+    #endregion
+
 
     #region Generation
     private IEnumerator GenerateMap()
@@ -80,6 +141,10 @@ public class MapGenerator : MonoBehaviour
         while (_currentMapPercentageOccupied < _maxMapPercentageOcuppied)
         {
             ConfigureNextSubsections();
+            if(_nextSubsections.Count == 0)
+            {
+                Debug.LogWarning("-test- No hay más nextSubsections");
+            }
 
             yield return null;
         }
@@ -173,6 +238,10 @@ public class MapGenerator : MonoBehaviour
         while (_nextSubsections.Count > 0)
         {
             Subsection currentSubsection = DequeueRandomSubsection();
+            if(currentSubsection.GetTypeSubsection() == TypeSubsection.Start)
+            {
+                continue;
+            }
 
             // Opción 1: Si hay muchas habitaciones seguidas.
             if (currentSubsection.GetParentsRooms() >= 4)
@@ -183,8 +252,11 @@ public class MapGenerator : MonoBehaviour
                     List<Subsection> generatedSubsections = currentSubsection.SetCurrentCorridor(_subsectionsGrid);
                     foreach (var subsection in generatedSubsections)
                     {
-                        nextSubsectionsAux.Add(subsection);
-                        AddPercentage();
+                        if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                        {
+                            nextSubsectionsAux.Add(subsection);
+                            AddPercentage();
+                        }
                     }
                 }
                 else
@@ -228,8 +300,11 @@ public class MapGenerator : MonoBehaviour
                 List<Subsection> generatedSubsections = currentSubsection.SetCurrentCorridor(_subsectionsGrid);
                 foreach (var subsection in generatedSubsections)
                 {
-                    nextSubsectionsAux.Add(subsection);
-                    AddPercentage();
+                    if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                    {
+                        nextSubsectionsAux.Add(subsection);
+                        AddPercentage();
+                    }
                 }
             }
             // Habitación.
@@ -240,8 +315,11 @@ public class MapGenerator : MonoBehaviour
                 {
                     foreach (var subsection in generatedSubsections)
                     {
-                        nextSubsectionsAux.Add(subsection);
-                        AddPercentage();
+                        if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                        {
+                            nextSubsectionsAux.Add(subsection);
+                            AddPercentage();
+                        }
                     }
                 }
             }
@@ -249,14 +327,16 @@ public class MapGenerator : MonoBehaviour
 
         _nextSubsections = nextSubsectionsAux;
     }
-    #endregion
 
     private void CompleteMap()
     {
         while (_nextSubsections.Count > 0)
         {
             Subsection nextSubsection = DequeueRandomSubsection();
-            nextSubsection.SetCloseRoom(_subsectionsGrid);
+            if(nextSubsection.GetTypeSubsection() == TypeSubsection.Empty)
+            {
+                nextSubsection.SetCloseRoom(_subsectionsGrid);
+            }
         }
 
         PlaceExit();
@@ -264,12 +344,13 @@ public class MapGenerator : MonoBehaviour
 
     private Subsection DequeueRandomSubsection()
     {
-        _nextSubsections = _nextSubsections.OrderBy(x => _rnd.Next()).ToList();
-        Subsection subsectionToReturn = _nextSubsections[0];
-        _nextSubsections.RemoveAt(0);
+        int index = _rnd.Next(_nextSubsections.Count);
+        Subsection subsectionToReturn = _nextSubsections[index];
+        _nextSubsections.RemoveAt(index);
         return subsectionToReturn;
     }
 
+    // TODO
     private void PlaceExit()
     {
         // Recorrer las filas desde la última hacia abajo.
@@ -298,6 +379,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+    #endregion
 
     #region Instantiation
     private void InstantiateAll()
@@ -321,7 +403,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        ConfigureInternCorridors();
+        ConfigureInternalCorridors();
 
         foreach (Cell cell in _cellsGrid)
         {
@@ -384,6 +466,7 @@ public class MapGenerator : MonoBehaviour
     // TODO: hacer que se genere una celda de pasillo en frente de la entrada.
     private void InstantiateRoom(Subsection subsection)
     {
+        Debug.Log($"-test- Subsection[{subsection.GetSubsectionRow()}, {subsection.GetSubsectionCol()}]");
         RoomWithConfiguration currentRoomWithConfiguration = subsection.GetCurrentRoom();
         GameObject roomPrefab = currentRoomWithConfiguration.roomPrefab;
 
@@ -391,7 +474,9 @@ public class MapGenerator : MonoBehaviour
         // roomObject.transform.SetParent(GameObject.Find("Rooms").transform, false);  
         Room room = roomObject.GetComponent<Room>();
         room.InitializeRoom(currentRoomWithConfiguration.configurationIndex);
-        room.MoveRoomPosition(subsection.GetPositionCell());
+        room.MoveRoomPosition(subsection.GetCenterPosition());
+
+        Debug.Log($"-test- Room name = {roomObject.name} [{subsection.GetSubsectionRow()}, {subsection.GetSubsectionCol()}]");
     }
 
     private void ConfigureCorridor(Subsection subsection)
@@ -422,7 +507,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    private void ConfigureInternCorridors()
+    private void ConfigureInternalCorridors()
     {
         // Filas
         for (int row = 0; row < _subsectionsGrid.GetLength(0) - 1; row++)
@@ -550,20 +635,34 @@ public class MapGenerator : MonoBehaviour
         if (subsection.GetSouthAvailability() == DirectionAvailability.Open)
         {
             baseCell = subsection.GetGlobalCell(1, 1);
+            Debug.Log($"-test- end [{baseCell.x}, {baseCell.y}]");
             _cellsGrid[baseCell.x, baseCell.y].SetCellState(CellState.Corridor);
             _cellsGrid[baseCell.x - 1, baseCell.y].SetCellState(CellState.Corridor);
             _cellsGrid[baseCell.x - 2, baseCell.y].SetCellState(CellState.Corridor);
         }
+        else
+        {
+            Debug.Log($"-test- end [{subsection.GetSubsectionRow()}, {subsection.GetSubsectionCol()}] tipo {subsection.GetSouthAvailability()}");
+        }
         if (subsection.GetEastAvailability() == DirectionAvailability.Open)
         {
             baseCell = subsection.GetGlobalCell(2, 2);
+            Debug.Log($"-test- end [{baseCell.x}, {baseCell.y}]");
             _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.Corridor);
+        }
+        else
+        {
+            Debug.Log($"-test- end tipo {subsection.GetEastAvailability()}");
         }
         if (subsection.GetWestAvailability() == DirectionAvailability.Open)
         {
             baseCell = subsection.GetGlobalCell(2, 0);
-            Debug.Log($"[{baseCell.x}, {baseCell.y}]");
+            Debug.Log($"-test- end [{baseCell.x}, {baseCell.y}]");
             _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.Corridor);
+        }
+        else
+        {
+            Debug.Log($"-test- end tipo {subsection.GetWestAvailability()}");
         }
 
         baseCell = subsection.GetGlobalCell(2, 1);
