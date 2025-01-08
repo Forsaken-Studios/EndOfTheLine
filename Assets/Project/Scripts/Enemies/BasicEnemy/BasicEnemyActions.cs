@@ -1,13 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using LootSystem;
-using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
-using Utils.CustomLogs;
-using static UnityEngine.GraphicsBuffer;
 
 public class BasicEnemyActions : MonoBehaviour
 {
@@ -40,10 +36,18 @@ public class BasicEnemyActions : MonoBehaviour
     private Vector3 _initialPositionSelf;
     private bool _isDead = false;
     public bool IsNearWallAbility = false;
+    public bool isInQTE = false;
 
     public bool isAtPlayerLastSeenPosition { get; private set; }
     public bool isAtInitialPosition { get; private set; }
     [HideInInspector] public float timerLookForPlayer;
+
+    private void Awake()
+    {
+        EnemyEvents.OnDeactivateNMAgent += StopChasing;
+        EnemyEvents.OnActivateNMAgent += ActivateAgent;
+        EnemyEvents.OnIsOnQTE += ActivateIsInQTE;
+    }
 
     void Start()
     {
@@ -75,7 +79,8 @@ public class BasicEnemyActions : MonoBehaviour
 
     void Update()
     {
-        if(!(_agent.isActiveAndEnabled && _agent.isOnNavMesh)){
+        if (!(_agent.isActiveAndEnabled && _agent.isOnNavMesh))
+        {
             return;
         }
 
@@ -111,7 +116,7 @@ public class BasicEnemyActions : MonoBehaviour
     {
         _patrolPoints = new List<Transform>();
         Transform patrolPointsParent = gameObject.transform.parent.Find("PatrolPoints");
-        for(int i = 0; i < patrolPointsParent.childCount; i++)
+        for (int i = 0; i < patrolPointsParent.childCount; i++)
         {
             _patrolPoints.Add(patrolPointsParent.GetChild(i));
         }
@@ -119,6 +124,9 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void WalkAnimation()
     {
+        if (isInQTE)
+            return;
+
         _animator.SetBool("isWalking", !_agent.isStopped);
     }
 
@@ -160,6 +168,9 @@ public class BasicEnemyActions : MonoBehaviour
 
     private void CheckIfKillPlayer()
     {
+        if (isInQTE)
+            return;
+
         float distanceToPlayer = Vector3.Distance(transform.position, _player.position);
 
         if (distanceToPlayer < _killPlayerDistance)
@@ -171,14 +182,15 @@ public class BasicEnemyActions : MonoBehaviour
             {
                 SoundManager.Instance.ActivateSoundByName(SoundAction.Enemy_Hit, null, true);
                 _animator.SetTrigger("attackTrigger");
-                Debug.Log("Jugador muerto");
-                GameManager.Instance.EndGame();
+                QTEManager.Instance.ActivateQTE(_animator, transform);
             }
         }
     }
 
     public void ChasePlayerLastSeenPosition()
     {
+        if (isInQTE)
+            return;
         if (IsNearWallAbility)
         {
             StopChasing();
@@ -192,6 +204,8 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void ChaseInitialPosition()
     {
+        if (isInQTE)
+            return;
         if (IsNearWallAbility)
         {
             StopChasing();
@@ -209,6 +223,53 @@ public class BasicEnemyActions : MonoBehaviour
         _agent.isStopped = true;
     }
 
+    private void ActivateAgent(float specifiedDistance, float pushForce, float timeStunned)
+    {
+        float distance = Vector3.Distance(transform.position, _player.position);
+        if (distance <= specifiedDistance)
+        {
+            KnockBack(pushForce);
+            StartCoroutine(ReactivateAgentAfterDelay(timeStunned));
+        }
+        else
+        {
+            _agent.isStopped = false;
+            isInQTE = false;
+        }
+
+    }
+
+    private IEnumerator ReactivateAgentAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (!_isDead && _agent != null)
+        {
+            _agent.isStopped = false;
+            isInQTE = false;
+        }
+    }
+
+    private IEnumerator KnockbackCoroutine(Vector3 direction, float pushForce, float duration)
+    {
+        float timeElapsed = 0f;
+
+        while (timeElapsed < duration)
+        {
+            transform.position += direction * pushForce * Time.deltaTime;
+
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private void KnockBack(float pushForce)
+    {
+        // Calcula la dirección del knockback
+        Vector3 knockbackDirection = (transform.position - _player.transform.position).normalized;
+
+        StartCoroutine(KnockbackCoroutine(knockbackDirection, pushForce, 0.5f));
+    }
+
     public void StopRotating()
     {
         _isRotating = false;
@@ -222,6 +283,8 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void Patrol()
     {
+        if (isInQTE)
+            return;
         if (IsNearWallAbility)
         {
             StopChasing();
@@ -365,12 +428,17 @@ public class BasicEnemyActions : MonoBehaviour
         parent.Find("FOV_Visualization").gameObject.SetActive(false);
         parent.Find("CanvasInWorld").gameObject.SetActive(false);
         Transform patrol = parent.Find("PatrolPoints");
-        if(patrol != null)
+        if (patrol != null)
         {
             patrol.gameObject.SetActive(false);
         }
 
         // Activaci�n de la animaci�n.
         _animator.SetBool("isDead", true);
+    }
+
+    private void ActivateIsInQTE()
+    {
+        isInQTE = true;
     }
 }
