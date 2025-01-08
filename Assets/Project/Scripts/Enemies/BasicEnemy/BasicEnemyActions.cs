@@ -125,7 +125,10 @@ public class BasicEnemyActions : MonoBehaviour
     private void WalkAnimation()
     {
         if (isInQTE)
+        {
+            _animator.SetBool("isWalking", false);
             return;
+        }
 
         _animator.SetBool("isWalking", !_agent.isStopped);
     }
@@ -440,5 +443,10 @@ public class BasicEnemyActions : MonoBehaviour
     private void ActivateIsInQTE()
     {
         isInQTE = true;
+    }
+
+    public bool GetIsDead()
+    {
+        return _isDead;
     }
 }

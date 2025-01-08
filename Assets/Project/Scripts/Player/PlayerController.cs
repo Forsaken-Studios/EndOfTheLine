@@ -253,7 +253,22 @@ namespace Player
                 }
             }
         }
-        
+
+        private void OnDisable()
+        {
+            if (QTEManager.Instance.isInQTE)
+            {
+                isSprinting = false;
+                moveSpeed = 0;
+                _animTorso.SetBool("isRunning", false);
+                _animTorso.SetBool("isWalking", false);
+                _animTorso.SetFloat("animWalkSpeed", 0);
+
+                _animLegs.SetBool("isWalking", false);
+                _animLegs.SetFloat("animWalkSpeed", 0);
+            }
+        }
+
         private void HandleMovementInputs()
         {
             speedX = Input.GetAxisRaw("Horizontal");

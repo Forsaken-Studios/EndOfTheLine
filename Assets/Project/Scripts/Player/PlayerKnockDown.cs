@@ -33,7 +33,7 @@ public class PlayerKnockDown : MonoBehaviour
 
     void Start()
     {
-        _bodyTransform = transform;
+        _bodyTransform = transform.Find("PlayerBody");
         _isOnBack = false;
     }
 
