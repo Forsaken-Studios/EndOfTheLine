@@ -59,6 +59,7 @@ public class PlayerSprintStamina : MonoBehaviour
                 {
                     currentStamina = 0;
                     playerCanSprint = false;
+                    PlayerController.Instance.SetPlayerSpeedToMinimun();
                     if(!alreadyWaiting)
                         StartCoroutine(StartCooldown());
                 }

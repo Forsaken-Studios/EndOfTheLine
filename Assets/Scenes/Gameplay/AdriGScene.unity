@@ -223,7 +223,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!156049354 &176931570
 Grid:
   m_ObjectHideFlags: 0
@@ -469,7 +469,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &362316864
 Transform:
   m_ObjectHideFlags: 0
@@ -3477,6 +3477,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 828856641527161492, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 958711644118573959, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3717,6 +3721,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2418326060971329493, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 866584872, guid: 988eccde5614af743824682103abed29, type: 3}
     - target: {fileID: 2422972189464823228, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -6383,7 +6391,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &958017103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14444,7 +14452,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!156049354 &1623403363
 Grid:
   m_ObjectHideFlags: 0

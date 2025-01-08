@@ -341,6 +341,12 @@ namespace Player
                 playerSpeedBar.UpdateImage(moveSpeed);
             }
         }
+
+        public void SetPlayerSpeedToMinimun()
+        {
+            moveSpeed = walkSpeed;
+            playerSpeedBar.UpdateImage(moveSpeed);
+        }
         private void CancelAbilities()
         {
             AbilityManager.Instance.Holder1.TryToCancelAbility();
