@@ -12,7 +12,7 @@ public class DetectionPlayerManager : MonoBehaviour
     [SerializeField] private float _FOVAngle = 40f;
     [SerializeField] private float _viewDistance = 5f;
     [SerializeField] private LayerMask _detectionLayerMask;
-    [SerializeField] private float _maxDistanceToNearEnemyPartner = 5f;
+    [SerializeField] private float _maxDistanceToNearEnemyPartner = 7f;
     private int _rayCount = 15;
 
     [Header("Detection Bar Properties")]
@@ -136,7 +136,6 @@ public class DetectionPlayerManager : MonoBehaviour
         if (enemySenderObject.GetInstanceID() != gameObject.transform.parent.gameObject.GetInstanceID())
         {
             float distanceToEnemySender = Vector3.Distance(_bodyTransform.position, enemySenderPosition);
-
             if (distanceToEnemySender <= _maxDistanceToNearEnemyPartner)
             {
                 isPlayerDetected = true;

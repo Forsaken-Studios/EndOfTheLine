@@ -6,14 +6,14 @@ using UnityEngine.UI;
 public class QTEManager : MonoBehaviour
 {
     [Header("Push properties")]
-    [SerializeField] private float _pushForce;
-    [SerializeField] private float _pushDistance;
-    [SerializeField] private float _timeStunned;
+    [SerializeField] private float _pushForce = 5f;
+    [SerializeField] private float _pushDistance = 5f;
+    [SerializeField] private float _timeStunned = 3f;
 
     [Header("Slider properties")]
     [SerializeField] private float _initialSliderValue = 0.25f;
-    [SerializeField] private float _sliderDecreaseRate = 0.1f;
-    [SerializeField] private float _summedDifficultySlider = 0.1f;
+    [SerializeField] private float _sliderDecreaseRate = 0.4f;
+    [SerializeField] private float _summedDifficultySlider = 0.5f;
     [SerializeField] private float _sliderIncreaseValue = 0.2f;
     [SerializeField] private float _qteDuration = 5f;
     int QTETimes = 0;
