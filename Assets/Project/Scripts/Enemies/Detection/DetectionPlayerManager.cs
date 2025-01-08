@@ -63,7 +63,7 @@ public class DetectionPlayerManager : MonoBehaviour
 
         _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
-        currentState = EnemyStates.FOVState.isWatching;
+        currentState = EnemyStates.FOVState.isUnaware;
         isPlayerDetected = false;
 
         _detectionBarObject.SetActive(false);
@@ -93,7 +93,7 @@ public class DetectionPlayerManager : MonoBehaviour
         {
             LogManager.Log("SEEING", FeatureType.FieldOfView);
         }
-        else if (currentState == EnemyStates.FOVState.isWatching)
+        else if (currentState == EnemyStates.FOVState.isUnaware)
         {
             LogManager.Log("WATCHING", FeatureType.FieldOfView);
         }
@@ -118,7 +118,7 @@ public class DetectionPlayerManager : MonoBehaviour
         }
         else
         {
-            currentState = EnemyStates.FOVState.isWatching;
+            currentState = EnemyStates.FOVState.isUnaware;
         }
     }
 
@@ -165,7 +165,7 @@ public class DetectionPlayerManager : MonoBehaviour
         {
             if (raycast.collider != null)
             {
-                if (raycast.collider.gameObject.CompareTag("Player"))
+                if (raycast.collider.gameObject.CompareTag("Player") && raycast.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {
                     return true;
                 }
@@ -216,7 +216,7 @@ public class DetectionPlayerManager : MonoBehaviour
         }
         else
         {
-            currentState = EnemyStates.FOVState.isWatching;
+            currentState = EnemyStates.FOVState.isUnaware;
         }
     }
 
