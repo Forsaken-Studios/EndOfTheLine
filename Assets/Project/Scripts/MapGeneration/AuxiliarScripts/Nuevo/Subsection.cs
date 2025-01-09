@@ -185,9 +185,6 @@ public class Subsection
             subsection.IncrementAmountParentsRoom(_amountParentsRoom);
         }
 
-        Debug.Log($"-test limite- Subsection room [{_subsectionRow}, {_subsectionCol}]; norte = {_directionRequirement[0]}; sur = {_directionRequirement[1]}; este = {_directionRequirement[2]}; oeste = {_directionRequirement[3]}");
-        Debug.Log($"-test limite- Subsection room [{_subsectionRow}, {_subsectionCol}]; norte = {_northAvailability}; sur = {_southAvailability}; este = {_eastAvailability}; oeste = {_westAvailability}");
-
         return nextSubsections;
     }
 
@@ -342,9 +339,6 @@ public class Subsection
         {
             subsection.ResetAmountParentsRoom();
         }
-
-        Debug.Log($"-test limite- Subsection corridor [{_subsectionRow}, {_subsectionCol}]; norte = {_directionRequirement[0]}; sur = {_directionRequirement[1]}; este = {_directionRequirement[2]}; oeste = {_directionRequirement[3]}");
-        Debug.Log($"-test limite- Subsection corridor [{_subsectionRow}, {_subsectionCol}]; norte = {_northAvailability}; sur = {_southAvailability}; este = {_eastAvailability}; oeste = {_westAvailability}");
         _directionRequirement[0] = _northAvailability;
         _directionRequirement[1] = _southAvailability;
         _directionRequirement[2] = _eastAvailability;
@@ -449,8 +443,7 @@ public class Subsection
         }
 
         _typeSubsection = TypeSubsection.Room;
-        Debug.Log($"-test limite- Subsection close[{_subsectionRow}, {_subsectionCol}]; norte = {_directionRequirement[0]}; sur = {_directionRequirement[1]}; este = {_directionRequirement[2]}; oeste = {_directionRequirement[3]}");
-        Debug.Log($"-test limite- Subsection close [{_subsectionRow}, {_subsectionCol}]; norte = {_northAvailability}; sur = {_southAvailability}; este = {_eastAvailability}; oeste = {_westAvailability}");
+
         return true;
     }
 
@@ -472,8 +465,6 @@ public class Subsection
         _southAvailability = _directionRequirement[1];
         _eastAvailability = _directionRequirement[2];
         _westAvailability = _directionRequirement[3];
-        Debug.Log($"-test limite- Subsection end[{_subsectionRow}, {_subsectionCol}]; norte = {_directionRequirement[0]}; sur = {_directionRequirement[1]}; este = {_directionRequirement[2]}; oeste = {_directionRequirement[3]}");
-        Debug.Log($"-test limite- Subsection end [{_subsectionRow}, {_subsectionCol}]; norte = {_northAvailability}; sur = {_southAvailability}; este = {_eastAvailability}; oeste = {_westAvailability}");
     }
 
     // Actualiza el estado de DirectionAvailability según las subsecciones adyacentes.
