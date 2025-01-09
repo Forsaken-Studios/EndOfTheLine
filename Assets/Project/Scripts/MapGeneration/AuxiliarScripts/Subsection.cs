@@ -10,6 +10,7 @@ public class Subsection
     private RoomWithConfiguration _currentRoom;
     private DirectionAvailability _northAvailability, _southAvailability, _eastAvailability, _westAvailability;
     private int _amountParentsRoom;
+    private int _amountParentsCorridor;
     private Vector2Int _startingCell; // [row, col] Esquina inferior izquierda
     private int _subsectionRow;
     private int _subsectionCol;
@@ -23,6 +24,7 @@ public class Subsection
         _typeSubsection = TypeSubsection.Empty;
         _currentRoom = new RoomWithConfiguration();
         _amountParentsRoom = 0;
+        _amountParentsCorridor = 0;
         this._subsectionRow = rowSection;
         this._subsectionCol = colSection;
         this._roomFinder = roomFinder;
@@ -71,15 +73,28 @@ public class Subsection
     {
         _amountParentsRoom = previousParentsRoom++;
     }
+    public void IncrementAmountParentsCorridor(int previousParentsCorridor)
+    {
+        _amountParentsCorridor = previousParentsCorridor++;
+    }
 
     public void ResetAmountParentsRoom()
     {
         _amountParentsRoom = 0;
     }
 
+    public void ResetAmountParentsCorridor()
+    {
+        _amountParentsCorridor = 0;
+    }
+
     public int GetParentsRooms()
     {
         return _amountParentsRoom;
+    }
+    public int GetParentsCorridor()
+    {
+        return _amountParentsCorridor;
     }
 
     public void SetNorthAvailability(DirectionAvailability newState)
@@ -183,6 +198,8 @@ public class Subsection
         foreach (Subsection subsection in nextSubsections)
         {
             subsection.IncrementAmountParentsRoom(_amountParentsRoom);
+            subsection.ResetAmountParentsCorridor();
+
         }
 
         return nextSubsections;
@@ -338,6 +355,7 @@ public class Subsection
         foreach (Subsection subsection in nextSubsections)
         {
             subsection.ResetAmountParentsRoom();
+            subsection.IncrementAmountParentsCorridor(_amountParentsCorridor);
         }
         _directionRequirement[0] = _northAvailability;
         _directionRequirement[1] = _southAvailability;

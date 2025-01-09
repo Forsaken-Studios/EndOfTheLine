@@ -19,8 +19,10 @@ public class MapGenerator : MonoBehaviour
     [Header("Condiciones generación")]
     [Tooltip("Porcentaje del grid que se quiere rellenar")]
     [Range(1, 100)]
-    [SerializeField] private float _maxMapPercentageOcuppied = 25;
-    [SerializeField] private int balancePoint = 5;
+    [SerializeField] private float _maxMapPercentageOcuppied = 85;
+    [SerializeField] private float _roomProbability = 0.85f;
+    [SerializeField] private float _corridorProbability = 0.15f;
+    [SerializeField] private float _closeRoomProbability = 0f;
     private float _currentMapPercentageOccupied = 0;
     private float _subsectionMapPercentage;
 
@@ -65,9 +67,6 @@ public class MapGenerator : MonoBehaviour
 
         _subsectionMapPercentage = 100 / (_SubsectionsGridSize.x * _SubsectionsGridSize.y);
 
-        InitializeGrid();
-        InitializeSubsections();
-
         StartCoroutine(GenerateMap());
     }
 
@@ -79,18 +78,31 @@ public class MapGenerator : MonoBehaviour
 
         SortFolders();
 
-        PlaceStart();
-
-        while (_currentMapPercentageOccupied < _maxMapPercentageOcuppied)
+        bool hasEndedPrematurely = false;
+        do
         {
-            ConfigureNextSubsections();
-            if (_nextSubsections.Count == 0)
-            {
-                Debug.LogWarning("-test- No hay más nextSubsections");
-            }
+            hasEndedPrematurely = false;
+            InitializeGrid();
+            InitializeSubsections();
 
-            yield return null;
-        }
+            PlaceStart();
+
+            while (_currentMapPercentageOccupied < _maxMapPercentageOcuppied)
+            {
+                ConfigureNextSubsections();
+                if (_nextSubsections.Count == 0)
+                {
+                    Debug.LogWarning("No hay mas subsections.");
+                    hasEndedPrematurely = true;
+                    _currentMapPercentageOccupied = 0;
+                    InitializeGrid();
+                    InitializeSubsections();
+                    break;
+                }
+
+                yield return null;
+            }
+        } while (hasEndedPrematurely);
 
         CompleteMap();
         InstantiateAll();
@@ -237,6 +249,7 @@ public class MapGenerator : MonoBehaviour
     private void ConfigureNextSubsections()
     {
         List<Subsection> nextSubsectionsAux = new List<Subsection>();
+        int queueSize = _nextSubsections.Count;
 
         // Se itera sobre cada subsección en `_nextSubsections`.
         while (_nextSubsections.Count > 0)
@@ -270,49 +283,30 @@ public class MapGenerator : MonoBehaviour
                 continue;
             }
 
-            // Opción 2: Se elige en base a probabilidades.
-
-            // Se calculan las probabilidades para habitación, pasillo o clausura.
-            int queueSize = _nextSubsections.Count;
-            float closeRoomProbability;
-            float corridorProbability;
-            float roomProbability;
-
-            if (queueSize == balancePoint)
+            // Opción 2: Si hay muchos pasillos seguidos
+            if (currentSubsection.GetParentsCorridor() >= 2)
             {
-                closeRoomProbability = 1f / 3f;
-                corridorProbability = 1f / 3f;
-                roomProbability = 1f / 3f;
-            }
-            else
-            {
-                closeRoomProbability = Mathf.Clamp01((float)(queueSize - balancePoint) / balancePoint);
-                corridorProbability = Mathf.Clamp01((float)(balancePoint - queueSize) / balancePoint);
-                roomProbability = 1f - closeRoomProbability - corridorProbability;
-            }
-
-            // Se elige aleatoriamente en función de las probabilidades.
-            float randomValue = (float)_rnd.NextDouble();
-            // Habitación de clausura.
-            if (randomValue <= closeRoomProbability)
-            {
-                currentSubsection.SetCloseRoom(_subsectionsGrid);
-            }
-            // Pasillo.
-            else if (randomValue <= closeRoomProbability + corridorProbability)
-            {
-                List<Subsection> generatedSubsections = currentSubsection.SetCurrentCorridor(_subsectionsGrid);
-                foreach (var subsection in generatedSubsections)
+                // Se decide habitación.
+                List<Subsection> generatedSubsections = currentSubsection.SetCurrentRoom(_subsectionsGrid);
+                if (generatedSubsections != null)
                 {
-                    if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                    foreach (var subsection in generatedSubsections)
                     {
-                        nextSubsectionsAux.Add(subsection);
-                        AddPercentage();
+                        if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                        {
+                            nextSubsectionsAux.Add(subsection);
+                            AddPercentage();
+                        }
                     }
                 }
+                continue;
             }
-            // Habitación.
-            else
+
+            // Opción 3: Se elige en base a probabilidades.
+            // Se elige aleatoriamente en función de las probabilidades.
+            float randomValue = (float)_rnd.NextDouble();
+            // Habitación
+            if (randomValue <= _roomProbability)
             {
                 List<Subsection> generatedSubsections = currentSubsection.SetCurrentRoom(_subsectionsGrid);
                 if (generatedSubsections != null)
@@ -326,6 +320,24 @@ public class MapGenerator : MonoBehaviour
                         }
                     }
                 }
+            }
+            // Pasillo.
+            else if (randomValue <= _roomProbability + _corridorProbability)
+            {
+                List<Subsection> generatedSubsections = currentSubsection.SetCurrentCorridor(_subsectionsGrid);
+                foreach (var subsection in generatedSubsections)
+                {
+                    if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                    {
+                        nextSubsectionsAux.Add(subsection);
+                        AddPercentage();
+                    }
+                }
+            }
+            // Habitación de clausura
+            else if (randomValue <= _roomProbability + _corridorProbability + _closeRoomProbability)
+            {
+                currentSubsection.SetCloseRoom(_subsectionsGrid);
             }
         }
 
