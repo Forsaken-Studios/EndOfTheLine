@@ -2802,10 +2802,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 584fca639f4d5554d801e38839bdcd40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _SubsectionsGridSize: {x: 2, y: 2}
+  _SubsectionsGridSize: {x: 4, y: 4}
   cellSize: 8
-  _maxMapPercentageOcuppied: 50
-  balancePoint: 5
+  _maxMapPercentageOcuppied: 85
+  _roomProbability: 0.85
+  _corridorProbability: 0.15
+  _closeRoomProbability: 0
   _isDrawingGizmos: 0
   _corridorBase: {fileID: 420726038587042630, guid: 45da6e695f70f1349b900dfd943c4dd9, type: 3}
   _stationsBase: {fileID: 7806689954695716217, guid: 822079e30e07d54468303b2bce15a2e5, type: 3}
@@ -3324,6 +3326,7 @@ MonoBehaviour:
   _playerObject: {fileID: 801568188}
   _QTE_canvas: {fileID: 1519336924}
   _QTE_slider: {fileID: 1519336925}
+  isInQTE: 0
 --- !u!114 &1369419882 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4276934902737964247, guid: 367585b6f1c741f46a4d1e4d69908f0c, type: 3}

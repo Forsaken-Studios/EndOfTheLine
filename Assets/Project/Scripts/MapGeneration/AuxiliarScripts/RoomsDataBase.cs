@@ -53,6 +53,7 @@ public class RoomsDataBase : ScriptableObject
             int amountRoomData = room.GetCountRoomData();
             for (int i = 0; i < amountRoomData; i++)
             {
+                Debug.Log($"{roomObject.name} conf = {i}");
                 room.SetRoomData(i);
                 Dictionary<Vector2Int, DirectionFlag> entrancesDirections = room.GetEntrancesDirections();
 
