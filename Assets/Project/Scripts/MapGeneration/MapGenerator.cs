@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -9,56 +11,38 @@ public class MapGenerator : MonoBehaviour
     #region Properties
     [Header("Ajustes generales")]
     [Tooltip("X = columns; Y = rows.")]
-    [SerializeField] private Vector2Int _gridSize;
-    public float cellSize = 5;
-    [Tooltip("Tamaño, en celdas, de la entrada al mapa.")]
-    [SerializeField] private int _startSize = 2;
-    [Tooltip("Tamaño, en celdas, de la salida del mapa.")]
-    [SerializeField] private int _exitSize = 2;
+    [SerializeField] private Vector2Int _SubsectionsGridSize; // [col, row]
+    [HideInInspector] public float cellSize = 8;
+    private int _startSize = 3;
+    private int _exitSize = 3;
 
     [Header("Condiciones generación")]
-    [Tooltip("Número de habitaciones 3x3 que habrá en el mapa.")]
-    [SerializeField] private int _amountRooms3x3 = 4;
-    [Tooltip("Porcentaje del grid que se quiere rellenar con habitaciones.")]
+    [Tooltip("Porcentaje del grid que se quiere rellenar")]
     [Range(1, 100)]
-    [SerializeField] private int _mapPercentageOcuppied = 25;
-    [Tooltip("Representa el radio de distancia (en celdas) en el que una habitación con más de una entrada va a buscar unir esas entradas extra con un pasillo.")]
-    [SerializeField] private int _roomRadius = 5;
+    [SerializeField] private float _maxMapPercentageOcuppied = 85;
+    [SerializeField] private float _roomProbability = 0.85f;
+    [SerializeField] private float _corridorProbability = 0.15f;
+    [SerializeField] private float _closeRoomProbability = 0f;
+    private float _currentMapPercentageOccupied = 0;
+    private float _subsectionMapPercentage;
 
     [Header("Opciones visuales")]
     [SerializeField] private bool _isDrawingGizmos = true;
 
     [Header("Prefabs")]
-    [SerializeField] private GameObject corridorBase;
-    [SerializeField] private GameObject stationBase;
+    [SerializeField] private GameObject _corridorBase;
+    [SerializeField] private GameObject _stationsBase;
+    [SerializeField] private RoomsDataBase _roomsDataBase;
 
-    private GameObject player;
     [HideInInspector] public Vector3 startingGridPosition = Vector3.zero;
-    private Cell[,] _grid; // [row, col]
-    private System.Random _rnd;
-    private List<GameObject> _corridorsInserted;
-    private Dictionary<Vector3, GameObject> _roomsInserted;
     [HideInInspector] public int endWall;
-    private List<Cell> startCells;
-    private List<Cell> endCells;
-    private GameObject playerInstance;
-
-    private void OnValidate()
-    {
-        // Make sure _startSize and _exitSize are less or equal to _gridSize.
-        if (_startSize > _gridSize.x)
-        {
-            Debug.LogWarning($"Start Size ({_startSize}) no puede ser mayor que Grid Size.x ({_gridSize.x}). Se ajustará a {_gridSize.x}.");
-            _startSize = _gridSize.x;
-        }
-
-        if (_exitSize > _gridSize.x || _exitSize > _gridSize.y - 1)
-        {
-            int adjust = _gridSize.x < _gridSize.y - 1 ? _gridSize.x : _gridSize.y - 1;
-            Debug.LogWarning($"Exit Size ({_exitSize}) no puede ser mayor que GridSize.x ({_gridSize.x}) o GridSize.y ({_gridSize.y}). Se ajustará al menor entre GridSize.x y GridSize.y, es decir {adjust}.");
-            _exitSize = adjust;
-        }
-    }
+    private Cell[,] _cellsGrid; // [row, col] GetLength(0), GetLength(1)
+    private System.Random _rnd;
+    private Subsection[,] _subsectionsGrid; // [row, col] GetLength(0), GetLength(1)
+    private List<Subsection> _nextSubsections;
+    private RoomFinder _roomFinder;
+    private GameObject _player;
+    private Vector3 _posToSpawn;
     #endregion
 
     #region Singleton and Events
@@ -77,20 +61,67 @@ public class MapGenerator : MonoBehaviour
 
     void Start()
     {
-        // Inicialización de listas.
-        _roomsInserted = new Dictionary<Vector3, GameObject>();
-        _corridorsInserted = new List<GameObject>();
+        _rnd = new System.Random();
+        _nextSubsections = new List<Subsection>();
+        _roomFinder = new RoomFinder(_roomsDataBase);
 
-        RoomLoader.Load();
+        _subsectionMapPercentage = 100 / (_SubsectionsGridSize.x * _SubsectionsGridSize.y);
 
-        StartCoroutine(BuildMap());
+        StartCoroutine(GenerateMap());
     }
 
-    private IEnumerator BuildMap()
+    #region Generation
+    private IEnumerator GenerateMap()
     {
         GameManager.Instance.sceneIsLoading = true;
         yield return null;
-        // Borrado y creación de la estructura de carpetas en la jerarquia de los pasillos y habitaciones.
+
+        SortFolders();
+
+        bool hasEndedPrematurely = false;
+        do
+        {
+            hasEndedPrematurely = false;
+            InitializeGrid();
+            InitializeSubsections();
+
+            PlaceStart();
+
+            while (_currentMapPercentageOccupied < _maxMapPercentageOcuppied)
+            {
+                ConfigureNextSubsections();
+                if (_nextSubsections.Count == 0)
+                {
+                    Debug.LogWarning("No hay mas subsections.");
+                    hasEndedPrematurely = true;
+                    _currentMapPercentageOccupied = 0;
+                    InitializeGrid();
+                    InitializeSubsections();
+                    break;
+                }
+
+                yield return null;
+            }
+        } while (hasEndedPrematurely);
+
+        CompleteMap();
+        InstantiateAll();
+        InitializePlayer();
+
+        // Construir navmesh.
+        NavmeshManager.Instance.GenerateNavmesh();
+
+        GameManager.Instance.sceneIsLoading = false;
+    }
+
+    private void InitializePlayer()
+    {
+        _player = GameObject.Find("Player");
+        _player.transform.position = _posToSpawn;
+    }
+
+    private void SortFolders()
+    {
         GameObject mapObject = GameObject.Find("Map");
         if (mapObject == null)
         {
@@ -109,7 +140,6 @@ public class MapGenerator : MonoBehaviour
             {
                 Destroy(room.gameObject);
             }
-            _roomsInserted.Clear();
         }
 
         GameObject corridorsObject = GameObject.Find("Corridors");
@@ -124,7 +154,6 @@ public class MapGenerator : MonoBehaviour
             {
                 Destroy(corridor.gameObject);
             }
-            _corridorsInserted.Clear();
         }
 
         GameObject stationsObject = GameObject.Find("Stations");
@@ -139,187 +168,308 @@ public class MapGenerator : MonoBehaviour
             {
                 Destroy(corridor.gameObject);
             }
-            _corridorsInserted.Clear();
         }
+    }
 
-        if(playerInstance != null)
+    private void AddPercentage()
+    {
+        _currentMapPercentageOccupied += _subsectionMapPercentage;
+    }
+
+    private void PlaceStart()
+    {
+        // Se obtiene una columna aleatoria y se selecciona la subsección aleatoria en la fila 0.
+        int randomColumn = _rnd.Next(0, _SubsectionsGridSize.y);
+        Subsection randomSubsection = _subsectionsGrid[0, randomColumn];
+
+        // Se escogen las direcciones al azar.
+        DirectionAvailability north = DirectionAvailability.Closed;
+        DirectionAvailability east = DirectionAvailability.Closed;
+        DirectionAvailability west = DirectionAvailability.Closed;
+
+        // Si está en la esquina inferior izquierda.
+        if (randomColumn == 0)
         {
-            Destroy(playerInstance.gameObject);
-            playerInstance = null;
+            north = DirectionAvailability.Open;
+            east = DirectionAvailability.Open;
         }
-
-        // Se inicializa el grid general.
-        _rnd = new System.Random();
-        InitializeGrid();
-
-        // Se coloca la entrada y salida del mapa.
-        PlacingStart();
-        PlacingExit();
-
-        // Se crea el mapa.
-        bool mapCreated = false;
-        int tries = 1;
-        int auxMapPercentageOcuppied = _mapPercentageOcuppied;
-        while (mapCreated == false)
+        // Si está en la esquina inferior derecha.
+        else if (randomColumn == _SubsectionsGridSize.y - 1)
         {
-            if (tries > 0)
+            north = DirectionAvailability.Open;
+            west = DirectionAvailability.Open;
+        }
+        // Si está dentro.
+        else
+        {
+            // Se eligen dos direcciones aleatorias entre norte, este y oeste.
+            List<string> directions = new List<string> { "north", "east", "west" };
+            directions = directions.OrderBy(x => _rnd.Next()).ToList();
+
+            for (int i = 0; i < 2; i++)
             {
-                mapCreated = PlacingRooms();
-                if (mapCreated == true)
+                switch (directions[i])
                 {
-                    Debug.Log($"Map percentage: {_mapPercentageOcuppied}");
-                    _mapPercentageOcuppied = auxMapPercentageOcuppied;
-                    break;
+                    case "north":
+                        north = DirectionAvailability.Open;
+                        break;
+                    case "east":
+                        east = DirectionAvailability.Open;
+                        break;
+                    case "west":
+                        west = DirectionAvailability.Open;
+                        break;
+                }
+            }
+        }
+
+        // Se marca la subsection como Start.
+        randomSubsection.SetAsStart(north, east, west);
+        AddPercentage();
+        if (north == DirectionAvailability.Open)
+        {
+            Subsection newSubsection = _subsectionsGrid[randomSubsection.GetSubsectionRow() + 1, randomSubsection.GetSubsectionCol()];
+            _nextSubsections.Add(newSubsection);
+            AddPercentage();
+        }
+        if (east == DirectionAvailability.Open)
+        {
+            Subsection newSubsection = _subsectionsGrid[randomSubsection.GetSubsectionRow(), randomSubsection.GetSubsectionCol() + 1];
+            _nextSubsections.Add(newSubsection);
+            AddPercentage();
+        }
+        if (west == DirectionAvailability.Open)
+        {
+            Subsection newSubsection = _subsectionsGrid[randomSubsection.GetSubsectionRow(), randomSubsection.GetSubsectionCol() - 1];
+            _nextSubsections.Add(newSubsection);
+            AddPercentage();
+        }
+    }
+
+    private void ConfigureNextSubsections()
+    {
+        List<Subsection> nextSubsectionsAux = new List<Subsection>();
+        int queueSize = _nextSubsections.Count;
+
+        // Se itera sobre cada subsección en `_nextSubsections`.
+        while (_nextSubsections.Count > 0)
+        {
+            Subsection currentSubsection = DequeueRandomSubsection();
+            if (currentSubsection.GetTypeSubsection() == TypeSubsection.Start)
+            {
+                continue;
+            }
+
+            // Opción 1: Si hay muchas habitaciones seguidas.
+            if (currentSubsection.GetParentsRooms() >= 4)
+            {
+                // Se decide entre pasillo o habitación de clausura.
+                if (_rnd.Next(0, 2) == 0)
+                {
+                    List<Subsection> generatedSubsections = currentSubsection.SetCurrentCorridor(_subsectionsGrid);
+                    foreach (var subsection in generatedSubsections)
+                    {
+                        if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                        {
+                            nextSubsectionsAux.Add(subsection);
+                            AddPercentage();
+                        }
+                    }
                 }
                 else
                 {
-                    tries--;
+                    currentSubsection.SetCloseRoom(_subsectionsGrid);
                 }
+                continue;
             }
-            else
-            {
-                _mapPercentageOcuppied -= 1;
-                tries = 1;
 
-                if (_mapPercentageOcuppied <= 1)
-                {
-                    _mapPercentageOcuppied = auxMapPercentageOcuppied;
-                    Debug.LogWarning("FINAL MAP GENERATION - No se pudo crear el mapa con los parámetros dados.");
-                    break;
-                }
-            }
-        }
-
-        // Comprobacion hay camino hasta el final.
-        bool existFinal = false;
-        List<Cell> endCells = new List<Cell>();
-        foreach (Cell cell in _grid)
-        {
-            if (cell.State == CellState.End)
+            // Opción 2: Si hay muchos pasillos seguidos
+            if (currentSubsection.GetParentsCorridor() >= 2)
             {
-                endCells.Add(cell);
-                List<Cell> neighbours = AuxiliarMapGenerator.GetNeighbours(cell, _grid);
-                foreach (Cell neighbor in neighbours)
+                // Se decide habitación.
+                List<Subsection> generatedSubsections = currentSubsection.SetCurrentRoom(_subsectionsGrid);
+                if (generatedSubsections != null)
                 {
-                    if (neighbor.State == CellState.Corridor)
+                    foreach (var subsection in generatedSubsections)
                     {
-                        existFinal = true;
-                        break;
+                        if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                        {
+                            nextSubsectionsAux.Add(subsection);
+                            AddPercentage();
+                        }
                     }
                 }
-                if (existFinal)
-                {
-                    break;
-                }
+                continue;
             }
-        }
-        if (existFinal == false)
-        {
-            int indexCell = UnityEngine.Random.Range(0, endCells.Count);
-            List<Cell> neighbours = AuxiliarMapGenerator.GetNeighbours(endCells[indexCell], _grid);
-            foreach (Cell neighbor in neighbours)
+
+            // Opción 3: Se elige en base a probabilidades.
+            // Se elige aleatoriamente en función de las probabilidades.
+            float randomValue = (float)_rnd.NextDouble();
+            // Habitación
+            if (randomValue <= _roomProbability)
             {
-                if (neighbor.State == CellState.Empty)
+                List<Subsection> generatedSubsections = currentSubsection.SetCurrentRoom(_subsectionsGrid);
+                if (generatedSubsections != null)
                 {
-                    Cell[,] modifiedGrid = SeekAndJoinNearCorridors(neighbor, _grid);
-                    if (modifiedGrid != null)
+                    foreach (var subsection in generatedSubsections)
                     {
-                        _grid = modifiedGrid;
-                        break;
+                        if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                        {
+                            nextSubsectionsAux.Add(subsection);
+                            AddPercentage();
+                        }
                     }
-                    
                 }
+            }
+            // Pasillo.
+            else if (randomValue <= _roomProbability + _corridorProbability)
+            {
+                List<Subsection> generatedSubsections = currentSubsection.SetCurrentCorridor(_subsectionsGrid);
+                foreach (var subsection in generatedSubsections)
+                {
+                    if (subsection.GetTypeSubsection() == TypeSubsection.Empty)
+                    {
+                        nextSubsectionsAux.Add(subsection);
+                        AddPercentage();
+                    }
+                }
+            }
+            // Habitación de clausura
+            else if (randomValue <= _roomProbability + _corridorProbability + _closeRoomProbability)
+            {
+                currentSubsection.SetCloseRoom(_subsectionsGrid);
             }
         }
 
-        // Se instancian los pasillos.
-        InstantiateCorridorPrefabs();
-        InstantiateStartPrefabs();
-        InstantiateEndPrefabs();
-        InitializePlayer();
-
-        // Construir navmesh.
-        NavmeshManager.Instance.GenerateNavmesh();
-
-        GameManager.Instance.sceneIsLoading = false;
-        
+        _nextSubsections = nextSubsectionsAux;
     }
 
-    private void InitializePlayer()
+    private void CompleteMap()
     {
-        int startIndex = UnityEngine.Random.Range(0, startCells.Count);
-        Vector3 posToSpawn = new Vector3(startCells[startIndex].Position3D.x + 4, startCells[startIndex].Position3D.y + 4, startCells[startIndex].Position3D.z);
-        player = GameObject.Find("Player");
-        player.transform.position = posToSpawn;
+        while (_nextSubsections.Count > 0)
+        {
+            Subsection nextSubsection = DequeueRandomSubsection();
+            if (nextSubsection.GetTypeSubsection() == TypeSubsection.Empty)
+            {
+                nextSubsection.SetCloseRoom(_subsectionsGrid);
+            }
+        }
+
+        PlaceExit();
     }
 
-    private void InstantiateStartPrefabs()
+    private Subsection DequeueRandomSubsection()
     {
-        // Recorre todas las celdas cogiendo las que son Inicios.
-        foreach (Cell cell in startCells)
+        int index = _rnd.Next(_nextSubsections.Count);
+        Subsection subsectionToReturn = _nextSubsections[index];
+        _nextSubsections.RemoveAt(index);
+        return subsectionToReturn;
+    }
+
+    private void PlaceExit()
+    {
+        // Recorrer las filas desde la última hacia abajo.
+        for (int row = _SubsectionsGridSize.x - 1; row >= 0; row--)
+        {
+            // Se crea una lista de subsecciones de la fila actual.
+            List<Subsection> roomSubsections = new List<Subsection>();
+
+            for (int col = 0; col < _SubsectionsGridSize.y; col++)
+            {
+                Subsection subsection = _subsectionsGrid[row, col];
+                if (subsection.GetTypeSubsection() == TypeSubsection.Room || subsection.GetTypeSubsection() == TypeSubsection.Corridor)
+                {
+                    roomSubsections.Add(subsection);
+                }
+            }
+
+            // Si se encuentran subsecciones marcadas como Room o Corridor se selecciona una aleatoriamente.
+            if (roomSubsections.Count > 0)
+            {
+                roomSubsections = roomSubsections.OrderBy(x => _rnd.Next()).ToList();
+                Subsection selectedSubsection = roomSubsections[0];
+                selectedSubsection.SetAsEnd();
+
+                return;
+            }
+        }
+    }
+    #endregion
+
+    #region Instantiation
+    private void InstantiateAll()
+    {
+        foreach (Subsection subsection in _subsectionsGrid)
+        {
+            switch (subsection.GetTypeSubsection())
+            {
+                case TypeSubsection.Room:
+                    InstantiateRoom(subsection);
+                    break;
+                case TypeSubsection.Corridor:
+                    ConfigureCorridor(subsection);
+                    break;
+                case TypeSubsection.Start:
+                    ConfigureStart(subsection);
+                    break;
+                case TypeSubsection.End:
+                    ConfigureEnd(subsection);
+                    break;
+            }
+        }
+
+        ConfigureInternalCorridors();
+
+        foreach (Cell cell in _cellsGrid)
         {
             if (cell.State == CellState.Start)
             {
                 // Configura las aperturas y puertas de la celda.
-                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _grid);
-                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _grid);
-                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _grid);
-                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
-                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _grid);
+                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _cellsGrid);
+                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _cellsGrid);
+                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _cellsGrid);
+                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _cellsGrid);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _cellsGrid);
 
                 // Instancia el prefab de estación que equivalga a la configuración de la celda.
                 Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
-                GameObject stationInstance = Instantiate(stationBase, centeredPosition, stationBase.transform.rotation);
+                GameObject stationInstance = Instantiate(_stationsBase, centeredPosition, _stationsBase.transform.rotation);
                 stationInstance.name = $"StationStart_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
                 stationInstance.transform.SetParent(GameObject.Find("Stations").transform);
                 StationController stationController = stationInstance.GetComponentInChildren<StationController>();
                 stationController.WallSelector(cell.north, cell.south, cell.east, cell.west);
             }
-        }
-    }
 
-    private void InstantiateEndPrefabs()
-    {
-        // Recorre todas las celdas cogiendo las que son Inicios.
-        foreach (Cell cell in endCells)
-        {
             if (cell.State == CellState.End)
             {
                 // Configura las aperturas y puertas de la celda.
-                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _grid);
-                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _grid);
-                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _grid);
-                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
-                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _grid);
+                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _cellsGrid);
+                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _cellsGrid);
+                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _cellsGrid);
+                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _cellsGrid);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _cellsGrid);
 
                 // Instancia el prefab de estación que equivalga a la configuración de la celda.
                 Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
-                GameObject stationInstance = Instantiate(stationBase, centeredPosition, stationBase.transform.rotation);
+                GameObject stationInstance = Instantiate(_stationsBase, centeredPosition, _stationsBase.transform.rotation);
                 stationInstance.name = $"StationEnd_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
                 stationInstance.transform.SetParent(GameObject.Find("Stations").transform);
                 StationController stationController = stationInstance.GetComponentInChildren<StationController>();
                 stationController.WallSelector(cell.north, cell.south, cell.east, cell.west);
             }
-        }
-    }
 
-    private void InstantiateCorridorPrefabs()
-    {
-        // Recorre todas las celdas cogiendo las que son pasillos.
-        foreach (Cell cell in _grid)
-        {
             if (cell.State == CellState.Corridor)
             {
                 // Configura las aperturas y puertas de la celda.
-                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _grid);
-                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _grid);
-                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _grid);
-                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _grid);
-                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _grid);
+                Cell aboveNeighbour = AuxiliarMapGenerator.GetAboveNeighbour(cell, _cellsGrid);
+                Cell belowNeighbour = AuxiliarMapGenerator.GetBelowNeighbour(cell, _cellsGrid);
+                Cell rightNeighbour = AuxiliarMapGenerator.GetRightNeighbour(cell, _cellsGrid);
+                Cell leftNeighbour = AuxiliarMapGenerator.GetLeftNeighbour(cell, _cellsGrid);
+                cell.SetCorridorConfiguration(aboveNeighbour, belowNeighbour, rightNeighbour, leftNeighbour, _cellsGrid);
 
                 // Instancia el prefab de pasillo que equivalga a la configuración de la celda.
                 Vector3 centeredPosition = new Vector3(cell.Position3D.x + 4, cell.Position3D.y + 4, cell.Position3D.z);
-                GameObject corridorInstance = Instantiate(corridorBase, centeredPosition, corridorBase.transform.rotation);
+                GameObject corridorInstance = Instantiate(_corridorBase, centeredPosition, _corridorBase.transform.rotation);
                 corridorInstance.name = $"Corridor_{cell.Row}x{cell.Col}_{cell.north}{cell.south}{cell.east}{cell.west}";
                 corridorInstance.transform.SetParent(GameObject.Find("Corridors").transform);
                 CorridorController corridorController = corridorInstance.GetComponentInChildren<CorridorController>();
@@ -328,11 +478,324 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    #region Gizmos Initialization
+    private void InstantiateRoom(Subsection subsection)
+    {
+        RoomWithConfiguration currentRoomWithConfiguration = subsection.GetCurrentRoom();
+        GameObject roomPrefab = currentRoomWithConfiguration.roomPrefab;
+
+        GameObject roomObject = Instantiate(roomPrefab, Vector3.zero, roomPrefab.transform.rotation);
+        roomObject.transform.SetParent(GameObject.Find("Rooms").transform, false);  
+        Room room = roomObject.GetComponent<Room>();
+        room.InitializeRoom(currentRoomWithConfiguration.configurationIndex);
+        room.MoveRoomPosition(subsection.GetCenterPosition());
+
+        // Se cambia el tipo de celda segun la Room.
+        Vector2Int currentCell;
+        for (int row = 0; row < 3; row++)
+        {
+            for (int col = 0; col < 3; col++)
+            {
+                currentCell = subsection.GetGlobalCell(row, col);
+                _cellsGrid[currentCell.x, currentCell.y].SetCellState(room.selfGrid[row, col].State);
+            }
+        }
+
+        foreach (var entry in room.GetEntrancesDirections())
+        {
+            switch (entry.Value)
+            {
+                case DirectionFlag.Up:
+                    currentCell = subsection.GetGlobalCell(entry.Key.y + 1, entry.Key.x);
+                    _cellsGrid[currentCell.x, currentCell.y].SetCellState(CellState.Corridor);
+                    _cellsGrid[currentCell.x - 1, currentCell.y].SetEntranceDirection(entry.Value);
+                    break;
+                case DirectionFlag.Down:
+                    currentCell = subsection.GetGlobalCell(entry.Key.y - 1, entry.Key.x);
+                    _cellsGrid[currentCell.x, currentCell.y].SetCellState(CellState.Corridor);
+                    _cellsGrid[currentCell.x + 1, currentCell.y].SetEntranceDirection(entry.Value);
+                    break;
+                case DirectionFlag.Right:
+                    currentCell = subsection.GetGlobalCell(entry.Key.y, entry.Key.x + 1);
+                    _cellsGrid[currentCell.x, currentCell.y].SetCellState(CellState.Corridor);
+                    _cellsGrid[currentCell.x, currentCell.y - 1].SetEntranceDirection(entry.Value);
+                    break;
+                case DirectionFlag.Left:
+                    currentCell = subsection.GetGlobalCell(entry.Key.y, entry.Key.x - 1);
+                    _cellsGrid[currentCell.x, currentCell.y].SetCellState(CellState.Corridor);
+                    _cellsGrid[currentCell.x, currentCell.y + 1].SetEntranceDirection(entry.Value);
+                    break;
+            }
+        }
+    }
+
+    private void ConfigureCorridor(Subsection subsection)
+    {
+        Vector2Int centerCell = subsection.GetGlobalCell(1, 1);
+        _cellsGrid[centerCell.x, centerCell.y].SetCellState(CellState.Corridor);
+
+        if (subsection.GetNorthAvailability() == DirectionAvailability.Open)
+        {
+            _cellsGrid[centerCell.x + 1, centerCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[centerCell.x + 2, centerCell.y].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetSouthAvailability() == DirectionAvailability.Open)
+        {
+            _cellsGrid[centerCell.x - 1, centerCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[centerCell.x - 2, centerCell.y].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetEastAvailability() == DirectionAvailability.Open)
+        {
+            _cellsGrid[centerCell.x, centerCell.y + 1].SetCellState(CellState.Corridor);
+            _cellsGrid[centerCell.x, centerCell.y + 2].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetWestAvailability() == DirectionAvailability.Open)
+        {
+            _cellsGrid[centerCell.x, centerCell.y - 1].SetCellState(CellState.Corridor);
+            _cellsGrid[centerCell.x, centerCell.y - 2].SetCellState(CellState.Corridor);
+        }
+    }
+
+    private void ConfigureInternalCorridors()
+    {
+        // Filas
+        for (int row = 0; row < _subsectionsGrid.GetLength(0) - 1; row++)
+        {
+            for (int col = 0; col < _subsectionsGrid.GetLength(1); col++)
+            {
+                Subsection currentSubsection = _subsectionsGrid[row, col];
+                Vector2Int startingCell = currentSubsection.GetGlobalCell(3, 0);
+                List<Cell> cellsToConnect = new List<Cell>();
+
+                for (int cellCol = startingCell.y; cellCol < startingCell.y + 3; cellCol++)
+                {
+                    Cell cell = _cellsGrid[startingCell.x, cellCol];
+                    if (cell.State == CellState.Corridor)
+                    {
+                        cellsToConnect.Add(cell);
+                    }
+                }
+
+                ConnectCells(cellsToConnect);
+                cellsToConnect.Clear();
+            }
+        }
+
+        // Columnas
+        for (int col = 0; col < _subsectionsGrid.GetLength(1) - 1; col++)
+        {
+            for (int row = 0; row < _subsectionsGrid.GetLength(0); row++)
+            {
+                Subsection currentSubsection = _subsectionsGrid[row, col];
+                Vector2Int startingCell = currentSubsection.GetGlobalCell(0, 3);
+                List<Cell> cellsToConnect = new List<Cell>();
+
+                for (int cellRow = startingCell.x; cellRow < startingCell.x + 3; cellRow++)
+                {
+                    Cell cell = _cellsGrid[cellRow, startingCell.y];
+                    if (cell.State == CellState.Corridor)
+                    {
+                        cellsToConnect.Add(cell);
+                    }
+                }
+
+                ConnectCells(cellsToConnect);
+                cellsToConnect.Clear();
+            }
+        }
+
+    }
+
+    private void ConnectCells(List<Cell> cellsToConnect)
+    {
+        if (cellsToConnect.Count < 2)
+        {
+            return;
+        }
+
+        bool isSameCol = false;
+        int prevCol = -1;
+
+        foreach (Cell cell in cellsToConnect)
+        {
+            if (prevCol == -1)
+            {
+                prevCol = cell.Col;
+            }
+            else if (prevCol == cell.Col)
+            {
+                isSameCol = true;
+            }
+            else
+            {
+                isSameCol = false;
+            }
+        }
+
+        if (isSameCol)
+        {
+            for (int row = cellsToConnect[0].Row; row < cellsToConnect[cellsToConnect.Count() - 1].Row; row++)
+            {
+                _cellsGrid[row, cellsToConnect[0].Col].SetCellState(CellState.Corridor);
+            }
+        }
+        else
+        {
+            for (int col = cellsToConnect[0].Col; col < cellsToConnect[cellsToConnect.Count() - 1].Col; col++)
+            {
+                _cellsGrid[cellsToConnect[0].Row, col].SetCellState(CellState.Corridor);
+            }
+        }
+    }
+
+    private void ConfigureStart(Subsection subsection)
+    {
+        Vector2Int baseCell = new Vector2Int(0, 0);
+
+        if (subsection.GetNorthAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(1, 1);
+            _cellsGrid[baseCell.x, baseCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[baseCell.x + 1, baseCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[baseCell.x + 2, baseCell.y].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetEastAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(0, 2);
+            _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.Corridor);
+        }
+        if (subsection.GetWestAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(0, 0);
+            _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.Corridor);
+        }
+
+        baseCell = subsection.GetGlobalCell(0, 1);
+        _cellsGrid[baseCell.x, baseCell.y].SetCellState(CellState.Start);
+        _posToSpawn = _cellsGrid[baseCell.x, baseCell.y].Position3D;
+        _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.Start);
+        _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.Start);
+    }
+
+    private void ConfigureEnd(Subsection subsection)
+    {
+        Vector2Int baseCell = new Vector2Int(0, 0);
+
+        if (subsection.GetSouthAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(1, 1);
+            _cellsGrid[baseCell.x, baseCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[baseCell.x - 1, baseCell.y].SetCellState(CellState.Corridor);
+            _cellsGrid[baseCell.x - 2, baseCell.y].SetCellState(CellState.Corridor);
+        }
+
+        if (subsection.GetEastAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(2, 2);
+            _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.Corridor);
+        }
+
+        if (subsection.GetWestAvailability() == DirectionAvailability.Open)
+        {
+            baseCell = subsection.GetGlobalCell(2, 0);
+            _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.Corridor);
+        }
+
+        baseCell = subsection.GetGlobalCell(2, 1);
+        _cellsGrid[baseCell.x, baseCell.y].SetCellState(CellState.End);
+        if(baseCell.y - 1 != 0)
+        {
+            _cellsGrid[baseCell.x, baseCell.y - 1].SetCellState(CellState.End);
+        }
+        if (baseCell.y + 1 != _cellsGrid.GetLength(1) - 1)
+        {
+            _cellsGrid[baseCell.x, baseCell.y + 1].SetCellState(CellState.End);
+        }
+    }
+    #endregion
+
+    #region Grids Initialization
+    private void InitializeGrid()
+    {
+        int totalRows = _SubsectionsGridSize.y * 3 + (_SubsectionsGridSize.y - 1);
+        int totalCols = _SubsectionsGridSize.x * 3 + (_SubsectionsGridSize.x - 1);
+
+        _cellsGrid = new Cell[totalRows, totalCols];
+
+        for (int row = 0; row < totalRows; row++)
+        {
+            for (int col = 0; col < totalCols; col++)
+            {
+                _cellsGrid[row, col] = new Cell(row, col);
+                //if ((row + 1) % 4 == 0 && (col + 1) % 4 == 0)
+                //{
+                //    _cellsGrid[row, col].SetCellState(CellState.InternalCorridor);
+                //}
+            }
+        }
+    }
+
+    private void InitializeSubsections()
+    {
+        _subsectionsGrid = new Subsection[_SubsectionsGridSize.y, _SubsectionsGridSize.x];
+
+        for (int row = 0; row < _SubsectionsGridSize.y; row++)
+        {
+            for (int col = 0; col < _SubsectionsGridSize.x; col++)
+            {
+                // Se calcula la posición inicial de cada subsección, considerando el perímetro compartido.
+                Vector2Int startingCell = new Vector2Int(
+                    row * (3 + 1),
+                    col * (3 + 1)
+                );
+
+                _subsectionsGrid[row, col] = new Subsection(
+                    startingCell,
+                    row,
+                    col,
+                    _roomFinder
+                    );
+            }
+        }
+
+        //// Filas
+        //for (int row = 0; row < _subsectionsGrid.GetLength(0) - 1; row++)
+        //{
+        //    for (int col = 0; col < _subsectionsGrid.GetLength(1); col++)
+        //    {
+        //        Subsection currentSubsection = _subsectionsGrid[row, col];
+        //        Vector2Int startingCell = currentSubsection.GetGlobalCell(3, 0);
+
+        //        for (int cellCol = startingCell.y; cellCol < startingCell.y + 3; cellCol++)
+        //        {
+        //            Cell cell = _cellsGrid[startingCell.x, cellCol];
+        //            cell.SetCellState(CellState.InternalCorridor);
+        //        }
+        //    }
+        //}
+
+        //// Columnas
+        //for (int col = 0; col < _subsectionsGrid.GetLength(1) - 1; col++)
+        //{
+        //    for (int row = 0; row < _subsectionsGrid.GetLength(0); row++)
+        //    {
+        //        Subsection currentSubsection = _subsectionsGrid[row, col];
+        //        Vector2Int startingCell = currentSubsection.GetGlobalCell(0, 3);
+
+        //        for (int cellRow = startingCell.x; cellRow < startingCell.x + 3; cellRow++)
+        //        {
+        //            Cell cell = _cellsGrid[cellRow, startingCell.y];
+        //            cell.SetCellState(CellState.InternalCorridor);
+        //        }
+        //    }
+        //}
+    }
+    #endregion
+
+    #region Gizmos
 
     private void OnDrawGizmos()
     {
-        if (_gridSize == Vector2Int.zero || cellSize == 0 || _grid == null || !_isDrawingGizmos)
+        if (_SubsectionsGridSize == Vector2Int.zero || cellSize == 0 || _cellsGrid == null || !_isDrawingGizmos)
         {
             return;
         }
@@ -345,11 +808,11 @@ public class MapGenerator : MonoBehaviour
 
     private IEnumerable<Cell> GetGridPositions()
     {
-        for (int row = 0; row < _grid.GetLength(0); row++)
+        for (int row = 0; row < _cellsGrid.GetLength(0); row++)
         {
-            for (int col = 0; col < _grid.GetLength(1); col++)
+            for (int col = 0; col < _cellsGrid.GetLength(1); col++)
             {
-                yield return _grid[row, col];
+                yield return _cellsGrid[row, col];
             }
         }
     }
@@ -367,7 +830,7 @@ public class MapGenerator : MonoBehaviour
                 Gizmos.color = UnityEngine.Color.yellow;
                 break;
             case CellState.CorridorRoom:
-                Gizmos.color = UnityEngine.Color.white;
+                Gizmos.color = UnityEngine.Color.cyan;
                 break;
             case CellState.FillingRoom:
                 Gizmos.color = UnityEngine.Color.magenta;
@@ -375,11 +838,14 @@ public class MapGenerator : MonoBehaviour
             case CellState.Corridor:
                 Gizmos.color = UnityEngine.Color.blue;
                 break;
-            case CellState.Start:
+            case CellState.InternalCorridor:
                 Gizmos.color = UnityEngine.Color.black;
                 break;
+            case CellState.Start:
+                Gizmos.color = UnityEngine.Color.white;
+                break;
             case CellState.End:
-                Gizmos.color = UnityEngine.Color.black;
+                Gizmos.color = UnityEngine.Color.white;
                 break;
             case CellState.EntranceRoom:
                 Gizmos.color = UnityEngine.Color.red;
@@ -408,451 +874,6 @@ public class MapGenerator : MonoBehaviour
         Gizmos.DrawLine(topRight, bottomRight); // Right
         Gizmos.DrawLine(bottomRight, bottomLeft); // Bottom
         Gizmos.DrawLine(bottomLeft, topLeft); // Left
-    }
-    #endregion
-
-    #region Grid Initialization
-    private void InitializeGrid()
-    {
-        _grid = new Cell[_gridSize.y, _gridSize.x];
-
-        for (int row = 0; row < _gridSize.y; row++)
-        {
-            for (int column = 0; column < _gridSize.x; column++)
-            {
-                _grid[row, column] = new Cell(row, column);
-            }
-        }
-    }
-    #endregion
-
-    #region Placing Start and Exit
-    private void PlacingStart()
-    {
-        startCells = PlacerStartExit(0, true, 0, _gridSize.x - 1, CellState.Start);
-    }
-
-    private void PlacingExit()
-    {
-        // 0 = Left Wall; 1 = Upper Wall; 2 = Right Wall
-        endWall = _rnd.Next(0, 2 + 1);
-
-        switch (endWall)
-        {
-            case 0:
-                endCells = PlacerStartExit(0, false, _gridSize.y / 4 * 3, _gridSize.y - 1, CellState.End);
-                break;
-            case 1:
-                endCells = PlacerStartExit(_gridSize.y - 1, true, 0, _gridSize.x - 1, CellState.End);
-                break;
-            case 2:
-                endCells = PlacerStartExit(_gridSize.x - 1, false, _gridSize.y / 4 * 3, _gridSize.y - 1, CellState.End);
-                break;
-        }
-    }
-
-    private List<Cell> PlacerStartExit(int fixedValue, bool isRowFixed, int minFlexValue, int maxFlexValue, CellState newState)
-    {
-        bool isValid = false;
-        int sizePlaced = newState == CellState.Start ? _startSize : _exitSize;
-        List<Cell> cellsToReturn = new List<Cell>();
-
-        while (isValid == false)
-        {
-            List<int> flexValues = new List<int>();
-            flexValues.Add(_rnd.Next(minFlexValue, maxFlexValue + 1));
-
-            for (int i = 0; i < sizePlaced - 1; i++)
-            {
-                bool isPlaced = false;
-
-                flexValues.Sort();
-
-                while (!isPlaced)
-                {
-                    // direction = 0 -> left; direction = 1 -> right;
-                    int direction = _rnd.Next(0, 1 + 1);
-
-                    int newValue = 0;
-
-                    switch (direction)
-                    {
-                        case 0:
-                            newValue = flexValues[0] - 1;
-                            break;
-                        case 1:
-                            newValue = flexValues[flexValues.Count - 1] + 1;
-                            break;
-                    }
-
-                    if (newValue >= 0 && newValue <= maxFlexValue)
-                    {
-                        flexValues.Add(newValue);
-                        isPlaced = true;
-                    }
-                }
-            }
-
-            // Check and change of state being fixedValue the column.
-            if (!isRowFixed)
-            {
-                isValid = true;
-
-                for (int i = 0; i < sizePlaced; i++)
-                {
-                    if (_grid[flexValues[i], fixedValue].State != CellState.Empty)
-                    {
-                        isValid = false;
-                    }
-                }
-
-                if (!isValid)
-                {
-                    continue;
-                }
-
-                for (int i = 0; i < sizePlaced; i++)
-                {
-                    _grid[flexValues[i], fixedValue].SetCellState(newState);
-                    cellsToReturn.Add(_grid[flexValues[i], fixedValue]);
-                }
-            }
-
-            // Check and change of state being fixedValue the row.
-            if (isRowFixed)
-            {
-                isValid = true;
-
-                for (int i = 0; i < sizePlaced; i++)
-                {
-                    if (_grid[fixedValue, flexValues[i]].State != CellState.Empty)
-                    {
-                        isValid = false;
-                    }
-                }
-
-                if (!isValid)
-                {
-                    continue;
-                }
-
-                for (int i = 0; i < sizePlaced; i++)
-                {
-                    _grid[fixedValue, flexValues[i]].SetCellState(newState);
-                    cellsToReturn.Add(_grid[fixedValue, flexValues[i]]);
-                }
-            }
-        }
-        return cellsToReturn;
-    }
-    #endregion
-
-    #region Placing Rooms
-    private bool PlacingRooms()
-    {
-        // Intentar crear caminos a todas las habitaciones requeridas.
-        Cell[,] copiedGrid = AuxiliarMapGenerator.CopyGrid(_grid);
-        Cell[,] modifiedGrid = TryToInsertRooms(copiedGrid);
-
-        if (modifiedGrid == null)
-        {
-            Debug.LogWarning("FINAL MAP GENERATION -Retrying to create map-.");
-            return false;
-        }
-        else
-        {
-            copiedGrid = AuxiliarMapGenerator.CopyGrid(modifiedGrid); ;
-
-            // Intentar llevar el resto de salidas al final.
-            modifiedGrid = TryToReachFinal(copiedGrid);
-
-            if (modifiedGrid == null)
-            {
-                Debug.LogWarning("FINAL MAP GENERATION -Retrying to create map-.");
-                foreach (KeyValuePair<Vector3, GameObject> entry in _roomsInserted)
-                {
-                    Destroy(entry.Value);
-                }
-                _roomsInserted.Clear();
-                return false;
-            }
-            else
-            {
-                _roomsInserted.Clear();
-                _grid = modifiedGrid;
-                return true;
-            }
-        }
-
-    }
-
-    private Cell[,] TryToReachFinal(Cell[,] grid)
-    {
-        List<Cell> restEntrancesList = GetRestEntrances(grid);
-        int counterRestEntrances = restEntrancesList.Count;
-
-        foreach (Cell entranceCell in restEntrancesList)
-        {
-            // Buscar vecinos que sean Empty.
-            List<Cell> cellNeighboursList = new List<Cell>();
-            cellNeighboursList = AuxiliarMapGenerator.GetNeighbours(entranceCell, grid);
-
-            foreach (Cell neighbour in cellNeighboursList)
-            {
-                if (neighbour.State == CellState.Empty)
-                {
-                    // Si es la última entrada entonces hacer que llegue al final.
-                    if (counterRestEntrances == 1)
-                    {
-                        Cell[,] modifiedGrid = ReachFinal(neighbour, grid);
-                        if (modifiedGrid != null)
-                        {
-                            grid = modifiedGrid;
-                            return grid;
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                    else
-                    {
-                        // Buscar el pasillo más cercano y unirse a él.
-                        Cell[,] modifiedGrid = SeekAndJoinNearCorridors(neighbour, grid);
-                        if (modifiedGrid != null)
-                        {
-                            grid = modifiedGrid;
-                            break;
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                }
-            }
-
-            counterRestEntrances--;
-        }
-
-        return grid;
-    }
-
-    private Cell[,] SeekAndJoinNearCorridors(Cell startCell, Cell[,] grid)
-    {
-
-        List<Cell> adjacentCellsList = GetAdjacentCells(startCell, grid, _roomRadius);
-        Debug.Log($"Number AdjacentCells for [{startCell.Row}, {startCell.Col}]: {adjacentCellsList.Count}");
-
-        foreach (Cell adjacentCell in adjacentCellsList)
-        {
-            List<Cell> destinationCellList = new List<Cell>() { adjacentCell };
-            List<Cell> possibleOrigins = new List<Cell>() { startCell };
-            Cell[,] modifiedGrid = AuxiliarMapGenerator.FindPath(destinationCellList, grid, true, possibleOrigins);
-            if (modifiedGrid != null)
-            {
-                Debug.Log($"Camino encontrado desde [{startCell.Row}, {startCell.Col}] hasta [{adjacentCell.Row}, {adjacentCell.Col}]");
-                grid = modifiedGrid;
-                return grid;
-            }
-        }
-
-        return null;
-    }
-
-    private List<Cell> GetAdjacentCells(Cell cell, Cell[,] grid, int radius)
-    {
-        List<Cell> adjacentCells = new List<Cell>();
-
-        for (int row = 0; row < grid.GetLength(0); row++)
-        {
-            for (int col = 0; col < grid.GetLength(1); col++)
-            {
-                if (row == cell.Row && col == cell.Col)
-                {
-                    continue;
-                }
-                if ((row > cell.Row - radius && row < cell.Row + radius) || (col > cell.Col - radius && col < cell.Col + radius))
-                {
-                    continue;
-                }
-                if (grid[row, col].State == CellState.Corridor)
-                {
-                    adjacentCells.Add(grid[row, col]);
-                }
-            }
-        }
-
-        System.Random rng = new System.Random();
-        adjacentCells = adjacentCells.OrderBy(a => rng.Next()).ToList();
-
-        return adjacentCells;
-    }
-
-    private List<Cell> GetRestEntrances(Cell[,] grid)
-    {
-        List<Cell> countRestEntrances = new List<Cell>();
-
-        foreach (Cell cell in grid)
-        {
-            // Si la celda actual es una entrada.
-            if (cell.State == CellState.EntranceRoom)
-            {
-                // Buscar vecinos que sean Empty.
-                List<Cell> cellNeighboursList = new List<Cell>();
-                cellNeighboursList = AuxiliarMapGenerator.GetNeighbours(cell, grid);
-
-                foreach (Cell neighbour in cellNeighboursList)
-                {
-                    if (neighbour.State == CellState.Empty)
-                    {
-                        if (!countRestEntrances.Contains(cell))
-                        {
-                            countRestEntrances.Add(cell);
-                        }
-                    }
-                }
-            }
-        }
-
-        System.Random rng = new System.Random();
-        countRestEntrances = countRestEntrances.OrderBy(a => rng.Next()).ToList();
-
-        return countRestEntrances;
-    }
-
-    private Cell[,] ReachFinal(Cell start, Cell[,] grid)
-    {
-        List<Cell> possibleOrigins = new List<Cell>() { start };
-        foreach (Cell destinationCell in AuxiliarMapGenerator.GetPossibleEndCells(grid))
-        {
-            List<Cell> destinationCellList = new List<Cell>() { destinationCell };
-            Cell[,] modifiedGrid = AuxiliarMapGenerator.FindPath(destinationCellList, grid, true, possibleOrigins);
-            if (modifiedGrid != null)
-            {
-                grid = modifiedGrid;
-                return grid;
-            }
-        }
-
-        return null;
-    }
-
-    private Cell[,] TryToInsertRooms(Cell[,] grid)
-    {
-        int currentAmountRooms3x3 = 0;
-        int tries = 5;
-
-        while (tries > 0)
-        {
-            bool isInserted = false;
-
-            GameObject roomPrefab;
-            if (currentAmountRooms3x3 < _amountRooms3x3)
-            {
-                roomPrefab = RoomLoader.GetRandomRoom(true);
-            }
-            else
-            {
-                roomPrefab = RoomLoader.GetRandomRoom(false);
-            }
-
-            GameObject roomObject = Instantiate(roomPrefab, Vector3.zero, roomPrefab.transform.rotation);
-            roomObject.transform.SetParent(GameObject.Find("Rooms").transform, false);
-            Room room = roomObject.GetComponent<Room>();
-            if(room.InitializeRandomRoom() == false)
-            {
-                break;
-            }
-
-            int insertionTry = 250;
-
-            while (insertionTry > 0)
-            {
-                List<Cell> endCellList = new List<Cell>();
-
-                int initialRow = _rnd.Next(0, grid.GetLength(0));
-                int initialCol = _rnd.Next(0, grid.GetLength(1));
-
-                List<Vector2Int> possibleEndCell = room.GetPosStartEnd();
-                foreach (Vector2Int element in possibleEndCell)
-                {
-                    if (element.y + initialRow < 0 || element.y + initialRow >= grid.GetLength(0) ||
-                        element.x + initialCol < 0 || element.x + initialCol >= grid.GetLength(1))
-                    {
-                        break;
-                    }
-
-                    endCellList.Add(grid[element.y + initialRow, element.x + initialCol]);
-                }
-
-                // Intentar insertar la habitación y obtener el grid modificado
-                Vector3 positonToInstantiate = grid[initialRow, initialCol].Position3D + room.centerPosition;
-                Cell[,] modifiedGrid = AuxiliarMapGenerator.InsertRoom(grid, room.selfGrid, initialRow, initialCol, endCellList);
-
-                if (modifiedGrid != null)
-                {
-                    room.MoveRoomPosition(positonToInstantiate);
-                    _roomsInserted.Add(positonToInstantiate, roomObject);
-                    grid = modifiedGrid; // Actualizar grid con el grid modificado
-                    isInserted = true;
-                    break;
-                }
-                else
-                {
-                    insertionTry--;
-                }
-
-            }
-
-            if (isInserted == true)
-            {
-                if (currentAmountRooms3x3 < _amountRooms3x3)
-                {
-                    currentAmountRooms3x3++;
-                }
-            }
-            else
-            {
-                tries--;
-                Destroy(roomObject);
-            }
-
-            if (GetOccupiedMapPercentage(grid) >= _mapPercentageOcuppied && currentAmountRooms3x3 == _amountRooms3x3)
-            {
-                break;
-            }
-        }
-
-        if (GetOccupiedMapPercentage(grid) >= _mapPercentageOcuppied && currentAmountRooms3x3 == _amountRooms3x3)
-        {
-            return grid;
-        }
-        else
-        {
-            foreach (KeyValuePair<Vector3, GameObject> entry in _roomsInserted)
-            {
-                Destroy(entry.Value);
-            }
-            _roomsInserted.Clear();
-            return null;
-        }
-    }
-
-    private int GetOccupiedMapPercentage(Cell[,] currentGrid)
-    {
-        int totalCells = currentGrid.GetLength(0) * currentGrid.GetLength(1);
-        int currentCellsOcuppied = 0;
-
-        foreach (Cell cell in currentGrid)
-        {
-            if (cell.State == CellState.Room || cell.State == CellState.EntranceRoom || cell.State == CellState.CorridorRoom || cell.State == CellState.FillingRoom)
-            {
-                currentCellsOcuppied++;
-            }
-        }
-
-        return (int)(((float)currentCellsOcuppied / totalCells) * 100);
     }
     #endregion
 }
