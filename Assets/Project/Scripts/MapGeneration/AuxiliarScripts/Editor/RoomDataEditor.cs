@@ -8,7 +8,7 @@ public class RoomDataEditor : Editor
     {
         RoomData roomData = (RoomData)target;
 
-        // Forzar el tamaño fijo de roomSize
+        // Forzar el tamaÃ±o fijo de roomSize
         roomData.roomSize = new Vector2Int(3, 3);
 
         // Forzar _shape a ser 3x3 con todo en true
@@ -16,13 +16,13 @@ public class RoomDataEditor : Editor
             roomData.GetOriginalShape().GetLength(0) != 3 ||
             roomData.GetOriginalShape().GetLength(1) != 3)
         {
-            roomData.OnValidate(); // Asegurar inicialización correcta
+            roomData.OnValidate(); // Asegurar inicializaciÃ³n correcta
             BoolMatrix shape = roomData.GetOriginalShape();
             for (int x = 0; x < 3; x++)
             {
                 for (int y = 0; y < 3; y++)
                 {
-                    shape.SetValue(x, y, true); // Asegurar que todas las celdas están en true
+                    shape.SetValue(x, y, true); // Asegurar que todas las celdas estÃ¡n en true
                 }
             }
         }
@@ -51,7 +51,7 @@ public class RoomDataEditor : Editor
                     roomData.entrancesDirections[position] = (DirectionFlag)EditorGUILayout.EnumPopup(flag, GUILayout.Width(60));
                 }
 
-                GUILayout.Space(80); // Añadir más espacio entre columnas
+                GUILayout.Space(80); // AÃ±adir mÃ¡s espacio entre columnas
             }
             EditorGUILayout.EndHorizontal(); // Termina la fila
         }
