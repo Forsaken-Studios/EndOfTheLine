@@ -53,7 +53,6 @@ public class RoomsDataBase : ScriptableObject
             int amountRoomData = room.GetCountRoomData();
             for (int i = 0; i < amountRoomData; i++)
             {
-                Debug.Log($"{roomObject.name} conf = {i}");
                 room.SetRoomData(i);
                 Dictionary<Vector2Int, DirectionFlag> entrancesDirections = room.GetEntrancesDirections();
 
@@ -209,7 +208,6 @@ public class RoomsDataBase : ScriptableObject
 
                     roomsDB[15].Add(newRoom);
                 }
-                
             }
 
             DestroyImmediate(roomObject);
@@ -218,10 +216,16 @@ public class RoomsDataBase : ScriptableObject
 
     bool IsListEqual(List<DirectionFlag> list1, List<DirectionFlag> list2)
     {
+        // Se filtran las listas para ignorar los elementos None
+        var filteredList1 = list1.Where(flag => flag != DirectionFlag.None).ToList();
+        var filteredList2 = list2.Where(flag => flag != DirectionFlag.None).ToList();
+
         // Se comparan las listas para asegurarse de que coincidan exactamente
-        return list1.Count == list2.Count &&
-               list1.All(list2.Contains) &&
-               list2.All(list1.Contains);
+        bool result = filteredList1.Count == filteredList2.Count &&
+                      filteredList1.All(filteredList2.Contains) &&
+                      filteredList2.All(filteredList1.Contains);
+
+        return result;
     }
 
     private void SerializeDictionary()
