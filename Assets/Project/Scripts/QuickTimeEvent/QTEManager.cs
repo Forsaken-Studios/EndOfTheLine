@@ -92,7 +92,7 @@ public class QTEManager : MonoBehaviour
             _QTE_slider.value -= (_sliderDecreaseRate + QTETimes * _summedDifficultySlider) * Time.deltaTime;
 
             // Detecta la tecla E para subir el slider.
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetMouseButtonDown(0))
             {
                 _QTE_slider.value += _sliderIncreaseValue;
             }
