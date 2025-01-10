@@ -49,6 +49,13 @@ public class BasicEnemyActions : MonoBehaviour
         EnemyEvents.OnIsOnQTE += ActivateIsInQTE;
     }
 
+    void OnDestroy()
+    {
+        EnemyEvents.OnDeactivateNMAgent -= StopChasing;
+        EnemyEvents.OnActivateNMAgent -= ActivateAgent;
+        EnemyEvents.OnIsOnQTE -= ActivateIsInQTE;
+    }
+
     void Start()
     {
         _animator = GetComponentInChildren<Animator>();
@@ -223,6 +230,7 @@ public class BasicEnemyActions : MonoBehaviour
 
     public void StopChasing()
     {
+        //StopAllCoroutines();
         _agent.isStopped = true;
     }
 
