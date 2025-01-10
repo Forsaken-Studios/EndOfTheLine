@@ -421,7 +421,8 @@ namespace LootSystem
 
             if (recoverItems.Count == 0)
             {
-                this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Empty);
+                if(this.chestSprite != null)
+                    this.chestSprite.sprite = LootUIManager.Instance.GetLootSprite(this.chestType, LootSpriteType.Empty);
             }
             //Text to indicate we take X Item
             PlayerInventory.Instance.ShowFullListItemTaken(itemsTaken);
