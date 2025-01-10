@@ -434,9 +434,10 @@ namespace Player
 
         public void PlayOpenInventoryAnimation()
         {
-            if (_animTorso != null)
+            if (_animTorso != null && _animLegs != null)
             {              
                 _animTorso.SetBool("isOnInventory", true);
+                _animLegs.SetBool("isWalking", false);
                 _animTorso.SetTrigger("isOnInventoryTrigger");
             }
 
