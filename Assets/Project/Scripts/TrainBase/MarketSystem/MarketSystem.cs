@@ -95,6 +95,8 @@ public class MarketSystem : MonoBehaviour
                 if (!slot.GetIfIsAlreadyBought())
                 {
                     slot.onItemClicked += OnItemClicked; 
+                    slot.GetComponentInChildren<Button>().interactable = true;
+
                 }
                 else
                 {
