@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7890404998112976047}
   - component: {fileID: 7792232419256994647}
+  - component: {fileID: 7072993921462888961}
   - component: {fileID: 4772649535487459195}
   - component: {fileID: 4065166332763650388}
   m_Layer: 0
@@ -47,6 +48,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 549912697224814260}
   m_CullTransparentMesh: 1
+--- !u!114 &7072993921462888961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 549912697224814260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23cb601364cddaa4d8da9eed12197017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goalPos: {fileID: 2595272996533997826}
 --- !u!114 &4772649535487459195
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,6 +622,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5118049485586319712}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5969055740962148830
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2595272996533997826}
+  m_Layer: 8
+  m_Name: BarPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2595272996533997826
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5969055740962148830}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.52, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4842490922141732761}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6998297007814671007
 GameObject:
   m_ObjectHideFlags: 0
@@ -973,6 +1018,7 @@ Transform:
   - {fileID: 8738184582857841494}
   - {fileID: 236654805973266366}
   - {fileID: 365021793935466459}
+  - {fileID: 2595272996533997826}
   m_Father: {fileID: 5118049485586319712}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &565548156102512488
