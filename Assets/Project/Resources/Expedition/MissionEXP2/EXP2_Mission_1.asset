@@ -13,24 +13,19 @@ MonoBehaviour:
   m_Name: EXP2_Mission_1
   m_EditorClassIdentifier: 
   id: 4
-  missionName: Search for tools
-  missionDescription: "This expedition leads into the dark, abandoned depths of an
-    old metro station. Rumored to have been a fallout shelter, the station might
-    contain hidden stockpiles of food, medical kits, and rare tools left behind by
-    its last inhabitants. But beware\u2014the narrow tunnels are said to be unstable,
-    and strange noises echo from the darkness. Some say creatures lurk below, drawn
-    by any hint of light or sound. Equip yourself with a reliable light source and
-    keep your team close; in these claustrophobic halls, losing your way could mean
-    losing everything."
+  missionName: Forge metal plates
+  missionDescription: There's this forge deep down the tunnels that was found not
+    long ago. Quite handy, not gonna lie. If you need to get some of them metal plates
+    made, I can get someone to make it for you, though the trasnportation of the
+    materials might be a little risky.
   requirements:
   - requirement: {fileID: 11400000, guid: cbe71e25629c9d340aade9c008bec659, type: 2}
   - requirement: {fileID: 11400000, guid: d733acf1985216b468837fa476ad47b9, type: 2}
+  - requirement: {fileID: 11400000, guid: d585700476a70c64298bf0c526699dd1, type: 2}
   rewards:
   - reward: {fileID: 11400000, guid: 08f9ee94da3616b47b1acdee2c88890f, type: 2}
-  - reward: {fileID: 11400000, guid: 5e51671720f1ab44da7624b3ff066e18, type: 2}
-  - reward: {fileID: 11400000, guid: 3d15de50d4a5eea46bd9e9ffb272e5bb, type: 2}
   bonusItems:
   - bonusItems: {fileID: 11400000, guid: a30ce2821e68dd24380c57e7968605f5, type: 2}
-  basicChanceOfSuccess: 42
+  basicChanceOfSuccess: 70
   daysToComplete: 1
   expeditionMapID: 7
