@@ -62,7 +62,7 @@ public class PlayerKnockDown : MonoBehaviour
 
     private void UpdateRangeEnemy()
     {
-        Vector2 detectionCenter = (Vector2)_bodyTransform.position + (Vector2)(_bodyTransform.right * _detectionDistance);
+        Vector2 detectionCenter = (Vector2)_bodyTransform.position + (Vector2)(_bodyTransform.up * _detectionDistance);
         Vector2 detectionSize = new Vector2(_detectionWidth, _detectionHeight);
 
         // Obtener los objetos dentro del cuadro
@@ -103,7 +103,7 @@ public class PlayerKnockDown : MonoBehaviour
 
             Gizmos.color = Color.red;
 
-            Vector2 detectionCenter = (Vector2)_bodyTransform.position + (Vector2)(_bodyTransform.right * _detectionDistance);
+            Vector2 detectionCenter = (Vector2)_bodyTransform.position + (Vector2)(_bodyTransform.up * _detectionDistance);
             Vector2 detectionSize = new Vector2(_detectionWidth, _detectionHeight);
 
             // Guardar la matriz de transformación actual
