@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Inventory;
+using LootSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -149,7 +151,8 @@ public class TrainManager : MonoBehaviour
         musicManager.StartFadeFunction(1);
         musicManager.StartFadeFunction(2);
         //TODO: Just for testing
-        //PlayerPrefs.SetInt("Wagon 3", -1);
+        //PlayerPrefs.SetInt("Wagon 5", -1);
+        //PlayerPrefs.SetInt("Wagon 6", -1);
         // -1 = Locked | 0 = Not defined | 1 = Unlocked
         if (PlayerPrefs.GetInt("Wagon 5") == 0)
             PlayerPrefs.SetInt("Wagon 5", -1);     
@@ -335,10 +338,17 @@ public class TrainManager : MonoBehaviour
 
     public bool TryToBuyWagon(int airFilterNeeded, int material1Needed, int material2Needed)
     {
-        //TODO: Ver que materiales ponemos aqui
-        if (airFilterNeeded <= resourceAirFilter)
+        Item foodItem = UnityEngine.Resources.Load<Item>("Items/Scrap/FoodcanHam");
+        Item screwsItem = UnityEngine.Resources.Load<Item>("Items/Scrap/Screws");
+        
+        if (airFilterNeeded <= resourceAirFilter && TrainBaseInventory.Instance.GetIfItemIsInInventory(foodItem, material2Needed) &&
+            TrainBaseInventory.Instance.GetIfItemIsInInventory(screwsItem, material1Needed))
         {
             resourceAirFilter -= airFilterNeeded;
+            TrainBaseInventory.Instance.DeleteItemFromList(foodItem, material2Needed);
+            TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(foodItem, material2Needed);
+            TrainBaseInventory.Instance.DeleteItemFromList(screwsItem, material1Needed);
+            TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(screwsItem, material1Needed);
             unlockedWagonsList[currentIndex] = true;
             trainPanelsScript.UnlockTrain(currentIndex);
             PlayerPrefs.SetInt("Wagon " + (currentIndex + 1), 1);

@@ -168,6 +168,11 @@ public class ExpeditionDetailsPreview : MonoBehaviour
 
             PlayerPrefs.SetInt("ExpeditionID", currentMissionSelected.id);
             int endingDay = PlayerPrefs.GetInt("CurrentDay") + currentMissionSelected.daysToComplete;
+            foreach (var requirement in listOfRequirementsSO)
+            {
+                TrainBaseInventory.Instance.DeleteItemFromList(requirement.item, requirement.amountNeeded);
+                TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(requirement.item, requirement.amountNeeded);
+            }
             PlayerPrefs.SetInt("ExpeditionEndDay", endingDay);
             NewExpeditionManager.Instance.SetCurrentMissionPanelInProgress(missionPanel);
             missionPanel.SetUpExpeditionTextToInProgress();
@@ -273,8 +278,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
             foreach (var requirement in listOfRequirementsSO)
             {
                 //Check in inventory & playerInventory
-                if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
-                    PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
+                if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded))
                 {
                     startExpeditionButton.interactable = true;
                 }
@@ -294,8 +298,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
 
     private bool GetIfWeHaveItem(Item item, int amount)
     {
-        return TrainBaseInventory.Instance.GetIfItemIsInInventory(item, amount) ||
-               PlayerInventory.Instance.GetIfItemIsInPlayerInventory(item, amount);
+        return TrainBaseInventory.Instance.GetIfItemIsInInventory(item, amount);
     }
 
     private void SetUpRequirements()
