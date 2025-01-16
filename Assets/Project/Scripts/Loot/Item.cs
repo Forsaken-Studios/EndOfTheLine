@@ -12,7 +12,8 @@ namespace LootSystem
     {
         public Sprite itemIcon;
         public ItemType ItemType;
-        public int itemValue;
+        public bool canSpawnInEnemyBodies = true;
+        public bool canSpawnInCrates = true;
         public int itemPriceAtMarket;
         public float itemWeight;
         public string itemName;

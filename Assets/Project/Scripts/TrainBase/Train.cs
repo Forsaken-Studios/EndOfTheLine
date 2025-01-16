@@ -10,8 +10,10 @@ public class Train : MonoBehaviour
 
     private Vector2 missionSelectorPosition = new Vector2(-1908, -88); 
     private Vector2 controlRoomPosition = new Vector2(0, -88); 
-    private Vector2 extraRoomPosition = new Vector2(1908, -88);
-    private Vector2 extraRoom2Position = new Vector2(3816, -88);
+    private Vector2 loreRoomPosition = new Vector2(1908, -88);
+    private Vector2 barmanPosition = new Vector2(3816, -88);
+    private Vector2 marketRoomPosition = new Vector2(5568, -88);
+    private Vector2 expeditionRoomPosition = new Vector2(7414, -88);
 
     private float trainFloorTransformValue = -88;
 
@@ -46,12 +48,20 @@ public class Train : MonoBehaviour
                 positionToArrive = controlRoomPosition;
                 break;  
             case 2:
-                //Extra Room
-                positionToArrive = extraRoomPosition;
+                //Lore Room
+                positionToArrive = loreRoomPosition;
                 break;        
             case 3:
-                //Extra Room 2
-                positionToArrive = extraRoom2Position;
+                //Barman Room 
+                positionToArrive = barmanPosition;
+                break; 
+            case 4:
+                //Market Room 
+                positionToArrive = marketRoomPosition;
+                break; 
+            case 5:
+                //Expedition Room 
+                positionToArrive = expeditionRoomPosition;
                 break; 
         }
         previousIndex = currentIndex;

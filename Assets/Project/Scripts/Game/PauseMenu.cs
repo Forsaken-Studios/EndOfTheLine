@@ -70,6 +70,8 @@ public class PauseMenu : MonoBehaviour
         return !GameManager.Instance.GetHolder1Status() && !GameManager.Instance.GetHolder2Status();
     }
     
+    
+    
     private void Update()
      {
          if (!GameManager.Instance.sceneIsLoading)
@@ -79,7 +81,7 @@ public class PauseMenu : MonoBehaviour
                  if (InventoryManager.Instance.GetInspectViewList().Count == 0 
                      && !LoreManager.Instance.GetIfPlayerIsReadingLore())
                  {
-                     if (AbilitiesNotActivated())
+                     if (AbilitiesNotActivated() && !InventoryManager.Instance.inventoryIsOpen)
                      {
                          PauseGame();
                      }
@@ -92,12 +94,6 @@ public class PauseMenu : MonoBehaviour
                          LoreManager.Instance.SetIfPlayerIsReadingLore(false);
                          LoreManager.Instance.DestroyCurrentExpandedView(); 
                          LoreManager.Instance.SetCurrentLoreView(null);
-                     }else
-                     {
-                         List<GameObject> inspectList = InventoryManager.Instance.GetInspectViewList();
-                         GameObject mostRecentInspectView = inspectList[inspectList.Count - 1];
-                         Destroy(mostRecentInspectView);
-                         InventoryManager.Instance.RemoveInspectView(mostRecentInspectView);
                      }
                  }
              } 

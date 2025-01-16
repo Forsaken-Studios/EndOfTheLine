@@ -39,7 +39,7 @@ public class RoomData : ScriptableObject, ISerializationCallbackReceiver
         }
     }
 
-    private void OnValidate()
+    public void OnValidate()
     {
         if (_shape == null || _shape.GetLength(0) != roomSize.x || _shape.GetLength(1) != roomSize.y)
         {

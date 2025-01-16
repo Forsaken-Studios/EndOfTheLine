@@ -11,6 +11,7 @@ namespace Loot
     public class LooteableObjectTrigger : MonoBehaviour
     {
         private LooteableObject looteableObject;
+        private bool alreadyIn = false;
         private GameObject shortCut;
         private void Start()
         {
@@ -24,13 +25,25 @@ namespace Loot
                 looteableObject.ActivateKeyHotkeyImage();
                 shortCut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.lootCrate);
                 LooteableObjectSelector.Instance.AddOneInTrigger(looteableObject);
+                alreadyIn = true;
             }
         }
-
+        
+        private void OnTriggerStay2D(Collider2D other)
+        {
+            if (other.CompareTag("Player") && !alreadyIn)
+            {
+                looteableObject.ActivateKeyHotkeyImage();
+                shortCut = ShortcutsUIManager.Instance.AddShortcuts(ShortcutType.lootCrate);
+                LooteableObjectSelector.Instance.AddOneInTrigger(looteableObject);
+                alreadyIn = true;
+            }
+        }
         private void OnTriggerExit2D(Collider2D other)
         {
             if (other.CompareTag("Player"))
             {
+                alreadyIn = false;
                 looteableObject.DesactivateKeyHotkeyImage();
                 if(shortCut != null)
                     ShortcutsUIManager.Instance.RemoveShortcut(shortCut);

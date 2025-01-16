@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Inventory;
@@ -12,6 +13,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
 
     [Header("Expedition Properties Text")]
     [SerializeField] private TextMeshProUGUI chanceOfSuccessText;
+    [SerializeField] private TextMeshProUGUI descriptionText;
     private float rewardsMultiplier = 1;
     [Header("Requirements Needed")] 
     [SerializeField] private GameObject requirementPrefab;
@@ -32,7 +34,6 @@ public class ExpeditionDetailsPreview : MonoBehaviour
     private MissionPanel missionPanel;
     [Header("Start Expedition Bonus")]
     [SerializeField] private Button startExpeditionButton;
-    private bool canStartExpedition = true;
     private bool expeditionInProgress = false;
     
     public void SetUpProperties(MissionStatSO mission, MissionPanel missionPanel)
@@ -40,6 +41,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
         //PlayerPrefs.SetInt("ExpeditionInProgress", 0);
         this.currentMissionSelected = mission;
         this.missionPanel = missionPanel;
+        this.descriptionText.text = mission.missionDescription;
         ClearExpedition();
         InitializeList();
         InitializeButtons();
@@ -108,6 +110,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
     private void SetUpProperties()
     {
         UpdateChanceOfSuccess(currentMissionSelected.basicChanceOfSuccess);
+        
         //Set up requirements if needed
         SetUpRequirements();
         //Check if we meet the requirements
@@ -126,6 +129,13 @@ public class ExpeditionDetailsPreview : MonoBehaviour
         listOfRewards = new List<GameObject>();
         listOfBonusesItems = new List<GameObject>();
         listOfRequirementsSO = new List<RequirementSO>();
+    }
+
+    private void OnEnable()
+    {
+        Debug.Log("KW");
+       // if (listOfRequirements.Count == 0)
+        SetUpRequirements();
     }
 
     private void InitializeButtons()
@@ -158,6 +168,11 @@ public class ExpeditionDetailsPreview : MonoBehaviour
 
             PlayerPrefs.SetInt("ExpeditionID", currentMissionSelected.id);
             int endingDay = PlayerPrefs.GetInt("CurrentDay") + currentMissionSelected.daysToComplete;
+            foreach (var requirement in listOfRequirementsSO)
+            {
+                TrainBaseInventory.Instance.DeleteItemFromList(requirement.item, requirement.amountNeeded);
+                TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(requirement.item, requirement.amountNeeded);
+            }
             PlayerPrefs.SetInt("ExpeditionEndDay", endingDay);
             NewExpeditionManager.Instance.SetCurrentMissionPanelInProgress(missionPanel);
             missionPanel.SetUpExpeditionTextToInProgress();
@@ -263,8 +278,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
             foreach (var requirement in listOfRequirementsSO)
             {
                 //Check in inventory & playerInventory
-                if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded) ||
-                    PlayerInventory.Instance.GetIfItemIsInPlayerInventory(requirement.item, requirement.amountNeeded))
+                if (TrainBaseInventory.Instance.GetIfItemIsInInventory(requirement.item, requirement.amountNeeded))
                 {
                     startExpeditionButton.interactable = true;
                 }
@@ -284,8 +298,7 @@ public class ExpeditionDetailsPreview : MonoBehaviour
 
     private bool GetIfWeHaveItem(Item item, int amount)
     {
-        return TrainBaseInventory.Instance.GetIfItemIsInInventory(item, amount) ||
-               PlayerInventory.Instance.GetIfItemIsInPlayerInventory(item, amount);
+        return TrainBaseInventory.Instance.GetIfItemIsInInventory(item, amount);
     }
 
     private void SetUpRequirements()

@@ -12,7 +12,8 @@ public class SellItemsPanel : MonoBehaviour
     
     private Button sellButton;
     [SerializeField] private TextMeshProUGUI itemValue;
-
+    private int currentAmount;
+    private int previousAmount;
     private void Awake()
     {
         if (Instance != null)
@@ -22,6 +23,34 @@ public class SellItemsPanel : MonoBehaviour
             return;
         } 
         Instance = this;
+    }
+
+    private void Update()
+    {
+        if (TrainInventoryManager.Instance.GetItemSlotList().Count == 0)
+        {
+            return;
+        }
+        
+        currentAmount = TrainInventoryManager.Instance.GetItemSlotList().FindAll(t => t.GetItemInSlot() != null).Count;
+
+        if (previousAmount != currentAmount)
+        {
+            Debug.Log("UPDATE");
+            itemValue.text = CalculateTotalPrice().ToString() + " $";
+            previousAmount = currentAmount;
+        }
+    }
+
+    private float CalculateTotalPrice()
+    {
+        float totalValue = 0;
+        foreach (var itemSlot in TrainInventoryManager.Instance.GetItemSlotList())
+        {
+            if(itemSlot.GetItemInSlot() != null)
+                totalValue += itemSlot.GetItemInSlot().itemPriceAtMarket * itemSlot.amount;
+        }
+        return totalValue;
     }
 
     private void OnEnable()

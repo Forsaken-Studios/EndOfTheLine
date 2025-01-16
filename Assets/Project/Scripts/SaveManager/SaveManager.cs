@@ -12,8 +12,6 @@ namespace SaveManagerNamespace
     {
     
         private string _dataDirPath;
-        private string dataFileName = "";
-
         public static SaveManager Instance;
 
         private void Awake()

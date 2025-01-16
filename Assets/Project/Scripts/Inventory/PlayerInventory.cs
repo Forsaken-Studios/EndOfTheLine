@@ -18,14 +18,11 @@ namespace Inventory
         public static PlayerInventory Instance;
 
         [SerializeField] private GameObject floatingTextPrefab;
-
-        private int numberOfTools = -1;
-
+        
         private Dictionary<Item, int> inventoryItemDictionary;
         private float currentWeight;
         private float MAX_WEIGHT = 34.5f;
         private int MAX_INVENTORY_SLOTS = 10;
-        private int MAX_STACK_PER_SLOT = 4;
 
         [Header("Player Prefs")] 
         private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter";
@@ -214,6 +211,15 @@ namespace Inventory
             }
         }
 
+        public void ShowPlayerHasTooMuchWeight()
+        {
+            if (floatingTextPrefab)
+            {
+                GameObject prefab = Instantiate(floatingTextPrefab, transform.position, Quaternion.identity);
+                prefab.GetComponentInChildren<TextMeshProUGUI>().text = "You can't handle to much weight, drop something";
+            } 
+        }
+
         public void HandleItemsAtEndGame()
         {
             int currentAirFilter = PlayerPrefs.GetInt(RESOURCES_AIR_FILTER_NAME);
@@ -226,7 +232,7 @@ namespace Inventory
                     case ItemType.Scrap:
                         if (item.Key.itemID == gasFilterID)
                         {
-                            currentAirFilter += item.Value * item.Key.itemValue;
+                            currentAirFilter += item.Value * item.Key.itemPriceAtMarket;
                         }
                         break;
                 }

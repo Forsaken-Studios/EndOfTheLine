@@ -15,7 +15,6 @@ public class BuySellSwapper : MonoBehaviour
     [SerializeField] private Button tradePanelButton;
 
     private bool isSelling = false;
-
     private void OnEnable()
     {
         TrainManager.Instance.TrainStatus = TrainStatus.onMarketScreen;
@@ -23,6 +22,7 @@ public class BuySellSwapper : MonoBehaviour
         this.sellPanelButton.onClick.AddListener(() => SwapToSellPanel());
         this.tradePanelButton.onClick.AddListener(() => SwapToTradePanel());
         this.buyPanel.SetActive(true);
+        TrainInventoryManager.Instance.OpenInventoryInMarketRoom();
         isSelling = false;
         this.sellPanel.SetActive(false);
         this.tradePanel.SetActive(false);
@@ -39,6 +39,7 @@ public class BuySellSwapper : MonoBehaviour
             TrainInventoryManager.Instance.CloseSellingInventory();
             TrainInventoryManager.Instance.LoadPlayerInventory();
         }
+        TrainInventoryManager.Instance.CloseInventoryInMarketRoom();
         this.buyPanelButton.onClick.RemoveAllListeners();
         this.sellPanelButton.onClick.RemoveAllListeners();
         this.tradePanelButton.onClick.RemoveAllListeners();
@@ -47,6 +48,7 @@ public class BuySellSwapper : MonoBehaviour
 
     private void SwapToSellPanel()
     {
+        TrainInventoryManager.Instance.CloseInventoryInMarketRoom();
         this.buyPanel.SetActive(false);
         this.tradePanel.SetActive(false);
         this.sellPanel.SetActive(true);
@@ -64,6 +66,8 @@ public class BuySellSwapper : MonoBehaviour
             TrainInventoryManager.Instance.LoadPlayerInventory();
             isSelling = false;
         }
+        TrainInventoryManager.Instance.OpenInventoryInMarketRoom();
+        TrainInventoryManager.Instance.IsNotSellingItems();
         this.buyPanel.SetActive(true);  
         this.tradePanel.SetActive(false);
         this.sellPanel.SetActive(false);
@@ -80,6 +84,8 @@ public class BuySellSwapper : MonoBehaviour
             TrainInventoryManager.Instance.LoadPlayerInventory();
             isSelling = false;
         }
+        TrainInventoryManager.Instance.IsNotSellingItems();
+        TrainInventoryManager.Instance.OpenInventoryInMarketRoom();
         this.buyPanel.SetActive(false);
         this.tradePanel.SetActive(true);
         this.sellPanel.SetActive(false);

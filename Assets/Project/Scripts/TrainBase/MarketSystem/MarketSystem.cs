@@ -95,6 +95,8 @@ public class MarketSystem : MonoBehaviour
                 if (!slot.GetIfIsAlreadyBought())
                 {
                     slot.onItemClicked += OnItemClicked; 
+                    slot.GetComponentInChildren<Button>().interactable = true;
+
                 }
                 else
                 {
@@ -165,6 +167,7 @@ public class MarketSystem : MonoBehaviour
                         out int remainingItemsWithoutSpace))
                 {
                     //TODO: Spend Money
+                    TrainBaseInventory.Instance.AddItemToList(itemSelected.GetItemSO(), 1);
                     TrainManager.Instance.resourceAirFilter -= itemSelected.GetItemSO().itemPriceAtMarket;
                     RemoveItemFromList(itemSelected.GetItemSO());
                     itemSelected.ClearMarketSlot();

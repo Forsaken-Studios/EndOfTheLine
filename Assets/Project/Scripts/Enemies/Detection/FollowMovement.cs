@@ -21,11 +21,12 @@ public class FollowMovement : MonoBehaviour
             // Calcula el cambio en la posición del target
             Vector3 targetDelta = targetObject.transform.position - lastTargetPosition;
 
-            // Mueve este objeto en la misma cantidad
-            transform.position += targetDelta;
+            // Usa Translate para mover el objeto
+            transform.Translate(targetDelta);
 
             // Actualiza la posición anterior
             lastTargetPosition = targetObject.transform.position;
         }
     }
+
 }

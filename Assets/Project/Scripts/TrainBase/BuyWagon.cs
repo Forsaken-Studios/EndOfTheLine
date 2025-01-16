@@ -61,7 +61,7 @@ public class BuyWagon : MonoBehaviour
         }
     }
 
-    private void CancelBuy()
+    public void CancelBuy()
     {
         Destroy(this.gameObject);
         TrainManager.Instance.SetIsShowingWagonBuyUI(false);

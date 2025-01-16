@@ -14,14 +14,6 @@ public class Requirement : MonoBehaviour
     {
         this.itemImage.sprite = requirementSO.item.itemIcon;
         this.amountText.text = "x" + requirementSO.amountNeeded.ToString() + " " + requirementSO.item.itemName;
-
-        if (weHaveItem)
-        {
-            blackPanel.SetActive(false);
-        }
-        else
-        {
-            blackPanel.SetActive(true);
-        }
+        blackPanel.SetActive(!weHaveItem);
     }
 }

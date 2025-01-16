@@ -13,13 +13,19 @@ MonoBehaviour:
   m_Name: EXP3_Mission_1
   m_EditorClassIdentifier: 
   id: 6
-  missionName: Collect medicinal herbs
+  missionName: Advanced search for red minerals
+  missionDescription: This is a big one. I've found an even larger stash of red minerals
+    that might interest you. The catch is, it's located on a heavily guarded base.
+    If you feel specially lucky, I can send a team to collect it, but you know how
+    the saying goes, the greater the risk, the greater the reward.
   requirements:
+  - requirement: {fileID: 11400000, guid: 6b300e5b36a971449ade15a410065ad0, type: 2}
+  - requirement: {fileID: 11400000, guid: 6b300e5b36a971449ade15a410065ad0, type: 2}
   - requirement: {fileID: 11400000, guid: 6b300e5b36a971449ade15a410065ad0, type: 2}
   rewards:
   - reward: {fileID: 11400000, guid: 9cece699e86728e4593e8e729a42c073, type: 2}
   bonusItems:
   - bonusItems: {fileID: 11400000, guid: c7de03fd4ccf1414ebdf19079d7fd0b2, type: 2}
-  basicChanceOfSuccess: 80
-  daysToComplete: 2
+  basicChanceOfSuccess: 50
+  daysToComplete: 3
   expeditionMapID: 5

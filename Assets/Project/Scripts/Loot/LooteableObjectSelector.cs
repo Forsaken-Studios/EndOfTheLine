@@ -1,5 +1,7 @@
 
+using System;
 using System.Collections.Generic;
+using Player;
 using UnityEngine;
 
 namespace LootSystem
@@ -21,22 +23,20 @@ namespace LootSystem
     
         //TEST 
 
-        private List<LooteableObject> looteableObjectInRange;
+        private List<LooteableObject> looteableObjectInRangeList;
 
         [SerializeField] private GameObject lootSelectorPrefab;
         private GameObject lootSelectorGameObject;
         private LooteableObjectSelectorUI looteableObjectSelectorUI;
         private void Start()
         {
-            looteableObjectInRange = new List<LooteableObject>();
-      
+            looteableObjectInRangeList = new List<LooteableObject>();
         }
-    
-
+        
         public void AddOneInTrigger(LooteableObject loot)
         {
-            looteableObjectInRange.Add(loot);
-            if (looteableObjectInRange.Count > 1)
+            looteableObjectInRangeList.Add(loot);
+            if (looteableObjectInRangeList.Count > 1)
             {
                 ShowItemSelector();
             }
@@ -44,13 +44,13 @@ namespace LootSystem
 
         public bool GetIfIndexIsThisLooteableObject(LooteableObject looteableObject)
         {
-            return looteableObjectInRange[looteableObjectSelectorUI.GetCurrentIndex()].Equals(looteableObject); 
+            return looteableObjectInRangeList[looteableObjectSelectorUI.GetCurrentIndex()].Equals(looteableObject); 
         }
     
         public void DecreaseOneInTrigger(LooteableObject loot)
         {
-            looteableObjectInRange.Remove(loot);
-            if (looteableObjectInRange.Count < 2)
+            looteableObjectInRangeList.Remove(loot);
+            if (looteableObjectInRangeList.Count < 2)
             {
                 HideItemSelector();
             }
@@ -61,7 +61,7 @@ namespace LootSystem
             if(lootSelectorGameObject)
                 Destroy(lootSelectorGameObject);
             lootSelectorGameObject = Instantiate(lootSelectorPrefab,
-                looteableObjectInRange[0].gameObject.transform.position, Quaternion.identity);
+                looteableObjectInRangeList[0].gameObject.transform.position, Quaternion.identity);
             looteableObjectSelectorUI = lootSelectorGameObject.GetComponent<LooteableObjectSelectorUI>();
         
         } 
@@ -76,16 +76,34 @@ namespace LootSystem
 
         public int GetLooteableObjectCount()
         {
-            return looteableObjectInRange.Count;
+            return looteableObjectInRangeList.Count;
         }
 
         public List<LooteableObject> GetLootList()
         {
-            return looteableObjectInRange;
+            return looteableObjectInRangeList;
         }
         public bool GetIfSelectorIsActive()
         {
-            return looteableObjectInRange.Count > 1;
+            return looteableObjectInRangeList.Count > 1;
+        }
+
+
+        public LooteableObject GetClosestTemporalBox()
+        {
+            LooteableObject closestTemporalBox = null;
+            int minDistance = 3;
+            foreach (var lootCrate in looteableObjectInRangeList)
+            {
+                if (Vector2.Distance(lootCrate.transform.position, PlayerController.Instance.gameObject.transform.position) < minDistance)
+                {
+                    if (lootCrate.ChestType == LootSpriteContainer.TemporalBox)
+                    {
+                        return lootCrate;  
+                    }
+                }
+            }
+            return closestTemporalBox;
         }
     }
 }

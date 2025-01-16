@@ -11,4 +11,7 @@ public static class EnemyEvents
     public static Action<GameObject, Vector3, bool> OnIsAtPlayerLastSeenPosition;
     public static Action<GameObject> OnKnockDown;
     public static Action<bool> OnIsOnBack;
+    public static Action OnDeactivateNMAgent;
+    public static Action<float, float, float> OnActivateNMAgent;
+    public static Action OnIsOnQTE;
 }

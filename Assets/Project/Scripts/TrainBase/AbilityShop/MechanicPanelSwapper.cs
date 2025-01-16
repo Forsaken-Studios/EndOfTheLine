@@ -14,7 +14,7 @@ public class MechanicPanelSwapper : MonoBehaviour
     [SerializeField] private Button abilityShopButton;
     [SerializeField] private Button abilityEquipmentButton;
 
-    private bool isSelling = false;
+
 
     private void OnEnable()
     {
@@ -23,7 +23,6 @@ public class MechanicPanelSwapper : MonoBehaviour
         this.abilityShopButton.onClick.AddListener(() => SwapToMechanicPanel());
         this.abilityEquipmentButton.onClick.AddListener(() => SwapToEquipmentPanel());
         this.upgradesPanel.SetActive(true);
-        isSelling = false;
         this.abilityShopPanel.SetActive(false);
         this.abilityEquipmentPanel.SetActive(false);
         this.abilityShopButton.interactable = true;
@@ -44,7 +43,6 @@ public class MechanicPanelSwapper : MonoBehaviour
         this.upgradesPanel.SetActive(false);
         this.abilityEquipmentPanel.SetActive(false);
         this.abilityShopPanel.SetActive(true);
-        isSelling = true;
         this.abilityShopButton.interactable = false;
         this.upgradesButton.interactable = true;
         this.abilityEquipmentButton.interactable = true;

@@ -1,3 +1,4 @@
+using Player;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,6 +57,7 @@ public class AbilityHolder : MonoBehaviour
         if (state == AbilityState.preparing)
         {
             Destroy(currentCanvasCreated);
+            DestroyAllShortcuts();
             this.state = AbilityState.ready;
         }
     }
@@ -172,6 +174,7 @@ public class AbilityHolder : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             //Activate
+            PlayerController.Instance.PlayShootAnim();
             OverheatManager.Instance.IncreaseEnergy(ability.overheatCost);
             ability.Activating(gameObject, positionToThrowAbility, positionToThrowAbility2, out currentGameObjectCreated);
             ActivateShortcutsWhenActivatingAbility();
@@ -180,6 +183,7 @@ public class AbilityHolder : MonoBehaviour
         }else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
             //Destroy canvas
+            PlayerController.Instance.PlayCancelShootAnim();
             GameManager.Instance.SetHolder(abilityHolderID, false);
             DestroyAllShortcuts();
             state = AbilityState.ready;
@@ -227,6 +231,8 @@ public class AbilityHolder : MonoBehaviour
     {
         if (Input.GetKeyDown(key) && OverheatManager.Instance.CheckIfWeCanThrowAbility(ability.overheatCost))
         {
+            PlayerController.Instance.PlayAimAnim();
+
             ability.PrepareAbility(gameObject, this, out currentCanvasCreated);
             OverheatManager.Instance.SetHolderToPrepareAbility(abilityHolderID);
             ActivateShortcuts();
@@ -260,6 +266,7 @@ public class AbilityHolder : MonoBehaviour
                         //Colocar objeto en el sitio
                     }else if (Input.GetKeyDown(KeyCode.Mouse1))
                     {
+                        PlayerController.Instance.PlayCancelShootAnim();
                         GameManager.Instance.SetHolder(abilityHolderID, false);
                         state = AbilityState.ready;
                         DestroyAllShortcuts();
@@ -273,6 +280,7 @@ public class AbilityHolder : MonoBehaviour
             }
         }else if (Input.GetKeyDown(KeyCode.Mouse1))
         {
+            PlayerController.Instance.PlayCancelShootAnim();
             GameManager.Instance.SetHolder(abilityHolderID, false);
             state = AbilityState.ready;
             DestroyAllShortcuts();

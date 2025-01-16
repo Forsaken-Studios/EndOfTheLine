@@ -78,14 +78,18 @@ public class TrainBasePauseMenu : MonoBehaviour
          {
              if (TrainInventoryManager.Instance.GetInspectViewList().Count == 0)
              {
+                 if (TrainManager.Instance.canvasActivated)
+                 {
+                     TrainManager.Instance.CloseWagonCanvas();
+                 }else if (TrainManager.Instance.IsShowingWagonBuyUI)
+                 {
+                     TrainManager.Instance.BuyWagonScript.CancelBuy();
+                 }
+                 else if (!TrainInventoryManager.Instance.inventoryIsOpen)
+                 {
                      PauseGame();
-             }
-             else
-             {
-                 List<GameObject> inspectList = TrainInventoryManager.Instance.GetInspectViewList();
-                 GameObject mostRecentInspectView = inspectList[inspectList.Count - 1];
-                 Destroy(mostRecentInspectView);
-                 TrainInventoryManager.Instance.RemoveInspectView(mostRecentInspectView);
+                 }
+
              }
          }
      }

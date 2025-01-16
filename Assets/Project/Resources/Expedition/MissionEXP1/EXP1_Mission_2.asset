@@ -14,14 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2
   missionName: Search for purple minerals
+  missionDescription: All right, you know this purple mineral is quite valuable,
+    do you? I've managed to find some of it in an contraband storage, so the chances
+    of it being heavily guarded aren't preciselly low. I can send a small team to
+    try collecting some of it, but I can't guarantee you anything.
   requirements:
   - requirement: {fileID: 11400000, guid: f0c1697e40ae0f940b01fee197682d36, type: 2}
   - requirement: {fileID: 11400000, guid: 5890589dad04b5b4cb54b4efd7ca8f9b, type: 2}
+  - requirement: {fileID: 11400000, guid: 4fec9fd35b9f1ff40879427c1dc97f82, type: 2}
   rewards:
   - reward: {fileID: 11400000, guid: c76a47eb9c9341a4a8af38351b432481, type: 2}
-  - reward: {fileID: 11400000, guid: bd64d2aa70496d84e90b5e5a94ddb36e, type: 2}
   bonusItems:
   - bonusItems: {fileID: 11400000, guid: d90a268d32df4874db6fde890b702132, type: 2}
-  basicChanceOfSuccess: 23
+  basicChanceOfSuccess: 55
   daysToComplete: 2
   expeditionMapID: 12

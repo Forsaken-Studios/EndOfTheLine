@@ -1,4 +1,5 @@
 
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,10 +20,13 @@ namespace Inventory
         [SerializeField] private Image itemSlotImage;
         private TextMeshProUGUI itemSlotAmountText;
         private int ItemID;
+        private GameObject hoverGameObject;
 
         [SerializeField] private GameObject blackPanel;
+        [SerializeField] private GameObject searchPanel;
         private bool canThrowItemAway;
         private Item itemInSlot;
+        private GameObject hoverInfo;
         public int itemID
         {
             get { return ItemID; }
@@ -71,7 +75,7 @@ namespace Inventory
             
         }
   
-        public bool TrySetItemSlotPropertiesForManager(Item item, int itemSlotAmount, out int remainingItems)
+        public bool TrySetItemSlotPropertiesForManagerLootUI(Item item, int itemSlotAmount, out int remainingItems)
         {
             int MAX_ITEMS_SLOT = GameManager.Instance.GetMaxAmountPerSlot();
             if (itemSlotAmount > MAX_ITEMS_SLOT)
@@ -674,12 +678,22 @@ namespace Inventory
              //We create new box
              if (SceneManager.GetActiveScene().name != GameManager.Instance.GetNameTrainScene())
              {
-                 GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
-                     PlayerInventory.Instance.transform.position, Quaternion.identity);
-                 LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
-                 lootObject.SetIfItIsTemporalBox(true);
-                 lootObject.ClearLooteableObject();
-                 lootObject.AddItemToList(GetItemInSlot(), amount);
+                 LooteableObject temporalBox = LooteableObjectSelector.Instance.GetClosestTemporalBox();
+
+                 if (temporalBox != null && temporalBox.CheckIfSlotAvailable())
+                 {
+                     Debug.Log(temporalBox.itemsInLootCrate.Count);
+                     temporalBox.AddItemToList(GetItemInSlot(), amount);
+                 }
+                 else
+                 {
+                     GameObject looteableObject = Instantiate(InventoryManager.Instance.GetLooteableObjectPrefab(),
+                         PlayerInventory.Instance.transform.position, Quaternion.identity);
+                     LooteableObject lootObject = looteableObject.GetComponent<LooteableObject>();
+                     lootObject.SetIfItIsTemporalBox(true);
+                     lootObject.ClearLooteableObject();
+                     lootObject.AddItemToList(GetItemInSlot(), amount);  
+                 }
              }
 
              ClearItemSlot();
@@ -701,7 +715,7 @@ namespace Inventory
                     // LogManager.Log("[DOUBLE CLICK] MOVING ITEM FROM CRATE TO INVENTORY", FeatureType.Loot);
                     DoubleClickOnItemFromCrateToInventory();
                 }
-                
+                Destroy(hoverGameObject);
                 if (SceneManager.GetActiveScene().name != GameManager.Instance.GetNameTrainScene())
                     CheckIfWeNeedToHideHUD();
             }
@@ -710,9 +724,10 @@ namespace Inventory
             {
                 if (itemID != 0)
                 {
+                    Destroy(hoverGameObject);
                     if(SceneManager.GetActiveScene().name == GameManager.Instance.GetNameTrainScene())
                     {
-                        if (TrainManager.Instance.TrainStatus == TrainStatus.onMarketScreen)
+                        if (TrainManager.Instance.TrainStatus == TrainStatus.onMarketScreen && TrainInventoryManager.Instance.isSellingItems)
                         {
                             SellItem();
                         }
@@ -733,7 +748,7 @@ namespace Inventory
 
         public void SellItem()
         {
-            int goldEarned = this.GetItemInSlot().itemValue * this.amount;
+            int goldEarned = this.GetItemInSlot().itemPriceAtMarket * this.amount;
             TrainManager.Instance.resourceAirFilter += goldEarned;
             MarketSystem.Instance.ShowGoldEarnedByItemSold(goldEarned, this);
             PlayerInventory.Instance.RemovingItem(this.GetItemInSlot(), this.amount);
@@ -756,10 +771,47 @@ namespace Inventory
         
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (this.itemID != 0)
+            if (SceneManager.GetActiveScene().name == "TrainBase")
             {
-                canThrowItemAway = true;
+                if (this.ItemID != 0)
+                {
+                    canThrowItemAway = true;
+                    StartCoroutine(StartHoverCountdown());
+                }
             }
+            else
+            {
+                if (this.itemID != 0 && !isLootCrate)
+                {
+                    canThrowItemAway = true;
+                    StartCoroutine(StartHoverCountdown());
+                }
+            }
+
+         
+        }
+        
+        
+
+        private IEnumerator StartHoverCountdown()
+        {
+            yield return new WaitForSeconds(0.4f); 
+            Vector2 offsetPosition = new Vector2(75, 35);
+            if (SceneManager.GetActiveScene().name == "TrainBase")
+            {
+               hoverGameObject =  Instantiate(TrainInventoryManager.Instance.HoverItemPrefab, (Vector2)
+                  this.transform.position + offsetPosition,
+                    Quaternion.identity, GameManager.Instance.GetMenuCanvas().transform);
+            }
+            else
+            { 
+                hoverGameObject = Instantiate(InventoryManager.Instance.HoverItemPrefab, (Vector2)
+                    this.transform.position + offsetPosition,
+                    Quaternion.identity, GameManager.Instance.GetMenuCanvas().transform);
+            }
+            
+            hoverGameObject.GetComponentInChildren<HoverItem>().SetUpHoverView(this.GetItemInSlot());
+            Debug.Log("KW: START HOVER" );
         }
 
         public void ShowBlackPanel()
@@ -775,7 +827,26 @@ namespace Inventory
             if (this.itemID != 0)
             {
                 canThrowItemAway = false;
+                if (hoverGameObject != null)
+                {
+                    Destroy(hoverGameObject);
+                }
             }
+            StopAllCoroutines();
+        }
+
+        public void HideSearchPanel()
+        {
+            this.searchPanel.SetActive(false);
+            this.gameObject.GetComponentInChildren<Animator>(true).SetBool("StartLoading", false);
+        }
+        public void ActivateSearchLoadingAnimation()
+        {
+            this.gameObject.GetComponentInChildren<Animator>(true).SetBool("StartLoading", true);
+        }
+        public void ShowSearchPanel()
+        {
+            this.searchPanel.SetActive(true);
         }
     }
 }

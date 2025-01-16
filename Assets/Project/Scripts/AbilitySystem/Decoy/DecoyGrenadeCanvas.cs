@@ -11,13 +11,6 @@ public class DecoyGrenadeCanvas : MonoBehaviour
 
     private GameObject parent;
     private float radius = 4;
-    private float radiusX = 4;
-    private float radiusY = 4;
-    
-    private float minX = -4;
-    private float maxX = -4;
-    private float minY = -4;
-    private float maxY = -4;
     
     private void Update()
     {

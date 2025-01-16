@@ -20,6 +20,9 @@ public class WallCanvas : MonoBehaviour
     private float minDistanceBetweenWires = 70;
     private void Update()
     {
+        if (GameManager.Instance.GetWallCollider() == null)
+            return;
+        
         closestWall =  GameManager.Instance.GetWallCollider().ClosestPoint(GetPosition());
         if (GameManager.Instance.GetFloorCollider().OverlapPoint(GetPosition()))
         {

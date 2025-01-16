@@ -44,6 +44,7 @@ namespace LootSystem
             {
                 return;
             }
+            Debug.Log("KWWKWKWK");
             PrepareLoot();
                 
         }
@@ -62,12 +63,14 @@ namespace LootSystem
             //Debug.Log("COUNT KW2: " + cratesToFill);
             foreach (LooteableObject crate in cratesList)
             {
-                if (crate.CheckIfNeedToSpawnXObject)
+                if (crate.CheckIfNeedToSpawnXObject || crate.CheckIfItIsTutorial)
                 {
+                    Debug.Log("CRATE: " +crate.gameObject.name + " " + crate.CheckIfItIsTutorial);
                     crate.StartSpawingObjects();
                     cratesToFill--;
                 }
             }
+      
             foreach (LooteableObject crate in cratesList)
             {
                 if (cratesToFill != 0)
@@ -80,6 +83,7 @@ namespace LootSystem
                 }
             }
             lootInitialized = true;
+         
         }
 
 

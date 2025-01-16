@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Inventory;
+using LootSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,28 +38,36 @@ public class TrainManager : MonoBehaviour
     [SerializeField] private Train train;
     private TrainPanels trainPanelsScript;
     private List<GameObject> screensDisplayed;
+    private BuyWagon buyWagon;
+    public BuyWagon BuyWagonScript => buyWagon;
     [Header("Canvas for different wagons")]
     [SerializeField] private GameObject missionSelectorCanvas;
     [SerializeField] private GameObject controlRoomCanvas;
     [SerializeField] private GameObject marketRoomCanvas;
+    [SerializeField] private GameObject loreRoomRoomCanvas;
+    [SerializeField] private GameObject barmanRoomCanvas;
     [SerializeField] private GameObject expeditionRoomCanvas;
     [Header("Wagon Lock List")] 
     private bool[] unlockedWagonsList; //True -> Unlocked, False -> Locked
     [Header("Lock Icon")]
     [SerializeField] private GameObject lockIcon;
     private GameObject currentCanvas;
-
+    public bool canvasActivated => currentCanvas.activeSelf;
+    
     [SerializeField] private TraderPanel tradePanel;
-
+    
     [Header("Resources In Train")] 
     private int RESOURCES_AIR_FILTER; 
 
     private string RESOURCES_AIR_FILTER_NAME = "Resources_Air_Filter";
-    private bool isMoving = false;
     [Header("Buy Wagon UI Prefab")] 
     [SerializeField] private GameObject buyWagonPrefab;
     private bool isShowingWagonBuyUI = false;
-    [SerializeField] private GameObject generalCanvas; 
+    public bool IsShowingWagonBuyUI => isShowingWagonBuyUI;
+    [SerializeField] private GameObject generalCanvas;
+
+    [Header("Music Mixer Check")]
+    [SerializeField] MusicManager musicManager;
     /// <summary>
     /// 0 - Food
     /// 1 - Material
@@ -80,10 +90,7 @@ public class TrainManager : MonoBehaviour
             }
         }
     }    
-    public bool canvasActivated
-    {
-        get { return currentCanvas.activeSelf;  }
-    }
+
     
     private void Awake()
     {
@@ -135,16 +142,27 @@ public class TrainManager : MonoBehaviour
         unlockedWagonsList[0] = true;
         //Home always unlocked
         unlockedWagonsList[1] = true;
+        //lore room always unlocked
+        unlockedWagonsList[2] = true;
+        //bar room always unlocked
+        unlockedWagonsList[3] = true;
+        //Activates the mechanic, lore and barman tune
+        musicManager.StartFadeFunction(0);
+        musicManager.StartFadeFunction(1);
+        musicManager.StartFadeFunction(2);
         //TODO: Just for testing
-        //PlayerPrefs.SetInt("Wagon 3", -1);
+        //PlayerPrefs.SetInt("Wagon 5", -1);
+        //PlayerPrefs.SetInt("Wagon 6", -1);
         // -1 = Locked | 0 = Not defined | 1 = Unlocked
-        if (PlayerPrefs.GetInt("Wagon 3") == 0)
-            PlayerPrefs.SetInt("Wagon 3", -1);     
-        if (PlayerPrefs.GetInt("Wagon 4") == 0)
-            PlayerPrefs.SetInt("Wagon 4", -1);
+        if (PlayerPrefs.GetInt("Wagon 5") == 0)
+            PlayerPrefs.SetInt("Wagon 5", -1);     
+        if (PlayerPrefs.GetInt("Wagon 6") == 0)
+            PlayerPrefs.SetInt("Wagon 6", -1);
         
-        unlockedWagonsList[2] = PlayerPrefs.GetInt("Wagon 3") == 1; 
-        unlockedWagonsList[3] = PlayerPrefs.GetInt("Wagon 4") == 1;
+        unlockedWagonsList[4] = PlayerPrefs.GetInt("Wagon 5") == 1;
+        if (unlockedWagonsList[4]) musicManager.StartFadeFunction(3); //TODO: change to correct number in call when all wagons are set properly
+        unlockedWagonsList[5] = PlayerPrefs.GetInt("Wagon 6") == 1;
+        if (unlockedWagonsList[5]) musicManager.StartFadeFunction(4); //TODO: change to correct number in call when all wagons are set properly
 
 
     }
@@ -163,6 +181,7 @@ public class TrainManager : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.D))
             {
+
                 //Check if we are already on top right
                 if (TrainStatus != TrainStatus.onMissionSelector)
                 {
@@ -176,19 +195,22 @@ public class TrainManager : MonoBehaviour
     {
             if (movingToLeft)
             {
-                    //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
-                    currentIndex++;
-                    UpdateRoomInfo();
-                    trainPanelsScript.HideTrainRoom(currentIndex - 1);
-                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
-                
+                if (TrainStatus == TrainStatus.onMarketRoom) TrainArrows.Instance.HideLeftArrow();
+                if (TrainStatus == TrainStatus.onMissionSelector) TrainArrows.Instance.ShowRightArrow();
+                //LogManager.Log("MOVING TRAIN TO LEFT", FeatureType.TrainBase);
+                currentIndex++;
+                UpdateRoomInfo();
+                trainPanelsScript.HideTrainRoom(currentIndex - 1);
+                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
             }
             else
             {
-                    //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
-                    currentIndex--;
-                    trainPanelsScript.HideTrainRoom(currentIndex + 1);
-                    trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
+                if (TrainStatus == TrainStatus.onMechanicRoom) TrainArrows.Instance.HideRightArrow();
+                if (TrainStatus == TrainStatus.onExpeditionRoom) TrainArrows.Instance.ShowLeftArrow();
+                //LogManager.Log("MOVING TRAIN TO RIGHT", FeatureType.TrainBase);
+                currentIndex--;
+                trainPanelsScript.HideTrainRoom(currentIndex + 1);
+                trainPanelsScript.ShowTrainRoom(currentIndex, unlockedWagonsList[currentIndex]);
             }
             UpdateRoomInfo();
             train.MoveTrain(currentIndex);  
@@ -238,10 +260,18 @@ public class TrainManager : MonoBehaviour
                 currentCanvas = controlRoomCanvas;
                 break; 
             case 2:
-                TrainStatus = TrainStatus.onMarketRoom;
-                currentCanvas = marketRoomCanvas;
+                TrainStatus = TrainStatus.onLoreRoom;
+                currentCanvas = loreRoomRoomCanvas;
                 break;    
             case 3:
+                TrainStatus = TrainStatus.onBarmanRoom;
+                currentCanvas = barmanRoomCanvas;
+                break;
+            case 4: 
+                TrainStatus = TrainStatus.onMarketRoom;
+                currentCanvas = marketRoomCanvas;
+                break;
+            case 5: 
                 TrainStatus = TrainStatus.onExpeditionRoom;
                 currentCanvas = expeditionRoomCanvas;
                 break;
@@ -250,22 +280,13 @@ public class TrainManager : MonoBehaviour
     
     private void HandleButtonPressed()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.F))
         {
             if (unlockedWagonsList[currentIndex])
             {
                 if (currentCanvas.activeSelf)
                 {
-                    //Check if we need to disable some screen before
-                    if (screensDisplayed.Count == 0)
-                    {
-                        currentCanvas.SetActive(false);
-                    }
-                    else
-                    {
-                        RemoveScreenFromList(screensDisplayed.Last());
-                    }
-                    
+                    CloseWagonCanvas();
                 }
                 else
                 {
@@ -283,11 +304,24 @@ public class TrainManager : MonoBehaviour
                     
                     Vector2 initialPosition = new Vector2(960, 540);
                     GameObject buyWagonUI = Instantiate(buyWagonPrefab, initialPosition, Quaternion.identity, generalCanvas.transform);
-                
+                    buyWagon = buyWagonUI.GetComponent<BuyWagon>();
                     buyWagonUI.GetComponent<BuyWagon>().SetUpProperties(wagonPrice.foodNeeded, wagonPrice.materialNeeded, wagonPrice.goldNeeded);
                 }
             }
         } 
+    }
+
+    public void CloseWagonCanvas()
+    {
+        //Check if we need to disable some screen before
+        if (screensDisplayed.Count == 0)
+        {
+            currentCanvas.SetActive(false);
+        }
+        else
+        {
+            RemoveScreenFromList(screensDisplayed.Last());
+        }
     }
     
 
@@ -304,15 +338,23 @@ public class TrainManager : MonoBehaviour
 
     public bool TryToBuyWagon(int airFilterNeeded, int material1Needed, int material2Needed)
     {
-        //TODO: Ver que materiales ponemos aqui
-        if (airFilterNeeded <= resourceAirFilter)
+        Item foodItem = UnityEngine.Resources.Load<Item>("Items/Scrap/FoodcanHam");
+        Item screwsItem = UnityEngine.Resources.Load<Item>("Items/Scrap/Screws");
+        
+        if (airFilterNeeded <= resourceAirFilter && TrainBaseInventory.Instance.GetIfItemIsInInventory(foodItem, material2Needed) &&
+            TrainBaseInventory.Instance.GetIfItemIsInInventory(screwsItem, material1Needed))
         {
             resourceAirFilter -= airFilterNeeded;
+            TrainBaseInventory.Instance.DeleteItemFromList(foodItem, material2Needed);
+            TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(foodItem, material2Needed);
+            TrainBaseInventory.Instance.DeleteItemFromList(screwsItem, material1Needed);
+            TrainBaseInventory.Instance.FindAndDeleteItemsFromItemSlot(screwsItem, material1Needed);
             unlockedWagonsList[currentIndex] = true;
             trainPanelsScript.UnlockTrain(currentIndex);
             PlayerPrefs.SetInt("Wagon " + (currentIndex + 1), 1);
             isShowingWagonBuyUI = false;
             lockIcon.SetActive(false);
+            musicManager.StartFadeFunction(currentIndex-1);
             return true;
         }
         else

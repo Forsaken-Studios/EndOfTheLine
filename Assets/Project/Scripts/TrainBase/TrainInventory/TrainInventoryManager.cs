@@ -15,6 +15,8 @@ public class TrainInventoryManager : IInventoryManager
     private int numberOfTools = -1;
     [SerializeField] private GameObject canvasInventory;
     [SerializeField] private TextMeshProUGUI textSwap;
+    public bool isSellingItems { get; private set; }
+
     private void Awake()
     {
         if (Instance != null)
@@ -45,6 +47,29 @@ public class TrainInventoryManager : IInventoryManager
                 ReverseInventoryStatus();
             }
         }
+        
+        if (inventoryIsOpen)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (GetInspectViewList().Count != 0)
+                {
+
+                    GameObject mostRecentInspectView = inspectListViewList[inspectListViewList.Count - 1];
+                    Destroy(mostRecentInspectView);
+                    RemoveInspectView(mostRecentInspectView);
+                }else if (splittingViewActivated)
+                {
+                    if(splittingView != null)
+                        splittingView.gameObject.SetActive(false);
+                    splittingViewActivated = false;
+                }
+                else
+                {
+                    ReverseInventoryStatus();
+                }
+            }
+        }
     }
 
     private bool WagonScreen()
@@ -54,6 +79,7 @@ public class TrainInventoryManager : IInventoryManager
 
     public void OpenInventoryStatusToSell()
     {
+        isSellingItems = true;
         inventoryHUD.SetActive(true);
         SaveManager.Instance.SavePlayerInventoryJson();
         foreach (var itemSlot in itemSlotList)
@@ -61,9 +87,50 @@ public class TrainInventoryManager : IInventoryManager
             itemSlot.ClearItemSlot();
         }
         PlayerInventory.Instance.GetInventoryItems().Clear();
-        textSwap.text = "Items To Sell";
     }
 
+    public void IsNotSellingItems()
+    {
+        isSellingItems = false;
+    }
+    public void OpenInventoryInMarketRoom()
+    {
+        inventoryHUD.SetActive(true);
+        inventoryHUD.transform.Find("BaseInventory").gameObject.SetActive(true);
+        inventoryHUD.transform.Find("PlayerInventory").gameObject.SetActive(false);
+
+        Transform expanded1 = inventoryHUD.transform.Find("ExpandedInventory1");
+        if(expanded1 != null)
+            expanded1.gameObject.SetActive(false);
+        
+        Transform expanded2 = inventoryHUD.transform.Find("ExpandedInventory2");
+        if(expanded2 != null)
+            expanded2.gameObject.SetActive(false);
+        
+        Transform expanded3 = inventoryHUD.transform.Find("ExpandedInventory3");
+        if(expanded3 != null)
+            expanded3.gameObject.SetActive(false);
+    }
+    public void CloseInventoryInMarketRoom()
+    {
+        inventoryHUD.SetActive(false);
+        inventoryHUD.transform.Find("BaseInventory").gameObject.SetActive(true);
+        inventoryHUD.transform.Find("PlayerInventory").gameObject.SetActive(true);
+
+        Transform expanded1 = inventoryHUD.transform.Find("ExpandedInventory1");
+        if(expanded1 != null)
+            expanded1.gameObject.SetActive(true);
+        
+        Transform expanded2 = inventoryHUD.transform.Find("ExpandedInventory2");
+        if(expanded2 != null)
+            expanded2.gameObject.SetActive(true);
+        
+        Transform expanded3 = inventoryHUD.transform.Find("ExpandedInventory3");
+        if(expanded3 != null)
+            expanded3.gameObject.SetActive(true);
+    }
+    
+    
     public void CloseSellingInventory()
     {
         if (PlayerInventory.Instance.GetInventoryItems().Count > 0)

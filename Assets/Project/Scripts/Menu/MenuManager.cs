@@ -105,7 +105,12 @@ namespace Resources.Scripts.Menu
 
         private void PlayGame()
         {
-            SceneManager.LoadSceneAsync(1);
+            bool tutorialPlayed = PlayerPrefs.GetInt("TutorialPlayed") == 1;
+            
+            if(tutorialPlayed)
+                SceneManager.LoadSceneAsync(1);
+            else
+                SceneManager.LoadSceneAsync(3);
         }
 
         private void QuitGame()

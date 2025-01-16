@@ -13,7 +13,7 @@ public class TrainBaseInventory : MonoBehaviour
     public static TrainBaseInventory Instance;
 
     private int numberOfTools = -1;
-    private Dictionary<Item, int> itemsInBase;
+    private Dictionary<int, int> itemsInBase;
     [SerializeField] private List<ItemSlot> itemsSlotsList;
     [SerializeField] private GameObject splittingView;
     private void Awake()
@@ -30,7 +30,7 @@ public class TrainBaseInventory : MonoBehaviour
 
     private void Start()
     {
-        itemsInBase = new Dictionary<Item, int>();
+        itemsInBase = new Dictionary<int, int>();
 
     }
 
@@ -61,6 +61,8 @@ public class TrainBaseInventory : MonoBehaviour
     {
         this.splittingView.SetActive(true);
         this.splittingView.GetComponent<SplittingView>().SetUpProperties(maxAmount, draggableItem, itemSlot, previousItemSlot);
+        TrainInventoryManager.Instance.splittingView = this.splittingView.GetComponent<SplittingView>();
+        TrainInventoryManager.Instance.splittingViewActivated = true;
     }
     public bool TryAddItemCrateToItemSlot(Item item, int amount, out int remainingItemsWithoutSpace)
     {
@@ -256,7 +258,8 @@ public class TrainBaseInventory : MonoBehaviour
     public bool GetIfItemIsInInventory(Item item, int amount)
     {
         int amountAux = -1;
-        itemsInBase.TryGetValue(item, out amountAux);
+        int itemID = item.itemID;
+        itemsInBase.TryGetValue(itemID, out amountAux);
         return amountAux >= amount;
     }
 
@@ -268,25 +271,29 @@ public class TrainBaseInventory : MonoBehaviour
     
     public void AddItemToList(Item item, int amount)
     {
-        if (itemsInBase.ContainsKey(item))
+        int itemID = item.itemID;
+        if (itemsInBase.ContainsKey(itemID))
         {
-            itemsInBase[item] += amount;
+            itemsInBase[itemID] += amount;
         }
         else
         {
-            itemsInBase.Add(item, amount);
+            itemsInBase.Add(itemID, amount);
         }
+        int x = -1;
+        itemsInBase.TryGetValue(itemID, out x);
     }   
     
     public void DeleteItemFromList(Item item, int amount)
     {
-        if (itemsInBase[item] > amount)
+        int itemID = item.itemID;
+        if (itemsInBase[itemID] > amount)
         {
-            itemsInBase[item] -= amount; 
+            itemsInBase[itemID] -= amount; 
         }
         else
         {
-            itemsInBase.Remove(item); 
+            itemsInBase.Remove(itemID); 
         }
     }
     

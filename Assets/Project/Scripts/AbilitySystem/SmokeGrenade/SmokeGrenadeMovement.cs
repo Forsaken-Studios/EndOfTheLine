@@ -30,12 +30,14 @@ public class SmokeGrenadeMovement : MonoBehaviour
 
     private void StopAudios(object sender, EventArgs e)
     {
-        audioSource.Stop();
+        if(audioSource != null)
+            audioSource.Stop();
     }
 
     private void ResumeAudios(object sender, EventArgs e)
     {
-        audioSource.Play();
+        if(audioSource != null)
+            audioSource.Play();
     }
 
     private void Update()
