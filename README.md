@@ -10,6 +10,8 @@ But beware... you are not alone down there...
 
 This project was made in Unity 2D as an End Of Master's Degree of Game Development for University of Málaga.
 
+Trailer: https://www.youtube.com/watch?v=5SjxcbcBZYU
+
 ![image](https://github.com/user-attachments/assets/a399f0eb-c851-4bc9-b929-fbf403af6077)
 
 ![image](https://github.com/user-attachments/assets/f069e280-bcc0-4aac-92e5-6831428fcdf9)
